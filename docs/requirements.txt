@@ -1,0 +1,23 @@
+== v1.0 Requirements ==
+
+- comfortable web user interface
+  - based on php
+  - exchangeable templates structure
+  - optimized for desktop pc
+- user management system
+  - to assign different permissions
+  - to create entry_list.ini wit Steam64GUID
+  - to post-assign different drivers names to the same user
+- automatically identify tracks and cars from content directory
+- comfortable server_cfg.ini editing
+  - in web UI
+  - only one static server_cfg.ini
+  - custom weather preset can be selected at server start
+- mechanism to edit entry_list.ini by comfortable web interface
+- parse server output into database
+  - primarily to record laps of drivers
+  - also record conditions of laps (environment temperatures, allowed driving aids)
+- statistics
+  - session state
+  - lap records for different tracks
+  
