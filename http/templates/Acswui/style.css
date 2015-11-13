@@ -1,0 +1,230 @@
+body {
+  background-color: #223440;
+  background-image: url("templates/acswui/background.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #fff;
+}
+
+h1 {
+  color: #999;
+  border-bottom: 4px dotted #666;
+  padding-left:10px;
+  text-shadow: none;
+  font-size: 30px;
+}
+
+form input {
+  margin: 0px;
+  text-align: center;
+  padding: 5px;
+  line-height: 15px;
+  border: 1px solid black;
+  border-radius: 0px;
+  display: inline-block;
+  background-color: rgba(255,255,255,0.5);
+  font-size: 13px;
+  color: #223440;
+}
+
+form input[type="submit"] {
+  
+  color: #223440;
+  text-decoration: none;
+  font-weight: bold;
+  
+  background-color: #bd0000;
+  box-shadow: #111A20 3px 3px 1px;
+  
+}
+
+form input[type="submit"]:hover {
+  color: #fff;
+  text-shadow: none;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 5px;
+}
+
+table tr td, table tr th {
+  vertical-align: top;
+  background-color: rgba(0,0,0,0.2);
+  padding: 5px 10px;
+}
+
+a {
+  display: block;
+  padding: 2px 5px;
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a:hover {
+  background-color: #bd0000;
+}
+
+div#PresetSelect input[type=radio],
+#CarSelect input[type=checkbox] {
+  display: none;
+}
+
+div#PresetSelect input[type=radio] + label,
+#CarSelect input[type=checkbox] + label {
+  background-color: rgba(0,0,0,0.2);
+  padding: 5px 20px;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
+div#PresetSelect input[type=radio] + label {
+  width: 80%;
+}
+
+div#PresetSelect input[type=radio] + label img {
+  display: none;
+}
+
+div#PresetSelect input[type=radio]:checked + label img {
+  display: block;
+  float:left;
+}
+
+div#PresetSelect input[type=radio] + label:hover,
+#CarSelect input[type=checkbox] + label:hover {
+  background-color: rgba(0,0,0,0.5);
+}
+
+div#PresetSelect input[type=radio]:checked + label,
+#CarSelect input[type=checkbox]:checked + label {
+  background-color: rgba(255,0,0,0.75);
+}
+
+select {
+  border-radius: 0px;
+  border-width: 0px;
+  background-color: rgba(0,0,0,0.2);
+  color: #fff;
+  font-weight: bold;
+  padding: 5px 10px;
+}
+
+div#ServerOverviewTrackOutline {
+  background-color: rgba(0,0,0,0.2);
+}
+
+div.Header {
+  margin-top: 20px;
+  width: 100%;
+  line-height: 28px;
+  background: linear-gradient(to left, rgba(189,0,0,0) 0%, rgba(189,0,0,1) 5%, rgba(189,0,0,1) 60%, rgba(189,0,0,0) 95%);
+  color: #fff;
+  font-size: 30px;
+  font-weight: bold;
+  text-shadow: #000 1px 1px 3px;
+  text-align: center;
+}
+
+div.Subtitle {
+  margin-top: 2px;
+  width: 100%;
+  background: linear-gradient(to left, rgba(189,0,0,0) 43%, rgba(255,255,255,0.4) 47%, rgba(255,255,255,0.4) 53%, rgba(189,0,0,0) 57%);
+  border-bottom-right-radius: 30px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: normal;
+  text-align: center;
+}
+
+div.MainBody {
+  margin-left: 300px;
+  padding: 0px 20px;
+}
+
+ul.MainMenu {
+  float: left;
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+  margin-top: -20px;
+  padding-top: 100px;
+  background-image: url("templates/acswui/logo_small.png");
+  background-repeat: no-repeat;
+}
+
+ul.MainMenu li {
+  margin: 0px;
+  margin-bottom: 5px;
+  padding: 0px;
+}
+
+ul.MainMenu li a {
+  margin: 0px;
+  padding: 40px 5px;
+  text-align: center;
+  
+  color: #223440;
+  text-decoration: none;
+  font-weight: bold;
+  
+  border-radius: 4px;
+  box-shadow: #111A20 3px 3px 1px;
+  background: linear-gradient(to top left, rgba(200,15,15,1) 0%, rgba(189,0,0,1) 50%, rgba(189,0,0,0.9) 100%);
+  
+  width: 100px;
+  display: inline-block;
+}
+
+ul.MainMenu li a:hover {
+  color: #fff;
+  text-shadow: #000 1px 1px 1px;
+  background: linear-gradient(to top left, rgba(200,15,15,1) 100%, rgba(189,0,0,1) 50%, rgba(189,0,0,0.8) 0%);
+}
+
+ul.MainMenu li a.active {
+  color: #fff;
+  text-shadow: #000 1px 1px 1px;
+}
+
+ul.MainMenu ul {
+  list-style-type: none;
+  padding-left: 20px;
+  margin: 0px;
+  margin-right: 5px;
+  margin-top: 10px;
+  float: left;
+}
+
+ul.MainMenu ul li {
+  margin: 0px;
+  padding: 0px;
+  text-align: right;
+}
+
+ul.MainMenu ul a {
+  color: #fff;
+  font-size: 75%;
+  text-align: right;
+  font-weight: bold;
+  border-radius: 0px;
+  padding: 5px;
+  margin-top: 0px;
+  margin-bottom: 2px;
+  margin-left: 0px;
+  box-shadow: none;
+  border-radius: 0px;
+  width: 150px;
+  background: none;
+}
+
+ul.MainMenu ul a.active {
+  background:linear-gradient(-90deg, rgba(255,255,255,0.2) 0%, rgba(34,52,64,0.0) 100%);
+  text-shadow: none;
+}
+
+ul.MainMenu ul a:hover {
+  background:linear-gradient(-90deg, rgba(255,255,255,0.5) 0%, rgba(34,52,64,0.0) 100%);
+}
+
