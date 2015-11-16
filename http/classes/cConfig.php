@@ -7,7 +7,7 @@ class cConfig {
 
     // this is where logfiles are stored
     // for security reasons this should not be a directory that is accessible by http
-    private $LogPath = "logs/";
+    private $LogPath = "../http-logs/";
 
     // set this to true if debug output should be activated
     private $LogDebug = true;
