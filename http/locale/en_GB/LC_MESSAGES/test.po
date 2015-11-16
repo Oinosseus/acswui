@@ -1,0 +1,51 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2015-11-17 00:52+0100\n"
+"PO-Revision-Date: 2015-11-17 00:53+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.5\n"
+"X-Poedit-Basepath: ../../..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: contents/test.php:6
+msgid "Test"
+msgstr "Test"
+
+#: contents/test.php:11
+msgid "This is the content of the test page."
+msgstr "This is the content of the test page."
+
+#: contents/test/test_sub1.php:6
+msgid "Subtest 1"
+msgstr "Subtest 1"
+
+#: contents/test/test_sub1.php:13
+msgid "Title of Subtest 1"
+msgstr "Title of Subtest 1"
+
+#: contents/test/test_sub1.php:14
+msgid "Subtitle of Subtest 1"
+msgstr "Subtitle of Subtest 1"
+
+#: contents/test/test_sub1.php:15 contents/test/test_sub2.php:15
+msgid "This is the content of this page"
+msgstr "This is the content of this page"
+
+#: contents/test/test_sub2.php:6
+msgid "Subtest 2"
+msgstr "Subtest 2"
+
+#: contents/test/test_sub2.php:13
+msgid "Title of Subtest 2"
+msgstr "Title of Subtest 2"
+
+#: contents/test/test_sub2.php:14
+msgid "Subtitle of Subtest 2"
+msgstr "Subtitle of Subtest 2"
