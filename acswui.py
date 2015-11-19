@@ -25,11 +25,13 @@ argparsersubs = argparser.add_subparsers(dest='command')
 # commadn install
 argparser_install = argparsersubs.add_parser('install', help="install or update acswui")
 argparser_install.add_argument('--args-file', help="path to an text file that contains all the arguments")
+argparser_install.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
 argparser_install.add_argument('--db-host', default='localhost', help="the database server host")
 
 # command srvpkg
 argparser_srvpkg = argparsersubs.add_parser('srvpkg', help="server packager")
 argparser_srvpkg.add_argument('--args-file', help="path to an text file that contains all the arguments")
+argparser_srvpkg.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
 argparser_srvpkg.add_argument('--path-ac', help="path to the assetto corsa game directory")
 argparser_srvpkg.add_argument('--path-acs', help="path to the assetto corsa server directory")
 
@@ -38,7 +40,7 @@ args = argparser.parse_args()
 #print("\n\nargs=\n", args);
 
 # load arguments from file if argument --args-file was set
-if type(args.args_file) == type("abc"):
+if hasattr(args, 'args_file') and args.args_file is not None:
 
     # load argument list from file
     with open (args.args_file, "r") as argsfile:
@@ -62,4 +64,5 @@ if type(args.args_file) == type("abc"):
 # ---------------------
 
 if args.command == "srvpkg":
-    srvpgk = ServerPackager(args)
+    srvpkg = ServerPackager()
+    srvpkg.work(args)

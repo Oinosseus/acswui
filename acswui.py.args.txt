@@ -1,3 +1,3 @@
---path-ac  assettocorsas
+--path-ac  assettocorsa
 --path-acs assettocorsa/server/
 
