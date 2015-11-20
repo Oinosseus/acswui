@@ -8,7 +8,7 @@
 import argparse
 import os
 import sys
-from pyacswui import ServerPackager
+from pyacswui import ServerPackager, Installer
 
 
 
@@ -22,18 +22,19 @@ __helpstring = "FIXME"
 argparser = argparse.ArgumentParser(prog="acswui", description="Assetto Corsa Server Web User Interface", epilog=__helpstring)
 argparsersubs = argparser.add_subparsers(dest='command')
 
-# commadn install
-argparser_install = argparsersubs.add_parser('install', help="install or update acswui")
-argparser_install.add_argument('--args-file', help="path to an text file that contains all the arguments")
-argparser_install.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
-argparser_install.add_argument('--db-host', default='localhost', help="the database server host")
+# command install
+argparser_install = argparsersubs.add_parser('install',help="install or update acswui")
 
 # command srvpkg
 argparser_srvpkg = argparsersubs.add_parser('srvpkg', help="server packager")
-argparser_srvpkg.add_argument('--args-file', help="path to an text file that contains all the arguments")
-argparser_srvpkg.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
-argparser_srvpkg.add_argument('--path-ac', help="path to the assetto corsa game directory")
-argparser_srvpkg.add_argument('--path-acs', help="path to the assetto corsa server directory")
+
+# add common arguments to add_subparsers
+for parser in [argparser_install, argparser_srvpkg]:
+  parser.add_argument('--args-file', help="path to an text file that contains all the arguments")
+  parser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
+  parser.add_argument('--path-ac', help="path to the assetto corsa game directory")
+  parser.add_argument('--path-acs', help="path to the assetto corsa server directory")
+  parser.add_argument('--db-host', default='localhost', help="the database server host")
 
 # get arguments
 args = argparser.parse_args()
@@ -60,9 +61,15 @@ if hasattr(args, 'args_file') and args.args_file is not None:
 
 
 # ---------------------
-#  - Server packager -
+#  - Execute Command -
 # ---------------------
 
+# ServerPackager
 if args.command == "srvpkg":
     srvpkg = ServerPackager()
     srvpkg.work(args)
+
+# Installer
+if args.command == "install":
+    install = Installer()
+    install.work(args)
