@@ -86,7 +86,7 @@ class ServerPackager():
         for car in os.listdir(args.path_ac + "/content/cars"):
 
             # skip all non-directories or hidden items
-            if car[:1] == "." or not os.path.isfile(args.path_ac + "/content/cars/" + car + "/data.acd"):
+            if car[:1] == "." or not os.path.isdir(args.path_ac + "/content/cars/" + car):
                 continue
 
             # user info
@@ -97,7 +97,19 @@ class ServerPackager():
             self._mkdirs(args.path_acs + "/content/cars/" + car)
 
             # copy acd file
-            shutil.copy(args.path_ac + "/content/cars/" + car + "/data.acd", args.path_acs + "/content/cars/" + car + "/data.acd")
+            if os.path.isfile(args.path_ac + "/content/cars/" + car + "/data.acd"):
+                shutil.copy(args.path_ac + "/content/cars/" + car + "/data.acd", args.path_acs + "/content/cars/" + car + "/data.acd")
+
+			# copy all data/*.ini files
+            if os.path.isdir(args.path_ac + "/content/cars/" + car + "/data"):
+                self._mkdirs(args.path_acs + "/content/cars/" + car + "/data")
+                for ini_file in os.listdir(args.path_ac + "/content/cars/" + car + "/data"):
+                    # skip hidden files and non-ini files
+                    if ini_file[:1] == "." or ini_file[-4:] != ".ini" or not os.path.isfile(args.path_ac + "/content/cars/" + car + "/data/" + ini_file):
+                        continue
+                    # copy ini file
+                    shutil.copy(args.path_ac + "/content/cars/" + car + "/data/" + ini_file, args.path_acs + "/content/cars/" + car + "/data/" + ini_file)
+					
 
             # scan all skins
             if os.path.isdir(args.path_ac + "/content/cars/" + car + "/skins"):
