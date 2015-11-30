@@ -34,7 +34,11 @@ for parser in [argparser_install, argparser_srvpkg]:
   parser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
   parser.add_argument('--path-ac', help="path to the assetto corsa game directory")
   parser.add_argument('--path-acs', help="path to the assetto corsa server directory")
-  parser.add_argument('--db-host', default='localhost', help="the database server host")
+  parser.add_argument('--db-host', help="the database server host")
+  parser.add_argument('--db-port', help="the database server port")
+  parser.add_argument('--db-user', help="the database server username")
+  parser.add_argument('--db-database', help="the database server database")
+  parser.add_argument('--db-passwd', help="the database server database")
 
 # get arguments
 args = argparser.parse_args()
