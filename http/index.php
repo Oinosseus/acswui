@@ -78,6 +78,7 @@ if (!is_null($acswuiConentPage)) {
     // determine localization
     $lang = getPreferredClientLanguage();
     if ($lang == "") $acswuiLog->LogWarning("Preferred localization could not be determined!");
+    $acswuiLog->LogNotice("Localization '$lang' selected");
     // load translation
     setlocale(LC_ALL, $lang);
     bindtextdomain($acswuiConentPage->TextDomain, "locale");
