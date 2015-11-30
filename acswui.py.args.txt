@@ -1,3 +1,8 @@
 --path-ac  assettocorsa
 --path-acs assettocorsa/server/
 
+--db-host jupiter4
+--db-database acswui
+--db-port 3306
+--db-user acswui
+--db-passwd acswui
