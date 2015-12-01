@@ -4,7 +4,7 @@ import pymysql
 
 class Installer(object):
 
-    def _dbAppendTable(self, tblname, idxname, idxtype, idxdefault = None, idxonupdate = None):
+    def _dbAppendTable(self, tblname, idxname, idxtype, idxdefault = None, colextra = None):
         """
             Create table if not existent and set index.
         """
@@ -30,12 +30,10 @@ class Installer(object):
             else:
                 idxdefault = ""
 
-            if idxonupdate is not None:
-                idxonupdate = "ON UPDATE %s" % idxonupdate
-            else:
-                idxonupdate = ""
+            if colextra is None:
+                colextra = ""
 
-            query = "CREATE TABLE IF NOT EXISTS `%s` (`%s` %s NOT NULL %s %s) ENGINE=InnoDB DEFAULT CHARSET=latin1;" % (tblname, idxname, idxtype, idxdefault, idxonupdate)
+            query = "CREATE TABLE IF NOT EXISTS `%s` (`%s` %s NOT NULL %s %s, PRIMARY KEY (`%s`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;" % (tblname, idxname, idxtype, idxdefault, colextra, idxname)
             if self.__args.v > 1:
                 print("    " + query)
 
@@ -47,7 +45,7 @@ class Installer(object):
         # table already exist
         else:
             # ensure to have index column
-            self._dbAppendColumn(tblname, idxname,idxtype, idxdefault, idxonupdate)
+            self._dbAppendColumn(tblname, idxname,idxtype, idxdefault, colextra)
 
             # check index
             primary_index_found = False
@@ -79,7 +77,7 @@ class Installer(object):
 
 
 
-    def _dbAppendColumn(self, tblname, colname, coltype, coldefault = None, colonupdate = None):
+    def _dbAppendColumn(self, tblname, colname, coltype, coldefault = None, colextra = None):
 
         # assume column exist already
         column_exist = False
@@ -102,7 +100,7 @@ class Installer(object):
                 column_needs_change = True
             if coldefault is not None and res[2].lower() != coldefault.lower():
                 column_needs_change = True
-            if colonupdate is not None and ("ON UPDATE %s" % colonupdate).lower() not in res[3].lower():
+            if colextra is not None and colextra.lower() not in res[3].lower():
                 column_needs_change = True
         cursor.close()
 
@@ -112,15 +110,13 @@ class Installer(object):
         else:
             coldefault = ""
 
-        if colonupdate is not None:
-            colonupdate = "ON UPDATE %s" % colonupdate
-        else:
-            colonupdate = ""
+        if colextra is None:
+            colextra = ""
 
         # create column
         if column_exist is False:
             # create query
-            query = "ALTER TABLE `%s` ADD `%s` %s NOT NULL %s %s;" % (tblname, colname, coltype, coldefault, colonupdate)
+            query = "ALTER TABLE `%s` ADD `%s` %s NOT NULL %s %s;" % (tblname, colname, coltype, coldefault, colextra)
             if self.__args.v > 1:
                 print("    " + query)
 
@@ -132,7 +128,7 @@ class Installer(object):
         # update column
         elif column_needs_change is True:
             # create query
-            query = "ALTER TABLE `%s` CHANGE `%s` `%s` %s NOT NULL %s %s;" % (tblname, colname, colname, coltype, coldefault, colonupdate)
+            query = "ALTER TABLE `%s` CHANGE `%s` `%s` %s NOT NULL %s %s;" % (tblname, colname, colname, coltype, coldefault, colextra)
             if self.__args.v > 1:
                 print("    " + query)
 
@@ -158,11 +154,58 @@ class Installer(object):
 
         # check table installer
         if self.__args.v > 0:
-            print("append database table `installer`")
-        self._dbAppendTable("installer", "timestamp", "timestamp", "CURRENT_TIMESTAMP", "CURRENT_TIMESTAMP")
+            print("check database table `installer`")
+        self._dbAppendTable("installer", "timestamp", "timestamp", "CURRENT_TIMESTAMP", "ON UPDATE CURRENT_TIMESTAMP")
         self._dbAppendColumn("installer", "version", "VARCHAR(10)")
         self._dbAppendColumn("installer", "info", "TEXT")
 
+        # insert installer info
+        cursor = self.__db_handle.cursor()
+        cursor.execute("INSERT INTO `installer` (`version`, `info`) VALUES ('0.1a', '');")
+        cursor.close()
+        self.__db_handle.commit()
+
+        # check table users
+        if self.__args.v > 0:
+            print("check database table `Users`")
+        self._dbAppendTable("Users", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self._dbAppendColumn("Users", "Login", "VARCHAR(50)")
+        self._dbAppendColumn("Users", "Pasword", "VARCHAR(100)")
+        self._dbAppendColumn("Users", "Steam64GUID", "VARCHAR(50)")
+
+        # check table Groups
+        if self.__args.v > 0:
+            print("check database table `Groups`")
+        self._dbAppendTable("Groups", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self._dbAppendColumn("Groups", "Name", "VARCHAR(50)")
+
+        # check table UserGroupMap
+        if self.__args.v > 0:
+            print("check database table `UserGroupMap`")
+        self._dbAppendTable("UserGroupMap", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self._dbAppendColumn("UserGroupMap", "User", "int(11)")
+        self._dbAppendColumn("UserGroupMap", "Group", "int(11)")
+
+        # check table TrackRating
+        if self.__args.v > 0:
+            print("check database table `TrackRating`")
+        self._dbAppendTable("TrackRating", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self._dbAppendColumn("TrackRating", "User", "int(11)")
+        self._dbAppendColumn("TrackRating", "Track", "int(11)")
+        self._dbAppendColumn("TrackRating", "RateGraphics", "int(11)")
+        self._dbAppendColumn("TrackRating", "RateDrive", "int(11)")
+
+        # check table UserDriversMap
+        if self.__args.v > 0:
+            print("check database table `UserDriversMap`")
+        self._dbAppendTable("UserDriversMap", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self._dbAppendColumn("UserDriversMap", "User", "int(11)")
+        self._dbAppendColumn("UserDriversMap", "Driver", "int(11)")
+
+
+
+        # close database
+        self.__db_handle.close()
 
 
 
