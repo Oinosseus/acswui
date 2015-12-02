@@ -6,3 +6,7 @@
 --db-port 3306
 --db-user acswui
 --db-passwd acswui
+
+--http-path http/
+--http-default-template acswui
+--http-log-path ../http-logs/

@@ -39,6 +39,9 @@ for parser in [argparser_install, argparser_srvpkg]:
   parser.add_argument('--db-user', help="the database server username")
   parser.add_argument('--db-database', help="the database server database")
   parser.add_argument('--db-passwd', help="the database server database")
+  parser.add_argument('--http-path', help="the path of the http files directory")
+  parser.add_argument('--http-default-template', help="the default http template")
+  parser.add_argument('--http-log-path', help="the path for http logfiles")
 
 # get arguments
 args = argparser.parse_args()
