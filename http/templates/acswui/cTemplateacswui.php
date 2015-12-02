@@ -1,6 +1,6 @@
 <?php
 
-class cTemplateAcswui extends cTemplate {
+class cTemplateacswui extends cTemplate {
 
     public function getHtml () {
 
@@ -9,7 +9,7 @@ class cTemplateAcswui extends cTemplate {
         $html .= "<html>\n";
         $html .= "  <head>\n";
         $html .= "    <title>acswui</title>\n";
-        $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/Acswui/style.css\">\n";
+        $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style.css\">\n";
         $html .= "  </head>\n";
         $html .= "  <body>\n";
         $html .= "    <div class=\"Header\">\n";

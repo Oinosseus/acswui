@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL);
+error_reporting(-1);
 ini_set('display_errors', '1');
 
 // session control
@@ -59,6 +59,9 @@ if (!isset($_SESSION['CONTENT'])) {
 //  = Create Template Object =
 // ============================
 
+if (! file_exists("templates/" . $acswuiConfig->DefaultTemplate . "/cTemplate" . $acswuiConfig->DefaultTemplate . ".php")) {
+    $acswuiLog->LogError("template '" . $acswuiConfig->DefaultTemplate . "' not found!");
+}
 include("templates/" . $acswuiConfig->DefaultTemplate . "/cTemplate" . $acswuiConfig->DefaultTemplate . ".php");
 $template_class = "cTemplate" . $acswuiConfig->DefaultTemplate;
 $acswuiTemplate = new $template_class;
