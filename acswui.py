@@ -42,6 +42,7 @@ for parser in [argparser_install, argparser_srvpkg]:
   parser.add_argument('--http-path', help="the path of the http files directory")
   parser.add_argument('--http-default-template', help="the default http template")
   parser.add_argument('--http-log-path', help="the path for http logfiles")
+  parser.add_argument('--http-root-password', help="the password for the http root user")
 
 # get arguments
 args = argparser.parse_args()

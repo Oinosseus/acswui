@@ -1,5 +1,6 @@
 import argparse
 import pymysql
+import subprocess
 
 
 class Installer(object):
@@ -213,13 +214,21 @@ class Installer(object):
         #  = Create cConfig.php =
         # ========================
 
+        # user info
+        if self.__args.v > 0:
+            print("create cConfig.php")
+
+        # encrypt root password
+        http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.__args.http_root_password])
+
         with open(self.__args.http_path + "/classes/cConfig.php", "w") as f:
             f.write("<?php\n")
             f.write("  class cConfig {\n")
             f.write("\n")
-            f.write("    private $DefaultTemplate = \"" + self.__args.http_default_template + "\";\n")
-            f.write("    private $LogPath = \"" + self.__args.http_log_path + "\";\n")
+            f.write("    private $DefaultTemplate = \"%s\";\n" % self.__args.http_default_template)
+            f.write("    private $LogPath = \"%s\";\n" % self.__args.http_log_path)
             f.write("    private $LogDebug = \"true\";\n")
+            f.write("    private $RootPassword = \"%s\";\n" % http_root_password)
             f.write("\n")
             f.write("    // this allows read-only access to private properties\n")
             f.write("    public function __get($name) {\n")
@@ -228,38 +237,10 @@ class Installer(object):
             f.write("  }\n")
             f.write("?>\n")
 
+        # user info
+        if self.__args.v > 0:
+            print("  done")
 
-
-
-
-
-
-
-
-
-#<?php
-
-#class cConfig {
-
-    #// this defines the standard template
-    #private $DefaultTemplate = "acswui";
-
-    #// this is where logfiles are stored
-    #// for security reasons this should not be a directory that is accessible by http
-    #private $LogPath = "../http-logs/";
-
-    #// set this to true if debug output should be activated
-    #private $LogDebug = true;
-
-
-    #// this allows read-only access to private properties
-    #public function __get($name) {
-        #return $this->$name;
-    #}
-
-#}
-
-#?>
 
 
 
