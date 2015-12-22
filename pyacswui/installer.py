@@ -220,14 +220,13 @@ class Installer(object):
 
         # encrypt root password
         http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.__args.http_root_password])
-        http_root_password = str(http_root_password).replace('$', '\$')
 
         with open(self.__args.http_path + "/classes/cConfig.php", "w") as f:
             f.write("<?php\n")
             f.write("  class cConfig {\n")
             f.write("\n")
             f.write("    private $DefaultTemplate = \"%s\";\n" % self.__args.http_default_template)
-            f.write("    private $LogPath = \"%s\";\n" % self.__args.http_log_path)
+            f.write("    private $LogPath = '%s';\n" % self.__args.http_log_path)
             f.write("    private $LogDebug = \"true\";\n")
             f.write("    private $RootPassword = \"%s\";\n" % http_root_password)
             f.write("\n")
