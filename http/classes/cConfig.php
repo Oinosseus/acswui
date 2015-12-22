@@ -4,7 +4,7 @@
     private $DefaultTemplate = "acswui";
     private $LogPath = "../http-logs/";
     private $LogDebug = "true";
-    private $RootPassword = "b'\$2y\$10\$CirsTpfN9UV86IZA81ltZ.cbSAwxY28io9xNcr92UMRkm2g.Jlp/a'";
+    private $RootPassword = '$2y$10$wksgzsvgQ0Lfcl3LS4oVyuVwboFz35gU4dCFb789cSLeLfcWLbjBq';
 
     // this allows read-only access to private properties
     public function __get($name) {
