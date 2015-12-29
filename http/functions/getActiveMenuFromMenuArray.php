@@ -1,10 +1,9 @@
 <?php
 
 // This function scans an array of cMenu menu objects.
-// From the first active entry that has no active submenu entries a cContentPage object is created and returned.
+// The first active entry that has no active submenu entries is returned.
 // If no active entry was found NULL is returned.
-function getContentPageFromMenuArray($menu_array) {
-    $content_page = NULL;
+function getActiveMenuFromMenuArray($menu_array) {
 
     // scan all menus to find an active one
     foreach ($menu_array as $menu) {
@@ -14,15 +13,14 @@ function getContentPageFromMenuArray($menu_array) {
 
             // check if submenu has active content
             if (count($menu->Menus)) {
-                $submenu_content_page = getContentPageFromMenuArray($menu->Menus);
-                if ($submenu_content_page !== NULL) {
-                    return $submenu_content_page;
+                $submenu = getActiveMenuFromMenuArray($menu->Menus);
+                if ($submenu !== NULL) {
+                    return $submenu;
                 }
             }
 
             // if submenu does not have active content this is the active content
-            $content_page = new $menu->ClassName;
-            return $content_page;
+            return $menu;
         }
     }
 

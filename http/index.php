@@ -51,7 +51,7 @@ include("classes/cUser.php");
 // functions
 include("functions/getMenuArrayFromContentDir.php");
 include("functions/getPreferredClientLanguage.php");
-include("functions/getContentPageFromMenuArray.php");
+include("functions/getActiveMenuFromMenuArray.php");
 
 
 
@@ -143,21 +143,24 @@ if (isset($_REQUEST['NONCONTENT'])) {
 } else {
 
     // create content object from active menu entry
-    $acswuiConentPage = getContentPageFromMenuArray($acswuiTemplate->Menus);
+     $menu = getActiveMenuFromMenuArray($acswuiTemplate->Menus);
+     $acswuiContentPage = new $menu->ClassName;
+     $acswuiContentPage->setMenu($menu);
 
     // load content
-    if (!is_null($acswuiConentPage)) {
+    if (!is_null($acswuiContentPage)) {
         // determine localization
         $lang = getPreferredClientLanguage();
         if ($lang == "") $acswuiLog->LogWarning("Preferred localization could not be determined!");
         $acswuiLog->LogNotice("Localization '$lang' selected");
         // load translation
         setlocale(LC_ALL, $lang);
-        bindtextdomain($acswuiConentPage->TextDomain, "locale");
-        bind_textdomain_codeset($acswuiConentPage->TextDomain, 'UTF-8');
-        textdomain($acswuiConentPage->TextDomain);
+        bindtextdomain($acswuiContentPage->TextDomain, "locale");
+        bind_textdomain_codeset($acswuiContentPage->TextDomain, 'UTF-8');
+        textdomain($acswuiContentPage->TextDomain);
         // put html from content to template
-        $acswuiTemplate->Content .= $acswuiConentPage->getHtml();
+        $acswuiTemplate->Content .= $acswuiContentPage->getHtml();
+        $acswuiTemplate->Subtitle = $acswuiContentPage->PageTitle;
     }
 }
 
