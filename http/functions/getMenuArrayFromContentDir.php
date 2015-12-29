@@ -11,9 +11,10 @@ function getMenuArrayFromContentDir($dir = "") {
     // scan all files in directory
     foreach (scandir("contents/$dir",SCANDIR_SORT_ASCENDING) as $entry) {
 
-        // skip hidden files and directories
+        // skip hidden files, directories and non-php files
         if (substr($entry, 0, 1) === ".") continue;
         if (is_dir("contents/$dir/$entry")) continue;
+        if (substr($entry, strlen($entry)-4, 4) != ".php") continue;
 
         // include contant class
         include("contents/$dir/$entry");
