@@ -1,0 +1,9 @@
+ System Requirements
+---------------------
+
+- php 5.5
+- mysql / mariadb
+- python 3
+-- PIP /pillow package
+
+
