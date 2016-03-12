@@ -27,20 +27,26 @@ form input {
   color: #223440;
 }
 
-form input[type="submit"] {
-  
+form input[type="submit"], form button {
+
   color: #223440;
   text-decoration: none;
   font-weight: bold;
-  
+  border: 1px solid black;
+  border-radius: 0px;
+
   background-color: #bd0000;
   box-shadow: #111A20 3px 3px 1px;
-  
 }
 
-form input[type="submit"]:hover {
+form input[type="submit"]:hover, form button:hover {
   color: #fff;
   text-shadow: none;
+}
+
+form input[type="checkbox"] {
+  border: 1px solid black;
+  background-color: #bd0000;
 }
 
 table {
@@ -141,6 +147,7 @@ div.Subtitle {
 div.MainBody {
   margin-left: 300px;
   padding: 0px 20px;
+  padding-top: 50px;
 }
 
 ul.MainMenu {
@@ -164,15 +171,15 @@ ul.MainMenu li a {
   margin: 0px;
   padding: 40px 5px;
   text-align: center;
-  
+
   color: #223440;
   text-decoration: none;
   font-weight: bold;
-  
+
   border-radius: 4px;
   box-shadow: #111A20 3px 3px 1px;
   background: linear-gradient(to top left, rgba(200,15,15,1) 0%, rgba(189,0,0,1) 50%, rgba(189,0,0,0.9) 100%);
-  
+
   width: 100px;
   display: inline-block;
 }

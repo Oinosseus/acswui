@@ -15,7 +15,7 @@ class cTemplateacswui extends cTemplate {
         $html .= "    <div class=\"Header\">\n";
         $html .= "      Assetto Corsa Server - Web UI\n";
         $html .= "    </div>\n";
-        $html .= "    <div class=\"Subtitle\">" . $this->Title . "</div>\n";
+        $html .= "    <div class=\"Subtitle\">&nbsp;" . $this->Title . "</div>\n";
 
         // main/sub navigation
         $html .= "    <ul class=\"MainMenu\">\n";
