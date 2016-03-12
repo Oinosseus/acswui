@@ -5,6 +5,10 @@ if (ini_set('display_errors', '1') === false) {
     exit(1);
 }
 
+// execution performance
+$acswui_execution_start_date  = date("Y-m-d H:i:s");
+$acswui_execution_start_mtime = microtime();
+
 // session control
 session_set_cookie_params(0);
 if (   ini_set('session.cookie_lifetime',  '0')  === false
@@ -62,6 +66,7 @@ include("functions/getActiveMenuFromMenuArray.php");
 
 $acswuiConfig   = new cConfig();
 $acswuiLog      = new cLog();
+$acswuiLog->LogNotice("Execution start at " . $acswui_execution_start_date);
 $acswuiDatabase = new cDatabase();
 $acswuiUser     = new cUser();
 
@@ -100,6 +105,7 @@ if (isset($_REQUEST['NONCONTENT'])) {
     if (! file_exists("templates/" . $acswuiConfig->DefaultTemplate . "/cTemplate" . $acswuiConfig->DefaultTemplate . ".php")) {
         $acswuiLog->LogError("template '" . $acswuiConfig->DefaultTemplate . "' not found!");
     }
+    $acswuiLog->LogNotice("include template '" . $acswuiConfig->DefaultTemplate ."'");
     include("templates/" . $acswuiConfig->DefaultTemplate . "/cTemplate" . $acswuiConfig->DefaultTemplate . ".php");
     $template_class = "cTemplate" . $acswuiConfig->DefaultTemplate;
     $acswuiTemplate = new $template_class;
@@ -128,6 +134,7 @@ if (isset($_REQUEST['NONCONTENT'])) {
         if ($_REQUEST['NONCONTENT'] == substr($file, 0, strlen($file) - 4)) {
 
             // instantiate non-content class
+            $acswuiLog->LogNotice("Non-Content request '" . $_REQUEST['NONCONTENT'] ."'");
             include("non-content/$file");
             $ncc = substr($file, 0, strlen($file) - 4);
             $acswuiNonConentPage = new $ncc;
@@ -152,6 +159,7 @@ if (isset($_REQUEST['NONCONTENT'])) {
      if (!is_null($menu)) {
         $acswuiContentPage = new $menu->ClassName;
         $acswuiContentPage->setMenu($menu);
+        $acswuiLog->LogNotice("Content request '" . $_SESSION['CONTENT'] . "'");
      }
 
      // check content requirements
@@ -217,5 +225,14 @@ if (isset($_REQUEST['NONCONTENT'])) {
 } else {
     echo $acswuiTemplate->getHtml();
 }
+
+
+
+// ======================
+//  = Finish Execution =
+// ======================
+
+$acswuiLog->LogNotice("Execution finished at " . date("Y-m-d H:i:s") . " in " . (microtime() - $acswui_execution_start_mtime) . " seconds");
+
 
 ?>

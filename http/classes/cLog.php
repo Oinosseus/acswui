@@ -126,6 +126,11 @@ class cLog {
     // Notice messages are bufferend. The logfile is written when class destructor is called.
     public function logNotice ($message) {
 
+        global $acswuiConfig;
+
+        if ($acswuiConfig->LogDebug != "true")
+            return;
+
         // write header to notice file buffer
         if ($this->FileHandleNotice == 0) {
             $this->FileHandleNotice = fopen($this->FilePathNotice, 'a');
