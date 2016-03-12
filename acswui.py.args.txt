@@ -1,6 +1,7 @@
 --path-ac  assettocorsa
 --path-acs assettocorsa/server/
 
+--db-type MySQL
 --db-host localhost
 --db-database acswui
 --db-port 3306

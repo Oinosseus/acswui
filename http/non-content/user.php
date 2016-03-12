@@ -23,6 +23,7 @@ class user extends cNonContentPage {
 
     function getContent() {
 
+
         // access global data
         global $acswuiLog;
         global $acswuiUser;

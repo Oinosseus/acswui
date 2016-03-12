@@ -16,10 +16,14 @@ from pyacswui import ServerPackager, Installer
 #  - Parse Commandline Arguments -
 # ---------------------------------
 
-__helpstring = "FIXME"
+__helpstring  = "Examples:\n"
+__helpstring += "./acswui install --help\n"
+__helpstring += "./acswui install --args-file acswui.py.args.txt\n"
+__helpstring += "./acswui srvpkg --help\n"
+__helpstring += "./acswui srvpkg --args-file acswui.py.args.txt\n"
 
 # main arguments
-argparser = argparse.ArgumentParser(prog="acswui", description="Assetto Corsa Server Web User Interface", epilog=__helpstring)
+argparser = argparse.ArgumentParser(prog="acswui", description="Assetto Corsa Server Web User Interface", epilog=__helpstring, formatter_class=argparse.RawTextHelpFormatter)
 argparsersubs = argparser.add_subparsers(dest='command')
 
 # command install
@@ -34,6 +38,7 @@ for parser in [argparser_install, argparser_srvpkg]:
   parser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
   parser.add_argument('--path-ac', help="path to the assetto corsa game directory")
   parser.add_argument('--path-acs', help="path to the assetto corsa server directory")
+  parser.add_argument('--db-type', help="the database server type (must be 'MySQL')")
   parser.add_argument('--db-host', help="the database server host")
   parser.add_argument('--db-port', help="the database server port")
   parser.add_argument('--db-user', help="the database server username")

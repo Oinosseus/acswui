@@ -23,10 +23,10 @@ class cUser {
         // access global data
         global $acswuiLog;
 
-        if ($name == "isLogged") {
+        if ($name == "IsLogged") {
             return (strlen($_SESSION['user_name']) > 0) ? true : false;
 
-        } else if ($name == "isRoot") {
+        } else if ($name == "IsRoot") {
             return ($_SESSION['user_name'] === "root") ? true : false;
 
         } else if ($name == "Login") {
@@ -80,6 +80,10 @@ class cUser {
 
         // this code should not be reached
         $this->logout();
+        return false;
+    }
+
+    public function hasPermission($permission) {
         return false;
     }
 

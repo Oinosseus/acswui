@@ -179,6 +179,7 @@ class Installer(object):
             print("check database table `Groups`")
         self._dbAppendTable("Groups", "Id", "int(11)", colextra = "AUTO_INCREMENT")
         self._dbAppendColumn("Groups", "Name", "VARCHAR(50)")
+        self._dbAppendColumn("Groups", "PermitUserMgnt", "TINYINT(1)", "0")
 
         # check table UserGroupMap
         if self.__args.v > 0:
@@ -220,15 +221,25 @@ class Installer(object):
 
         # encrypt root password
         http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.__args.http_root_password])
+        http_root_password = http_root_password.decode("utf-8")
 
         with open(self.__args.http_path + "/classes/cConfig.php", "w") as f:
             f.write("<?php\n")
             f.write("  class cConfig {\n")
             f.write("\n")
+            f.write("    // basic constants\n")
             f.write("    private $DefaultTemplate = \"%s\";\n" % self.__args.http_default_template)
             f.write("    private $LogPath = '%s';\n" % self.__args.http_log_path)
             f.write("    private $LogDebug = \"true\";\n")
-            f.write("    private $RootPassword = \"%s\";\n" % http_root_password)
+            f.write("    private $RootPassword = '%s';\n" % http_root_password)
+            f.write("\n")
+            f.write("    // database constants\n")
+            f.write("    private $DbType = \"%s\";\n" % self.__args.db_type)
+            f.write("    private $DbHost = \"%s\";\n" % self.__args.db_host)
+            f.write("    private $DbDatabase = \"%s\";\n" % self.__args.db_database)
+            f.write("    private $DbPort = \"%s\";\n" % self.__args.db_port)
+            f.write("    private $DbUser = \"%s\";\n" % self.__args.db_user)
+            f.write("    private $DbPasswd = \"%s\";\n" % self.__args.db_passwd)
             f.write("\n")
             f.write("    // this allows read-only access to private properties\n")
             f.write("    public function __get($name) {\n")

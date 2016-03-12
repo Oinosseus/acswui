@@ -7,6 +7,8 @@ abstract class cContentPage {
     public $ParentContentClass = "";
     public $TextDomain         = "messages";
     public $PageTitle          = "";
+    public $RequireRoot        = false;
+    public $RequirePermissions = [];
 
     // private properties
     private $menu = Null;

@@ -42,6 +42,7 @@ if (!function_exists("password_verify")) {
 // classes
 include("classes/cConfig.php");
 include("classes/cLog.php");
+include("classes/cDatabase.php");
 include("classes/cMenu.php");
 include("classes/cTemplate.php");
 include("classes/cContentPage.php");
@@ -59,14 +60,15 @@ include("functions/getActiveMenuFromMenuArray.php");
 //  = Fundamental Objects =
 // =========================
 
-$acswuiConfig = new cConfig();
-$acswuiLog    = new cLog();
-$acswuiUser   = new cUser();
+$acswuiConfig   = new cConfig();
+$acswuiLog      = new cLog();
+$acswuiDatabase = new cDatabase();
+$acswuiUser     = new cUser();
 
 
 
 // ===========================
-//  = Get Requested Content =
+//  = Get Content Requested =
 // ===========================
 
 // check if new page is requested
@@ -142,10 +144,43 @@ if (isset($_REQUEST['NONCONTENT'])) {
 // content is requested
 } else {
 
+    $menu = NULL;
+    $acswuiContentPage = NULL;
+
     // create content object from active menu entry
      $menu = getActiveMenuFromMenuArray($acswuiTemplate->Menus);
-     $acswuiContentPage = new $menu->ClassName;
-     $acswuiContentPage->setMenu($menu);
+     if (!is_null($menu)) {
+        $acswuiContentPage = new $menu->ClassName;
+        $acswuiContentPage->setMenu($menu);
+     }
+
+     // check content requirements
+     if (!is_null($acswuiContentPage)) {
+
+        // check root requirement
+        if ($acswuiContentPage->RequireRoot && !$acswuiUser->IsRoot) {
+            $path = $acswuiContentPage->getRelPath();
+            $menu = $acswuiContentPage->MenuName;
+            $acswuiLog->logError("Non-root user requested $path - $menu");
+            header("HTTP/1.0 403 Forbidden");
+            exit;
+        }
+
+        // check permissions
+        $all_permissioms_available = true;
+        foreach ($acswuiContentPage->RequirePermissions as $p) {
+            if (!$acswuiUser->hasPermission($p)) {
+                $all_permissioms_available = false;
+            }
+        }
+        if (!$all_permissioms_available) {
+            $path = $acswuiContentPage->getRelPath();
+            $menu = $acswuiContentPage->MenuName;
+            $acswuiLog->logError("User denied for $path - $menu");
+            header("HTTP/1.0 403 Forbidden");
+            exit;
+        }
+     }
 
     // load content
     if (!is_null($acswuiContentPage)) {
@@ -160,7 +195,7 @@ if (isset($_REQUEST['NONCONTENT'])) {
         textdomain($acswuiContentPage->TextDomain);
         // put html from content to template
         $acswuiTemplate->Content .= $acswuiContentPage->getHtml();
-        $acswuiTemplate->Subtitle = $acswuiContentPage->PageTitle;
+        $acswuiTemplate->Title = $acswuiContentPage->PageTitle;
     }
 }
 
@@ -175,7 +210,7 @@ if (isset($_REQUEST['NONCONTENT'])) {
 
     // output content
     if ($acswuiNonConentPage != Null) {
-     echo $acswuiNonConentPage->getContent();
+        echo $acswuiNonConentPage->getContent();
     }
 
 // content is requested

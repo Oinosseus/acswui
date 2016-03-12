@@ -12,6 +12,7 @@ class test_sub1 extends cContentPage {
 
         $acswuiTemplate->Title = _("Title of Subtest 1");
         $acswuiTemplate->SubTitle = _("Subtitle of Subtest 1");
+        return $this->getRelPath();
         return _("This is the content of this page");
     }
 }
