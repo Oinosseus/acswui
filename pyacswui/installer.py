@@ -179,7 +179,6 @@ class Installer(object):
             print("check database table `Groups`")
         self._dbAppendTable("Groups", "Id", "int(11)", colextra = "AUTO_INCREMENT")
         self._dbAppendColumn("Groups", "Name", "VARCHAR(50)")
-        self._dbAppendColumn("Groups", "PermitUserMgnt", "TINYINT(1)", "0")
 
         # check table UserGroupMap
         if self.__args.v > 0:
@@ -230,7 +229,7 @@ class Installer(object):
             f.write("    // basic constants\n")
             f.write("    private $DefaultTemplate = \"%s\";\n" % self.__args.http_default_template)
             f.write("    private $LogPath = '%s';\n" % self.__args.http_log_path)
-            f.write("    private $LogDebug = \"true\";\n")
+            f.write("    private $LogDebug = \"false\";\n")
             f.write("    private $RootPassword = '%s';\n" % http_root_password)
             f.write("\n")
             f.write("    // database constants\n")
