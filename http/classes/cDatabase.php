@@ -37,7 +37,7 @@
     }
 
 
-    // retuzrns an 1D array with all column names of the table
+    // returns an 1D array with all column names of the table
     public function fetch_column_names($table) {
 
         global $acswuiConfig;
@@ -190,7 +190,6 @@
         if ($acswuiConfig->DbType === "MySQL") {
             $table = $this->db_handle->escape_string($table);
             $id = $this->db_handle->escape_string($id);
-            $query = "DELETE FROM `$table` WHERE `Id` = $id;";
             echo($query);
             $this->db_handle->query($query);
         }
