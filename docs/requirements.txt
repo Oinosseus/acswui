@@ -2,7 +2,7 @@
 
 - comfortable web user interface
   - based on php
-  - exchangeable templates structure
+  - exchangeable templates structure    (done)
   - optimized for desktop pc
 - user management system
   - to assign different permissions
@@ -20,4 +20,4 @@
 - statistics
   - session state
   - lap records for different tracks
-  
+
