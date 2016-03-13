@@ -3,7 +3,6 @@ import pymysql
 import subprocess
 import shutil
 import os
-from PIL import Image
 
 
 class Installer(object):
@@ -155,14 +154,6 @@ class Installer(object):
             raise TypeError("Parameter 'args' must be of argparse.Namespace type!")
         self.__args = args
 
-        # check ac directory
-        if type(args.path_ac) != type("abc") or not os.path.isdir(args.path_ac) or not os.path.isfile(args.path_ac + "/AssettoCorsa.exe"):
-            raise NotImplementedError("Asetto Corsa directory '%s' invalid!" % args.path_ac)
-
-        # check acs directory
-        if type(args.path_acs) != type("abc") or not os.path.isdir(args.path_acs) or not os.path.isfile(args.path_acs + "/acServer"):
-            raise NotImplementedError("Asetto Corsa Server directory '%s' invalid!" % args.path_ac)
-
         # check http directory
         if type(args.http_path) != type("abc") or not os.path.isdir(args.http_path):
             raise NotImplementedError("Http directory '%s' invalid!" % args.http_path)
@@ -265,6 +256,8 @@ class Installer(object):
         # ===============
 
         for car in os.listdir(args.path_ac + "/content/cars"):
+            pass
+            # FIXME - scan all cars and put them to database
 
             # skip all non-directories or hidden items
             if car[:1] == "." or not os.path.isdir(args.path_ac + "/content/cars/" + car):

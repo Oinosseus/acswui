@@ -95,12 +95,13 @@ class ServerPackager():
 
             # create server car directory
             self._mkdirs(args.path_acs + "/content/cars/" + car)
+            self._mkdirs(args.http_path + "/acs_content/cars/" + car)
 
             # copy acd file
             if os.path.isfile(args.path_ac + "/content/cars/" + car + "/data.acd"):
                 shutil.copy(args.path_ac + "/content/cars/" + car + "/data.acd", args.path_acs + "/content/cars/" + car + "/data.acd")
 
-			# copy all data/*.ini files
+            #copy all data/*.ini files
             if os.path.isdir(args.path_ac + "/content/cars/" + car + "/data"):
                 self._mkdirs(args.path_acs + "/content/cars/" + car + "/data")
                 for ini_file in os.listdir(args.path_ac + "/content/cars/" + car + "/data"):
@@ -117,11 +118,11 @@ class ServerPackager():
                     # if preview image present
                     if os.path.isfile(args.path_ac + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg"):
                         # create server skin directory
-                        self._mkdirs(args.path_acs + "/content/cars/" + car + "/skins/" + skin)
+                        self._mkdirs(args.http_path + "/acs_content/cars/" + car + "/skins/" + skin)
                         # copy preview image
-                        shutil.copy(args.path_ac + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg", args.path_acs + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg")
+                        shutil.copy(args.path_ac + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg", args.http_path + "/acs_content/cars/" + car + "/skins/" + skin + "/preview.jpg")
                         # resize image
-                        self._sizeImage(args.path_acs + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg")
+                        self._sizeImage(args.http_path + "/acs_content/cars/" + car + "/skins/" + skin + "/preview.jpg")
 
 
 
@@ -141,6 +142,7 @@ class ServerPackager():
 
             # create server car directory
             self._mkdirs(args.path_acs + "/content/tracks/" + track)
+            self._mkdirs(args.http_path + "/acs_content/tracks/" + track)
 
             # copy surfaces.ini
             if os.path.isfile(args.path_ac + "/content/tracks/" + track + "/data/surfaces.ini"):
@@ -149,15 +151,15 @@ class ServerPackager():
 
             # copy outline.png
             if os.path.isfile(args.path_ac + "/content/tracks/" + track + "/ui/outline.png"):
-                self._mkdirs(args.path_acs + "/content/tracks/" + track + "/ui/")
-                shutil.copy(args.path_ac + "/content/tracks/" + track + "/ui/outline.png", args.path_acs + "/content/tracks/" + track + "/ui/outline.png")
-                self._sizeImage(args.path_acs + "/content/tracks/" + track + "/ui/outline.png")
+                self._mkdirs(args.http_path + "/acs_content/tracks/" + track + "/ui/")
+                shutil.copy(args.path_ac + "/content/tracks/" + track + "/ui/outline.png", args.http_path + "/acs_content/tracks/" + track + "/ui/outline.png")
+                self._sizeImage(args.http_path + "/acs_content/tracks/" + track + "/ui/outline.png")
 
             # copy preview.png
             if os.path.isfile(args.path_ac + "/content/tracks/" + track + "/ui/preview.png"):
-                self._mkdirs(args.path_acs + "/content/tracks/" + track + "/ui/")
-                shutil.copy(args.path_ac + "/content/tracks/" + track + "/ui/preview.png", args.path_acs + "/content/tracks/" + track + "/ui/preview.png")
-                self._sizeImage(args.path_acs + "/content/tracks/" + track + "/ui/preview.png")
+                self._mkdirs(args.http_path + "/acs_content/tracks/" + track + "/ui/")
+                shutil.copy(args.path_ac + "/content/tracks/" + track + "/ui/preview.png", args.http_path + "/acs_content/tracks/" + track + "/ui/preview.png")
+                self._sizeImage(args.http_path + "/acs_content/tracks/" + track + "/ui/preview.png")
 
             # scan subdirectories for track configurations
             for configtrack in os.listdir(args.path_ac + "/content/tracks/" + track):
@@ -169,13 +171,13 @@ class ServerPackager():
 
                 # copy outline.png
                 if os.path.isfile(args.path_ac + "/content/tracks/" + track + "/ui/" + configtrack + "/outline.png"):
-                    self._mkdirs(args.path_acs + "/content/tracks/" + track + "/ui/" + configtrack)
-                    shutil.copy(args.path_ac + "/content/tracks/" + track + "/ui/" + configtrack + "/outline.png", args.path_acs + "/content/tracks/" + track + "/ui/" + configtrack + "/outline.png")
-                    self._sizeImage(args.path_acs + "/content/tracks/" + track + "/ui/" + configtrack + "/outline.png")
+                    self._mkdirs(args.http_path + "/acs_content/tracks/" + track + "/ui/" + configtrack)
+                    shutil.copy(args.path_ac + "/content/tracks/" + track + "/ui/" + configtrack + "/outline.png", args.http_path + "/acs_content/tracks/" + track + "/ui/" + configtrack + "/outline.png")
+                    self._sizeImage(args.http_path + "/acs_content/tracks/" + track + "/ui/" + configtrack + "/outline.png")
 
                 # copy preview.png
                 if os.path.isfile(args.path_ac + "/content/tracks/" + track + "/ui/" + configtrack + "/preview.png"):
-                    self._mkdirs(args.path_acs + "/content/tracks/" + track + "/ui/" + configtrack)
-                    shutil.copy(args.path_ac + "/content/tracks/" + track + "/ui/" + configtrack + "/preview.png", args.path_acs + "/content/tracks/" + track + "/ui/" + configtrack + "/preview.png")
-                    self._sizeImage(args.path_acs + "/content/tracks/" + track + "/ui/" + configtrack + "/preview.png")
+                    self._mkdirs(args.http_path + "/acs_content/tracks/" + track + "/ui/" + configtrack)
+                    shutil.copy(args.path_ac + "/content/tracks/" + track + "/ui/" + configtrack + "/preview.png", args.http_path + "/acs_content/tracks/" + track + "/ui/" + configtrack + "/preview.png")
+                    self._sizeImage(args.http_path + "/acs_content/tracks/" + track + "/ui/" + configtrack + "/preview.png")
 
