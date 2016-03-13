@@ -1,11 +1,11 @@
 == v1.0 Requirements ==
 
 - comfortable web user interface
-  - based on php
-  - exchangeable templates structure
-  - optimized for desktop pc
+  - (done) based on php
+  - (done) exchangeable templates structure
+  - (done) optimized for desktop pc
 - user management system
-  - to assign different permissions
+  - (done) to assign different permissions
   - to create entry_list.ini wit Steam64GUID
   - to post-assign different drivers names to the same user
 - automatically identify tracks and cars from content directory
@@ -20,4 +20,4 @@
 - statistics
   - session state
   - lap records for different tracks
-  
+
