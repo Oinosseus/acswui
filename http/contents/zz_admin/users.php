@@ -6,7 +6,8 @@ class users extends cContentPage {
         $this->MenuName    = _("Users");
         $this->PageTitle   = _("Users Management");
         $this->TextDomain  = "acswui";
-        $this->RequireRoot = true;
+        $this->RequireRoot = false;
+        $this->RequirePermissions = ["Admin_User_Management"];
     }
 
     public function getHtml() {
@@ -99,7 +100,7 @@ class users extends cContentPage {
             if (isset($_POST["USER_" . $u["Id"] . "_LOGIN"])) {
                 $user_update_fields['Login'] = $_POST["USER_" . $u["Id"] . "_LOGIN"];
             }
-            if (isset($_POST["USER_" . $u["Id"] . "_PASSWD"])) {
+            if (isset($_POST["USER_" . $u["Id"] . "_PASSWD"]) && strlen($_POST["USER_" . $u["Id"] . "_PASSWD"]) > 0) {
                 $user_update_fields['Password'] = password_hash($_POST["USER_" . $u["Id"] . "_PASSWD"], PASSWORD_BCRYPT);
             }
             if (isset($_POST["USER_" . $u["Id"] . "_GUID"])) {

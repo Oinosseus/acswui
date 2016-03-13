@@ -215,6 +215,24 @@
         }
     }
 
+    public function insert_group_permission($permission) {
+        global $acswuiConfig;
+        global $acswuiLog;
+
+        // break if no connection available
+        if (is_null($this->db_handle)) return array();
+
+        // log event
+        $acswuiLog->LogNotice("New permission added: $permission");
+
+        // MySQL request
+        if ($acswuiConfig->DbType === "MySQL") {
+            $permission = $this->db_handle->escape_string($permission);
+            $query = "ALTER TABLE `Groups` ADD `$permission` TINYINT NOT NULL DEFAULT '0';";
+            $this->db_handle->query($query);
+        }
+    }
+
     public function delete_row($table, $id) {
         global $acswuiConfig;
 

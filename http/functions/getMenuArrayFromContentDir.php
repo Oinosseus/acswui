@@ -6,6 +6,8 @@
 
 function getMenuArrayFromContentDir($dir = "") {
 
+    global $acswuiUser;
+
     $menu_array = array();
 
     // scan all files in directory
@@ -20,6 +22,18 @@ function getMenuArrayFromContentDir($dir = "") {
         include("contents/$dir/$entry");
         $class = substr($entry, 0, strlen($entry) - 4);
         $content = new $class;
+
+        // check root requirement
+        if ($content->RequireRoot && !$acswuiUser->IsRoot) continue;
+
+        // check permissions
+        $all_permissioms_available = true;
+        foreach ($content->RequirePermissions as $p) {
+            if (!$acswuiUser->hasPermission($p)) {
+                $all_permissioms_available = false;
+            }
+        }
+        if (!$all_permissioms_available) continue;
 
         // create new menu for the content
         $menu = new cMenu();
