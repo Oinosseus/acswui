@@ -38,7 +38,7 @@
 
 
     // retuzrns an 1D array with all column names of the table
-    private function __fetch_column_names($table) {
+    public function fetch_column_names($table) {
 
         global $acswuiConfig;
         $ret = array();
@@ -64,12 +64,17 @@
 
 
     // returns an 2D associative array [row]['$columns[0]', '$columns[1]', .., '$columns[n-1]']
-    // $coulumns must be an string array
+    // $coulumns must be an string array (can be NULL to fetch all columns)
     // $table must be a string
-    private function __fetch_columns_from_table($columns, $table) {
+    public function fetch_2d_array($table, $columns) {
 
         global $acswuiConfig;
         $ret = array();
+
+        // all columns
+        if (is_null($columns)) {
+            $columns = $this->fetch_column_names($table);
+        }
 
         // break if no connection available
         if (is_null($this->db_handle)) return array();
@@ -100,25 +105,96 @@
     }
 
 
+    // update a row in a table
+    // all fields that are in the keys in the associative array
+    // are updated by theire new value (key 'Id' is ignored)
+    // only fields with existing database column are respected
+    public function update_row($table, $id, $field_list) {
+        global $acswuiConfig;
 
-    // returns a 2D string array with all existing groups and their permissions
-    // ['Id', 'Name', 'Permit**'][]
-    public function getGroups() {
-        $columns = $this->__fetch_column_names("Groups");
-        return $this->__fetch_columns_from_table($columns, "Groups");
-    }
+        // break if no connection available
+        if (is_null($this->db_handle)) return array();
 
-    // returns an 1D string array with all existing group permissions
-    public function getPermissions() {
-        $ret = array();
-        $fetch = $this->__fetch_column_names("Groups");
-        foreach ($fetch as $f) {
-            if (substr($f, 0, 6) === "Permit")
-                $ret[count($ret)] = $f;
+        // MySQL request
+        if ($acswuiConfig->DbType === "MySQL") {
+            $table = $this->db_handle->escape_string($table);
+            $id = $this->db_handle->escape_string($id);
+
+            // create set of fields
+            $set = "";
+            foreach ($this->fetch_column_names($table) as $col) {
+
+                // Ignore 'Id' field
+                if ($col == "Id") continue;
+
+                // check if array contains the field
+                if (array_key_exists($col, $field_list)) {
+                    if (strlen($set) > 0)
+                        $set .= ", ";
+                    $set .= "`$col` = '" . $this->db_handle->escape_string($field_list[$col]) . "'";
+                }
+            }
+
+            $query = "UPDATE `$table` SET $set WHERE `Id` = $id;";
+            $this->db_handle->query($query);
         }
-        return $ret;
     }
 
+
+    // insert a row into a table
+    // all fields that are in the keys in the associative array
+    // are inserted by theire new value (key 'Id' is ignored)
+    // only fields with existing database column are respected
+    public function insert_row($table, $field_list) {
+        global $acswuiConfig;
+
+        // break if no connection available
+        if (is_null($this->db_handle)) return array();
+
+        // MySQL request
+        if ($acswuiConfig->DbType === "MySQL") {
+            $table = $this->db_handle->escape_string($table);
+
+            // create set of fields
+            $insert_columns = "";
+            $insert_values  = "";
+
+            foreach ($this->fetch_column_names($table) as $col) {
+
+                // Ignore 'Id' field
+                if ($col == "Id") continue;
+
+                // check if array contains the field
+                if (array_key_exists($col, $field_list)) {
+                    if (strlen($insert_columns) > 0) {
+                        $insert_columns .= ", ";
+                        $insert_values  .= ", ";
+                    }
+                    $insert_columns .= "`$col`";
+                    $insert_values  .= "'" . $field_list[$col] . "'";
+                }
+            }
+
+            $query = "INSERT INTO `$table` ($insert_columns) VALUES ($insert_values);";
+            $this->db_handle->query($query);
+        }
+    }
+
+    public function delete_row($table, $id) {
+        global $acswuiConfig;
+
+        // break if no connection available
+        if (is_null($this->db_handle)) return array();
+
+        // MySQL request
+        if ($acswuiConfig->DbType === "MySQL") {
+            $table = $this->db_handle->escape_string($table);
+            $id = $this->db_handle->escape_string($id);
+            $query = "DELETE FROM `$table` WHERE `Id` = $id;";
+            echo($query);
+            $this->db_handle->query($query);
+        }
+    }
 
   }
 ?>
