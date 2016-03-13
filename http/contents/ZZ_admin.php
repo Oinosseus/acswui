@@ -1,9 +1,9 @@
 <?php
 
-class user extends cContentPage {
+class ZZ_admin extends cContentPage {
 
     public function __construct() {
-        $this->MenuName   = _("User");
+        $this->MenuName   = _("Admin");
         $this->TextDomain = "acswui";
     }
 

@@ -171,7 +171,7 @@ class Installer(object):
             print("check database table `Users`")
         self._dbAppendTable("Users", "Id", "int(11)", colextra = "AUTO_INCREMENT")
         self._dbAppendColumn("Users", "Login", "VARCHAR(50)")
-        self._dbAppendColumn("Users", "Pasword", "VARCHAR(100)")
+        self._dbAppendColumn("Users", "Password", "VARCHAR(100)")
         self._dbAppendColumn("Users", "Steam64GUID", "VARCHAR(50)")
 
         # check table Groups

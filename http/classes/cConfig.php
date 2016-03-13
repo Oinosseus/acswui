@@ -4,8 +4,8 @@
     // basic constants
     private $DefaultTemplate = "acswui";
     private $LogPath = '../http-logs/';
-    private $LogDebug = "true";
-    private $RootPassword = '$2y$10$1cFoa/UkkjFqJWupGMY98.XVRKBD2FkghTMDP.yNCPQDTv8rpn9J.';
+    private $LogDebug = "false";
+    private $RootPassword = '$2y$10$NBuYODTqKuPme/Uf4bRamufE/L5hHyyR9feakEoKrsHfkkGIuATRu';
 
     // database constants
     private $DbType = "MySQL";

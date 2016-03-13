@@ -1,6 +1,6 @@
 <?php
 
-class test extends cContentPage {
+class AA_test extends cContentPage {
 
     public function __construct() {
         $this->MenuName   = _("Test");

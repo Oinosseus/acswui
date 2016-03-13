@@ -66,10 +66,18 @@
     // returns an 2D associative array [row]['$columns[0]', '$columns[1]', .., '$columns[n-1]']
     // $coulumns must be an string array (can be NULL to fetch all columns)
     // $table must be a string
-    public function fetch_2d_array($table, $columns) {
+    // $where_key and §where_value must be lists with same length
+    public function fetch_2d_array($table, $columns, $where_key = [], $where_value = []) {
 
         global $acswuiConfig;
+        global $acswuiLog;
         $ret = array();
+
+        // sanity check
+        if (count($where_key) != count($where_value)) {
+            $acswuiLog->LogError("Both lists (where_key and where_value) must have same amount of elements!");
+            return [];
+        }
 
         // all columns
         if (is_null($columns)) {
@@ -87,14 +95,29 @@
             foreach ($columns as $c) {
                 if (strlen($colums_list) > 0)
                     $colums_list .= ", ";
-                $colums_list .= $this->db_handle->escape_string($c);
+                $colums_list .= "`" . $this->db_handle->escape_string($c) . "`";
             }
 
             // prepare table
             $table = $this->db_handle->escape_string($table);
+            $where = "";
+            if (count($where_key) > 0) {
+                for ($iw=0; $iw < count($where_key); $iw++) {
+                    if (strlen($where) == 0) {
+                        $where .= "WHERE ";
+                    } else {
+                        $where .= "AND ";
+                    }
+                    $key   = $this->db_handle->escape_string($where_key[$iw]);
+                    $value = $this->db_handle->escape_string($where_value[$iw]);
+                    $where .= "`$key` = '$value'";
+                }
+            }
 
             // execute query
-            $query = "SELECT $colums_list FROM $table;";
+            $query = "SELECT $colums_list FROM $table $where;";
+//             echo("<br>");
+//             print_r($query);
             if ($result = $this->db_handle->query($query)) {
                 $ret = $result->fetch_all(MYSQLI_ASSOC);
                 $result->close();
@@ -111,6 +134,13 @@
     // only fields with existing database column are respected
     public function update_row($table, $id, $field_list) {
         global $acswuiConfig;
+        global $acswuiLog;
+
+        // ignore update when there are no fields
+        if (count($field_list) == 0) {
+            $acswuiLog->logWarning("update ignored because of empty field_list");
+            return;
+        }
 
         // break if no connection available
         if (is_null($this->db_handle)) return array();
@@ -141,7 +171,7 @@
     }
 
 
-    // insert a row into a table
+    // insert a row into a table returns the Id of the new row
     // all fields that are in the keys in the associative array
     // are inserted by theire new value (key 'Id' is ignored)
     // only fields with existing database column are respected
@@ -176,7 +206,12 @@
             }
 
             $query = "INSERT INTO `$table` ($insert_columns) VALUES ($insert_values);";
+//             echo("<br>");
+//             print_r($query);
             $this->db_handle->query($query);
+
+            $result = $this->db_handle->query("SELECT LAST_INSERT_ID();");
+            return $result->fetch_array()[0];
         }
     }
 
