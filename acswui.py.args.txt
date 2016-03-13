@@ -1,5 +1,5 @@
---path-ac  assettocorsa
---path-acs assettocorsa/server/
+--path-ac  ../assettocorsa
+--path-acs ../assettocorsa/server/
 
 --db-type MySQL
 --db-host localhost

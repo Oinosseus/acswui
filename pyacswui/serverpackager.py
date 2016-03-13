@@ -109,7 +109,7 @@ class ServerPackager():
                         continue
                     # copy ini file
                     shutil.copy(args.path_ac + "/content/cars/" + car + "/data/" + ini_file, args.path_acs + "/content/cars/" + car + "/data/" + ini_file)
-					
+
 
             # scan all skins
             if os.path.isdir(args.path_ac + "/content/cars/" + car + "/skins"):

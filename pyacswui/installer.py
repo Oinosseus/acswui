@@ -1,6 +1,9 @@
 import argparse
 import pymysql
 import subprocess
+import shutil
+import os
+from PIL import Image
 
 
 class Installer(object):
@@ -142,7 +145,28 @@ class Installer(object):
 
     def work(self, args):
 
+
+
+        # ========================
+        #  = Input Sanity Check =
+        # ========================
+
+        if not isinstance(args, argparse.Namespace):
+            raise TypeError("Parameter 'args' must be of argparse.Namespace type!")
         self.__args = args
+
+        # check ac directory
+        if type(args.path_ac) != type("abc") or not os.path.isdir(args.path_ac) or not os.path.isfile(args.path_ac + "/AssettoCorsa.exe"):
+            raise NotImplementedError("Asetto Corsa directory '%s' invalid!" % args.path_ac)
+
+        # check acs directory
+        if type(args.path_acs) != type("abc") or not os.path.isdir(args.path_acs) or not os.path.isfile(args.path_acs + "/acServer"):
+            raise NotImplementedError("Asetto Corsa Server directory '%s' invalid!" % args.path_ac)
+
+        # check http directory
+        if type(args.http_path) != type("abc") or not os.path.isdir(args.http_path):
+            raise NotImplementedError("Http directory '%s' invalid!" % args.http_path)
+
 
 
         # ===============================
@@ -152,6 +176,9 @@ class Installer(object):
         # try to connect to database
         self.__db_handle = pymysql.connect(host=args.db_host, port=int(args.db_port), user=args.db_user, passwd=args.db_passwd, db=args.db_database)
 
+
+        # ------------
+        #  red tables
 
         # check table installer
         if self.__args.v > 0:
@@ -204,9 +231,65 @@ class Installer(object):
         self._dbAppendColumn("UserDriversMap", "Driver", "int(11)")
 
 
+        # -------------
+        #  grey tables
 
-        # close database
-        self.__db_handle.close()
+        # check table Cars
+        if self.__args.v > 0:
+            print("check database table `Cars`")
+        self._dbAppendTable("Cars", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self._dbAppendColumn("Cars", "Car", "varchar(80)")
+        self._dbAppendColumn("Cars", "Name", "varchar(80)")
+        self._dbAppendColumn("Cars", "Parent", "int(11)")
+        self._dbAppendColumn("Cars", "Brand", "varchar(80)")
+
+        # check table CarSkins
+        if self.__args.v > 0:
+            print("check database table `CarSkins`")
+        self._dbAppendTable("CarSkins", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self._dbAppendColumn("CarSkins", "Car", "int(11)")
+        self._dbAppendColumn("CarSkins", "Skin", "varchar(50)")
+
+        # check table Tracks
+        if self.__args.v > 0:
+            print("check database table `Tracks`")
+        self._dbAppendTable("Tracks", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self._dbAppendColumn("Tracks", "Name", "varchar(80)")
+        self._dbAppendColumn("Tracks", "Skin", "varchar(50)")
+        self._dbAppendColumn("Tracks", "Length", "float")
+
+
+
+        # ===============
+        #  = Scan Cars =
+        # ===============
+
+        for car in os.listdir(args.path_ac + "/content/cars"):
+
+            # skip all non-directories or hidden items
+            if car[:1] == "." or not os.path.isdir(args.path_ac + "/content/cars/" + car):
+                continue
+
+            # user info
+            if args.v > 0:
+                print("cars/" + car)
+
+            # create http car directory
+            self._mkdirs(args.http_path + "/acs_content/cars/" + car)
+
+            # scan all skins
+            if os.path.isdir(args.path_ac + "/content/cars/" + car + "/skins"):
+                for skin in os.listdir(args.path_ac + "/content/cars/" + car + "/skins"):
+                    # if preview image present
+                    if os.path.isfile(args.path_ac + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg"):
+                        # create server skin directory
+                        self._mkdirs(args.http_path + "/acs_content/cars/" + car + "/skins/" + skin)
+                        # copy preview image
+                        shutil.copy(args.path_ac + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg", args.path_ac + "/acs_content/cars/" + car + "/skins/" + skin + "/preview.jpg")
+                        # resize image
+                        self._sizeImage(args.path_ac + "/acs_content/cars/" + car + "/skins/" + skin + "/preview.jpg")
+
+
 
 
 
@@ -247,13 +330,15 @@ class Installer(object):
             f.write("  }\n")
             f.write("?>\n")
 
+
+
+        # =================
+        #  = Finish Work =
+        # =================
+
+        # close database
+        self.__db_handle.close()
+
         # user info
         if self.__args.v > 0:
             print("  done")
-
-
-
-
-
-
-
