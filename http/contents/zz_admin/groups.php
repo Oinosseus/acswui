@@ -37,7 +37,7 @@ class groups extends cContentPage {
         $html  = "";
 
 
-        $html .= "<form action=\"?action=process\" method=\"post\">";
+        $html .= '<form action="?action=process" method="post" id="group_management_form">';
         $html .= "<center><table>";
 
         // group names

@@ -10,6 +10,7 @@ class cTemplateacswui extends cTemplate {
         $html .= "  <head>\n";
         $html .= "    <title>acswui</title>\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style.css\">\n";
+        $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_special.css\">\n";
         $html .= "  </head>\n";
         $html .= "  <body>\n";
         $html .= "    <div class=\"Header\">\n";

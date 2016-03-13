@@ -1,6 +1,6 @@
 body {
   background-color: #223440;
-  background-image: url("templates/acswui/background.png");
+  background-image: url("background.png");
   background-repeat: no-repeat;
   background-size: cover;
   color: #fff;
@@ -158,7 +158,7 @@ ul.MainMenu {
   margin: 0px;
   margin-top: -20px;
   padding-top: 100px;
-  background-image: url("templates/acswui/logo_small.png");
+  background-image: url("logo_small.png");
   background-repeat: no-repeat;
 }
 

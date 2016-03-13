@@ -28,8 +28,8 @@ class users extends cContentPage {
 
         // initialize the html output
         $html  = "";
-        $html .= "<form action=\"?action=process\" method=\"post\">";
-        $html .= "<center><table>";
+        $html .= '<form action="?action=process" method="post" id="user_management_form">';
+        $html .= '<center><table>';
 
         // table header
         $html .= "<tr>";

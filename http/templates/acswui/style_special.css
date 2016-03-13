@@ -1,0 +1,15 @@
+#group_management_form input[type="text"],
+#user_management_form input[type="text"],
+#user_management_form input[type="password"] {
+    background-color: rgba(255, 255, 255, 0.0);
+    border: 1px solid rgba(255, 255, 255, 0.0);
+    color: rgba(255,255,255,0.5);
+}
+
+#group_management_form input[type="text"]:focus,
+#user_management_form input[type="text"]:focus,
+#user_management_form input[type="password"]:focus {
+  background-color: rgba(255,255,255,0.5);
+  border: 1px solid black;
+  color: #223440;
+}
