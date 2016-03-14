@@ -255,7 +255,7 @@ class Installer(object):
         #  = Scan Cars =
         # ===============
 
-        for car in os.listdir(args.path_ac + "/content/cars"):
+        for car in os.listdir(args.http_path + "/acs_content/cars"):
             pass
             # FIXME - scan all cars and put them to database
 
@@ -267,20 +267,20 @@ class Installer(object):
             if args.v > 0:
                 print("cars/" + car)
 
-            # create http car directory
-            self._mkdirs(args.http_path + "/acs_content/cars/" + car)
+            ## create http car directory
+            #self._mkdirs(args.http_path + "/acs_content/cars/" + car)
 
-            # scan all skins
-            if os.path.isdir(args.path_ac + "/content/cars/" + car + "/skins"):
-                for skin in os.listdir(args.path_ac + "/content/cars/" + car + "/skins"):
-                    # if preview image present
-                    if os.path.isfile(args.path_ac + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg"):
-                        # create server skin directory
-                        self._mkdirs(args.http_path + "/acs_content/cars/" + car + "/skins/" + skin)
-                        # copy preview image
-                        shutil.copy(args.path_ac + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg", args.path_ac + "/acs_content/cars/" + car + "/skins/" + skin + "/preview.jpg")
-                        # resize image
-                        self._sizeImage(args.path_ac + "/acs_content/cars/" + car + "/skins/" + skin + "/preview.jpg")
+            ## scan all skins
+            #if os.path.isdir(args.path_ac + "/content/cars/" + car + "/skins"):
+                #for skin in os.listdir(args.path_ac + "/content/cars/" + car + "/skins"):
+                    ## if preview image present
+                    #if os.path.isfile(args.path_ac + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg"):
+                        ## create server skin directory
+                        #self._mkdirs(args.http_path + "/acs_content/cars/" + car + "/skins/" + skin)
+                        ## copy preview image
+                        #shutil.copy(args.path_ac + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg", args.path_ac + "/acs_content/cars/" + car + "/skins/" + skin + "/preview.jpg")
+                        ## resize image
+                        #self._sizeImage(args.path_ac + "/acs_content/cars/" + car + "/skins/" + skin + "/preview.jpg")
 
 
 
