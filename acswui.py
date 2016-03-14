@@ -66,10 +66,10 @@ if args.command == "srvpkg":
     srvpkg = ServerPackager()
     srvpkg.work(config, args.v)
 
-## Installer
-#if args.command == "install":
-    #install = Installer()
-    #install.work(args)
+# Installer
+if args.command == "install":
+    install = Installer()
+    install.work(config, args.v)
 
 # unknown command
 else:
