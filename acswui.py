@@ -63,8 +63,8 @@ with open(args.ini, "r") as f:
 
 # ServerPackager
 if args.command == "srvpkg":
-    srvpkg = ServerPackager()
-    srvpkg.work(config, args.v)
+    srvpkg = ServerPackager(config, args.v)
+    srvpkg.work()
 
 # Installer
 if args.command == "install":
