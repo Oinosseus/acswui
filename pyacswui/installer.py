@@ -7,6 +7,21 @@ import os
 
 class Installer(object):
 
+    def __init__(self, config, verbosity = 0):
+
+        if type(config) != type({}):
+            raise TypeError("Parameter 'config' must be dict!")
+
+        # check http directory
+        if 'path_http' not in config or not os.path.isdir(config['path_http']):
+            raise NotImplementedError("Http directory '%s' invalid!" % config['path_http'])
+
+        self.__config = {}
+        self.__config.update(config)
+        self.__verbosity = int(verbosity)
+
+
+
     def _dbAppendTable(self, tblname, idxname, idxtype, idxdefault = None, colextra = None):
         """
             Create table if not existent and set index.
@@ -142,24 +157,7 @@ class Installer(object):
 
 
 
-    def work(self, config, verbosity = 0):
-
-
-
-        # ========================
-        #  = Input Sanity Check =
-        # ========================
-
-        if type(config) != type({}):
-            raise TypeError("Parameter 'config' must be dict!")
-        self.__config = config
-
-        # check http directory
-        if 'path_http' not in config or not os.path.isdir(config['path_http']):
-            raise NotImplementedError("Http directory '%s' invalid!" % config['path_http'])
-
-        self.__verbosity = verbosity
-
+    def work(self):
 
 
         # ===============================
@@ -266,7 +264,7 @@ class Installer(object):
                 continue
 
             # user info
-            if verbosity > 0:
+            if self.__verbosity > 0:
                 print("cars/" + car)
 
             ## create http car directory
