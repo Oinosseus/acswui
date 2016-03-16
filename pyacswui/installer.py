@@ -158,6 +158,11 @@ class Installer(object):
 
 
     def work(self):
+        """
+            1. create or update database tables
+            2. create cConfig.php
+            3. scan cars into database
+        """
 
 
         # ===============================
@@ -246,7 +251,7 @@ class Installer(object):
             print("check database table `Tracks`")
         self._dbAppendTable("Tracks", "Id", "int(11)", colextra = "AUTO_INCREMENT")
         self._dbAppendColumn("Tracks", "Name", "varchar(80)")
-        self._dbAppendColumn("Tracks", "Skin", "varchar(50)")
+        self._dbAppendColumn("Tracks", "Config", "varchar(80)")
         self._dbAppendColumn("Tracks", "Length", "float")
 
 
@@ -260,7 +265,7 @@ class Installer(object):
             # FIXME - scan all cars and put them to database
 
             # skip all non-directories or hidden items
-            if car[:1] == "." or not os.path.isdir(self.__config['path_ac '] + "/content/cars/" + car):
+            if car[:1] == "." or not os.path.isdir(self.__config['path_ac'] + "/content/cars/" + car):
                 continue
 
             # user info
@@ -303,7 +308,7 @@ class Installer(object):
             f.write("  class cConfig {\n")
             f.write("\n")
             f.write("    // basic constants\n")
-            f.write("    private $DefaultTemplate = \"%s\";\n" % self.__config['http_default_template'])
+            f.write("    private $DefaultTemplate = \"%s\";\n" % self.__config['http_dflt_tmplt'])
             f.write("    private $LogPath = '%s';\n" % self.__config['http_log_path'])
             f.write("    private $LogDebug = \"false\";\n")
             f.write("    private $RootPassword = '%s';\n" % http_root_password)
@@ -322,6 +327,14 @@ class Installer(object):
             f.write("    }\n")
             f.write("  }\n")
             f.write("?>\n")
+            
+
+            
+        # ===============
+        #  = Scan Cars =
+        # ===============
+        
+        
 
 
 
