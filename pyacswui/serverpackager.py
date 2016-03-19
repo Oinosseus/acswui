@@ -90,8 +90,9 @@ class ServerPackager():
 
                 1. copy surfaces.ini from path_ac to path_acs
                 2. copy outline.png from path_ac to path_http
-                3. copy preview.png from path_ac to path_http
-                4. copy surfaces.ini, outline.png and preview.png of track configurations
+                3. copy ui_track.json from path_ac to path_hhtp
+                4. copy preview.png from path_ac to path_http
+                5. copy surfaces.ini, outline.png and preview.png of track configurations
         """
 
 
@@ -147,13 +148,14 @@ class ServerPackager():
             if os.path.isdir(self.__config['path_ac'] + "/content/cars/" + car + "/skins"):
                 for skin in os.listdir(self.__config['path_ac'] + "/content/cars/" + car + "/skins"):
                     # if preview image present
-                    if os.path.isfile(self.__config['path_ac'] + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg"):
-                        # create server skin directory
-                        self._mkdirs(self.__config['path_http'] + "/acs_content/cars/" + car + "/skins/" + skin)
-                        # copy preview image
-                        shutil.copy(self.__config['path_ac'] + "/content/cars/" + car + "/skins/" + skin + "/preview.jpg", self.__config['path_http'] + "/acs_content/cars/" + car + "/skins/" + skin + "/preview.jpg")
-                        # resize image
-                        self._sizeImage(self.__config['path_http'] + "/acs_content/cars/" + car + "/skins/" + skin + "/preview.jpg")
+                    for preview_name in ['preview.jpg', 'Preview.jpg']:
+                        if os.path.isfile(self.__config['path_ac'] + "/content/cars/" + car + "/skins/" + skin + "/" + preview_name):
+                            # create server skin directory
+                            self._mkdirs(self.__config['path_http'] + "/acs_content/cars/" + car + "/skins/" + skin)
+                            # copy preview image
+                            shutil.copy(self.__config['path_ac'] + "/content/cars/" + car + "/skins/" + skin + "/" + preview_name, self.__config['path_http'] + "/acs_content/cars/" + car + "/skins/" + skin + "/preview.jpg")
+                            # resize image
+                            self._sizeImage(self.__config['path_http'] + "/acs_content/cars/" + car + "/skins/" + skin + "/preview.jpg")
 
 
 
@@ -188,6 +190,11 @@ class ServerPackager():
                 shutil.copy(self.__config['path_ac'] + "/content/tracks/" + track + "/ui/outline.png", self.__config['path_http'] + "/acs_content/tracks/" + track + "/ui/outline.png")
                 self._sizeImage(self.__config['path_http'] + "/acs_content/tracks/" + track + "/ui/outline.png")
 
+            # copy ui/ui_track.json
+            if os.path.isfile(self.__config['path_ac'] + "/content/tracks/" + track + "/ui/ui_track.json"):
+                self._mkdirs(self.__config['path_http'] + "/acs_content/tracks/" + track + "/ui")
+                shutil.copy(self.__config['path_ac'] + "/content/tracks/" + track + "/ui/ui_track.json", self.__config['path_http'] + "/acs_content/tracks/" + track + "/ui/ui_track.json")
+
             # copy preview.png
             if os.path.isfile(self.__config['path_ac'] + "/content/tracks/" + track + "/ui/preview.png"):
                 self._mkdirs(self.__config['path_http'] + "/acs_content/tracks/" + track + "/ui/")
@@ -201,6 +208,11 @@ class ServerPackager():
                 if os.path.isfile(self.__config['path_ac'] + "/content/tracks/" + track + "/" + configtrack + "/data/surfaces.ini"):
                     self._mkdirs(self.__config['path_acs'] + "/content/tracks/" + track + "/" + configtrack + "/data/")
                     shutil.copy(self.__config['path_ac'] + "/content/tracks/" + track + "/" + configtrack + "/data/surfaces.ini", self.__config['path_acs'] + "/content/tracks/" + track + "/" + configtrack + "/data/surfaces.ini")
+
+                # copy ui/ui_track.json
+                if os.path.isfile(self.__config['path_ac'] + "/content/tracks/" + track + "/ui/" + configtrack + "/ui_track.json"):
+                    self._mkdirs(self.__config['path_http'] + "/acs_content/tracks/" + track + "/ui/" + configtrack)
+                    shutil.copy(self.__config['path_ac'] + "/content/tracks/" + track + "/ui/" + configtrack + "/ui_track.json", self.__config['path_http'] + "/acs_content/tracks/" + track + "/ui/" + configtrack + "/ui_track.json")
 
                 # copy outline.png
                 if os.path.isfile(self.__config['path_ac'] + "/content/tracks/" + track + "/ui/" + configtrack + "/outline.png"):

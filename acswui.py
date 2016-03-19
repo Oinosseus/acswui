@@ -67,7 +67,7 @@ if args.command == "srvpkg":
     srvpkg.work()
 
 # Installer
-if args.command == "install":
+elif args.command == "install":
     install = Installer(config, args.v)
     install.work()
 
