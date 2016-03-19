@@ -1,9 +1,8 @@
 import argparse
-import pymysql
 import subprocess
 import shutil
 import os
-
+from .db_wrapper import DbWrapper
 
 class Installer(object):
 
@@ -19,253 +18,7 @@ class Installer(object):
         self.__config = {}
         self.__config.update(config)
         self.__verbosity = int(verbosity)
-
-
-
-    def _dbAppendTable(self, tblname, idxname, idxtype, idxdefault = None, colextra = None):
-        """
-            Create table if not existent and set index.
-        """
-
-        # check if table already exist
-        table_exist = False
-        query = "SELECT `TABLE_NAME` FROM information_schema.TABLES WHERE table_schema = '%s';" % self.__config['db_database']
-        if self.__verbosity > 2:
-            print("  " + query)
-        cursor = self.__db_handle.cursor()
-        cursor.execute(query)
-        for r in cursor.fetchall():
-            if r[0] == tblname:
-                table_exist = True
-        cursor.close()
-
-        # create query
-        if table_exist is False:
-
-            # retype parameters
-            if idxdefault is not None:
-                idxdefault = "DEFAULT %s" % idxdefault
-            else:
-                idxdefault = ""
-
-            if colextra is None:
-                colextra = ""
-
-            query = "CREATE TABLE IF NOT EXISTS `%s` (`%s` %s NOT NULL %s %s, PRIMARY KEY (`%s`)) ENGINE=InnoDB DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;" % (tblname, idxname, idxtype, idxdefault, colextra, idxname)
-            if self.__verbosity > 1:
-                print("    " + query)
-
-            # execute query
-            cursor = self.__db_handle.cursor()
-            cursor.execute(query)
-            cursor.close()
-            self.__db_handle.commit()
-
-        # table already exist
-        else:
-            # ensure to have index column
-            self._dbAppendColumn(tblname, idxname,idxtype, idxdefault, colextra)
-
-            # check index
-            primary_index_found = False
-            primary_index_correct = False
-            query = "SHOW INDEX FROM %s WHERE Key_name = 'PRIMARY';" % tblname
-            if self.__verbosity > 2:
-                print("  " + query)
-            cursor = self.__db_handle.cursor()
-            cursor.execute(query)
-            for r in cursor.fetchall():
-                if r[2].lower() == "primary":
-                    primary_index_found = True
-                    if r[4] == idxname:
-                        primary_index_correct = True
-            cursor.close()
-            self.__db_handle.commit()
-
-            if primary_index_correct is False:
-                if primary_index_found is True:
-                    query = "ALTER TABLE `%s` DROP PRIMARY KEY, ADD PRIMARY KEY(`%s`);" % (tblname, idxname)
-                else:
-                    query = "ALTER TABLE `%s` ADD PRIMARY KEY(`%s`);" % (tblname, idxname)
-                if self.__verbosity > 1:
-                    print("    " + query)
-                # execute query
-                cursor = self.__db_handle.cursor()
-                cursor.execute(query)
-                cursor.close()
-                self.__db_handle.commit()
-
-        # alter collation
-        query = "ALTER TABLE `" + tblname + "` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
-        if self.__verbosity > 2:
-            print("    " + query)
-        cursor = self.__db_handle.cursor()
-        cursor.execute(query)
-        cursor.close()
-        self.__db_handle.commit()
-
-
-
-
-    def _dbAppendColumn(self, tblname, colname, coltype, coldefault = None, colextra = None):
-
-        # assume column exist already
-        column_exist = False
-        column_needs_change = False
-
-        # check column info
-        query = "SELECT `COLUMN_NAME`, `COLUMN_TYPE`, `COLUMN_DEFAULT`, `EXTRA` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '%s' AND TABLE_NAME = '%s' AND COLUMN_NAME = '%s';" % (self.__config['db_database'], tblname, colname)
-        if self.__verbosity > 2:
-            print("  " + query)
-        cursor = self.__db_handle.cursor()
-        cursor.execute(query)
-        if cursor.rowcount > 0:
-            column_exist = True
-            res = cursor.fetchall()[0]
-            if self.__verbosity > 2:
-                print("    sql result: COLUMN_NAME=%s, COLUMN_TYPE=%s, COLUMN_DEFAULT=%s, EXTRA=%s" % (res[0], res[1], res[2], res[3]))
-            if res[0] != colname:
-                column_needs_change = True
-            if coltype is not None and res[1].lower() != coltype.lower():
-                column_needs_change = True
-            if coldefault is not None:
-                if res[2] is None or res[2].lower() != coldefault.lower():
-                    column_needs_change = True
-            if colextra is not None and colextra.lower() not in res[3].lower():
-                column_needs_change = True
-        cursor.close()
-        self.__db_handle.commit()
-
-        # retype parameters
-        if coldefault is not None:
-            coldefault = "DEFAULT %s" % coldefault
-        else:
-            coldefault = ""
-
-        if colextra is None:
-            colextra = ""
-
-        # create column
-        if column_exist is False:
-            # create query
-            query = "ALTER TABLE `%s` ADD `%s` %s NOT NULL %s %s;" % (tblname, colname, coltype, coldefault, colextra)
-            if self.__verbosity > 1:
-                print("    " + query)
-
-            # execute query
-            cursor = self.__db_handle.cursor()
-            cursor.execute(query)
-            cursor.close()
-            self.__db_handle.commit()
-
-        # update column
-        elif column_needs_change is True:
-            # create query
-            query = "ALTER TABLE `%s` CHANGE `%s` `%s` %s NOT NULL %s %s;" % (tblname, colname, colname, coltype, coldefault, colextra)
-            if self.__verbosity > 1:
-                print("    " + query)
-
-            # execute query
-            cursor = self.__db_handle.cursor()
-            cursor.execute(query)
-            cursor.close()
-            self.__db_handle.commit()
-
-
-
-    def _dbFindIds(self, tblname, where_values):
-        """
-            Returns a list of IDs of all rows that match the where_values dictionary
-        """
-
-        ret = []
-
-        # ignore empty where request
-        if len(where_values) <= 0:
-            return ret
-
-        # create WHERE term
-        where = ""
-        for key in where_values.keys():
-            if len(where) > 0:
-                where += " AND"
-            where += " `" + key + "` = '" + str(where_values[key]) + "'"
-
-        # create query
-        query = "SELECT `Id` FROM `" + tblname + "` WHERE " + where + ";";
-
-        # execute query
-        if self.__verbosity > 2:
-            print("  " + query)
-        cursor = self.__db_handle.cursor()
-        cursor.execute(query)
-        for res in cursor.fetchall():
-            ret.append(res[0])
-        cursor.close()
-
-        # user info
-        if self.__verbosity > 2:
-            print("  found IDs:", ret)
-
-        return ret
-
-
-
-    def _dbInsertRow(self, tblname, field_values):
-        """
-            Insert new row with values as defined in field_values.
-            The functions returns the Id of the inserted row.
-        """
-        #INSERT INTO `acswui`.`Cars` (`Id`, `Car`, `Name`, `Parent`, `Brand`) VALUES (NULL, 'foo', 'bar', 'mu', '')
-
-        # create query
-        fields = ""
-        values = ""
-        for key in field_values.keys():
-            if len(fields) > 0:
-                fields += ", "
-                values += ", "
-            fields += "`" + str(key) + "`"
-            values += "'" + str(field_values[key]) + "'"
-        query = "INSERT INTO `" + tblname + "` (" + fields + ") VALUES (" + values + ");"
-
-        # execute query
-        if self.__verbosity > 2:
-            print("  " + query)
-        cursor = self.__db_handle.cursor()
-        cursor.execute(query)
-
-        # get insert ID
-        cursor.execute("SELECT LAST_INSERT_ID();")
-        insert_id = cursor.fetchall()[0][0]
-        cursor.close()
-        self.__db_handle.commit()
-
-        return insert_id
-
-
-
-    def _dbUpdateRow(self, tblname, id_value, field_values):
-        """
-            Updates a row with values as defined in field_values.
-        """
-        #UPDATE `acswui`.`Cars` SET `Parent` = '1', `Brand` = 'dfdfdsf' WHERE `Cars`.`Id` = 1;
-
-        # create query
-        set_string = ""
-        for key in field_values.keys():
-            if len(set_string) > 0:
-                set_string += ", "
-            set_string += "`" + str(key) + "` = '" + str(field_values[key]) + "'"
-        query = "UPDATE `" + tblname + "` SET " + set_string + " WHERE `Id` = " + str(id_value) + ";"
-
-        # execute query
-        if self.__verbosity > 2:
-            print("  " + query)
-        cursor = self.__db_handle.cursor()
-        cursor.execute(query)
-        cursor.close()
-        self.__db_handle.commit()
+        self.__db = DbWrapper(config, verbosity)
 
 
 
@@ -282,62 +35,55 @@ class Installer(object):
         #  = Create Database Structure =
         # ===============================
 
-        # try to connect to database
-        self.__db_handle = pymysql.connect(host=self.__config['db_host'], port=int(self.__config['db_port']), user=self.__config['db_user'], passwd=self.__config['db_passwd'], db=self.__config['db_database'], charset='utf8')
-
-
         # ------------
         #  red tables
 
         # check table installer
         if self.__verbosity > 0:
             print("check database table `installer`")
-        self._dbAppendTable("installer", "timestamp", "timestamp", "CURRENT_TIMESTAMP", "ON UPDATE CURRENT_TIMESTAMP")
-        self._dbAppendColumn("installer", "version", "VARCHAR(10)")
-        self._dbAppendColumn("installer", "info", "TEXT")
+        self.__db.appendTable("installer", "timestamp", "timestamp", "CURRENT_TIMESTAMP", "ON UPDATE CURRENT_TIMESTAMP")
+        self.__db.appendColumn("installer", "version", "VARCHAR(10)")
+        self.__db.appendColumn("installer", "info", "TEXT")
 
         # insert installer info
-        cursor = self.__db_handle.cursor()
-        cursor.execute("INSERT INTO `installer` (`version`, `info`) VALUES ('0.1a', '');")
-        cursor.close()
-        self.__db_handle.commit()
+        self.__db.insertRow("installer", {"version": "0.1a", "info": ""})
 
         # check table users
         if self.__verbosity > 0:
             print("check database table `Users`")
-        self._dbAppendTable("Users", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self._dbAppendColumn("Users", "Login", "VARCHAR(50)")
-        self._dbAppendColumn("Users", "Password", "VARCHAR(100)")
-        self._dbAppendColumn("Users", "Steam64GUID", "VARCHAR(50)")
+        self.__db.appendTable("Users", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self.__db.appendColumn("Users", "Login", "VARCHAR(50)")
+        self.__db.appendColumn("Users", "Password", "VARCHAR(100)")
+        self.__db.appendColumn("Users", "Steam64GUID", "VARCHAR(50)")
 
         # check table Groups
         if self.__verbosity > 0:
             print("check database table `Groups`")
-        self._dbAppendTable("Groups", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self._dbAppendColumn("Groups", "Name", "VARCHAR(50)")
+        self.__db.appendTable("Groups", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self.__db.appendColumn("Groups", "Name", "VARCHAR(50)")
 
         # check table UserGroupMap
         if self.__verbosity > 0:
             print("check database table `UserGroupMap`")
-        self._dbAppendTable("UserGroupMap", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self._dbAppendColumn("UserGroupMap", "User", "int(11)")
-        self._dbAppendColumn("UserGroupMap", "Group", "int(11)")
+        self.__db.appendTable("UserGroupMap", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self.__db.appendColumn("UserGroupMap", "User", "int(11)")
+        self.__db.appendColumn("UserGroupMap", "Group", "int(11)")
 
         # check table TrackRating
         if self.__verbosity > 0:
             print("check database table `TrackRating`")
-        self._dbAppendTable("TrackRating", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self._dbAppendColumn("TrackRating", "User", "int(11)")
-        self._dbAppendColumn("TrackRating", "Track", "int(11)")
-        self._dbAppendColumn("TrackRating", "RateGraphics", "int(11)")
-        self._dbAppendColumn("TrackRating", "RateDrive", "int(11)")
+        self.__db.appendTable("TrackRating", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self.__db.appendColumn("TrackRating", "User", "int(11)")
+        self.__db.appendColumn("TrackRating", "Track", "int(11)")
+        self.__db.appendColumn("TrackRating", "RateGraphics", "int(11)")
+        self.__db.appendColumn("TrackRating", "RateDrive", "int(11)")
 
         # check table UserDriversMap
         if self.__verbosity > 0:
             print("check database table `UserDriversMap`")
-        self._dbAppendTable("UserDriversMap", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self._dbAppendColumn("UserDriversMap", "User", "int(11)")
-        self._dbAppendColumn("UserDriversMap", "Driver", "int(11)")
+        self.__db.appendTable("UserDriversMap", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self.__db.appendColumn("UserDriversMap", "User", "int(11)")
+        self.__db.appendColumn("UserDriversMap", "Driver", "int(11)")
 
 
         # -------------
@@ -346,27 +92,27 @@ class Installer(object):
         # check table Cars
         if self.__verbosity > 0:
             print("check database table `Cars`")
-        self._dbAppendTable("Cars", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self._dbAppendColumn("Cars", "Car", "varchar(80)")
-        self._dbAppendColumn("Cars", "Name", "varchar(80)")
-        self._dbAppendColumn("Cars", "Parent", "int(11)")
-        self._dbAppendColumn("Cars", "Brand", "varchar(80)")
+        self.__db.appendTable("Cars", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self.__db.appendColumn("Cars", "Car", "varchar(80)")
+        self.__db.appendColumn("Cars", "Name", "varchar(80)")
+        self.__db.appendColumn("Cars", "Parent", "int(11)")
+        self.__db.appendColumn("Cars", "Brand", "varchar(80)")
 
         # check table CarSkins
         if self.__verbosity > 0:
             print("check database table `CarSkins`")
-        self._dbAppendTable("CarSkins", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self._dbAppendColumn("CarSkins", "Car", "int(11)")
-        self._dbAppendColumn("CarSkins", "Skin", "varchar(50)")
+        self.__db.appendTable("CarSkins", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self.__db.appendColumn("CarSkins", "Car", "int(11)")
+        self.__db.appendColumn("CarSkins", "Skin", "varchar(50)")
 
         # check table Tracks
         if self.__verbosity > 0:
             print("check database table `Tracks`")
-        self._dbAppendTable("Tracks", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self._dbAppendColumn("Tracks", "Track", "varchar(80)")
-        self._dbAppendColumn("Tracks", "Config", "varchar(80)")
-        self._dbAppendColumn("Tracks", "Name", "varchar(80)")
-        self._dbAppendColumn("Tracks", "Length", "float")
+        self.__db.appendTable("Tracks", "Id", "int(11)", colextra = "AUTO_INCREMENT")
+        self.__db.appendColumn("Tracks", "Track", "varchar(80)")
+        self.__db.appendColumn("Tracks", "Config", "varchar(80)")
+        self.__db.appendColumn("Tracks", "Name", "varchar(80)")
+        self.__db.appendColumn("Tracks", "Length", "float")
 
 
 
@@ -446,22 +192,22 @@ class Installer(object):
                 print("Install car '" + car + "'")
 
             # get IDs of existing cars (should be exactly one car)
-            existing_car_ids = self._dbFindIds("Cars", {"Car": car})
+            existing_car_ids = self.__db.findIds("Cars", {"Car": car})
 
             # insert car if not existent
             if len(existing_car_ids) == 0:
-                self._dbInsertRow("Cars", {"Car": car, "Name": car_name, "Parent": 0, "Brand": car_brand})
-                existing_car_ids = self._dbFindIds("Cars", {"Car": car})
+                self.__db.insertRow("Cars", {"Car": car, "Name": car_name, "Parent": 0, "Brand": car_brand})
+                existing_car_ids = self.__db.findIds("Cars", {"Car": car})
 
             # update all existing cars
             for eci in existing_car_ids:
-                self._dbUpdateRow("Cars", eci, {"Car": car, "Name": car_name, "Parent": 0, "Brand": car_brand})
+                self.__db.updateRow("Cars", eci, {"Car": car, "Name": car_name, "Parent": 0, "Brand": car_brand})
 
                 # insert not existing skins
                 for skin in car_skins:
-                    existing_car_skins = self._dbFindIds("CarSkins", {"Car": eci, "Skin": skin})
+                    existing_car_skins = self.__db.findIds("CarSkins", {"Car": eci, "Skin": skin})
                     if len(existing_car_skins) == 0:
-                        self._dbInsertRow("CarSkins", {"Car": eci, "Skin": skin})
+                        self.__db.insertRow("CarSkins", {"Car": eci, "Skin": skin})
 
 
 
@@ -520,9 +266,9 @@ class Installer(object):
                 track_length = parse_json(track_path + "/ui/ui_track.json", "length", "0")
                 track_length = interpret_length(track_length)
 
-                existing_track_ids = self._dbFindIds("Tracks", {"Track": track})
+                existing_track_ids = self.__db.findIds("Tracks", {"Track": track})
                 if len(existing_track_ids) == 0:
-                    self._dbInsertRow("Tracks", {"Track": track, "Config": "", "Name": track_name, "Length": track_length})
+                    self.__db.insertRow("Tracks", {"Track": track, "Config": "", "Name": track_name, "Length": track_length})
 
             # update track configs
             if os.path.isdir(track_path + "/ui"):
@@ -533,22 +279,7 @@ class Installer(object):
                             track_length = parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "length", "0")
                             track_length = interpret_length(track_length)
 
-                            existing_track_ids = self._dbFindIds("Tracks", {"Track": track, "Config": track_config})
+                            existing_track_ids = self.__db.findIds("Tracks", {"Track": track, "Config": track_config})
                             if len(existing_track_ids) == 0:
-                                self._dbInsertRow("Tracks", {"Track": track, "Config": track_config, "Name": track_name, "Length": track_length})
+                                self.__db.insertRow("Tracks", {"Track": track, "Config": track_config, "Name": track_name, "Length": track_length})
 
-
-
-
-
-
-        # =================
-        #  = Finish Work =
-        # =================
-
-        # close database
-        self.__db_handle.close()
-
-        # user info
-        if self.__verbosity > 0:
-            print("  done")

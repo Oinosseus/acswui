@@ -74,3 +74,9 @@ elif args.command == "install":
 # unknown command
 else:
     raise ValueError("unknown command")
+
+
+# finish
+if int(args.v) > 0:
+    print("Finished")
+
