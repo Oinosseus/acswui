@@ -17,61 +17,45 @@ from pyacswui import ServerPackager, Installer
 # ---------------------------------
 
 __helpstring  = "Examples:\n"
-__helpstring += "./acswui install --help\n"
-__helpstring += "./acswui install --args-file acswui.py.args.txt\n"
-__helpstring += "./acswui srvpkg --help\n"
-__helpstring += "./acswui srvpkg --args-file acswui.py.args.txt\n"
+__helpstring += "./acswui -v --ini acswui.ini srvpkg\n"
+__helpstring += "./acswui -v --ini acswui.ini install\n"
 
 # main arguments
 argparser = argparse.ArgumentParser(prog="acswui", description="Assetto Corsa Server Web User Interface", epilog=__helpstring, formatter_class=argparse.RawTextHelpFormatter)
-argparsersubs = argparser.add_subparsers(dest='command')
+argparser.add_argument('-i', '--ini', help="path to config file")
+argparser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
+argparsersubs     = argparser.add_subparsers(dest='command')
+argparser_srvpkg  = argparsersubs.add_parser('srvpkg', help="server packager to prepare files (need access to path_ac)")
+argparser_install = argparsersubs.add_parser('install',help="install / update database and configure http server (not need to access path_ac)")
 
-# command install
-argparser_install = argparsersubs.add_parser('install',help="install or update acswui")
-
-# command srvpkg
-argparser_srvpkg = argparsersubs.add_parser('srvpkg', help="server packager")
-
-# add common arguments to add_subparsers
-for parser in [argparser_install, argparser_srvpkg]:
-  parser.add_argument('--args-file', help="path to an text file that contains all the arguments")
-  parser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
-  parser.add_argument('--path-ac', help="path to the assetto corsa game directory")
-  parser.add_argument('--path-acs', help="path to the assetto corsa server directory")
-  parser.add_argument('--db-type', help="the database server type (must be 'MySQL')")
-  parser.add_argument('--db-host', help="the database server host")
-  parser.add_argument('--db-port', help="the database server port")
-  parser.add_argument('--db-user', help="the database server username")
-  parser.add_argument('--db-database', help="the database server database")
-  parser.add_argument('--db-passwd', help="the database server database")
-  parser.add_argument('--http-path', help="the path of the http files directory")
-  parser.add_argument('--http-default-template', help="the default http template")
-  parser.add_argument('--http-log-path', help="the path for http logfiles")
-  parser.add_argument('--http-root-password', help="the password for the http root user")
 
 # get arguments
 args = argparser.parse_args()
 #print("\n\nargs=\n", args);
 
-# load arguments from file if argument --args-file was set
-if hasattr(args, 'args_file') and args.args_file is not None:
+# check config file
+if args.ini is None or not os.path.isfile(args.ini):
+    raise ValueError("Parameter --ini must be set with a existing config file!")
 
-    # load argument list from file
-    with open (args.args_file, "r") as argsfile:
-        fileargs = argsfile.read().split()
+# parse config file
+config = {}
+with open(args.ini, "r") as f:
+    for line in f.readlines():
 
-    # get arguments from commadn line
-    # ignore fist commadnline argument (program name)
-    # ignore command argument
-    cmdargs = []
-    cmdargs += [ element for element in sys.argv[1:] if element != args.command]
+        line = line.strip()
 
-    # reparse arguments
-    # command is applied as first argument
-    # commandline arguments have higher priority than file arguments
-    args = argparser.parse_args([args.command] + fileargs + cmdargs)
+        # ignore commented lines
+        if line[:1] == "#":
+            continue
 
+        # ignore empty lines
+        if line == "":
+            continue
 
+        # split keys and values
+        split = line.split("=",1)
+        if len(split) > 1:
+            config.update({split[0].strip(): split[1].strip()})
 
 # ---------------------
 #  - Execute Command -
@@ -79,10 +63,20 @@ if hasattr(args, 'args_file') and args.args_file is not None:
 
 # ServerPackager
 if args.command == "srvpkg":
-    srvpkg = ServerPackager()
-    srvpkg.work(args)
+    srvpkg = ServerPackager(config, args.v)
+    srvpkg.work()
 
 # Installer
-if args.command == "install":
-    install = Installer()
-    install.work(args)
+elif args.command == "install":
+    install = Installer(config, args.v)
+    install.work()
+
+# unknown command
+else:
+    raise ValueError("unknown command")
+
+
+# finish
+if int(args.v) > 0:
+    print("Finished")
+
