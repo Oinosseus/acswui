@@ -29,9 +29,10 @@ class DbWrapper(object):
 
 
 
-    def appendTable(self, tblname, idxname, idxtype, idxdefault = None, colextra = None):
+    def appendTable(self, tblname):
         """
-            Create table if not existent and set index.
+            Create table if not existent.
+            A column 'Id' is created and used as index with auto increment.
         """
 
         # check if table already exist
@@ -49,16 +50,7 @@ class DbWrapper(object):
         # create query
         if table_exist is False:
 
-            # retype parameters
-            if idxdefault is not None:
-                idxdefault = "DEFAULT %s" % idxdefault
-            else:
-                idxdefault = ""
-
-            if colextra is None:
-                colextra = ""
-
-            query = "CREATE TABLE IF NOT EXISTS `%s` (`%s` %s NOT NULL %s %s, PRIMARY KEY (`%s`)) ENGINE=InnoDB DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;" % (tblname, idxname, idxtype, idxdefault, colextra, idxname)
+            query = "CREATE TABLE `" + tblname + "` ( `Id` INT NOT NULL AUTO_INCREMENT , PRIMARY KEY (`Id`)) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
             if self.__verbosity > 1:
                 print("    " + query)
 
@@ -70,8 +62,6 @@ class DbWrapper(object):
 
         # table already exist
         else:
-            # ensure to have index column
-            self.appendColumn(tblname, idxname,idxtype, idxdefault, colextra)
 
             # check index
             primary_index_found = False
@@ -84,16 +74,16 @@ class DbWrapper(object):
             for r in cursor.fetchall():
                 if r[2].lower() == "primary":
                     primary_index_found = True
-                    if r[4] == idxname:
+                    if r[4] == "Id":
                         primary_index_correct = True
             cursor.close()
             self.__db_handle.commit()
 
             if primary_index_correct is False:
                 if primary_index_found is True:
-                    query = "ALTER TABLE `%s` DROP PRIMARY KEY, ADD PRIMARY KEY(`%s`);" % (tblname, idxname)
+                    query = "ALTER TABLE `" + tblname + "` DROP PRIMARY KEY, ADD PRIMARY KEY(`Id`);"
                 else:
-                    query = "ALTER TABLE `%s` ADD PRIMARY KEY(`%s`);" % (tblname, idxname)
+                    query = "ALTER TABLE `" + tblname + "` ADD PRIMARY KEY(`Id`);"
                 if self.__verbosity > 1:
                     print("    " + query)
                 # execute query
@@ -113,7 +103,7 @@ class DbWrapper(object):
 
 
 
-    def appendColumn(self, tblname, colname, coltype, coldefault = None, colextra = None):
+    def __appendColumn(self, tblname, colname, coltype, coldefault = None, colextra = None):
 
         # assume column exist already
         column_exist = False
@@ -177,6 +167,22 @@ class DbWrapper(object):
             cursor.close()
             self.__db_handle.commit()
 
+
+
+    def appendColumnInt(self, tblname, colname, length = 11):
+        self.__appendColumn(tblname, colname, "int(" + str(length) + ")", "'0'")
+
+    def appendColumnFloat(self, tblname, colname):
+        self.__appendColumn(tblname, colname, "float", "'0'")
+
+    def appendColumnString(self, tblname, colname, length = 100):
+        self.__appendColumn(tblname, colname, "varchar(" + str(length) + ")", None)
+
+    def appendColumnText(self, tblname, colname):
+        self.__appendColumn(tblname, colname, "text")
+
+    def appendColumnCurrentTimestamp(self, tblname, colname):
+        self.__appendColumn(tblname, colname, "timestamp", "CURRENT_TIMESTAMP")
 
 
     def findIds(self, tblname, where_values):

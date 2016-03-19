@@ -41,9 +41,10 @@ class Installer(object):
         # check table installer
         if self.__verbosity > 0:
             print("check database table `installer`")
-        self.__db.appendTable("installer", "timestamp", "timestamp", "CURRENT_TIMESTAMP", "ON UPDATE CURRENT_TIMESTAMP")
-        self.__db.appendColumn("installer", "version", "VARCHAR(10)")
-        self.__db.appendColumn("installer", "info", "TEXT")
+        self.__db.appendTable("installer")
+        self.__db.appendColumnCurrentTimestamp("installer", "timestamp")
+        self.__db.appendColumnString("installer", "version", 10)
+        self.__db.appendColumnText("installer", "info")
 
         # insert installer info
         self.__db.insertRow("installer", {"version": "0.1a", "info": ""})
@@ -51,39 +52,39 @@ class Installer(object):
         # check table users
         if self.__verbosity > 0:
             print("check database table `Users`")
-        self.__db.appendTable("Users", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self.__db.appendColumn("Users", "Login", "VARCHAR(50)")
-        self.__db.appendColumn("Users", "Password", "VARCHAR(100)")
-        self.__db.appendColumn("Users", "Steam64GUID", "VARCHAR(50)")
+        self.__db.appendTable("Users")
+        self.__db.appendColumnString("Users", "Login", 50)
+        self.__db.appendColumnString("Users", "Password", 100)
+        self.__db.appendColumnString("Users", "Steam64GUID", 50)
 
         # check table Groups
         if self.__verbosity > 0:
             print("check database table `Groups`")
-        self.__db.appendTable("Groups", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self.__db.appendColumn("Groups", "Name", "VARCHAR(50)")
+        self.__db.appendTable("Groups")
+        self.__db.appendColumnString("Groups", "Name", 50)
 
         # check table UserGroupMap
         if self.__verbosity > 0:
             print("check database table `UserGroupMap`")
-        self.__db.appendTable("UserGroupMap", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self.__db.appendColumn("UserGroupMap", "User", "int(11)")
-        self.__db.appendColumn("UserGroupMap", "Group", "int(11)")
+        self.__db.appendTable("UserGroupMap")
+        self.__db.appendColumnInt("UserGroupMap", "User")
+        self.__db.appendColumnInt("UserGroupMap", "Group")
 
         # check table TrackRating
         if self.__verbosity > 0:
             print("check database table `TrackRating`")
-        self.__db.appendTable("TrackRating", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self.__db.appendColumn("TrackRating", "User", "int(11)")
-        self.__db.appendColumn("TrackRating", "Track", "int(11)")
-        self.__db.appendColumn("TrackRating", "RateGraphics", "int(11)")
-        self.__db.appendColumn("TrackRating", "RateDrive", "int(11)")
+        self.__db.appendTable("TrackRating")
+        self.__db.appendColumnInt("TrackRating", "User")
+        self.__db.appendColumnInt("TrackRating", "Track")
+        self.__db.appendColumnInt("TrackRating", "RateGraphics")
+        self.__db.appendColumnInt("TrackRating", "RateDrive")
 
         # check table UserDriversMap
         if self.__verbosity > 0:
             print("check database table `UserDriversMap`")
-        self.__db.appendTable("UserDriversMap", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self.__db.appendColumn("UserDriversMap", "User", "int(11)")
-        self.__db.appendColumn("UserDriversMap", "Driver", "int(11)")
+        self.__db.appendTable("UserDriversMap")
+        self.__db.appendColumnInt("UserDriversMap", "User")
+        self.__db.appendColumnInt("UserDriversMap", "Driver")
 
 
         # -------------
@@ -92,27 +93,27 @@ class Installer(object):
         # check table Cars
         if self.__verbosity > 0:
             print("check database table `Cars`")
-        self.__db.appendTable("Cars", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self.__db.appendColumn("Cars", "Car", "varchar(80)")
-        self.__db.appendColumn("Cars", "Name", "varchar(80)")
-        self.__db.appendColumn("Cars", "Parent", "int(11)")
-        self.__db.appendColumn("Cars", "Brand", "varchar(80)")
+        self.__db.appendTable("Cars")
+        self.__db.appendColumnString("Cars", "Car", 80)
+        self.__db.appendColumnString("Cars", "Name", 80)
+        self.__db.appendColumnInt("Cars", "Parent")
+        self.__db.appendColumnString("Cars", "Brand", 80)
 
         # check table CarSkins
         if self.__verbosity > 0:
             print("check database table `CarSkins`")
-        self.__db.appendTable("CarSkins", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self.__db.appendColumn("CarSkins", "Car", "int(11)")
-        self.__db.appendColumn("CarSkins", "Skin", "varchar(50)")
+        self.__db.appendTable("CarSkins")
+        self.__db.appendColumnInt("CarSkins", "Car")
+        self.__db.appendColumnString("CarSkins", "Skin", 50)
 
         # check table Tracks
         if self.__verbosity > 0:
             print("check database table `Tracks`")
-        self.__db.appendTable("Tracks", "Id", "int(11)", colextra = "AUTO_INCREMENT")
-        self.__db.appendColumn("Tracks", "Track", "varchar(80)")
-        self.__db.appendColumn("Tracks", "Config", "varchar(80)")
-        self.__db.appendColumn("Tracks", "Name", "varchar(80)")
-        self.__db.appendColumn("Tracks", "Length", "float")
+        self.__db.appendTable("Tracks")
+        self.__db.appendColumnString("Tracks", "Track", 80)
+        self.__db.appendColumnString("Tracks", "Config", 80)
+        self.__db.appendColumnString("Tracks", "Name", 80)
+        self.__db.appendColumnFloat("Tracks", "Length")
 
 
 
