@@ -3,8 +3,9 @@
 class test_sub2 extends cContentPage {
 
     public function __construct() {
-        $this->MenuName   = _("Subtest 2");
-        $this->TextDomain = "test";
+        $this->MenuName           = _("Subtest 2");
+        $this->TextDomain         = "test";
+        $this->RequirePermissions = ['TestPermission'];
     }
 
     public function getHtml() {

@@ -67,7 +67,7 @@
     // $coulumns must be an string array (can be NULL to fetch all columns)
     // $table must be a string
     // $where_key and §where_value must be lists with same length
-    public function fetch_2d_array($table, $columns, $where_key = [], $where_value = []) {
+    public function fetch_2d_array($table, $columns, $where_key = [], $where_value = [], $sort_by = NULL, $order_asc = true) {
 
         global $acswuiConfig;
         global $acswuiLog;
@@ -114,8 +114,16 @@
                 }
             }
 
+            // order ASC / DESC
+            $order = "";
+            if (!is_null($sort_by)) {
+                $order = "ORDER BY `" . $this->db_handle->escape_string($sort_by) . "` ";
+                if ($order_asc == true) $order .= "ASC";
+                else $order .= "DESC";
+            }
+
             // execute query
-            $query = "SELECT $colums_list FROM $table $where;";
+            $query = "SELECT $colums_list FROM $table $where $order;";
 //             echo("<br>");
 //             print_r($query);
             if ($result = $this->db_handle->query($query)) {
