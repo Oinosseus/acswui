@@ -1,15 +1,56 @@
-#group_management_form input[type="text"],
-#user_management_form input[type="text"],
-#user_management_form input[type="password"] {
+input[type="text"],
+input[type="range"],
+input[type="number"],
+input[type="password"] {
     background-color: rgba(255, 255, 255, 0.0);
     border: 1px solid rgba(255, 255, 255, 0.0);
     color: rgba(255,255,255,0.5);
 }
 
-#group_management_form input[type="text"]:focus,
-#user_management_form input[type="text"]:focus,
-#user_management_form input[type="password"]:focus {
+input[type="text"]:focus,
+input[type="range"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus {
   background-color: rgba(255,255,255,0.5);
   border: 1px solid black;
   color: #223440;
+}
+
+input[disabled],
+input[disabled]:focus,
+input[readonly],
+input[readonly]:focus,
+select[readonly],
+select[readonly]:focus,
+select[disabled],
+select[disabled]:focus{
+  color: #883440;
+}
+
+
+fieldset {
+/*     margin: 0px; */
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 2px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+fieldset legend {
+    margin-top: 40px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-left: 10px;
+    padding-top: 4px;
+    padding-bottom: 2px;
+    background: linear-gradient(to left, rgba(189,0,0,0) 3%, rgba(189,0,0,1) 50%, rgba(189,0,0,1) 100%);
+    border-top-left-radius: 8px;
+    width: 100%;
+}
+
+fieldset table {
+    width: 100%;
 }

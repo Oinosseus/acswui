@@ -22,7 +22,7 @@ function getImgTrack($track_id) {
     return $ret;
 }
 
-function getImgCarSkin($carskin_id) {
+function getImgCarSkin($carskin_id, $car = NULL) {
 
     global $acswuiDatabase;
     global $acswuiLog;
@@ -38,13 +38,15 @@ function getImgCarSkin($carskin_id) {
     $skin   = $res[0]['Skin'];
 
     # get car
-    $res = $acswuiDatabase->fetch_2d_array("Cars", ["Car"], ["Id"], [$car_id]);
-    if (count($res) <= 0) {
-        $acswuiLog->LogError("Could not find Car Id " . $car_id . "!");
-        return "";
-    }
+    if (is_null($car)) {
+        $res = $acswuiDatabase->fetch_2d_array("Cars", ["Car"], ["Id"], [$car_id]);
+        if (count($res) <= 0) {
+            $acswuiLog->LogError("Could not find Car Id " . $car_id . "!");
+            return "";
+        }
 
-    $car = $res[0]['Car'];
+        $car = $res[0]['Car'];
+    }
 
     $path = "acs_content/cars/$car/skins/$skin/preview.jpg";
 
