@@ -176,7 +176,7 @@ class DbWrapper(object):
         self.__appendColumn(tblname, colname, "float", "'0'")
 
     def appendColumnString(self, tblname, colname, length = 100):
-        self.__appendColumn(tblname, colname, "varchar(" + str(length) + ")", None)
+        self.__appendColumn(tblname, colname, "varchar(" + str(length) + ")", "''")
 
     def appendColumnText(self, tblname, colname):
         self.__appendColumn(tblname, colname, "text")
@@ -201,7 +201,7 @@ class DbWrapper(object):
         for key in where_values.keys():
             if len(where) > 0:
                 where += " AND"
-            where += " `" + key + "` = '" + str(where_values[key]) + "'"
+            where += " `" + key + "` = " + self.__db_handle.escape((where_values[key]))
 
         # create query
         query = "SELECT `Id` FROM `" + tblname + "` WHERE " + where + ";";
@@ -238,7 +238,8 @@ class DbWrapper(object):
                 fields += ", "
                 values += ", "
             fields += "`" + str(key) + "`"
-            values += "'" + str(field_values[key]) + "'"
+            v = self.__db_handle.escape((field_values[key]))
+            values += v#"'" + v + "'"
         query = "INSERT INTO `" + tblname + "` (" + fields + ") VALUES (" + values + ");"
 
         # execute query

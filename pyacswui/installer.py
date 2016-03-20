@@ -143,6 +143,79 @@ class Installer(object):
         self.__db.appendColumnFloat("Tracks", "Length")
 
 
+        # -------------
+        #  blue tables
+
+        if self.__verbosity > 0:
+            print("check database table `ServerPresets`")
+        self.__db.appendTable("ServerPresets")
+        self.__db.appendColumnString("ServerPresets", 'Name', 60)
+        self.__db.appendColumnString("ServerPresets", 'srv_NAME', 60)
+        self.__db.appendColumnString("ServerPresets", 'srv_CARS', 255)
+        self.__db.appendColumnString("ServerPresets", 'srv_TRACK', 50)
+        self.__db.appendColumnString("ServerPresets", 'srv_CONFIG_TRACK', 50)
+        self.__db.appendColumnInt("ServerPresets",    'srv_SUN_ANGLE')
+        self.__db.appendColumnInt("ServerPresets",    'srv_MAX_CLIENTS')
+        self.__db.appendColumnInt("ServerPresets",    'srv_RACE_OVER_TIME')
+        self.__db.appendColumnInt("ServerPresets",    'srv_ALLOWED_TYRES_OUT')
+        self.__db.appendColumnInt("ServerPresets",    'srv_UDP_PORT')
+        self.__db.appendColumnInt("ServerPresets",    'srv_TCP_PORT')
+        self.__db.appendColumnInt("ServerPresets",    'srv_HTTP_PORT')
+        self.__db.appendColumnString("ServerPresets", 'srv_PASSWORD', 50)
+        self.__db.appendColumnInt("ServerPresets",    'srv_LOOP_MODE')
+        self.__db.appendColumnInt("ServerPresets",    'srv_REGISTER_TO_LOBBY')
+        self.__db.appendColumnInt("ServerPresets",    'srv_PICKUP_MODE_ENABLED')
+        self.__db.appendColumnInt("ServerPresets",    'srv_SLEEP_TIME')
+        self.__db.appendColumnInt("ServerPresets",    'srv_VOTING_QUORUM')
+        self.__db.appendColumnInt("ServerPresets",    'srv_VOTE_DURATION')
+        self.__db.appendColumnInt("ServerPresets",    'srv_BLACKLIST_MODE')
+        self.__db.appendColumnInt("ServerPresets",    'srv_TC_ALLOWED')
+        self.__db.appendColumnInt("ServerPresets",    'srv_ABS_ALLOWED')
+        self.__db.appendColumnInt("ServerPresets",    'srv_STABILITY_ALLOWED')
+        self.__db.appendColumnInt("ServerPresets",    'srv_AUTOCLUTCH_ALLOWED')
+        self.__db.appendColumnInt("ServerPresets",    'srv_DAMAGE_MULTIPLIER')
+        self.__db.appendColumnInt("ServerPresets",    'srv_FUEL_RATE')
+        self.__db.appendColumnInt("ServerPresets",    'srv_TYRE_WEAR_RATE')
+        self.__db.appendColumnInt("ServerPresets",    'srv_CLIENT_SEND_INTERVAL_HZ')
+        self.__db.appendColumnInt("ServerPresets",    'srv_TYRE_BLANKETS_ALLOWED')
+        self.__db.appendColumnString("ServerPresets", 'srv_ADMIN_PASSWORD', 50)
+        self.__db.appendColumnInt("ServerPresets",    'srv_QUALIFY_MAX_WAIT_PERC')
+        self.__db.appendColumnString("ServerPresets", 'srv_WELCOME_MESSAGE', 250)
+        self.__db.appendColumnInt("ServerPresets",    'srv_FORCE_VIRTUAL_MIRROR')
+        self.__db.appendColumnString("ServerPresets", 'srv_LEGAL_TYRES', 30)
+        self.__db.appendColumnInt("ServerPresets",    'srv_MAX_BALLAST_KG')
+        self.__db.appendColumnInt("ServerPresets",    'srv_UDP_PLUGIN_LOCAL_PORT')
+        self.__db.appendColumnString("ServerPresets", 'srv_UDP_PLUGIN_ADDRESS', 150)
+        self.__db.appendColumnString("ServerPresets", 'srv_AUTH_PLUGIN_ADDRESS', 150)
+
+        self.__db.appendColumnInt("ServerPresets",    'dyt_SESSION_START')
+        self.__db.appendColumnInt("ServerPresets",    'dyt_RANDOMNESS')
+        self.__db.appendColumnInt("ServerPresets",    'dyt_LAP_GAIN')
+        self.__db.appendColumnInt("ServerPresets",    'dyt_SESSION_TRANSFER')
+
+        self.__db.appendColumnString("ServerPresets", 'bok_NAME', 50)
+        self.__db.appendColumnInt("ServerPresets",    'bok_TIME')
+
+        self.__db.appendColumnString("ServerPresets", 'prt_NAME', 50)
+        self.__db.appendColumnInt("ServerPresets",    'prt_TIME')
+        self.__db.appendColumnInt("ServerPresets",    'prt_IS_OPEN')
+
+        self.__db.appendColumnString("ServerPresets", 'qly_NAME', 50)
+        self.__db.appendColumnInt("ServerPresets",    'qly_TIME')
+        self.__db.appendColumnInt("ServerPresets",    'qly_IS_OPEN')
+
+        self.__db.appendColumnString("ServerPresets", 'rce_NAME', 50)
+        self.__db.appendColumnInt("ServerPresets",    'rce_LAPS')
+        self.__db.appendColumnInt("ServerPresets",    'rce_WAIT_TIME')
+        self.__db.appendColumnInt("ServerPresets",    'rce_IS_OPEN')
+
+        self.__db.appendColumnString("ServerPresets", 'wth_GRAPHICS', 50)
+        self.__db.appendColumnInt("ServerPresets",    'wth_BASE_TEMPERATURE_AMBIENT')
+        self.__db.appendColumnInt("ServerPresets",    'wth_VARIATION_AMBIENT')
+        self.__db.appendColumnInt("ServerPresets",    'wth_BASE_TEMPERATURE_ROAD')
+        self.__db.appendColumnInt("ServerPresets",    'wth_VARIATION_ROAD')
+
+
 
     def __work_cconfig(self):
 
@@ -156,7 +229,7 @@ class Installer(object):
 
         # find server_cfg settings [SERVER]
         srv_cfg_server    = ""
-        for key in ['NAME', 'CARS', 'TRACK', 'CONFIG_TRACK', 'SUN_ANGLE', 'MAX_CLIENTS', 'RACE_OVER_TIME', 'ALLOWED_TYRES_OUT', 'UDP_PORT', 'TCP_PORT', 'HTTP_PORT', 'PASSWORD', 'LOOP_MODE', 'REGISTER_TO_LOBBY', 'PICKUP_MODE_ENABLED', 'SLEEP_TIME', 'VOTING_QUORUM', 'VOTE_DURATION', 'BLACKLIST_MODE', 'TC_ALLOWED', 'ABS_ALLOWED', 'STABILITY_ALLOWED', 'AUTOCLUTCH_ALLOWED', 'AMAGE_MULTIPLIER', 'FUEL_RATE', 'TYRE_WEAR_RATE', 'CLIENT_SEND_INTERVAL_HZ', 'TYRE_BLANKETS_ALLOWED', 'ADMIN_PASSWORD', 'QUALIFY_MAX_WAIT_PERC', 'WELCOME_MESSAGE', 'FORCE_VIRTUAL_MIRROR', 'LEGAL_TYRES', 'MAX_BALLAST_KG', 'UDP_PLUGIN_LOCAL_PORT', 'UDP_PLUGIN_ADDRESS', 'AUTH_PLUGIN_ADDRESS']:
+        for key in ['NAME', 'CARS', 'TRACK', 'CONFIG_TRACK', 'SUN_ANGLE', 'MAX_CLIENTS', 'RACE_OVER_TIME', 'ALLOWED_TYRES_OUT', 'UDP_PORT', 'TCP_PORT', 'HTTP_PORT', 'PASSWORD', 'LOOP_MODE', 'REGISTER_TO_LOBBY', 'PICKUP_MODE_ENABLED', 'SLEEP_TIME', 'VOTING_QUORUM', 'VOTE_DURATION', 'BLACKLIST_MODE', 'TC_ALLOWED', 'ABS_ALLOWED', 'STABILITY_ALLOWED', 'AUTOCLUTCH_ALLOWED', 'DAMAGE_MULTIPLIER', 'FUEL_RATE', 'TYRE_WEAR_RATE', 'CLIENT_SEND_INTERVAL_HZ', 'TYRE_BLANKETS_ALLOWED', 'ADMIN_PASSWORD', 'QUALIFY_MAX_WAIT_PERC', 'WELCOME_MESSAGE', 'FORCE_VIRTUAL_MIRROR', 'LEGAL_TYRES', 'MAX_BALLAST_KG', 'UDP_PLUGIN_LOCAL_PORT', 'UDP_PLUGIN_ADDRESS', 'AUTH_PLUGIN_ADDRESS']:
             config_key = "http_srv_" + key
             if config_key in self.__config and len(self.__config[config_key]) > 0:
                 if len(srv_cfg_server) > 0:
@@ -377,6 +450,123 @@ class Installer(object):
         if self.__install_base_data:
 
             # default groups
-            self.__db.insertRow("Groups", {"Name": "Driver"})
-            self.__db.insertRow("Groups", {"Name": "Race Orga"})
-            self.__db.insertRow("Groups", {"Name": "Server Admin"})
+            if len(self.__db.findIds("Groups", {"Name": "Driver"})) == 0:
+                self.__db.insertRow("Groups", {"Name": "Driver"})
+            if len(self.__db.findIds("Groups", {"Name": "Race Orga"})) == 0:
+                self.__db.insertRow("Groups", {"Name": "Race Orga"})
+            if len(self.__db.findIds("Groups", {"Name": "Server Admin"})) == 0:
+                self.__db.insertRow("Groups", {"Name": "Server Admin"})
+
+            # default server preset 'easy'
+            srv_preset_easy = {}
+            srv_preset_easy.update({'Name': "Easy Drivin'"})
+            srv_preset_easy.update({'srv_SUN_ANGLE': '-8'})
+            srv_preset_easy.update({'srv_TC_ALLOWED': '2'})
+            srv_preset_easy.update({'srv_ABS_ALLOWED': '2'})
+            srv_preset_easy.update({'srv_STABILITY_ALLOWED': '1'})
+            srv_preset_easy.update({'srv_AUTOCLUTCH_ALLOWED': '1'})
+            srv_preset_easy.update({'srv_DAMAGE_MULTIPLIER': '0'})
+            srv_preset_easy.update({'srv_FUEL_RATE': '0'})
+            srv_preset_easy.update({'srv_TYRE_WEAR_RATE': '0'})
+            srv_preset_easy.update({'srv_TYRE_BLANKETS_ALLOWED': '1'})
+            srv_preset_easy.update({'srv_WELCOME_MESSAGE': 'Easy driving without damage.'})
+            srv_preset_easy.update({'srv_FORCE_VIRTUAL_MIRROR': '0'})
+            srv_preset_easy.update({'srv_LEGAL_TYRES': 'V;E;HR;ST'})
+            srv_preset_easy.update({'srv_MAX_BALLAST_KG': '50'})
+            srv_preset_easy.update({'dyt_SESSION_START': '100'})
+            srv_preset_easy.update({'dyt_RANDOMNESS': '0'})
+            srv_preset_easy.update({'dyt_LAP_GAIN': '1'})
+            srv_preset_easy.update({'dyt_SESSION_TRANSFER': '100'})
+            srv_preset_easy.update({'prt_NAME': 'Practice'})
+            srv_preset_easy.update({'prt_TIME': '10'})
+            srv_preset_easy.update({'prt_IS_OPEN': '1'})
+            srv_preset_easy.update({'qly_NAME': 'Qualify'})
+            srv_preset_easy.update({'qly_TIME': '15'})
+            srv_preset_easy.update({'qly_IS_OPEN': '1'})
+            srv_preset_easy.update({'rce_NAME': 'Race'})
+            srv_preset_easy.update({'rce_LAPS': '5'})
+            srv_preset_easy.update({'rce_WAIT_TIME': '30'})
+            srv_preset_easy.update({'rce_IS_OPEN': '1'})
+            srv_preset_easy.update({'wth_GRAPHICS': '3_clear'})
+            srv_preset_easy.update({'wth_BASE_TEMPERATURE_AMBIENT': '22'})
+            srv_preset_easy.update({'wth_VARIATION_AMBIENT': '2'})
+            srv_preset_easy.update({'wth_BASE_TEMPERATURE_ROAD': '9'})
+            srv_preset_easy.update({'wth_VARIATION_ROAD': '2'})
+            if len(self.__db.findIds("ServerPresets", {"Name": "Easy Drivin'"})) == 0:
+                self.__db.insertRow("ServerPresets", srv_preset_easy)
+
+            # default server preset 'pro'
+            srv_preset_easy = {}
+            srv_preset_easy.update({'Name': "Professional"})
+            srv_preset_easy.update({'srv_SUN_ANGLE': '-18'})
+            srv_preset_easy.update({'srv_TC_ALLOWED': '1'})
+            srv_preset_easy.update({'srv_ABS_ALLOWED': '1'})
+            srv_preset_easy.update({'srv_STABILITY_ALLOWED': '0'})
+            srv_preset_easy.update({'srv_AUTOCLUTCH_ALLOWED': '0'})
+            srv_preset_easy.update({'srv_DAMAGE_MULTIPLIER': '50'})
+            srv_preset_easy.update({'srv_FUEL_RATE': '100'})
+            srv_preset_easy.update({'srv_TYRE_WEAR_RATE': '100'})
+            srv_preset_easy.update({'srv_TYRE_BLANKETS_ALLOWED': '0'})
+            srv_preset_easy.update({'srv_WELCOME_MESSAGE': 'Professional driving simulation.'})
+            srv_preset_easy.update({'srv_FORCE_VIRTUAL_MIRROR': '0'})
+            srv_preset_easy.update({'srv_LEGAL_TYRES': 'V;E;HR;ST'})
+            srv_preset_easy.update({'srv_MAX_BALLAST_KG': '50'})
+            srv_preset_easy.update({'dyt_SESSION_START': '80'})
+            srv_preset_easy.update({'dyt_RANDOMNESS': '5'})
+            srv_preset_easy.update({'dyt_LAP_GAIN': '2'})
+            srv_preset_easy.update({'dyt_SESSION_TRANSFER': '90'})
+            srv_preset_easy.update({'prt_NAME': 'Practice'})
+            srv_preset_easy.update({'prt_TIME': '60'})
+            srv_preset_easy.update({'prt_IS_OPEN': '1'})
+            srv_preset_easy.update({'qly_NAME': 'Qualify'})
+            srv_preset_easy.update({'qly_TIME': '20'})
+            srv_preset_easy.update({'qly_IS_OPEN': '1'})
+            srv_preset_easy.update({'rce_NAME': 'Race'})
+            srv_preset_easy.update({'rce_LAPS': '15'})
+            srv_preset_easy.update({'rce_WAIT_TIME': '60'})
+            srv_preset_easy.update({'rce_IS_OPEN': '1'})
+            srv_preset_easy.update({'wth_GRAPHICS': '3_clear'})
+            srv_preset_easy.update({'wth_BASE_TEMPERATURE_AMBIENT': '18'})
+            srv_preset_easy.update({'wth_VARIATION_AMBIENT': '5'})
+            srv_preset_easy.update({'wth_BASE_TEMPERATURE_ROAD': '9'})
+            srv_preset_easy.update({'wth_VARIATION_ROAD': '5'})
+            if len(self.__db.findIds("ServerPresets", {"Name": "Professional"})) == 0:
+                self.__db.insertRow("ServerPresets", srv_preset_easy)
+
+            # default server preset 'hotlaü'
+            srv_preset_easy = {}
+            srv_preset_easy.update({'Name': "Hotlapping"})
+            srv_preset_easy.update({'srv_SUN_ANGLE': '-8'})
+            srv_preset_easy.update({'srv_TC_ALLOWED': '1'})
+            srv_preset_easy.update({'srv_ABS_ALLOWED': '1'})
+            srv_preset_easy.update({'srv_STABILITY_ALLOWED': '0'})
+            srv_preset_easy.update({'srv_AUTOCLUTCH_ALLOWED': '0'})
+            srv_preset_easy.update({'srv_DAMAGE_MULTIPLIER': '20'})
+            srv_preset_easy.update({'srv_FUEL_RATE': '50'})
+            srv_preset_easy.update({'srv_TYRE_WEAR_RATE': '30'})
+            srv_preset_easy.update({'srv_TYRE_BLANKETS_ALLOWED': '1'})
+            srv_preset_easy.update({'srv_WELCOME_MESSAGE': 'Perfect server for driving hotlaps.'})
+            srv_preset_easy.update({'srv_FORCE_VIRTUAL_MIRROR': '0'})
+            srv_preset_easy.update({'srv_LEGAL_TYRES': 'V;E;HR;ST'})
+            srv_preset_easy.update({'srv_MAX_BALLAST_KG': '50'})
+            srv_preset_easy.update({'dyt_SESSION_START': '100'})
+            srv_preset_easy.update({'dyt_RANDOMNESS': '0'})
+            srv_preset_easy.update({'dyt_LAP_GAIN': '2'})
+            srv_preset_easy.update({'dyt_SESSION_TRANSFER': '100'})
+            srv_preset_easy.update({'prt_NAME': 'Practice'})
+            srv_preset_easy.update({'prt_TIME': '60'})
+            srv_preset_easy.update({'prt_IS_OPEN': '1'})
+            srv_preset_easy.update({'qly_NAME': 'Qualify'})
+            srv_preset_easy.update({'qly_TIME': '20'})
+            srv_preset_easy.update({'qly_IS_OPEN': '1'})
+            srv_preset_easy.update({'rce_NAME': 'Race'})
+            srv_preset_easy.update({'rce_LAPS': '15'})
+            srv_preset_easy.update({'rce_WAIT_TIME': '60'})
+            srv_preset_easy.update({'rce_IS_OPEN': '1'})
+            srv_preset_easy.update({'wth_GRAPHICS': '3_clear'})
+            srv_preset_easy.update({'wth_BASE_TEMPERATURE_AMBIENT': '25'})
+            srv_preset_easy.update({'wth_VARIATION_AMBIENT': '1'})
+            srv_preset_easy.update({'wth_BASE_TEMPERATURE_ROAD': '9'})
+            srv_preset_easy.update({'wth_VARIATION_ROAD': '1'})
+            if len(self.__db.findIds("ServerPresets", {"Name": "Hotlapping"})) == 0:
+                self.__db.insertRow("ServerPresets", srv_preset_easy)
