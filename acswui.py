@@ -23,6 +23,7 @@ __helpstring += "./acswui -v --ini acswui.ini install\n"
 # main arguments
 argparser = argparse.ArgumentParser(prog="acswui", description="Assetto Corsa Server Web User Interface", epilog=__helpstring, formatter_class=argparse.RawTextHelpFormatter)
 argparser.add_argument('-i', '--ini', help="path to config file")
+argparser.add_argument('--install-base-data', action="store_true", help="install basic http data (default groups, etc.)")
 argparser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
 argparsersubs     = argparser.add_subparsers(dest='command')
 argparser_srvpkg  = argparsersubs.add_parser('srvpkg', help="server packager to prepare files (need access to path_ac)")
@@ -68,7 +69,7 @@ if args.command == "srvpkg":
 
 # Installer
 elif args.command == "install":
-    install = Installer(config, args.v)
+    install = Installer(config, args.v, args.install_base_data)
     install.work()
 
 # unknown command

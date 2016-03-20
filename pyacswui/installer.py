@@ -6,7 +6,7 @@ from .db_wrapper import DbWrapper
 
 class Installer(object):
 
-    def __init__(self, config, verbosity = 0):
+    def __init__(self, config, verbosity = 0, install_base_data = False):
 
         if type(config) != type({}):
             raise TypeError("Parameter 'config' must be dict!")
@@ -20,6 +20,11 @@ class Installer(object):
         self.__verbosity = int(verbosity)
         self.__db = DbWrapper(config, verbosity)
 
+        if install_base_data == True:
+            self.__install_base_data = True
+        else:
+            self.__install_base_data = False
+
 
 
     def work(self):
@@ -28,6 +33,7 @@ class Installer(object):
             2. create cConfig.php
             3. scan cars into database
             4. scan tracks into database
+            5. install basic data
         """
 
 
@@ -285,3 +291,23 @@ class Installer(object):
                             if len(existing_track_ids) == 0:
                                 self.__db.insertRow("Tracks", {"Track": track, "Config": track_config, "Name": track_name, "Length": track_length})
 
+
+
+        # =======================
+        #  = Install Base Data =
+        # =======================
+
+        if self.__verbosity > 0:
+            print("Install Base Data")
+
+        # add guest group
+        if 'http_guest_group' in self.__config and len(self.__config['http_guest_group']) > 0:
+            self.__db.insertRow("Groups", {"Name": self.__config['http_guest_group']})
+
+        # optional data
+        if self.__install_base_data:
+
+            # default groups
+            self.__db.insertRow("Groups", {"Name": "Driver"})
+            self.__db.insertRow("Groups", {"Name": "Race Orga"})
+            self.__db.insertRow("Groups", {"Name": "Server Admin"})
