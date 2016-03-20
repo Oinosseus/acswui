@@ -36,10 +36,31 @@ class Installer(object):
             5. install basic data
         """
 
+        self.__work_db_tables()
+        self.__work_cconfig()
+        self.__work_scan_cars()
+        self.__work_scan_tracks()
+        self.__work_install_basics()
 
-        # ===============================
-        #  = Create Database Structure =
-        # ===============================
+
+    def __parse_json(self, json_file, key_name, default_value):
+        ret = default_value
+        key_name = '"' + key_name + '":'
+        if os.path.isfile(json_file):
+            with open(json_file, "r", encoding='utf-8', errors='ignore') as f:
+                for line in f.readlines():
+                    if key_name in line.lower():
+                        ret = line.split(key_name, 1)[1]
+                        ret = ret.strip()
+                        if ret[:1] == '"':
+                            ret = ret[1:].strip()
+                        if ret[-1:] == ',':
+                            ret = ret[:-1].strip()
+                        if ret[-1:] == '"':
+                            ret = ret[:-1]
+        return ret
+
+    def __work_db_tables(self):
 
         # ------------
         #  red tables
@@ -123,9 +144,7 @@ class Installer(object):
 
 
 
-        # ========================
-        #  = Create cConfig.php =
-        # ========================
+    def __work_cconfig(self):
 
         # user info
         if self.__verbosity > 0:
@@ -134,6 +153,70 @@ class Installer(object):
         # encrypt root password
         http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.__config['http_root_passwd']])
         http_root_password = http_root_password.decode("utf-8")
+
+        # find server_cfg settings [SERVER]
+        srv_cfg_server    = ""
+        for key in ['NAME', 'CARS', 'TRACK', 'CONFIG_TRACK', 'SUN_ANGLE', 'MAX_CLIENTS', 'RACE_OVER_TIME', 'ALLOWED_TYRES_OUT', 'UDP_PORT', 'TCP_PORT', 'HTTP_PORT', 'PASSWORD', 'LOOP_MODE', 'REGISTER_TO_LOBBY', 'PICKUP_MODE_ENABLED', 'SLEEP_TIME', 'VOTING_QUORUM', 'VOTE_DURATION', 'BLACKLIST_MODE', 'TC_ALLOWED', 'ABS_ALLOWED', 'STABILITY_ALLOWED', 'AUTOCLUTCH_ALLOWED', 'AMAGE_MULTIPLIER', 'FUEL_RATE', 'TYRE_WEAR_RATE', 'CLIENT_SEND_INTERVAL_HZ', 'TYRE_BLANKETS_ALLOWED', 'ADMIN_PASSWORD', 'QUALIFY_MAX_WAIT_PERC', 'WELCOME_MESSAGE', 'FORCE_VIRTUAL_MIRROR', 'LEGAL_TYRES', 'MAX_BALLAST_KG', 'UDP_PLUGIN_LOCAL_PORT', 'UDP_PLUGIN_ADDRESS', 'AUTH_PLUGIN_ADDRESS']:
+            config_key = "http_srv_" + key
+            if config_key in self.__config and len(self.__config[config_key]) > 0:
+                if len(srv_cfg_server) > 0:
+                    srv_cfg_server += ", "
+                srv_cfg_server += "'" + key + "' => '" + self.__config[config_key] + "'"
+
+        # find server_cfg settings [DYNAMIC_TRACK]
+        srv_cfg_dyntrck    = ""
+        for key in ['SESSION_START', 'RANDOMNESS', 'LAP_GAIN', 'SESSION_TRANSFER']:
+            config_key = "http_dyt_" + key
+            if config_key in self.__config and len(self.__config[config_key]) > 0:
+                if len(srv_cfg_dyntrck) > 0:
+                    srv_cfg_dyntrck += ", "
+                srv_cfg_dyntrck += "'" + key + "' => '" + self.__config[config_key] + "'"
+
+        # find server_cfg settings [BOOKING]
+        srv_cfg_book    = ""
+        for key in ['NAME', 'TIME']:
+            config_key = "http_bok_" + key
+            if config_key in self.__config and len(self.__config[config_key]) > 0:
+                if len(srv_cfg_book) > 0:
+                    srv_cfg_book += ", "
+                srv_cfg_book += "'" + key + "' => '" + self.__config[config_key] + "'"
+
+        # find server_cfg settings [PRACTICE]
+        srv_cfg_prcts    = ""
+        for key in ['NAME', 'TIME', 'IS_OPEN']:
+            config_key = "http_prt_" + key
+            if config_key in self.__config and len(self.__config[config_key]) > 0:
+                if len(srv_cfg_prcts) > 0:
+                    srv_cfg_prcts += ", "
+                srv_cfg_prcts += "'" + key + "' => '" + self.__config[config_key] + "'"
+
+        # find server_cfg settings [QUALIFY]
+        srv_cfg_qly    = ""
+        for key in ['NAME', 'TIME', 'IS_OPEN']:
+            config_key = "http_qly_" + key
+            if config_key in self.__config and len(self.__config[config_key]) > 0:
+                if len(srv_cfg_qly) > 0:
+                    srv_cfg_qly += ", "
+                srv_cfg_qly += "'" + key + "' => '" + self.__config[config_key] + "'"
+
+        # find server_cfg settings [RACE]
+        srv_cfg_rce    = ""
+        for key in ['NAME', 'LAPS', 'WAIT_TIME', 'IS_OPEN']:
+            config_key = "http_rce_" + key
+            if config_key in self.__config and len(self.__config[config_key]) > 0:
+                if len(srv_cfg_rce) > 0:
+                    srv_cfg_rce += ", "
+                srv_cfg_rce += "'" + key + "' => '" + self.__config[config_key] + "'"
+
+        # find server_cfg settings [WEATHER]
+        srv_cfg_wth    = ""
+        for key in ['GRAPHICS', 'BASE_TEMPERATURE_AMBIENT', 'VARIATION_AMBIENT', 'BASE_TEMPERATURE_ROAD', 'VARIATION_ROAD']:
+            config_key = "http_wth_" + key
+            if config_key in self.__config and len(self.__config[config_key]) > 0:
+                if len(srv_cfg_wth) > 0:
+                    srv_cfg_wth += ", "
+                srv_cfg_wth += "'" + key + "' => '" + self.__config[config_key] + "'"
+
 
         with open(self.__config['path_http'] + "/classes/cConfig.php", "w") as f:
             f.write("<?php\n")
@@ -154,6 +237,15 @@ class Installer(object):
             f.write("    private $DbUser = \"%s\";\n" % self.__config['db_user'])
             f.write("    private $DbPasswd = \"%s\";\n" % self.__config['db_passwd'])
             f.write("\n")
+            f.write("    // server_cfg\n")
+            f.write("    private $SrvCfg_Server = [" + srv_cfg_server + "];\n")
+            f.write("    private $SrvCfg_DynTrack = [" + srv_cfg_dyntrck + "];\n")
+            f.write("    private $SrvCfg_Booking = [" + srv_cfg_book + "];\n")
+            f.write("    private $SrvCfg_Practice = [" + srv_cfg_prcts + "];\n")
+            f.write("    private $SrvCfg_Qualify = [" + srv_cfg_qly + "];\n")
+            f.write("    private $SrvCfg_Race = [" + srv_cfg_rce + "];\n")
+            f.write("    private $SrvCfg_Weather = [" + srv_cfg_wth + "];\n")
+            f.write("\n")
             f.write("    // this allows read-only access to private properties\n")
             f.write("    public function __get($name) {\n")
             f.write("      return $this->$name;\n")
@@ -163,32 +255,13 @@ class Installer(object):
 
 
 
-        # ===============
-        #  = Scan Cars =
-        # ===============
-
-        def parse_json(json_file, key_name, default_value):
-            ret = default_value
-            key_name = '"' + key_name + '":'
-            if os.path.isfile(json_file):
-                with open(json_file, "r", encoding='utf-8', errors='ignore') as f:
-                    for line in f.readlines():
-                        if key_name in line.lower():
-                            ret = line.split(key_name, 1)[1]
-                            ret = ret.strip()
-                            if ret[:1] == '"':
-                                ret = ret[1:].strip()
-                            if ret[-1:] == ',':
-                                ret = ret[:-1].strip()
-                            if ret[-1:] == '"':
-                                ret = ret[:-1]
-            return ret
+    def __work_scan_cars(self):
 
         for car in os.listdir(self.__config['path_http'] + "/acs_content/cars"):
             car_path   = self.__config['path_http'] + "/acs_content/cars/" + car
-            car_name   = parse_json(car_path + "/ui/ui_car.json", "name", car)
-            car_parent = parse_json(car_path + "/ui/ui_car.json", "parent", "")
-            car_brand  = parse_json(car_path + "/ui/ui_car.json", "brand", "")
+            car_name   = self.__parse_json(car_path + "/ui/ui_car.json", "name", car)
+            car_parent = self.__parse_json(car_path + "/ui/ui_car.json", "parent", "")
+            car_brand  = self.__parse_json(car_path + "/ui/ui_car.json", "brand", "")
 
             # get skins
             car_skins = []
@@ -219,9 +292,7 @@ class Installer(object):
 
 
 
-        # ================
-        #  = Scan Track =
-        # ================
+    def __work_scan_tracks(self):
 
         def interpret_length(length):
             ret = ""
@@ -270,8 +341,8 @@ class Installer(object):
 
             # update track
             if os.path.isfile(track_path + "/ui/ui_track.json"):
-                track_name   = parse_json(track_path + "/ui/ui_track.json", "name", track)
-                track_length = parse_json(track_path + "/ui/ui_track.json", "length", "0")
+                track_name   = self.__parse_json(track_path + "/ui/ui_track.json", "name", track)
+                track_length = self.__parse_json(track_path + "/ui/ui_track.json", "length", "0")
                 track_length = interpret_length(track_length)
 
                 existing_track_ids = self.__db.findIds("Tracks", {"Track": track})
@@ -283,8 +354,8 @@ class Installer(object):
                 for track_config in os.listdir(track_path + "/ui"):
                     if os.path.isdir(track_path + "/ui/" + track_config):
                         if os.path.isfile(track_path + "/ui/" + track_config + "/ui_track.json"):
-                            track_name   = parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "name", track)
-                            track_length = parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "length", "0")
+                            track_name   = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "name", track)
+                            track_length = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "length", "0")
                             track_length = interpret_length(track_length)
 
                             existing_track_ids = self.__db.findIds("Tracks", {"Track": track, "Config": track_config})
@@ -293,9 +364,7 @@ class Installer(object):
 
 
 
-        # =======================
-        #  = Install Base Data =
-        # =======================
+    def __work_install_basics(self):
 
         if self.__verbosity > 0:
             print("Install Base Data")
