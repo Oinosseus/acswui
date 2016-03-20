@@ -123,25 +123,44 @@ class cUser {
 
         // get globals
         global $acswuiDatabase;
-
-        // grant root
-        if ($this->IsRoot) {
-            return true;
-        }
+        global $acswuiConfig;
 
         // insert permission if not present
         if (!in_array($permission, $acswuiDatabase->fetch_column_names("Groups"))) {
             $acswuiDatabase->insert_group_permission($permission);
         }
 
-        // get group memberships of user
-        $user_groups = array();
-        foreach ($acswuiDatabase->fetch_2d_array("UserGroupMap", ["Group"], ['User'], [$this->Id]) as $g) {
-            // check if group has the permission
-            if ($acswuiDatabase->fetch_2d_array("Groups", [$permission], ['Id'], [$g['Group']])[0][$permission] > 0)
-                return true;
+        // grant root
+        if ($this->IsRoot) {
+            return true;
         }
 
+        // get group memberships of user
+        $user_group_ids = array();
+        if ($this->IsLogged) {
+            // get all group memberships of logged user
+            foreach ($acswuiDatabase->fetch_2d_array("UserGroupMap", ["Group"], ['User'], [$this->Id]) as $g) {
+                $user_group_ids[count($user_group_ids)] = $g['Group'];
+
+            }
+        } elseif (strlen($acswuiConfig->GuestGroup) > 0) {
+            // get matching visitor group if existent
+            foreach ($acswuiDatabase->fetch_2d_array("Groups", ["Id"], ['Name'], [$acswuiConfig->GuestGroup]) as $g) {
+                $user_group_ids[count($user_group_ids)] = $g['Id'];
+            }
+        }
+
+        // check permissions of all group memberships
+        foreach ($user_group_ids as $g) {
+            // check if group has the permission
+            foreach ($acswuiDatabase->fetch_2d_array("Groups", [$permission], ['Id'], [$g]) as $p) {
+                if ($p[$permission] > 0){
+                    return true;
+                }
+            }
+        }
+
+        // no permissions found
         return false;
 
 

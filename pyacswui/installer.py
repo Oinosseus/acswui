@@ -138,6 +138,7 @@ class Installer(object):
             f.write("    private $LogPath = '%s';\n" % self.__config['http_log_path'])
             f.write("    private $LogDebug = \"false\";\n")
             f.write("    private $RootPassword = '%s';\n" % http_root_password)
+            f.write("    private $GuestGroup = '%s';\n" % self.__config['http_guest_group'])
             f.write("\n")
             f.write("    // database constants\n")
             f.write("    private $DbType = \"%s\";\n" % self.__config['db_type'])
