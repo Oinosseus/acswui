@@ -185,6 +185,7 @@
     // only fields with existing database column are respected
     public function insert_row($table, $field_list) {
         global $acswuiConfig;
+        global $acswuiLog;
 
         // break if no connection available
         if (is_null($this->db_handle)) return array();
@@ -216,7 +217,10 @@
             $query = "INSERT INTO `$table` ($insert_columns) VALUES ($insert_values);";
 //             echo("<br>");
 //             print_r($query);
-            $this->db_handle->query($query);
+            if (!$this->db_handle->query($query)) {
+                $acswuiLog->logError($this->db_handle->error);
+            }
+
 
             $result = $this->db_handle->query("SELECT LAST_INSERT_ID();");
             return $result->fetch_array()[0];

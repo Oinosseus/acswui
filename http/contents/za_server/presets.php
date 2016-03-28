@@ -22,7 +22,7 @@ class presets extends cContentPage {
         $preset_fields_qly = ['qly_NAME', 'qly_TIME', 'qly_IS_OPEN'];
         $preset_fields_rce = ['rce_NAME', 'rce_LAPS', 'rce_WAIT_TIME', 'rce_IS_OPEN'];
         $preset_fields_wth = ['wth_GRAPHICS', 'wth_BASE_TEMPERATURE_AMBIENT', 'wth_VARIATION_AMBIENT', 'wth_BASE_TEMPERATURE_ROAD', 'wth_VARIATION_ROAD'];
-        $preset_fields = array_merge($preset_fields_srv, $preset_fields_dyt, $preset_fields_bok, $preset_fields_prt, $preset_fields_qly, $preset_fields_rce, $preset_fields_wth);
+        $this->preset_fields = array_merge($preset_fields_srv, $preset_fields_dyt, $preset_fields_bok, $preset_fields_prt, $preset_fields_qly, $preset_fields_rce, $preset_fields_wth);
 
         if (isset($_REQUEST['PRESET_ID'])) {
             $preset_id = $_REQUEST['PRESET_ID'];
@@ -33,20 +33,24 @@ class presets extends cContentPage {
         }
         $_SESSION['PRESET_ID'] = $preset_id;
 
+        // save preset
+        if (isset($_POST['SAVEALL']) && $preset_id > 0 && $preset_id != "NEW_PRESET") $this->saveall($preset_id, false);
+        if (isset($_POST['SAVEALL']) && $preset_id == "NEW_PRESET") $this->saveall(0, true);
+
         // set preset values
         $permitted = $acswuiUser->hasPermission($this->EditPermission);
         $this->preset_values = array();
-        foreach ($preset_fields as $e) {
+        foreach ($this->preset_fields as $e) {
             $this->preset_values[$e] = "";
         }
 
         // get actual preset values
         if ($preset_id != 0 && $preset_id != "NEW_PRESET") {
-            $ret = $acswuiDatabase->fetch_2d_array("ServerPresets", array_merge(['Name'], $preset_fields), ['Id'], [$preset_id]);
+            $ret = $acswuiDatabase->fetch_2d_array("ServerPresets", array_merge(['Name'], $this->preset_fields), ['Id'], [$preset_id]);
             $this->preset_values['Name'] = $ret[0]['Name'];
 
             // add field values
-            foreach ($preset_fields as $e) {
+            foreach ($this->preset_fields as $e) {
                 if ($this->hasGlobalOverwrite($e)) {
                     $this->preset_values[$e] = $this->getGlobalOverwrite($e);
                 } else {
@@ -80,8 +84,10 @@ class presets extends cContentPage {
         }
 
         // new preset
-        $selected = ($preset_id === "NEW_PRESET") ? "selected" : "";
-        $html .= '<option value="NEW_PRESET" ' . $selected . '>&lt;' . _("New Preset") . '&gt;</option>';
+        if ($permitted) {
+            $selected = ($preset_id === "NEW_PRESET") ? "selected" : "";
+            $html .= '<option value="NEW_PRESET" ' . $selected . '>&lt;' . _("Create New Preset") . '&gt;</option>';
+        }
         $html .= '</select>';
         $html .= '</form><br>';
 
@@ -93,11 +99,13 @@ class presets extends cContentPage {
 
 
 
-        $html .= "<form style=\"max-width: 1100px;\"><input type=\"hidden\" name=\"PRESET_ID\" value=\"$preset_id\"/>";
+        $html .= "<form style=\"max-width: 1100px;\" method=\"post\"><input type=\"hidden\" name=\"PRESET_ID\" value=\"$preset_id\"/>";
 
         # preset name
         $name = (isset($this->preset_values["Name"])) ? $this->preset_values['Name'] : "";
-        $html .= "<fieldset>Name: <input type=\"text\" name=\"Name\" value=\"$name\" " . (($permitted) ? "" : "readonly") . "/></fieldset>";
+        $html .= "<fieldset>";
+        $html .= "Name: <input type=\"text\" name=\"Name\" value=\"$name\" " . (($permitted) ? "" : "readonly") . "/>";
+        $html .= "</fieldset>";
 
         # SERVER section
         $html .= "<fieldset style=\"display: block; float: left;\"><legend>SERVER</legend><table>";
@@ -178,6 +186,9 @@ class presets extends cContentPage {
         $html .= $this->getTrInputList("rce_IS_OPEN", ['no join', 'free join', 'until 20s to green'], [0, 1, 2], $permitted, _(""));
         $html .= "</table></fieldset>";
 
+        # save button
+        $html .= "<button type=\"submit\" name=\"SAVEALL\" value=\"TRUE\">" . _("Save") . "</button>";
+
         $html .= '</form>';
 
 
@@ -228,18 +239,28 @@ class presets extends cContentPage {
         return "<tr><td>$key</td><td><textarea name=\"$preset_key\" title=\"$comment\" $readonly>" . $this->preset_values[$preset_key] . "</textarea></td></tr>";
     }
 
-    function getTrInputRange($preset_key, $min, $max, $unit, $permitted, $comment) {
+    function getTrInputRange($preset_key, $min, $max, $unit, $permitted, $comment, $default = 0) {
         $key        = substr($preset_key, 4, strlen($preset_key) - 4);
         $permitted &= !$this->hasGlobalOverwrite($preset_key);
         $readonly = ($permitted) ? "" : "readonly disabled";
-        return "<tr><td>$key</td><td>$min$unit<input type=\"range\" min=\"$min\" max=\"$max\" step=\"1\" name=\"$preset_key\" value=\"" . $this->preset_values[$preset_key] . "\" title=\"$comment\" $readonly>$max$unit</td></tr>";
+        if ($this->preset_values[$preset_key] == "") {
+            $value = $default;
+        } else {
+            $value = $this->preset_values[$preset_key];
+        }
+        return "<tr><td>$key</td><td>$min$unit<input type=\"range\" min=\"$min\" max=\"$max\" step=\"1\" name=\"$preset_key\" value=\"$value\" title=\"$comment\" $readonly>$max$unit</td></tr>";
     }
 
-    function getTrInputNumber($preset_key, $min, $max, $unit, $permitted, $comment) {
+    function getTrInputNumber($preset_key, $min, $max, $unit, $permitted, $comment, $default = 0) {
         $key        = substr($preset_key, 4, strlen($preset_key) - 4);
         $permitted &= !$this->hasGlobalOverwrite($preset_key);
         $readonly = ($permitted) ? "" : "readonly";
-        return "<tr><td>$key</td><td><input type=\"number\" min=\"$min\" max=\"$max\" step=\"1\" name=\"$preset_key\" value=\"" . $this->preset_values[$preset_key] . "\" title=\"$comment\" $readonly>$unit</td></tr>";
+        if ($this->preset_values[$preset_key] == "") {
+            $value = $default;
+        } else {
+            $value = $this->preset_values[$preset_key];
+        }
+        return "<tr><td>$key</td><td><input type=\"number\" min=\"$min\" max=\"$max\" step=\"1\" name=\"$preset_key\" value=\"$value\" title=\"$comment\" $readonly>$unit</td></tr>";
     }
 
     function getTrInputList($preset_key, $names, $values, $permitted, $comment) {
@@ -255,6 +276,32 @@ class presets extends cContentPage {
         $html .= "</select>";
         $html .= "</td></tr>";
         return $html;
+    }
+
+    function saveall($id, $new=false) {
+        global $acswuiDatabase;
+        global $acswuiUser;
+
+        // check permission
+        if (!$acswuiUser->hasPermission($this->EditPermission)) return;
+
+        // get form data
+        $field_list = array();
+        if (isset($_POST["Name"])) {
+            $field_list["Name"] = $_POST["Name"];
+        }
+        foreach ($this->preset_fields as $p) {
+            if (isset($_POST[$p])) {
+                $field_list[$p] = $_POST[$p];
+            }
+        }
+
+        // update database
+        if ($new === true) {
+            $_REQUEST['PRESET_ID'] = $acswuiDatabase->insert_row("ServerPresets", $field_list);
+        } else {
+            $acswuiDatabase->update_row("ServerPresets", $id, $field_list);
+        }
     }
 }
 
