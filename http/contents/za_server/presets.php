@@ -229,21 +229,33 @@ class presets extends cContentPage {
         $key        = substr($preset_key, 4, strlen($preset_key) - 4);
         $permitted &= !$this->hasGlobalOverwrite($preset_key);
         $readonly = ($permitted) ? "" : "readonly";
-        return "<tr><td>$key</td><td><input type=\"text\" name=\"$preset_key\" value=\"" . $this->preset_values[$preset_key] . "\" title=\"$comment\" $readonly></td></tr>";
+        if ($this->hasGlobalOverwrite($preset_key)) {
+            $value = $this->getGlobalOverwrite($preset_key);
+        } else {
+            $value = $this->preset_values[$preset_key];
+        }
+        return "<tr><td>$key</td><td><input type=\"text\" name=\"$preset_key\" value=\"$value\" title=\"$comment\" $readonly></td></tr>";
     }
 
     function getTrInputTextarea($preset_key, $permitted, $comment) {
         $key        = substr($preset_key, 4, strlen($preset_key) - 4);
         $permitted &= !$this->hasGlobalOverwrite($preset_key);
         $readonly = ($permitted) ? "" : "readonly";
-        return "<tr><td>$key</td><td><textarea name=\"$preset_key\" title=\"$comment\" $readonly>" . $this->preset_values[$preset_key] . "</textarea></td></tr>";
+        if ($this->hasGlobalOverwrite($preset_key)) {
+            $value = $this->getGlobalOverwrite($preset_key);
+        } else {
+            $value = $this->preset_values[$preset_key];
+        }
+        return "<tr><td>$key</td><td><textarea name=\"$preset_key\" title=\"$comment\" $readonly>$value</textarea></td></tr>";
     }
 
     function getTrInputRange($preset_key, $min, $max, $unit, $permitted, $comment, $default = 0) {
         $key        = substr($preset_key, 4, strlen($preset_key) - 4);
         $permitted &= !$this->hasGlobalOverwrite($preset_key);
         $readonly = ($permitted) ? "" : "readonly disabled";
-        if ($this->preset_values[$preset_key] == "") {
+        if ($this->hasGlobalOverwrite($preset_key)) {
+            $value = $this->getGlobalOverwrite($preset_key);
+        } elseif ($this->preset_values[$preset_key] == "") {
             $value = $default;
         } else {
             $value = $this->preset_values[$preset_key];
@@ -255,7 +267,9 @@ class presets extends cContentPage {
         $key        = substr($preset_key, 4, strlen($preset_key) - 4);
         $permitted &= !$this->hasGlobalOverwrite($preset_key);
         $readonly = ($permitted) ? "" : "readonly";
-        if ($this->preset_values[$preset_key] == "") {
+        if ($this->hasGlobalOverwrite($preset_key)) {
+            $value = $this->getGlobalOverwrite($preset_key);
+        } elseif ($this->preset_values[$preset_key] == "") {
             $value = $default;
         } else {
             $value = $this->preset_values[$preset_key];
@@ -270,8 +284,14 @@ class presets extends cContentPage {
         $html  = "<tr><td>$key</td><td>";
         $html .= "<select name=\"$preset_key\" title=\"$comment\" $readonly>";
         for ($i=0; $i < count($names); $i++) {
-            $selected = ($this->preset_values[$preset_key] == $values[$i]) ? "selected" : "";
-            $html .= "<option value=\"" . $values[$i] . "\" $selected>" . $names[$i] . "</option>";
+            if ($this->hasGlobalOverwrite($preset_key)) {
+                if ($values[$i] == $this->getGlobalOverwrite($preset_key)) {
+                    $html .= "<option value=\"" . $values[$i] . "\" selected>" . $names[$i] . "</option>";
+                }
+            } else {
+                $selected = ($this->preset_values[$preset_key] == $values[$i]) ? "selected" : "";
+                $html .= "<option value=\"" . $values[$i] . "\" $selected>" . $names[$i] . "</option>";
+            }
         }
         $html .= "</select>";
         $html .= "</td></tr>";
