@@ -217,9 +217,9 @@ class Installer(object):
 
 
         if self.__verbosity > 0:
-            print("check database table `EntryList`")
-        self.__db.appendTable("EntryList")
-        self.__db.appendColumnString("EntryList", 'Name', 60)
+            print("check database table `EntryLists`")
+        self.__db.appendTable("EntryLists")
+        self.__db.appendColumnString("EntryLists", 'Name', 60)
 
 
         if self.__verbosity > 0:
