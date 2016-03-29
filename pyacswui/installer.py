@@ -216,6 +216,21 @@ class Installer(object):
         self.__db.appendColumnInt("ServerPresets",    'wth_VARIATION_ROAD')
 
 
+        if self.__verbosity > 0:
+            print("check database table `EntryList`")
+        self.__db.appendTable("EntryList")
+        self.__db.appendColumnString("EntryList", 'Name', 60)
+
+
+        if self.__verbosity > 0:
+            print("check database table `EntryListCars`")
+        self.__db.appendTable("EntryListCars")
+        self.__db.appendColumnInt("EntryListCars", 'EntryList')
+        self.__db.appendColumnInt("EntryListCars", 'User')
+        self.__db.appendColumnInt("EntryListCars", 'CarSkin')
+        self.__db.appendColumnInt("EntryListCars", 'Ballast')
+
+
 
     def __work_cconfig(self):
 
