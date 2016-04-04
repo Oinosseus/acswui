@@ -141,6 +141,7 @@ class Installer(object):
         self.__db.appendColumnString("Tracks", "Config", 80)
         self.__db.appendColumnString("Tracks", "Name", 80)
         self.__db.appendColumnFloat("Tracks", "Length")
+        self.__db.appendColumnInt("Tracks", "Pitboxes")
 
 
         # -------------
@@ -419,6 +420,16 @@ class Installer(object):
             #print("LENGTH before=", length, "after=", ret, "unit=", unit)
             return ret
 
+        def interpret_pitboxes(pitbxs):
+            ret = 0
+            for char in pitbxs:
+                if char in "0123456789":
+                    ret *= 10
+                    ret += int(char)
+                else:
+                    break
+            return ret
+
 
 
         for track in os.listdir(self.__config['path_http'] + "/acs_content/tracks"):
@@ -432,10 +443,13 @@ class Installer(object):
                 track_name   = self.__parse_json(track_path + "/ui/ui_track.json", "name", track)
                 track_length = self.__parse_json(track_path + "/ui/ui_track.json", "length", "0")
                 track_length = interpret_length(track_length)
+                track_pitbxs = interpret_pitboxes(self.__parse_json(track_path + "/ui/ui_track.json", "pitboxes", "0"))
 
                 existing_track_ids = self.__db.findIds("Tracks", {"Track": track})
                 if len(existing_track_ids) == 0:
-                    self.__db.insertRow("Tracks", {"Track": track, "Config": "", "Name": track_name, "Length": track_length})
+                    self.__db.insertRow("Tracks", {"Track": track, "Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs})
+                else:
+                    self.__db.updateRow("Tracks", existing_track_ids[0], {"Track": track, "Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs})
 
             # update track configs
             if os.path.isdir(track_path + "/ui"):
@@ -445,10 +459,13 @@ class Installer(object):
                             track_name   = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "name", track)
                             track_length = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "length", "0")
                             track_length = interpret_length(track_length)
+                            track_pitbxs = interpret_pitboxes(self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "pitboxes", "0"))
 
                             existing_track_ids = self.__db.findIds("Tracks", {"Track": track, "Config": track_config})
                             if len(existing_track_ids) == 0:
-                                self.__db.insertRow("Tracks", {"Track": track, "Config": track_config, "Name": track_name, "Length": track_length})
+                                self.__db.insertRow("Tracks", {"Track": track, "Config": track_config, "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs})
+                            else:
+                                self.__db.updateRow("Tracks", existing_track_ids[0], {"Track": track, "Config": track_config, "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs})
 
 
 
