@@ -221,7 +221,7 @@ input {
   color: #223440;
 }
 
-input[type="submit"], form button {
+button {
 
   color: #223440;
   text-decoration: none;
@@ -233,7 +233,7 @@ input[type="submit"], form button {
   box-shadow: #111A20 3px 3px 1px;
 }
 
-input[type="submit"]:hover, form button:hover {
+button:hover {
   color: #fff;
   text-shadow: none;
 }

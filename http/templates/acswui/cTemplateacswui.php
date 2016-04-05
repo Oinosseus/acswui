@@ -8,6 +8,7 @@ class cTemplateacswui extends cTemplate {
         $html  = "<!DOCTYPE html>\n";
         $html .= "<html>\n";
         $html .= "  <head>\n";
+        $html .= "    <meta charset=\"utf-8\">\n";
         $html .= "    <title>acswui</title>\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style.css\">\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_special.css\">\n";
