@@ -5,7 +5,7 @@
     private $DefaultTemplate = "acswui";
     private $LogPath = '../http-logs/';
     private $LogDebug = "false";
-    private $RootPassword = '$2y$10$ZZU6E7fNlDf75mQpbi/aqOlZS5LcSwNZR5DQP7WLPmh0l1z/9NKXm';
+    private $RootPassword = '$2y$10$5faNoe/1BMZEfCr9AW3N5OSLQtodDC2FUB3P.ZKGkWSnXbQhfHI.C';
     private $GuestGroup = 'Visitor';
 
     // database constants

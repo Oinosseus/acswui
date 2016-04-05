@@ -166,6 +166,7 @@ ul.MainMenu li {
   margin: 0px;
   margin-bottom: 5px;
   padding: 0px;
+  clear: both;
 }
 
 ul.MainMenu li a {

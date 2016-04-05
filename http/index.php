@@ -203,8 +203,7 @@ if (isset($_REQUEST['NONCONTENT'])) {
         bind_textdomain_codeset($acswuiContentPage->TextDomain, 'UTF-8');
         textdomain($acswuiContentPage->TextDomain);
         // put html from content to template
-        $acswuiTemplate->Content .= $acswuiContentPage->getHtml();
-        $acswuiTemplate->Title = $acswuiContentPage->PageTitle;
+        $acswuiTemplate->ContentPage = $acswuiContentPage;
     }
 }
 
