@@ -489,7 +489,8 @@ class Installer(object):
 
         # add guest group
         if 'http_guest_group' in self.__config and len(self.__config['http_guest_group']) > 0:
-            self.__db.insertRow("Groups", {"Name": self.__config['http_guest_group']})
+            if len(self.__db.findIds("Groups", {"Name": self.__config['http_guest_group']})) == 0:
+                self.__db.insertRow("Groups", {"Name": self.__config['http_guest_group']})
 
         # optional data
         if self.__install_base_data:
@@ -578,7 +579,7 @@ class Installer(object):
             if len(self.__db.findIds("ServerPresets", {"Name": "Professional"})) == 0:
                 self.__db.insertRow("ServerPresets", srv_preset_easy)
 
-            # default server preset 'hotlaü'
+            # default server preset 'hotlap'
             srv_preset_easy = {}
             srv_preset_easy.update({'Name': "Hotlapping"})
             srv_preset_easy.update({'srv_SUN_ANGLE': '-8'})
