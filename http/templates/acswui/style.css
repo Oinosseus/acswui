@@ -272,7 +272,9 @@ select[disabled]:focus{
   color: #883440;
 }
 
-
+form label {
+    display: block;
+}
 
 
 
