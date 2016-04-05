@@ -218,18 +218,31 @@ class Installer(object):
 
 
         if self.__verbosity > 0:
-            print("check database table `EntryLists`")
-        self.__db.appendTable("EntryLists")
-        self.__db.appendColumnString("EntryLists", 'Name', 60)
+            print("check database table `RaceSeries`")
+        self.__db.appendTable("RaceSeries")
+        self.__db.appendColumnString("RaceSeries", 'Name', 50)
+        self.__db.appendColumnInt("RaceSeries",    'GridAutoFill')
+        self.__db.appendColumnInt("RaceSeries",    'AllowUserOccupation')
 
 
         if self.__verbosity > 0:
-            print("check database table `EntryListCars`")
-        self.__db.appendTable("EntryListCars")
-        self.__db.appendColumnInt("EntryListCars", 'EntryList')
-        self.__db.appendColumnInt("EntryListCars", 'User')
-        self.__db.appendColumnInt("EntryListCars", 'CarSkin')
-        self.__db.appendColumnInt("EntryListCars", 'Ballast')
+            print("check database table `RaceSeriesCars`")
+        self.__db.appendTable("RaceSeriesCars")
+        self.__db.appendColumnInt("RaceSeriesCars", 'RaceSeries')
+        self.__db.appendColumnInt("RaceSeriesCars", 'Car')
+        self.__db.appendColumnInt("RaceSeriesCars", 'Ballast')
+        self.__db.appendColumnInt("RaceSeriesCars", 'Count')
+        self.__db.appendColumnInt("RaceSeriesCars", 'AllowUserOccupation')
+        self.__db.appendColumnInt("RaceSeriesCars", 'GridAutoFill')
+
+        if self.__verbosity > 0:
+            print("check database table `RaceGrid`")
+        self.__db.appendTable("RaceGrid")
+        self.__db.appendColumnInt("RaceGrid", 'RaceSeriesCar')
+        self.__db.appendColumnInt("RaceGrid", 'CarSkin')
+        self.__db.appendColumnInt("RaceGrid", 'Ballast')
+        self.__db.appendColumnInt("RaceGrid", 'AllowUserOccupation')
+        self.__db.appendColumnInt("RaceGrid", 'User')
 
 
 
