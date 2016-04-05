@@ -1,56 +1,48 @@
-input[type="text"],
-input[type="range"],
-input[type="number"],
-input[type="password"] {
-    background-color: rgba(255, 255, 255, 0.0);
-    border: 1px solid rgba(255, 255, 255, 0.0);
-    color: rgba(255,255,255,0.5);
+
+/* -----------------------------------------------------------------------------
+ *                                 Old Styles
+ * -----------------------------------------------------------------------------
+ */
+
+/*
+div#PresetSelect input[type=radio],
+#CarSelect input[type=checkbox] {
+  display: none;
 }
 
-input[type="text"]:focus,
-input[type="range"]:focus,
-input[type="number"]:focus,
-input[type="password"]:focus {
-  background-color: rgba(255,255,255,0.5);
-  border: 1px solid black;
-  color: #223440;
+div#PresetSelect input[type=radio] + label,
+#CarSelect input[type=checkbox] + label {
+  background-color: rgba(0,0,0,0.2);
+  padding: 5px 20px;
+  margin-bottom: 5px;
+  display: inline-block;
 }
 
-input[disabled],
-input[disabled]:focus,
-input[readonly],
-input[readonly]:focus,
-select[readonly],
-select[readonly]:focus,
-select[disabled],
-select[disabled]:focus{
-  color: #883440;
+div#PresetSelect input[type=radio] + label {
+  width: 80%;
 }
 
-
-fieldset {
-/*     margin: 0px; */
-    margin-top: 0px;
-    margin-bottom: 0px;
-    margin-left: 10px;
-    margin-right: 10px;
-    padding: 2px;
-    border: none;
-    background-color: rgba(255, 255, 255, 0.02);
+div#PresetSelect input[type=radio] + label img {
+  display: none;
 }
 
-fieldset legend {
-    margin-top: 40px;
-    margin-left: 5px;
-    margin-right: 5px;
-    padding-left: 10px;
-    padding-top: 4px;
-    padding-bottom: 2px;
-    background: linear-gradient(to left, rgba(189,0,0,0) 3%, rgba(189,0,0,1) 50%, rgba(189,0,0,1) 100%);
-    border-top-left-radius: 8px;
-    width: 100%;
+div#PresetSelect input[type=radio]:checked + label img {
+  display: block;
+  float:left;
 }
 
-fieldset table {
-    width: 100%;
+div#PresetSelect input[type=radio] + label:hover,
+#CarSelect input[type=checkbox] + label:hover {
+  background-color: rgba(0,0,0,0.5);
 }
+
+div#PresetSelect input[type=radio]:checked + label,
+#CarSelect input[type=checkbox]:checked + label {
+  background-color: rgba(255,0,0,0.75);
+}
+
+div#ServerOverviewTrackOutline {
+  background-color: rgba(0,0,0,0.2);
+}
+
+*/

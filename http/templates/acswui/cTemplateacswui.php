@@ -43,7 +43,9 @@ class cTemplateacswui extends cTemplate {
 
         // content
         $html .= "    <div class=\"MainBody\">\n";
+        $html .= "      <div id=\"" . str_replace("/", "_", $this->ContentPage->getRelPath()) . "\">\n";
         $html .= $this->ContentPage->getHtml();
+        $html .= "      </div>\n";
         $html .= "    </div>\n";
         $html .= "  </body>\n";
         $html .= "</html>\n";
