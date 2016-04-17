@@ -17,7 +17,10 @@ class cTemplateacswui extends cTemplate {
         $html .= "    <div class=\"Header\">\n";
         $html .= "      Assetto Corsa Server Web User Interface\n";
         $html .= "    </div>\n";
-        $html .= "    <div class=\"Subtitle\">&nbsp;" . $this->ContentPage->PageTitle . "</div>\n";
+        if ($this->ContentPage)
+            $html .= "    <div class=\"Subtitle\">&nbsp;" . $this->ContentPage->PageTitle . "</div>\n";
+        else
+            $html .= "    <div class=\"Subtitle\">&nbsp;</div>\n";
 
         // main/sub navigation
         $html .= "    <ul class=\"MainMenu\">\n";
@@ -44,8 +47,12 @@ class cTemplateacswui extends cTemplate {
 
         // content
         $html .= "    <div class=\"MainBody\">\n";
-        $html .= "      <div id=\"" . str_replace("/", "_", $this->ContentPage->getRelPath()) . "\">\n";
-        $html .= $this->ContentPage->getHtml();
+        if ($this->ContentPage) {
+            $html .= "      <div id=\"" . str_replace("/", "_", $this->ContentPage->getRelPath()) . "\">\n";
+            $html .= $this->ContentPage->getHtml();
+        } else  {
+            $html .= "      <div>\n";
+        }
         $html .= "      </div>\n";
         $html .= "    </div>\n";
         $html .= "  </body>\n";
