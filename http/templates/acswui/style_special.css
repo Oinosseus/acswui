@@ -1,54 +1,69 @@
 
+
+/******************************************************************************
+ *                          #contents__za_server_
+ ******************************************************************************/
+
+
 #contents__za_server_ fieldset > img {
     float: left;
 }
 
 
 
-/* -----------------------------------------------------------------------------
- *                                 Old Styles
- * -----------------------------------------------------------------------------
- */
+/******************************************************************************
+ *                          #contents__yy_race_series_
+ ******************************************************************************/
 
-/*
-div#PresetSelect input[type=radio],
-#CarSelect input[type=checkbox] {
-  display: none;
+#contents__yy_race_series_ table#available_cars tr td img{
+    display:none;
 }
 
-div#PresetSelect input[type=radio] + label,
-#CarSelect input[type=checkbox] + label {
-  background-color: rgba(0,0,0,0.2);
-  padding: 5px 20px;
-  margin-bottom: 5px;
-  display: inline-block;
+#contents__yy_race_series_ table#available_cars tr:hover {
+    background-color: rgba(255, 0, 0, 0.75);
 }
 
-div#PresetSelect input[type=radio] + label {
-  width: 80%;
+#contents__yy_race_series_ table#available_cars tr:hover img {
+    display:block;
+    position: absolute;
+    border: 10px solid rgba(0,0,0,0.5);
+    border-radius: 0px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    margin-top:15px;
 }
 
-div#PresetSelect input[type=radio] + label img {
-  display: none;
+#contents__yy_race_series_ table#available_cars tr:last-child:hover {
+    background-color: rgba(0, 0, 0, 0.0);
 }
 
-div#PresetSelect input[type=radio]:checked + label img {
-  display: block;
-  float:left;
+
+
+#contents__yy_race_series_ div.car_add_option{
+    display:inline-block;
+    margin: 5px;
+    border-radius: 5px;
+    width: auto;
 }
 
-div#PresetSelect input[type=radio] + label:hover,
-#CarSelect input[type=checkbox] + label:hover {
-  background-color: rgba(0,0,0,0.5);
+#contents__yy_race_series_ div.car_add_option input[type=checkbox] {
+    display: none;
 }
 
-div#PresetSelect input[type=radio]:checked + label,
-#CarSelect input[type=checkbox]:checked + label {
-  background-color: rgba(255,0,0,0.75);
+#contents__yy_race_series_ div.car_add_option img {
+    display: block;
 }
 
-div#ServerOverviewTrackOutline {
-  background-color: rgba(0,0,0,0.2);
+#contents__yy_race_series_ div.car_add_option input[type=checkbox] + label {
+    background-color: rgba(0,0,0,0.2);
+    padding: 5px;
 }
 
-*/
+#contents__yy_race_series_ div.car_add_option input[type=checkbox] + label:hover {
+    background-color: rgba(0,0,0,0.5);
+}
+
+#contents__yy_race_series_ div.car_add_option input[type=checkbox]:checked + label {
+    background-color: rgba(255,0,0,0.75);
+}
+

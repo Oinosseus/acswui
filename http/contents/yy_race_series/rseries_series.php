@@ -3,7 +3,7 @@
 class rseries_series extends cContentPage {
 
     public function __construct() {
-        $this->MenuName   = _("Series");
+        $this->MenuName   = _("Race Series");
         $this->TextDomain = "acswui";
         $this->PageTitle  = _("Race Series / Race Grid Management");
         $this->RequirePermissions = ["View_ServerContent"];
@@ -83,7 +83,7 @@ class rseries_series extends cContentPage {
         if ($acswuiUser->hasPermission($this->EditPermission)) {
             $html .= "<tr>";
             $html .= "<td><input type=\"text\" name=\"NEWRACESERIES_NAME\" placeholder=\"" . _("New Race Series Name") . "\"></td>";
-            $html .= "<td colspan=\"3\"><button>" . _("Save") . "</button></td>";
+            $html .= "<td colspan=\"2\"><button>" . _("Save") . "</button></td>";
             $html .= "</tr>";
         }
 

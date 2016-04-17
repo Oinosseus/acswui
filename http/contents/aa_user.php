@@ -38,11 +38,11 @@ class aa_user extends cContentPage {
             $html .= '<form id="user_login_form" onsubmit="return false;"><center><table>';
             $html .= '<tr>';
             $html .= '<th>' . _("Login") . '</th>';
-            $html .= '<td><input type="text" id="username" /></td>';
+            $html .= '<td><input type="text" id="username" placeholder="login"/></td>';
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<th>' . _("Password") . '</th>';
-            $html .= '<td><input type="password" id="userpass" /></td>';
+            $html .= '<td><input type="password" id="userpass" placeholder="password"/></td>';
             $html .= '</tr>';
             $html .= "<tr>";
             $html .= "<td></td>";

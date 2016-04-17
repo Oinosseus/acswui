@@ -135,9 +135,20 @@ ul.MainMenu ul a:hover {
 h1 {
   color: #999;
   border-bottom: 4px dotted #666;
+  margin-top: 80px;
   padding-left:10px;
   text-shadow: none;
-  font-size: 30px;
+  font-size: 3.0em;
+  font-weight: bold;
+}
+
+h2 {
+  color: #999;
+  border-bottom: 1px dotted #666;
+  margin-top: 50px;
+  padding-left:50px;
+  text-shadow: none;
+  font-size: 2.0em;
 }
 
 a {
@@ -153,15 +164,17 @@ a:hover {
 }
 
 table {
-  border-collapse: separate;
-  border-spacing: 5px;
+    border-collapse: separate;
+    border-spacing: 5px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 table tr td, table tr th {
-  vertical-align: top;
-  text-align: center;
-  background-color: rgba(0,0,0,0.2);
-  padding: 5px 10px;
+    vertical-align: top;
+    text-align: center;
+    background-color: rgba(0,0,0,0.2);
+    padding: 5px 10px;
 }
 
 
