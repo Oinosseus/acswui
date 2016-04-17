@@ -236,13 +236,13 @@ class Installer(object):
         self.__db.appendColumnInt("RaceSeriesCars", 'GridAutoFill')
 
         if self.__verbosity > 0:
-            print("check database table `RaceGrid`")
-        self.__db.appendTable("RaceGrid")
-        self.__db.appendColumnInt("RaceGrid", 'RaceSeriesCar')
-        self.__db.appendColumnInt("RaceGrid", 'CarSkin')
-        self.__db.appendColumnInt("RaceGrid", 'Ballast')
-        self.__db.appendColumnInt("RaceGrid", 'AllowUserOccupation')
-        self.__db.appendColumnInt("RaceGrid", 'User')
+            print("check database table `RaceSeriesEntries`")
+        self.__db.appendTable("RaceSeriesEntries")
+        self.__db.appendColumnInt("RaceSeriesEntries", 'RaceSeriesCar')
+        self.__db.appendColumnInt("RaceSeriesEntries", 'CarSkin')
+        self.__db.appendColumnInt("RaceSeriesEntries", 'Ballast')
+        self.__db.appendColumnInt("RaceSeriesEntries", 'AllowUserOccupation')
+        self.__db.appendColumnInt("RaceSeriesEntries", 'User')
 
 
 
