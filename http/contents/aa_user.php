@@ -46,7 +46,7 @@ class aa_user extends cContentPage {
             $html .= '</tr>';
             $html .= "<tr>";
             $html .= "<td></td>";
-            $html .= '<td><input type="submit"></td>';
+            $html .= "<td><button type=\"submit\">" . _("Login") . "</button></td>";
             $html .= '</tr>';
             $html .= '</table></center></form>';
         }

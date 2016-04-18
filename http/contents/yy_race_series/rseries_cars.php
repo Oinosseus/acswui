@@ -5,7 +5,7 @@ class rseries_cars extends cContentPage {
     public function __construct() {
         $this->MenuName   = _("Race Series Cars");
         $this->TextDomain = "acswui";
-        $this->PageTitle  = _("Race Series / Race Grid Management");
+        $this->PageTitle  = _("Race Series Car Management");
         $this->RequirePermissions = ["View_ServerContent"];
         $this->EditPermission     = 'Edit_RaceSeries_Cars';
     }
