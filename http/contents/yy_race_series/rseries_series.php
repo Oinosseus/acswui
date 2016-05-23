@@ -42,12 +42,12 @@ class rseries_series extends cContentPage {
             }
 
             // save existing race series
-            foreach ($acswuiDatabase->fetch_2d_array("RaceSeries", ['Id', "Name", 'AllowUserOccupation', 'GridAutoFill'], [], [], "Name") as $rs) {
+            foreach ($acswuiDatabase->fetch_2d_array("RaceSeries", ['Id', "Name", 'AllowOccupation', 'AutoFillEntries'], [], [], "Name") as $rs) {
                 $id   = $rs['Id'];
                 $field_list = array();
                 $field_list['Name']                = (isset($_REQUEST["SERIES_" . $id . "_NAME"])               && strlen(trim($_REQUEST["SERIES_" . $id . "_NAME"]))       > 0) ? trim($_REQUEST["SERIES_" . $id . "_NAME"]) : $rs['Name'];
-                $field_list['AllowUserOccupation'] = (isset($_REQUEST["SERIES_" . $id . "_ALLOWUSEROCUPATION"]) && $_REQUEST["SERIES_" . $id . "_ALLOWUSEROCUPATION"] == "TRUE") ? 1 : 0;
-                $field_list['GridAutoFill']        = (isset($_REQUEST["SERIES_" . $id . "_GRIDAUTOFILL"])       && $_REQUEST["SERIES_" . $id . "_GRIDAUTOFILL"]       == "TRUE") ? 1 : 0;
+                $field_list['AllowOccupation'] = (isset($_REQUEST["SERIES_" . $id . "_ALLOWOCUPATION"]) && $_REQUEST["SERIES_" . $id . "_ALLOWOCUPATION"] == "TRUE") ? 1 : 0;
+                $field_list['AutoFillEntries']        = (isset($_REQUEST["SERIES_" . $id . "_AUTOFILLENTRIES"])       && $_REQUEST["SERIES_" . $id . "_AUTOFILLENTRIES"]       == "TRUE") ? 1 : 0;
                 if (count($field_list)) $acswuiDatabase->update_row("RaceSeries", $id, $field_list);
             }
 
@@ -64,16 +64,16 @@ class rseries_series extends cContentPage {
         $html .= '<table><tr><th>Race Series</th><th>Allow Occupation</th><th>Auto Fill</th></tr>';
 
         // read RaceSeries
-        foreach ($acswuiDatabase->fetch_2d_array("RaceSeries", ['Id', "Name", 'AllowUserOccupation', 'GridAutoFill'], [], [], "Name") as $rs) {
+        foreach ($acswuiDatabase->fetch_2d_array("RaceSeries", ['Id', "Name", 'AllowOccupation', 'AutoFillEntries'], [], [], "Name") as $rs) {
             $name = $rs['Name'];
             $id   = $rs['Id'];
-            $occu = ($rs['AllowUserOccupation'] == 1) ? "checked" : "";
-            $fill = ($rs['GridAutoFill'] == 1) ? "checked" : "";
+            $occu = ($rs['AllowOccupation'] == 1) ? "checked" : "";
+            $fill = ($rs['AutoFillEntries'] == 1) ? "checked" : "";
             $disabled = ($acswuiUser->hasPermission($this->EditPermission)) ? "" : "disabled readonly";
 
             $html .= "<tr><td><input type=\"text\" name=\"SERIES_" . $id . "_NAME\" value=\"$name\" $disabled></td>";
-            $html .= "<td><input type=\"checkbox\" name =\"SERIES_" . $id . "_ALLOWUSEROCUPATION\" value=\"TRUE\" $occu $disabled></td>";
-            $html .= "<td><input type=\"checkbox\" name =\"SERIES_" . $id . "_GRIDAUTOFILL\"       value=\"TRUE\" $fill $disabled></td>";
+            $html .= "<td><input type=\"checkbox\" name =\"SERIES_" . $id . "_ALLOWOCUPATION\" value=\"TRUE\" $occu $disabled></td>";
+            $html .= "<td><input type=\"checkbox\" name =\"SERIES_" . $id . "_AUTOFILLENTRIES\"       value=\"TRUE\" $fill $disabled></td>";
             if ($acswuiUser->hasPermission($this->EditPermission)) {
                 $html .= "<td><button type=\"submit\" name=\"DELETE_SERIES\" value=\"$id\">" . _("delete") . "</button></td>";
             }

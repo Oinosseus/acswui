@@ -221,8 +221,8 @@ class Installer(object):
             print("check database table `RaceSeries`")
         self.__db.appendTable("RaceSeries")
         self.__db.appendColumnString("RaceSeries", 'Name', 50)
-        self.__db.appendColumnInt("RaceSeries",    'GridAutoFill')
-        self.__db.appendColumnInt("RaceSeries",    'AllowUserOccupation')
+        self.__db.appendColumnInt("RaceSeries",    'AllowOccupation')
+        self.__db.appendColumnInt("RaceSeries",    'AutoFillEntries')
 
 
         if self.__verbosity > 0:
@@ -231,18 +231,15 @@ class Installer(object):
         self.__db.appendColumnInt("RaceSeriesCars", 'RaceSeries')
         self.__db.appendColumnInt("RaceSeriesCars", 'Car')
         self.__db.appendColumnInt("RaceSeriesCars", 'Ballast')
-        self.__db.appendColumnInt("RaceSeriesCars", 'Count')
-        self.__db.appendColumnInt("RaceSeriesCars", 'AllowUserOccupation')
-        self.__db.appendColumnInt("RaceSeriesCars", 'GridAutoFill')
+        self.__db.appendColumnInt("RaceSeriesCars", 'MinCount')
 
         if self.__verbosity > 0:
             print("check database table `RaceSeriesEntries`")
         self.__db.appendTable("RaceSeriesEntries")
         self.__db.appendColumnInt("RaceSeriesEntries", 'RaceSeriesCar')
         self.__db.appendColumnInt("RaceSeriesEntries", 'CarSkin')
-        self.__db.appendColumnInt("RaceSeriesEntries", 'Ballast')
-        self.__db.appendColumnInt("RaceSeriesEntries", 'AllowUserOccupation')
         self.__db.appendColumnInt("RaceSeriesEntries", 'User')
+        self.__db.appendColumnInt("RaceSeriesEntries", 'Ballast')
 
 
 

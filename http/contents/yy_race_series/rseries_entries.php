@@ -63,74 +63,100 @@ class rseries_entries extends cContentPage {
         // --------------------------------------------------------------------
 
         if ($acswuiUser->hasPermission($this->EditPermission) && isset($_REQUEST['RaceSeriesCarId'])) {
-                $rsc_id = $_REQUEST['RaceSeriesCarId'];
+            $rsc_id = $_REQUEST['RaceSeriesCarId'];
 
-                // check if RaceSeriesCarId is valid
-                $RaceSeriesCarId_is_valid = False;
-                foreach ($acswuiDatabase->fetch_2d_array("RaceSeriesCars", ['Id'], ['RaceSeries'], [$raceseries_id]) as $rsc) {
-                    if ($rsc['Id'] == $rsc_id) $RaceSeriesCarId_is_valid = True;
+            // check if RaceSeriesCarId is valid
+            $RaceSeriesCarId_is_valid = False;
+            foreach ($acswuiDatabase->fetch_2d_array("RaceSeriesCars", ['Id'], ['RaceSeries'], [$raceseries_id]) as $rsc) {
+                if ($rsc['Id'] == $rsc_id) $RaceSeriesCarId_is_valid = True;
+            }
+
+            // generate warning for wrong Id
+            if (!$RaceSeriesCarId_is_valid) {
+                $acswuiLog->log_warning("RaceSeriesCarId='" . $rsc_id . "' is not valid!");
+
+            // process action if Id is valid
+            } else {
+
+                // delete entry
+                if (isset($_REQUEST['DELETE_ENTRY'])) {
+                    $acswuiDatabase->delete_row("RaceSeriesEntries", $_REQUEST['DELETE_ENTRY']);
                 }
 
-                // generate warning for wrong Id
-                if (!$RaceSeriesCarId_is_valid) {
-                    $acswuiLog->log_warning("RaceSeriesCarId='" . $rsc_id . "' is not valid!");
-
-                // process action if Id is valid
-                } else {
-
-                    // delete entry
-                    if (isset($_REQUEST['DELETE_ENTRY'])) {
-                        $acswuiDatabase->delete_row("RaceSeriesEntries", $_REQUEST['DELETE_ENTRY']);
-                    }
-
-                    // add new entry
-                    if (isset($_REQUEST['ADD_NEW_ENTRY']) && $_REQUEST['ADD_NEW_ENTRY'] == "TRUE") {
-                        $acswuiDatabase->insert_row("RaceSeriesEntries", ['RaceSeriesCar' => $rsc_id]);
-                    }
-
-                    // save all rsc entries
-                    if (isset($_REQUEST['SAVE_ENTRIES']) && $_REQUEST['SAVE_ENTRIES'] == "TRUE") {
-                        foreach($acswuiDatabase->fetch_2d_array("RaceSeriesEntries", ['Id'], ['RaceSeriesCar'], [$rsc_id]) as $rse) {
-                            $field_list = array();
-                            if (isset($_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_CarSkin"])) $field_list['CarSkin'] = $_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_CarSkin"];
-                            if (isset($_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_Ballast"])) $field_list['Ballast'] = $_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_Ballast"];
-                            if (isset($_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_User"])) $field_list['User'] = $_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_User"];
-                            $field_list['AllowUserOccupation'] = (isset($_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_AllowUserOccupation"]) && $_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_AllowUserOccupation"] == "TRUE") ? 1:0;
-                            if (count($field_list)) $acswuiDatabase->update_row("RaceSeriesEntries", $rse['Id'], $field_list);
-                        }
-                    }
-
+                // add new entry
+                if (isset($_REQUEST['ADD_NEW_ENTRY']) && $_REQUEST['ADD_NEW_ENTRY'] == "TRUE") {
+                    $acswuiDatabase->insert_row("RaceSeriesEntries", ['RaceSeriesCar' => $rsc_id]);
                 }
 
-//             // remove race series car
-//             if (isset($_REQUEST['DELETE_CAR'])) {
-//                 $del_id = $_REQUEST['DELETE_CAR'];
-//
-//                 // delete RaceSeriesEntries
-//                 foreach ($acswuiDatabase->fetch_2d_array("RaceSeriesEntries", ['Id'], ['RaceSeriesCar'], [$del_id]) as $rse) {
-//                     $acswuiDatabase->delete_row("RaceSeriesEntries", $rse['Id']);
-//                 }
-//
-//                 // delete race series car
-//                 $acswuiDatabase->delete_row("RaceSeriesCars", $del_id);
-//             }
+                // save all rsc entries
+                if (isset($_REQUEST['SAVE_ENTRIES']) && $_REQUEST['SAVE_ENTRIES'] == "TRUE") {
+                    foreach($acswuiDatabase->fetch_2d_array("RaceSeriesEntries", ['Id'], ['RaceSeriesCar'], [$rsc_id]) as $rse) {
+                        $field_list = array();
+                        if (isset($_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_CarSkin"])) $field_list['CarSkin'] = $_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_CarSkin"];
+                        if (isset($_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_Ballast"])) $field_list['Ballast'] = $_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_Ballast"];
+                        if (isset($_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_User"])) $field_list['User'] = $_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_User"];
+                        $field_list['AllowUserOccupation'] = (isset($_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_AllowUserOccupation"]) && $_REQUEST["RaceSeriesEntry_" . $rse['Id'] . "_AllowUserOccupation"] == "TRUE") ? 1:0;
+                        if (count($field_list)) $acswuiDatabase->update_row("RaceSeriesEntries", $rse['Id'], $field_list);
+                    }
+                }
+            }
+        }
 
-//             // update race series car
-//             foreach($acswuiDatabase->fetch_2d_array("RaceSeriesCars", ['Id'], ['RaceSeries'], [$raceseries_id]) as $rsc) {
-//                 // overwrite with new values
-//                 $rsc_id = $rsc['Id'];
-//                 $field_list = array();
-//                 if (isset($_REQUEST["AllowUserOccupation_$rsc_id"])) $field_list["AllowUserOccupation"] = 1;
-//                 if (isset($_REQUEST["GridAutoFill_$rsc_id"]))        $field_list["GridAutoFill"]        = 1;
-//                 if (isset($_REQUEST["Ballast_$rsc_id"]))             $field_list["Ballast"]             =  $_REQUEST["Ballast_$rsc_id"];
-//                 if (isset($_REQUEST["Count_$rsc_id"]))               $field_list["Count"]               =  $_REQUEST["Count_$rsc_id"];
-//
-//                 // update database
-//                 if (count($field_list)) $acswuiDatabase->update_row("RaceSeriesCars", $rsc_id, $field_list);
-//
-//
-//             }
 
+
+        // --------------------------------------------------------------------
+        //                             Occupy Car
+        // --------------------------------------------------------------------
+
+        if ($acswuiUser->IsLogged && isset($_REQUEST['OCCUPY_CAR'])) {
+            $rsc_id = $_REQUEST['OCCUPY_CAR'];
+            if (!$this->car_occupation_possible($raceseries_id, $rsc_id)) {
+                $acswuiLog->log_warning("User " . $acswuiUser->Id . "/" . $acswuiUser->Login . " tried to occupy the race series car " . $rsc_id . " without permission.");
+            } else {
+
+                $ballast = 0;
+                foreach ($acswuiDatabase->fetch_2d_array('RaceSeriesCars', ['Id'], ['RaceSeries'], [$raceseries_id]) as $rsc) {
+                    foreach ($acswuiDatabase->fetch_2d_array('RaceSeriesEntries', ['Id', 'Ballast'], ['RaceSeriesCar', 'User'], [$rsc['Id'], $acswuiUser->Id]) as $rse) {
+                        // get actual ballast of the user in this race series
+                        if ($rse['Ballast'] > $ballast) $ballast = $rse['Ballast'];
+                        // delete existing occupation
+                        $acswuiDatabase->update_row('RaceSeriesEntries', $rse['Id'],  ['Ballast' => 0, 'User' => 0]);
+                    }
+                }
+
+                // set new occupatiuon
+                $acswuiDatabase->insert_row("RaceSeriesEntries", ['RaceSeriesCar' => $rsc_id, 'Ballast' => $ballast, 'User' => $acswuiUser->Id]);
+
+            }
+        }
+
+
+
+        // --------------------------------------------------------------------
+        //                             Occupy Entry
+        // --------------------------------------------------------------------
+
+        if ($acswuiUser->IsLogged && isset($_REQUEST['OCCUPY_ENTRY'])) {
+            $rse_id = $_REQUEST['OCCUPY_ENTRY'];
+            if (!$this->entry_occupation_possible($raceseries_id, $rse_id)) {
+                $acswuiLog->log_warning("User " . $acswuiUser->Id . "/" . $acswuiUser->Login . " tried to occupy the race series car entry " . $rse_id . " without permission.");
+            } else {
+
+
+                $ballast = 0;
+                foreach ($acswuiDatabase->fetch_2d_array('RaceSeriesCars', ['Id'], ['RaceSeries'], [$raceseries_id]) as $rsc) {
+                    foreach ($acswuiDatabase->fetch_2d_array('RaceSeriesEntries', ['Id', 'Ballast'], ['RaceSeriesCar', 'User'], [$rsc['Id'], $acswuiUser->Id]) as $rse) {
+                        // get actual ballast of the user in this race series
+                        if ($rse['Ballast'] > $ballast) $ballast = $rse['Ballast'];
+                        // delete existing occupation
+                        $acswuiDatabase->update_row('RaceSeriesEntries', $rse['Id'],  ['Ballast' => 0, 'User' => 0]);
+                    }
+                }
+
+                // set new occupatiuon
+                $acswuiDatabase->update_row('RaceSeriesEntries', $rse_id,  ['Ballast' => $ballast, 'User' => $acswuiUser->Id]);
+
+            }
         }
 
 
@@ -163,7 +189,7 @@ class rseries_entries extends cContentPage {
         //                           Available Cars
         // --------------------------------------------------------------------
 
-        foreach ($acswuiDatabase->fetch_2d_array("RaceSeriesCars", ['Id', "Car", 'Ballast', 'Count', 'AllowUserOccupation', 'GridAutoFill'], ['RaceSeries'], [$raceseries_id]) as $rsc)  {
+        foreach ($acswuiDatabase->fetch_2d_array("RaceSeriesCars", ['Id', "Car", 'Ballast'], ['RaceSeries'], [$raceseries_id]) as $rsc)  {
 
 
             // get car infos
@@ -182,12 +208,11 @@ class rseries_entries extends cContentPage {
             $html .= "<tr>";
             $html .= "<th colspan=\"2\">". _("Skin") ."</th>";
             $html .= "<th>" . _("Ballast [Kg]") ."</th>";
-            $html .= "<th>" . _("Allow User Occupation") ."</th>";
             $html .= "<th>" . _("Driver") ."</th>";
             $html .= "</tr>";
 
             // request entries
-            foreach ($acswuiDatabase->fetch_2d_array("RaceSeriesEntries", ['Id', "CarSkin", 'Ballast', 'AllowUserOccupation', 'User'], ['RaceSeriesCar'], [$rsc['Id']]) as $rse)  {
+            foreach ($acswuiDatabase->fetch_2d_array("RaceSeriesEntries", ['Id', "CarSkin", 'Ballast', 'User'], ['RaceSeriesCar'], [$rsc['Id']]) as $rse)  {
 
                 // check edit permissions
                 $readonly = ($acswuiUser->hasPermission($this->EditPermission)) ? "":"readonly";
@@ -207,7 +232,6 @@ class rseries_entries extends cContentPage {
                 $html .= "<select></td>";
 
                 $html .= "<td><input type=\"number\" name=\"RaceSeriesEntry_" . $rse['Id'] . "_Ballast\" value=\"" . $rse['Ballast'] . "\" $readonly></td>";
-                $html .= "<td><input type=\"checkbox\" name=\"RaceSeriesEntry_" . $rse['Id'] . "_AllowUserOccupation\" value=\"TRUE\" $disabled" . (($rse['AllowUserOccupation']) ? "checked":"") . "></td>";
 
                 // users
                 $html .= "<td><select name=\"RaceSeriesEntry_" . $rse['Id'] . "_User\" $readonly $disabled>";
@@ -218,12 +242,16 @@ class rseries_entries extends cContentPage {
                 }
                 $html .= "</select></td>";
 
+                $html .= "<td>";
                 // delete button
                 if ($acswuiUser->hasPermission($this->EditPermission)) {
-                    $html .= "<td>";
                     $html .= "<button type=\"submit\" name=\"DELETE_ENTRY\" value=\"" . $rse['Id'] . "\">" . _("delete") . "</button>";
-                    $html .= "</td>";
                 }
+                // occupation
+                if ($this->entry_occupation_possible($raceseries_id, $rse['Id'])) {
+                    $html .= "<button type=\"submit\" name=\"OCCUPY_ENTRY\" value=\"" . $rse['Id'] . "\">" . _("Occupy") . "</button>";
+                }
+                $html .= "</td>";
 
                 $html .= "</tr>";
             }
@@ -234,6 +262,11 @@ class rseries_entries extends cContentPage {
                 $html .= "<button type=\"submit\" name=\"ADD_NEW_ENTRY\" value=\"TRUE\">" . _("New Entry") . "</button>";
                 $html .= "<button type=\"submit\" name=\"SAVE_ENTRIES\" value=\"TRUE\">" . _("Save Car Entries") . "</button>";
             }
+            // car occupation
+            if ($this->car_occupation_possible($raceseries_id, $rsc['Id'])) {
+                $html .= "<button type=\"submit\" name=\"OCCUPY_CAR\" value=\"" . $rsc['Id'] . "\">" . _("Occupy This Car") . "</button>";
+            }
+
             $html .= "</td></tr>";
             $html .= "</table>";
             $html .= "</form>";
@@ -246,6 +279,73 @@ class rseries_entries extends cContentPage {
         }
 
         return $html;
+    }
+
+    private function series_occupation_possible($race_series) {
+        // returns True or False wheter the occupation of the race series is possible by the user
+
+        global $acswuiDatabase;
+        global $acswuiUser;
+
+        $ret = False;
+
+        // check if user is logged
+        if (!$acswuiUser->IsLogged) return False;
+
+        // check if user has Id>0 (no root allowed)
+        if ($acswuiUser->Id <= 0) return False;
+
+        // get race series
+        $car_query = $acswuiDatabase->fetch_2d_array("RaceSeries", ['AllowOccupation'], ['Id'], [$race_series]);
+        if (count($car_query) == 0) return False;
+        if ($car_query[0]['AllowOccupation'] > 0) $ret = True;
+
+        return $ret;
+    }
+
+    private function car_occupation_possible($race_series, $car) {
+        // check if a car can be occupied
+        // - series can be occupied in general
+        // - user has not already occupied this car
+        // - no other unoccupied entries are within this car
+
+        global $acswuiDatabase;
+        global $acswuiUser;
+
+        // check if occupation is allowed in the series
+        if (!$this->series_occupation_possible($race_series)) return False;
+
+        // check entries of same race series car
+        foreach ($acswuiDatabase->fetch_2d_array("RaceSeriesEntries", ['User'], ['RaceSeriesCar'], [$car]) as $rse) {
+            if ($rse['User'] == $acswuiUser->Id) return False;
+            if ($rse['User'] == 0) return False;
+        }
+
+        return True;
+    }
+
+    private function entry_occupation_possible($race_series, $entry) {
+        // check if a entry can be occupied
+        // - series can be occupied in general
+        // - no other user occupied the entry
+        // - user has not already occupied this car
+
+        global $acswuiDatabase;
+        global $acswuiUser;
+
+        // check if occupation is allowed in the series
+        if (!$this->series_occupation_possible($race_series)) return False;
+
+        // check entry information
+        $rse = $acswuiDatabase->fetch_2d_array("RaceSeriesEntries", ['RaceSeriesCar', 'User'], ['Id'], [$entry]);
+        if ($rse[0]['User'] > 0) return False;
+
+        // check entries of same race series car
+        foreach ($acswuiDatabase->fetch_2d_array("RaceSeriesEntries", ['User'], ['RaceSeriesCar'], [$rse[0]['RaceSeriesCar']]) as $rse) {
+            if ($rse['User'] == $acswuiUser->Id) return False;
+        }
+
+        return True;
     }
 }
 

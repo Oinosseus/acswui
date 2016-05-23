@@ -82,10 +82,8 @@ class rseries_cars extends cContentPage {
                 // overwrite with new values
                 $rsc_id = $rsc['Id'];
                 $field_list = array();
-                if (isset($_REQUEST["AllowUserOccupation_$rsc_id"])) $field_list["AllowUserOccupation"] = 1;
-                if (isset($_REQUEST["GridAutoFill_$rsc_id"]))        $field_list["GridAutoFill"]        = 1;
-                if (isset($_REQUEST["Ballast_$rsc_id"]))             $field_list["Ballast"]             =  $_REQUEST["Ballast_$rsc_id"];
-                if (isset($_REQUEST["Count_$rsc_id"]))               $field_list["Count"]               =  $_REQUEST["Count_$rsc_id"];
+                if (isset($_REQUEST["Ballast_$rsc_id"])) $field_list["Ballast"]             =  $_REQUEST["Ballast_$rsc_id"];
+                if (isset($_REQUEST["Count_$rsc_id"]))   $field_list["MinCount"]            =  $_REQUEST["Count_$rsc_id"];
 
                 // update database
                 if (count($field_list)) $acswuiDatabase->update_row("RaceSeriesCars", $rsc_id, $field_list);
@@ -137,13 +135,11 @@ class rseries_cars extends cContentPage {
         $html .= "<table id=\"available_cars\">";
         $html .= "<tr>";
         $html .= "<th>". _("Car") ."</th>";
-        $html .= "<th>" . _("Allow User Occupation") ."</th>";
-        $html .= "<th>" . _("Automatically Fill Grid") ."</th>";
-        $html .= "<th>" . _("Fill Count") ."</th>";
+        $html .= "<th>" . _("Min Count") ."</th>";
         $html .= "<th>" . _("Ballast [Kg]") ."</th>";
         $html .= "</tr>";
 
-        foreach ($acswuiDatabase->fetch_2d_array("RaceSeriesCars", ['Id', "Car", 'Ballast', 'Count', 'AllowUserOccupation', 'GridAutoFill'], ['RaceSeries'], [$raceseries_id]) as $rsc)  {
+        foreach ($acswuiDatabase->fetch_2d_array("RaceSeriesCars", ['Id', "Car", 'Ballast', 'MinCount'], ['RaceSeries'], [$raceseries_id]) as $rsc)  {
             // remeber existing car
             $raceseries_cars[] = $rsc['Car'];
 
@@ -158,20 +154,18 @@ class rseries_cars extends cContentPage {
             $disabled = ($acswuiUser->hasPermission($this->EditPermission)) ? "":"disabled";
 
             // get values
-            $occu    = ($rsc['AllowUserOccupation'] == 1) ? "checked" : "";
-            $fill    = ($rsc['GridAutoFill'] == 1) ? "checked" : "";
-            $count   = $rsc['Count'];
+            $count   = $rsc['MinCount'];
             $ballast = $rsc['Ballast'];
 
             // output row
             $rsc_id = $rsc['Id'];
             $html .= "<tr>";
             $html .= "<td>" . $car['Name'] . getImgCarSkin($skin['Id'], $car['Car']) . "</td>";
-            $html .= "<td><input type=\"checkbox\" name=\"AllowUserOccupation_$rsc_id\" value=\"TRUE\" $occu $disabled></td>";
-            $html .= "<td><input type=\"checkbox\" name=\"GridAutoFill_$rsc_id\"        value=\"TRUE\" $fill $disabled></td>";
             $html .= "<td><input type=\"number\"   name=\"Count_$rsc_id\"               value=\"$count\"     $readonly></td>";
             $html .= "<td><input type=\"number\"   name=\"Ballast_$rsc_id\"             value=\"$ballast\"   $readonly></td>";
-            $html .= "<td><button type=\"submit\"  name=\"DELETE_CAR\"                  value=\"$rsc_id\"             >" . _("delete") . "</button></td>";
+            if ($acswuiUser->hasPermission($this->EditPermission)) {
+                $html .= "<td><button type=\"submit\"  name=\"DELETE_CAR\"                  value=\"$rsc_id\"             >" . _("delete") . "</button></td>";
+            }
             $html .= "</tr>";
         }
 
@@ -190,6 +184,7 @@ class rseries_cars extends cContentPage {
         if ($acswuiUser->hasPermission($this->EditPermission)) {
 
             $html .= "<h1>" . _("Add New Cars") . "</h1>";
+            $html .= _("Select below all cars that shall be added to the race series.");
 
             // find all brands
             $brands = array();
