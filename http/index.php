@@ -7,7 +7,7 @@ if (ini_set('display_errors', '1') === false) {
 
 // execution performance
 $acswui_execution_start_date  = date("Y-m-d H:i:s");
-$acswui_execution_start_mtime = microtime();
+$acswui_execution_start_mtime = microtime(true);
 
 // session control
 session_set_cookie_params(0);
@@ -232,7 +232,7 @@ if (isset($_REQUEST['NONCONTENT'])) {
 //  = Finish Execution =
 // ======================
 
-$acswuiLog->LogNotice("Execution finished at " . date("Y-m-d H:i:s") . " in " . (microtime() - $acswui_execution_start_mtime) . " seconds");
+$acswuiLog->LogNotice("Execution finished at " . date("Y-m-d H:i:s") . " in " . (microtime(true) - $acswui_execution_start_mtime) . " seconds");
 
 
 ?>
