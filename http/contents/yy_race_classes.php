@@ -1,9 +1,9 @@
 <?php
 
-class yy_race_series extends cContentPage {
+class yy_race_classes extends cContentPage {
 
     public function __construct() {
-        $this->MenuName   = _("Roster");
+        $this->MenuName   = _("Race Classes");
         $this->TextDomain = "acswui";
         $this->RequirePermissions = ["View_ServerContent"];
     }

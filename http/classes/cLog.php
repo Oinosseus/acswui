@@ -75,10 +75,11 @@ class cLog {
                     $class = "";
 
                 // get function call
-                if (isset($bktrc[$i]['function']))
-                    $funct = $bktrc[$i]['function'] . "(" . implode(", ", $bktrc[$i]['args']) . ")";
-                else
+                if (isset($bktrc[$i]['function'])) {
+                    $funct = $bktrc[$i]['function'] . "(" . json_encode($bktrc[$i]['args']) . ")";
+                } else {
                     $funct = "";
+                }
 
                 // backtrace information
                 fwrite($this->FileHandleError, "  [Backtrace $i]");

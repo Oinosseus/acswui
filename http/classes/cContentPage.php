@@ -9,6 +9,7 @@ abstract class cContentPage {
     public $PageTitle          = "";
     public $RequireRoot        = false;
     public $RequirePermissions = [];
+    public $MenuName           = "";
 
     // private properties
     private $menu = Null;

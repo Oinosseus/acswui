@@ -48,7 +48,7 @@ class cTemplateacswui extends cTemplate {
         // content
         $html .= "    <div class=\"MainBody\">\n";
         if ($this->ContentPage) {
-            $div_id = $this->ContentPage->getRelPath() . "_" . $this->ContentPage->MenuName;
+            $div_id = $this->ContentPage->getRelPath() . "_" . get_class($this->ContentPage);
             $div_id = str_replace(" ", "_", $div_id);
             $div_id = str_replace("/", "_", $div_id);
             $html .= "      <div id=\"$div_id\">\n";

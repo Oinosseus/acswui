@@ -49,7 +49,10 @@
         // MySQL request
         if ($acswuiConfig->DbType === "MySQL") {
             $query = "SHOW COLUMNS FROM `" . $this->db_handle->escape_string($table) . "`;";
-            if ($result = $this->db_handle->query($query)) {
+            $result = $this->db_handle->query($query);
+            if ($result === False) {
+                $acswuiLog->LogError("Failed SQL query: " . $this->db_handle->error);
+            } else {
                 $ret = array();
                 while ($res_row = $result->fetch_array(MYSQLI_ASSOC)) {
                     $ret[count($ret)] = $res_row['Field'];
@@ -126,7 +129,10 @@
             $query = "SELECT $colums_list FROM $table $where $order;";
 //             echo("<br>");
 //             print_r($query);
-            if ($result = $this->db_handle->query($query)) {
+            $result = $this->db_handle->query($query);
+            if ($result === False) {
+                $acswuiLog->LogError("Failed SQL query: " . $this->db_handle->error);
+            } else {
                 $ret = $result->fetch_all(MYSQLI_ASSOC);
                 $result->close();
             }
@@ -174,7 +180,10 @@
             }
 
             $query = "UPDATE `$table` SET $set WHERE `Id` = $id;";
-            $this->db_handle->query($query);
+            $result = $this->db_handle->query($query);
+            if ($result === False) {
+                $acswuiLog->LogError("Failed SQL query: " . $this->db_handle->error);
+            }
         }
     }
 
@@ -223,6 +232,9 @@
 
 
             $result = $this->db_handle->query("SELECT LAST_INSERT_ID();");
+            if ($result === False) {
+                $acswuiLog->LogError("Failed SQL query: " . $this->db_handle->error);
+            }
             return $result->fetch_array()[0];
         }
     }
@@ -241,7 +253,10 @@
         if ($acswuiConfig->DbType === "MySQL") {
             $permission = $this->db_handle->escape_string($permission);
             $query = "ALTER TABLE `Groups` ADD `$permission` TINYINT NOT NULL DEFAULT '0';";
-            $this->db_handle->query($query);
+            $result = $this->db_handle->query($query);
+            if ($result === False) {
+                $acswuiLog->LogError("Failed SQL query: " . $this->db_handle->error);
+            }
         }
     }
 
@@ -256,7 +271,10 @@
             $table = $this->db_handle->escape_string($table);
             $id = $this->db_handle->escape_string($id);
             $query = "DELETE FROM `$table` WHERE `Id` = $id;";
-            $this->db_handle->query($query);
+            $result = $this->db_handle->query($query);
+            if ($result === False) {
+                $acswuiLog->LogError("Failed SQL query: " . $this->db_handle->error);
+            }
         }
     }
 

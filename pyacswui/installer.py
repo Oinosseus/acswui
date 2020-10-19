@@ -218,28 +218,28 @@ class Installer(object):
 
 
         if self.__verbosity > 0:
-            print("check database table `RaceSeries`")
-        self.__db.appendTable("RaceSeries")
-        self.__db.appendColumnString("RaceSeries", 'Name', 50)
-        self.__db.appendColumnInt("RaceSeries",    'AllowOccupation')
-        self.__db.appendColumnInt("RaceSeries",    'AutoFillEntries')
+            print("check database table `RaceClasses`")
+        self.__db.appendTable("RaceClasses")
+        self.__db.appendColumnString("RaceClasses", 'Name', 50)
+        self.__db.appendColumnInt("RaceClasses",    'AllowOccupation')
+        self.__db.appendColumnInt("RaceClasses",    'AutoFillEntries')
 
 
         if self.__verbosity > 0:
-            print("check database table `RaceSeriesCars`")
-        self.__db.appendTable("RaceSeriesCars")
-        self.__db.appendColumnInt("RaceSeriesCars", 'RaceSeries')
-        self.__db.appendColumnInt("RaceSeriesCars", 'Car')
-        self.__db.appendColumnInt("RaceSeriesCars", 'Ballast')
-        self.__db.appendColumnInt("RaceSeriesCars", 'MinCount')
+            print("check database table `RaceClassCars`")
+        self.__db.appendTable("RaceClassCars")
+        self.__db.appendColumnInt("RaceClassCars", 'RaceClass')
+        self.__db.appendColumnInt("RaceClassCars", 'Car')
+        self.__db.appendColumnInt("RaceClassCars", 'Ballast')
+        self.__db.appendColumnInt("RaceClassCars", 'MinCount')
 
         if self.__verbosity > 0:
-            print("check database table `RaceSeriesEntries`")
-        self.__db.appendTable("RaceSeriesEntries")
-        self.__db.appendColumnInt("RaceSeriesEntries", 'RaceSeriesCar')
-        self.__db.appendColumnInt("RaceSeriesEntries", 'CarSkin')
-        self.__db.appendColumnInt("RaceSeriesEntries", 'User')
-        self.__db.appendColumnInt("RaceSeriesEntries", 'Ballast')
+            print("check database table `RaceClassEntries`")
+        self.__db.appendTable("RaceClassEntries")
+        self.__db.appendColumnInt("RaceClassEntries", 'RaceClassCar')
+        self.__db.appendColumnInt("RaceClassEntries", 'CarSkin')
+        self.__db.appendColumnInt("RaceClassEntries", 'User')
+        self.__db.appendColumnInt("RaceClassEntries", 'Ballast')
 
 
 
