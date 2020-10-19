@@ -110,7 +110,7 @@ class ServerPackager():
         #  = Scan All Cars =
         # ===================
 
-        for car in os.listdir(self.__config['path_ac'] + "/content/cars"):
+        for car in sorted(os.listdir(self.__config['path_ac'] + "/content/cars")):
 
             # skip all non-directories or hidden items
             if car[:1] == "." or not os.path.isdir(self.__config['path_ac'] + "/content/cars/" + car):

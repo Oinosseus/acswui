@@ -269,7 +269,7 @@ class DbWrapper(object):
         for key in field_values.keys():
             if len(set_string) > 0:
                 set_string += ", "
-            set_string += "`" + str(key) + "` = '" + str(field_values[key]) + "'"
+            set_string += "`" + str(key) + "` = " + self.__db_handle.escape(str(field_values[key]))
         query = "UPDATE `" + tblname + "` SET " + set_string + " WHERE `Id` = " + str(id_value) + ";"
 
         # execute query

@@ -16,9 +16,9 @@ from pyacswui import ServerPackager, Installer
 #  - Parse Commandline Arguments -
 # ---------------------------------
 
-__helpstring  = "Examples:\n"
+__helpstring  = "Examples for complete safe setup:\n"
 __helpstring += "./acswui -v --ini acswui.ini srvpkg\n"
-__helpstring += "./acswui -v --ini acswui.ini install\n"
+__helpstring += "./acswui -v --ini acswui.ini --install-base-data install\n"
 
 # main arguments
 argparser = argparse.ArgumentParser(prog="acswui", description="Assetto Corsa Server Web User Interface", epilog=__helpstring, formatter_class=argparse.RawTextHelpFormatter)
@@ -26,8 +26,8 @@ argparser.add_argument('-i', '--ini', help="path to config file")
 argparser.add_argument('--install-base-data', action="store_true", help="install basic http data (default groups, etc.)")
 argparser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
 argparsersubs     = argparser.add_subparsers(dest='command')
-argparser_srvpkg  = argparsersubs.add_parser('srvpkg', help="server packager to prepare files (need access to path_ac)")
-argparser_install = argparsersubs.add_parser('install',help="install / update database and configure http server (not need to access path_ac)")
+argparser_srvpkg  = argparsersubs.add_parser('srvpkg', help="server packager - preparing files for http and ac server")
+argparser_install = argparsersubs.add_parser('install',help="install / update database and configure http server")
 
 
 # get arguments
