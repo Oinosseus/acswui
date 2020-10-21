@@ -103,7 +103,7 @@
             foreach ($this->fetch_column_names($table) as $col) {
                 if (array_key_exists($col, $where)) {
                     if (strlen($where_string) > 0)
-                        $where_string .= ", ";
+                        $where_string .= " AND ";
                     $where_string .= "`$col` = '" . $this->db_handle->escape_string($where[$col]) . "'";
                 }
             }
@@ -269,5 +269,45 @@
         }
     }
 
-  }
+
+    // Create an entry in mapping tables
+    // A new row is entered if the keys are not already existent
+    // $table is the name of the mapping table
+    // $key is an accociative array where the keys are column names and the values are column entries
+    public function map($table, $keys) {
+
+        // check if mapping exists
+        $res = $this->fetch_2d_array($table, ['Id'], $keys);
+
+        // create map
+        if (count($res) === 0) {
+            $this->insert_row($table, $keys);
+        }
+    }
+
+    // Remove an entry from a mapping table
+    // All rows are deleted if they match the keys
+    // $table is the name of the mapping table
+    // $key is an accociative array where the keys are column names and the values are column entries
+    public function unmap($table, $keys) {
+
+        // get all matching rows
+        $res = $this->fetch_2d_array($table, ['Id'], $keys);
+
+        // delete all rows
+        foreach ($res as $row) {
+            $this->delete_row($table, $row['Id']);
+        }
+    }
+
+    // Check an entry in mapping tables
+    // True/False is returned if the table contains the keys
+    // $table is the name of the mapping table
+    // $key is an accociative array where the keys are column names and the values are column entries
+    public function mapped($table, $keys) {
+        $res = $this->fetch_2d_array($table, ['Id'], $keys);
+        return (count($res) === 0) ? False : True;
+    }
+
+}
 ?>

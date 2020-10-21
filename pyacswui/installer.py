@@ -258,6 +258,21 @@ class Installer(object):
         self.__db.appendColumnInt("CarClassesMap", 'Ballast')
 
 
+        # --------------
+        #  Race Series
+
+        if self.__verbosity > 0:
+            print("check database table `RaceSeries`")
+        self.__db.appendTable("RaceSeries")
+        self.__db.appendColumnString("RaceSeries", 'Name', 50)
+
+        if self.__verbosity > 0:
+            print("check database table `RaceSeriesMap`")
+        self.__db.appendTable("RaceSeriesMap")
+        self.__db.appendColumnInt("RaceSeriesMap", 'RaceSeries')
+        self.__db.appendColumnInt("RaceSeriesMap", 'CarClass')
+
+
 
 
     def __work_cconfig(self):
