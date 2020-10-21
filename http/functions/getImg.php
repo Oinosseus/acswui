@@ -3,8 +3,9 @@
 function getImgTrack($track_id) {
 
     global $acswuiDatabase;
+    global $acswuiLog;
 
-    $res = $acswuiDatabase->fetch_2d_array("Tracks", ["Track", "Config", "Name"], ["Id"], [$track_id]);
+    $res = $acswuiDatabase->fetch_2d_array("Tracks", ["Track", "Config", "Name"], ["Id" => $track_id]);
 
     if (count($res) <= 0) {
         $acswuiLog->LogError("Could not find Track Id $track_id!");
@@ -39,7 +40,7 @@ function getImgCarSkin($carskin_id, $img_id = "") {
 
     $id = (strlen($img_id)) ? "id=\"$img_id\"" : "";
 
-    $res = $acswuiDatabase->fetch_2d_array("CarSkins", ["Car", "Skin"], ["Id"], [$carskin_id]);
+    $res = $acswuiDatabase->fetch_2d_array("CarSkins", ["Car", "Skin"], ["Id" => $carskin_id]);
 
     if (count($res) <= 0) {
         $acswuiLog->LogError("Could not find CarSkin Id $carskin_id!");
@@ -50,7 +51,7 @@ function getImgCarSkin($carskin_id, $img_id = "") {
     $skin   = $res[0]['Skin'];
 
     # get car
-    $res = $acswuiDatabase->fetch_2d_array("Cars", ["Car", "Name", "Brand"], ["Id"], [$car_id]);
+    $res = $acswuiDatabase->fetch_2d_array("Cars", ["Car", "Name", "Brand"], ["Id" => $car_id]);
     if (count($res) <= 0) {
         $acswuiLog->LogError("Could not find Car Id " . $car_id . "!");
         return "<img src=\"\" $id>";

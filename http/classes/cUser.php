@@ -93,7 +93,7 @@ class cUser {
         // non-root login
         } else {
 
-            $matching_users = $acswuiDatabase->fetch_2d_array("Users", ["Id", "Login", "Password"], ['Login'], [$username]);
+            $matching_users = $acswuiDatabase->fetch_2d_array("Users", ["Id", "Login", "Password"], ['Login' => $username]);
             $positive_user_ids = array();
 
             // check matching logins
@@ -105,7 +105,7 @@ class cUser {
 
             // login
             if (count($positive_user_ids) == 1) {
-                $u = $acswuiDatabase->fetch_2d_array("Users", ["Id", "Login"], ['Id'], [$positive_user_ids[0]]);
+                $u = $acswuiDatabase->fetch_2d_array("Users", ["Id", "Login"], ['Id' => $positive_user_ids[0]]);
                 $_SESSION['user_id']    = $u[0]['Id'];
                 $_SESSION['user_login'] = $u[0]['Login'];
                 $_SESSION['user_ip']    = $_SERVER['REMOTE_ADDR'];
@@ -139,13 +139,13 @@ class cUser {
         $user_group_ids = array();
         if ($this->IsLogged) {
             // get all group memberships of logged user
-            foreach ($acswuiDatabase->fetch_2d_array("UserGroupMap", ["Group"], ['User'], [$this->Id]) as $g) {
+            foreach ($acswuiDatabase->fetch_2d_array("UserGroupMap", ["Group"], ['User' => $this->Id]) as $g) {
                 $user_group_ids[count($user_group_ids)] = $g['Group'];
 
             }
         } elseif (strlen($acswuiConfig->GuestGroup) > 0) {
             // get matching visitor group if existent
-            foreach ($acswuiDatabase->fetch_2d_array("Groups", ["Id"], ['Name'], [$acswuiConfig->GuestGroup]) as $g) {
+            foreach ($acswuiDatabase->fetch_2d_array("Groups", ["Id"], ['Name' => $acswuiConfig->GuestGroup]) as $g) {
                 $user_group_ids[count($user_group_ids)] = $g['Id'];
             }
         }
@@ -153,7 +153,7 @@ class cUser {
         // check permissions of all group memberships
         foreach ($user_group_ids as $g) {
             // check if group has the permission
-            foreach ($acswuiDatabase->fetch_2d_array("Groups", [$permission], ['Id'], [$g]) as $p) {
+            foreach ($acswuiDatabase->fetch_2d_array("Groups", [$permission], ['Id' => $g]) as $p) {
                 if ($p[$permission] > 0){
                     return true;
                 }

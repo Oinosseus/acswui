@@ -26,7 +26,7 @@ class groups extends cContentPage {
         global $acswuiDatabase;
 
         // get groups and permissions
-        $groups = $acswuiDatabase->fetch_2d_array("Groups", NULL, [], [], "Name");
+        $groups = $acswuiDatabase->fetch_2d_array("Groups", NULL, [], "Name");
         $permissions = array();
         foreach ($acswuiDatabase->fetch_column_names("Groups") as $col)
             if ($col != "Id" && $col != "Name")

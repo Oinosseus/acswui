@@ -69,18 +69,12 @@
     // returns an 2D associative array [row]['$columns[0]', '$columns[1]', .., '$columns[n-1]']
     // $coulumns must be an string array (can be NULL to fetch all columns)
     // $table must be a string
-    // $where_key and §where_value must be lists with same length
-    public function fetch_2d_array($table, $columns, $where_key = [], $where_value = [], $sort_by = NULL, $order_asc = true) {
+    // $where is an accociative array (key = table column, value = column value)
+    public function fetch_2d_array($table, $columns, $where = [], $sort_by = NULL, $order_asc = true) {
 
         global $acswuiConfig;
         global $acswuiLog;
         $ret = array();
-
-        // sanity check
-        if (count($where_key) != count($where_value)) {
-            $acswuiLog->LogError("Both lists (where_key and where_value) must have same amount of elements!");
-            return [];
-        }
 
         // all columns
         if (is_null($columns)) {
@@ -103,19 +97,18 @@
 
             // prepare table
             $table = $this->db_handle->escape_string($table);
-            $where = "";
-            if (count($where_key) > 0) {
-                for ($iw=0; $iw < count($where_key); $iw++) {
-                    if (strlen($where) == 0) {
-                        $where .= "WHERE ";
-                    } else {
-                        $where .= "AND ";
-                    }
-                    $key   = $this->db_handle->escape_string($where_key[$iw]);
-                    $value = $this->db_handle->escape_string($where_value[$iw]);
-                    $where .= "`$key` = '$value'";
+
+            // prepare WHERE
+            $where_string = "";
+            foreach ($this->fetch_column_names($table) as $col) {
+                if (array_key_exists($col, $where)) {
+                    if (strlen($where_string) > 0)
+                        $where_string .= ", ";
+                    $where_string .= "`$col` = '" . $this->db_handle->escape_string($where[$col]) . "'";
                 }
             }
+            if (strlen($where_string) > 0)
+                $where_string = "WHERE " . $where_string;
 
             // order ASC / DESC
             $order = "";
@@ -126,12 +119,10 @@
             }
 
             // execute query
-            $query = "SELECT $colums_list FROM $table $where $order;";
-//             echo("<br>");
-//             print_r($query);
+            $query = "SELECT $colums_list FROM $table $where_string $order;";
             $result = $this->db_handle->query($query);
             if ($result === False) {
-                $acswuiLog->LogError("Failed SQL query: " . $this->db_handle->error);
+                $acswuiLog->LogError("Failed SQL query: " . $query . "\nERROR: " . $this->db_handle->error);
             } else {
                 $ret = $result->fetch_all(MYSQLI_ASSOC);
                 $result->close();

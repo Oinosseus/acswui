@@ -124,7 +124,7 @@ class users extends cContentPage {
                 // delete group membership
                 } else {
                     if (in_array($g['Id'], $user_groups)) {
-                        $ugm = $acswuiDatabase->fetch_2d_array("UserGroupMap", ['Id'], ['User', 'Group'], [$u['Id'], $g['Id']]);
+                        $ugm = $acswuiDatabase->fetch_2d_array("UserGroupMap", ['Id'], ['User' => $u['Id'], 'Group' => $g['Id']]);
                         foreach ($ugm as $x) {
                             $acswuiDatabase->delete_row("UserGroupMap", $x['Id']);
                         }
@@ -138,7 +138,7 @@ class users extends cContentPage {
             isset($_POST['NEWUSER_PASSWD']) && strlen($_POST['NEWUSER_PASSWD']) > 0) {
 
             // check if Login not already exists
-            if (count($acswuiDatabase->fetch_2d_array("Users", ['Id'], ['Login'], [$_POST['NEWUSER_LOGIN']])) == 0) {
+            if (count($acswuiDatabase->fetch_2d_array("Users", ['Id'], ['Login' => $_POST['NEWUSER_LOGIN']])) == 0) {
 
                 // set user info
                 $new_user_fields = array();
@@ -168,7 +168,7 @@ class users extends cContentPage {
     private function get_group_ids_of_user($user_id) {
         global $acswuiDatabase;
         $ret = array();
-        $ugm = $acswuiDatabase->fetch_2d_array("UserGroupMap", ["Group"], ["User"], [$user_id]);
+        $ugm = $acswuiDatabase->fetch_2d_array("UserGroupMap", ["Group"], ["User" => $user_id]);
         foreach ($ugm as $x) {
             $ret[count($ret)] = $x['Group'];
         }

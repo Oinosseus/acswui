@@ -16,7 +16,7 @@ class tracks extends cContentPage {
         // initialize the html output
         $html  = "";
 
-        foreach($acswuiDatabase->fetch_2d_array("Tracks", ["Id", "Track", "Config", "Name", "Length"], [], [], "Name") as $t) {
+        foreach($acswuiDatabase->fetch_2d_array("Tracks", ["Id", "Track", "Config", "Name", "Length"], [], "Name") as $t) {
             $html .= '<div style="display: inline-block; margin: 5px;">';
             $html .= "<strong>" . $t["Name"] . "</strong><br>";
             $html .= getImgTrack($t['Id']);

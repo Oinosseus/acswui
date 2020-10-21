@@ -46,7 +46,7 @@ class presets extends cContentPage {
 
         // get actual preset values
         if ($preset_id != 0 && $preset_id != "NEW_PRESET") {
-            $ret = $acswuiDatabase->fetch_2d_array("ServerPresets", array_merge(['Name'], $this->preset_fields), ['Id'], [$preset_id]);
+            $ret = $acswuiDatabase->fetch_2d_array("ServerPresets", array_merge(['Name'], $this->preset_fields), ['Id' => $preset_id]);
             $this->preset_values['Name'] = $ret[0]['Name'];
 
             // add field values
@@ -78,7 +78,7 @@ class presets extends cContentPage {
         $html .= '<option value="" ' . $selected . '></option>';
 
         // existing presets
-        foreach ($acswuiDatabase->fetch_2d_array("ServerPresets", ['Id', "Name"], [], [], "Name") as $sp) {
+        foreach ($acswuiDatabase->fetch_2d_array("ServerPresets", ['Id', "Name"], [], "Name") as $sp) {
             $selected = ($preset_id == $sp['Id']) ? "selected" : "";
             $html .= '<option value="' . $sp['Id'] . '"' . $selected . '>' . $sp['Name'] . '</option>';
         }
