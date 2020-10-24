@@ -8,7 +8,7 @@
 import argparse
 import os
 import sys
-from pyacswui import ServerPackager, Installer
+from pyacswui import CommandSrvctl, CommandSrvrun, ServerPackager, Installer
 
 
 
@@ -27,12 +27,17 @@ argparser.add_argument('--install-base-data', action="store_true", help="install
 argparser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
 argparsersubs     = argparser.add_subparsers(dest='command')
 argparser_srvpkg  = argparsersubs.add_parser('srvpkg', help="server packager - preparing files for http and ac server")
+CommandSrvctl(argparsersubs)
+CommandSrvrun(argparsersubs)
 argparser_install = argparsersubs.add_parser('install',help="install / update database and configure http server")
 
 
 # get arguments
 args = argparser.parse_args()
+#print("argparser.prog=", argparser.prog)
+#print("sys.argv[0]=", sys.argv[0])
 #print("\n\nargs=\n", args);
+#exit(0)
 
 # check config file
 if args.ini is None or not os.path.isfile(args.ini):
@@ -62,8 +67,11 @@ with open(args.ini, "r") as f:
 #  - Execute Command -
 # ---------------------
 
+if args.func:
+    args.func(args, config)
+
 # ServerPackager
-if args.command == "srvpkg":
+elif args.command == "srvpkg":
     srvpkg = ServerPackager(config, args.v)
     srvpkg.work()
 

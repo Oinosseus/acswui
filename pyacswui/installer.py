@@ -285,6 +285,8 @@ class Installer(object):
         http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.__config['http_root_passwd']])
         http_root_password = http_root_password.decode("utf-8")
 
+        # path to
+
         # find server_cfg settings [SERVER]
         srv_cfg_server    = ""
         for key in ['NAME', 'CARS', 'TRACK', 'CONFIG_TRACK', 'SUN_ANGLE', 'MAX_CLIENTS', 'RACE_OVER_TIME', 'ALLOWED_TYRES_OUT', 'UDP_PORT', 'TCP_PORT', 'HTTP_PORT', 'PASSWORD', 'LOOP_MODE', 'REGISTER_TO_LOBBY', 'PICKUP_MODE_ENABLED', 'SLEEP_TIME', 'VOTING_QUORUM', 'VOTE_DURATION', 'BLACKLIST_MODE', 'TC_ALLOWED', 'ABS_ALLOWED', 'STABILITY_ALLOWED', 'AUTOCLUTCH_ALLOWED', 'DAMAGE_MULTIPLIER', 'FUEL_RATE', 'TYRE_WEAR_RATE', 'CLIENT_SEND_INTERVAL_HZ', 'TYRE_BLANKETS_ALLOWED', 'ADMIN_PASSWORD', 'QUALIFY_MAX_WAIT_PERC', 'WELCOME_MESSAGE', 'FORCE_VIRTUAL_MIRROR', 'LEGAL_TYRES', 'MAX_BALLAST_KG', 'UDP_PLUGIN_LOCAL_PORT', 'UDP_PLUGIN_ADDRESS', 'AUTH_PLUGIN_ADDRESS']:
