@@ -18,7 +18,8 @@ class Installer(object):
         self.__config = {}
         self.__config.update(config)
         self.__verbosity = int(verbosity)
-        self.__db = DbWrapper(config, verbosity)
+        self.__db = DbWrapper(config)
+        self.__db.Verbosity = self.__verbosity - 1
 
         if install_base_data == True:
             self.__install_base_data = True
@@ -97,22 +98,6 @@ class Installer(object):
         self.__db.appendColumnInt("UserGroupMap", "User")
         self.__db.appendColumnInt("UserGroupMap", "Group")
 
-        # check table TrackRating
-        if self.__verbosity > 0:
-            print("check database table `TrackRating`")
-        self.__db.appendTable("TrackRating")
-        self.__db.appendColumnInt("TrackRating", "User")
-        self.__db.appendColumnInt("TrackRating", "Track")
-        self.__db.appendColumnInt("TrackRating", "RateGraphics")
-        self.__db.appendColumnInt("TrackRating", "RateDrive")
-
-        # check table UserDriversMap
-        if self.__verbosity > 0:
-            print("check database table `UserDriversMap`")
-        self.__db.appendTable("UserDriversMap")
-        self.__db.appendColumnInt("UserDriversMap", "User")
-        self.__db.appendColumnInt("UserDriversMap", "Driver")
-
 
         # -------------
         #  grey tables
@@ -142,6 +127,62 @@ class Installer(object):
         self.__db.appendColumnString("Tracks", "Name", 80)
         self.__db.appendColumnFloat("Tracks", "Length")
         self.__db.appendColumnInt("Tracks", "Pitboxes")
+
+
+        # ----------------
+        #  Server Logging
+
+        if self.__verbosity > 0:
+            print("check database table `Sessions`")
+        self.__db.appendTable("Sessions")
+        self.__db.appendColumnInt("Sessions", "ProtocolVersion")
+        self.__db.appendColumnInt("Sessions", "SessionIndex")
+        self.__db.appendColumnInt("Sessions", "CurrentSessionIndex")
+        self.__db.appendColumnInt("Sessions", "SessionCount")
+        self.__db.appendColumnString("Sessions", 'ServerName', 50)
+        self.__db.appendColumnInt("Sessions", "Track")
+        self.__db.appendColumnString("Sessions", 'Name', 50)
+        self.__db.appendColumnInt("Sessions", "Type")
+        self.__db.appendColumnInt("Sessions", "Time")
+        self.__db.appendColumnInt("Sessions", "Laps")
+        self.__db.appendColumnInt("Sessions", "WaitTime")
+        self.__db.appendColumnInt("Sessions", "TempAmb")
+        self.__db.appendColumnInt("Sessions", "TempRoad")
+        self.__db.appendColumnString("Sessions", 'WheatherGraphics', 50)
+        self.__db.appendColumnUInt("Sessions", "Elapsed")
+        self.__db.appendColumnCurrentTimestamp("Sessions", "Timestamp")
+
+        if self.__verbosity > 0:
+            print("check database table `Laps`")
+        self.__db.appendTable("Laps")
+        self.__db.appendColumnInt("Laps", "Session")
+        self.__db.appendColumnInt("Laps", "CarSkin")
+        self.__db.appendColumnInt("Laps", "User")
+        self.__db.appendColumnUInt("Laps", "Laptime")
+        self.__db.appendColumnInt("Laps", "Cuts")
+        self.__db.appendColumnFloat("Laps", "Grip")
+        self.__db.appendColumnCurrentTimestamp("Laps", "Timestamp")
+
+        if self.__verbosity > 0:
+            print("check database table `CollisionEnv`")
+        self.__db.appendTable("CollisionEnv")
+        self.__db.appendColumnInt("CollisionEnv", "Session")
+        self.__db.appendColumnInt("CollisionEnv", "CarSkin")
+        self.__db.appendColumnInt("CollisionEnv", "User")
+        self.__db.appendColumnFloat("CollisionEnv", "Speed")
+        self.__db.appendColumnCurrentTimestamp("CollisionEnv", "Timestamp")
+
+        if self.__verbosity > 0:
+            print("check database table `CollisionCar`")
+        self.__db.appendTable("CollisionCar")
+        self.__db.appendColumnInt("CollisionCar", "Session")
+        self.__db.appendColumnInt("CollisionCar", "CarSkin")
+        self.__db.appendColumnInt("CollisionCar", "User")
+        self.__db.appendColumnFloat("CollisionCar", "Speed")
+        self.__db.appendColumnInt("CollisionCar", "OtherUser")
+        self.__db.appendColumnInt("CollisionCar", "OtherCarSkin")
+        self.__db.appendColumnCurrentTimestamp("CollisionCar", "Timestamp")
+
 
 
         # -------------
@@ -215,31 +256,6 @@ class Installer(object):
         self.__db.appendColumnInt("ServerPresets",    'wth_VARIATION_AMBIENT')
         self.__db.appendColumnInt("ServerPresets",    'wth_BASE_TEMPERATURE_ROAD')
         self.__db.appendColumnInt("ServerPresets",    'wth_VARIATION_ROAD')
-
-
-        if self.__verbosity > 0:
-            print("check database table `RaceClasses`")
-        self.__db.appendTable("RaceClasses")
-        self.__db.appendColumnString("RaceClasses", 'Name', 50)
-        self.__db.appendColumnInt("RaceClasses",    'AllowOccupation')
-        self.__db.appendColumnInt("RaceClasses",    'AutoFillEntries')
-
-
-        if self.__verbosity > 0:
-            print("check database table `RaceClassCars`")
-        self.__db.appendTable("RaceClassCars")
-        self.__db.appendColumnInt("RaceClassCars", 'RaceClass')
-        self.__db.appendColumnInt("RaceClassCars", 'Car')
-        self.__db.appendColumnInt("RaceClassCars", 'Ballast')
-        self.__db.appendColumnInt("RaceClassCars", 'MinCount')
-
-        if self.__verbosity > 0:
-            print("check database table `RaceClassEntries`")
-        self.__db.appendTable("RaceClassEntries")
-        self.__db.appendColumnInt("RaceClassEntries", 'RaceClassCar')
-        self.__db.appendColumnInt("RaceClassEntries", 'CarSkin')
-        self.__db.appendColumnInt("RaceClassEntries", 'User')
-        self.__db.appendColumnInt("RaceClassEntries", 'Ballast')
 
 
         # --------------

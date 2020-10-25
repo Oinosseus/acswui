@@ -21,17 +21,17 @@ class UdpPacket(object):
 
     def readUint16(self):
         uint16 = 0
-        uint16 |= self.readByte() << 8
         uint16 |= self.readByte() << 0
+        uint16 |= self.readByte() << 8
         return uint16
 
 
     def readUint32(self):
         uint32 = 0
-        uint32 |= self.readByte() << 24
-        uint32 |= self.readByte() << 16
-        uint32 |= self.readByte() << 8
         uint32 |= self.readByte() << 0
+        uint32 |= self.readByte() << 8
+        uint32 |= self.readByte() << 16
+        uint32 |= self.readByte() << 24
         return uint32
 
 

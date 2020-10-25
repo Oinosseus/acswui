@@ -2,8 +2,9 @@ import os
 import subprocess
 import signal
 import time
-from .udp_server import UdpServer
+from .udp_plugin_server import UdpPluginServer
 from .verbose_class import VerboseClass
+from .db_wrapper import DbWrapper
 
 
 class CommandSrvrun(VerboseClass):
@@ -16,15 +17,20 @@ class CommandSrvrun(VerboseClass):
 
         self.__server_proc = None
         self.__udp_srv = None
+        self.__database = None
 
 
     def run(self, args, config):
         self.print(1, "prepare environment")
         self.Verbosity = args.v
 
+        # setup database
+        self.__database = DbWrapper(config)
+        self.__database.Verbosity = self.Verbosity - 2
+
         # setup UDP plugin listener
         self.print(2, "starting acServer")
-        self.__udp_srv = UdpServer("127.0.0.1", 9603)
+        self.__udp_srv = UdpPluginServer("127.0.0.1", 9603, self.__database)
         self.__udp_srv.Verbosity = self.Verbosity - 1
 
         # start acServer as separate process
@@ -36,7 +42,12 @@ class CommandSrvrun(VerboseClass):
         while True:
 
             # process server
-            self.__udp_srv.process()
+            try:
+                self.__udp_srv.process()
+            except BaseException as e:
+                self.__server_proc.terminate()
+                self.__server_proc.wait(timeout=5.0)
+                raise e
 
             # quit parsing when acServer is stopped
             ret = self.__server_proc.poll()

@@ -12,6 +12,16 @@ from pyacswui import CommandSrvctl, CommandSrvrun, ServerPackager, Installer
 
 
 
+def workaround_srvpkg(args, config):
+    srvpkg = ServerPackager(config, args.v)
+    srvpkg.work()
+
+def workaround_install(args, config):
+    install = Installer(config, args.v, args.install_base_data)
+    install.work()
+
+
+
 # ---------------------------------
 #  - Parse Commandline Arguments -
 # ---------------------------------
@@ -25,11 +35,17 @@ argparser = argparse.ArgumentParser(prog="acswui", description="Assetto Corsa Se
 argparser.add_argument('-i', '--ini', help="path to config file")
 argparser.add_argument('--install-base-data', action="store_true", help="install basic http data (default groups, etc.)")
 argparser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
+
 argparsersubs     = argparser.add_subparsers(dest='command')
 argparser_srvpkg  = argparsersubs.add_parser('srvpkg', help="server packager - preparing files for http and ac server")
+argparser_srvpkg.set_defaults(func=workaround_srvpkg)
+
 CommandSrvctl(argparsersubs)
 CommandSrvrun(argparsersubs)
+
 argparser_install = argparsersubs.add_parser('install',help="install / update database and configure http server")
+argparser_install.set_defaults(func=workaround_install)
+
 
 
 # get arguments
@@ -63,29 +79,13 @@ with open(args.ini, "r") as f:
         if len(split) > 1:
             config.update({split[0].strip(): split[1].strip()})
 
+
+
 # ---------------------
 #  - Execute Command -
 # ---------------------
 
-if args.func:
-    args.func(args, config)
-
-# ServerPackager
-elif args.command == "srvpkg":
-    srvpkg = ServerPackager(config, args.v)
-    srvpkg.work()
-
-# Installer
-elif args.command == "install":
-    install = Installer(config, args.v, args.install_base_data)
-    install.work()
-
-# unknown command
-else:
-    raise ValueError("unknown command")
-
-
-# finish
+args.func(args, config)
 if int(args.v) > 0:
     print("Finished")
 
