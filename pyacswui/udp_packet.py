@@ -36,7 +36,7 @@ class UdpPacket(object):
 
 
     def readInt32(self):
-        int32 = self.read_uint32()
+        int32 = self.readUint32()
         if int32 >= 2**31:
             int32 -= 2**32
         return int32
