@@ -2,6 +2,7 @@ import argparse
 import subprocess
 import shutil
 import os
+import json
 from .db_wrapper import DbWrapper
 
 class Installer(object):
@@ -60,6 +61,30 @@ class Installer(object):
                         if ret[-1:] == '"':
                             ret = ret[:-1]
         return ret
+
+
+
+    def __parse_server_cfg_json(self):
+
+        # read template
+        with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "server_cfg.json"), "r") as f:
+            json_string = f.read()
+        json_obj = json.loads(json_string)
+
+        # scan for weather enums
+        weathers = []
+        for w in sorted(os.listdir(self.__config['path_ac'] + "/content/weather")):
+            if w[:1] != "." and not os.path.isdir(self.__config['path_ac'] + "/content/cars/" + w):
+                weathers.append(w)
+
+        # append to wether graphics
+        for w in json_obj["WEATHER"][0]["FIELDS"]:
+            if w["TAG"] == "GRAPHICS":
+                w["ENUMS"] = weathers
+
+        return json_obj
+
+
 
     def __work_db_tables(self):
 
@@ -191,71 +216,25 @@ class Installer(object):
         if self.__verbosity > 0:
             print("check database table `ServerPresets`")
         self.__db.appendTable("ServerPresets")
-        self.__db.appendColumnString("ServerPresets", 'Name', 60)
-        self.__db.appendColumnString("ServerPresets", 'srv_NAME', 60)
-        self.__db.appendColumnString("ServerPresets", 'srv_CARS', 255)
-        self.__db.appendColumnString("ServerPresets", 'srv_TRACK', 50)
-        self.__db.appendColumnString("ServerPresets", 'srv_CONFIG_TRACK', 50)
-        self.__db.appendColumnInt("ServerPresets",    'srv_SUN_ANGLE')
-        self.__db.appendColumnInt("ServerPresets",    'srv_MAX_CLIENTS')
-        self.__db.appendColumnInt("ServerPresets",    'srv_RACE_OVER_TIME')
-        self.__db.appendColumnInt("ServerPresets",    'srv_ALLOWED_TYRES_OUT')
-        self.__db.appendColumnInt("ServerPresets",    'srv_UDP_PORT')
-        self.__db.appendColumnInt("ServerPresets",    'srv_TCP_PORT')
-        self.__db.appendColumnInt("ServerPresets",    'srv_HTTP_PORT')
-        self.__db.appendColumnString("ServerPresets", 'srv_PASSWORD', 50)
-        self.__db.appendColumnInt("ServerPresets",    'srv_LOOP_MODE')
-        self.__db.appendColumnInt("ServerPresets",    'srv_REGISTER_TO_LOBBY')
-        self.__db.appendColumnInt("ServerPresets",    'srv_PICKUP_MODE_ENABLED')
-        self.__db.appendColumnInt("ServerPresets",    'srv_SLEEP_TIME')
-        self.__db.appendColumnInt("ServerPresets",    'srv_VOTING_QUORUM')
-        self.__db.appendColumnInt("ServerPresets",    'srv_VOTE_DURATION')
-        self.__db.appendColumnInt("ServerPresets",    'srv_BLACKLIST_MODE')
-        self.__db.appendColumnInt("ServerPresets",    'srv_TC_ALLOWED')
-        self.__db.appendColumnInt("ServerPresets",    'srv_ABS_ALLOWED')
-        self.__db.appendColumnInt("ServerPresets",    'srv_STABILITY_ALLOWED')
-        self.__db.appendColumnInt("ServerPresets",    'srv_AUTOCLUTCH_ALLOWED')
-        self.__db.appendColumnInt("ServerPresets",    'srv_DAMAGE_MULTIPLIER')
-        self.__db.appendColumnInt("ServerPresets",    'srv_FUEL_RATE')
-        self.__db.appendColumnInt("ServerPresets",    'srv_TYRE_WEAR_RATE')
-        self.__db.appendColumnInt("ServerPresets",    'srv_CLIENT_SEND_INTERVAL_HZ')
-        self.__db.appendColumnInt("ServerPresets",    'srv_TYRE_BLANKETS_ALLOWED')
-        self.__db.appendColumnString("ServerPresets", 'srv_ADMIN_PASSWORD', 50)
-        self.__db.appendColumnInt("ServerPresets",    'srv_QUALIFY_MAX_WAIT_PERC')
-        self.__db.appendColumnText("ServerPresets",   'srv_WELCOME_MESSAGE')
-        self.__db.appendColumnInt("ServerPresets",    'srv_FORCE_VIRTUAL_MIRROR')
-        self.__db.appendColumnString("ServerPresets", 'srv_LEGAL_TYRES', 30)
-        self.__db.appendColumnInt("ServerPresets",    'srv_MAX_BALLAST_KG')
-        self.__db.appendColumnInt("ServerPresets",    'srv_UDP_PLUGIN_LOCAL_PORT')
-        self.__db.appendColumnString("ServerPresets", 'srv_UDP_PLUGIN_ADDRESS', 150)
-        self.__db.appendColumnString("ServerPresets", 'srv_AUTH_PLUGIN_ADDRESS', 150)
+        json = self.__parse_server_cfg_json()
 
-        self.__db.appendColumnInt("ServerPresets",    'dyt_SESSION_START')
-        self.__db.appendColumnInt("ServerPresets",    'dyt_RANDOMNESS')
-        self.__db.appendColumnInt("ServerPresets",    'dyt_LAP_GAIN')
-        self.__db.appendColumnInt("ServerPresets",    'dyt_SESSION_TRANSFER')
+        for group in json.keys():
+            for fieldset in json[group]:
+                for field in fieldset['FIELDS']:
 
-        self.__db.appendColumnString("ServerPresets", 'bok_NAME', 50)
-        self.__db.appendColumnInt("ServerPresets",    'bok_TIME')
+                    db_col_name = group + '_' + field['TAG']
 
-        self.__db.appendColumnString("ServerPresets", 'prt_NAME', 50)
-        self.__db.appendColumnInt("ServerPresets",    'prt_TIME')
-        self.__db.appendColumnInt("ServerPresets",    'prt_IS_OPEN')
-
-        self.__db.appendColumnString("ServerPresets", 'qly_NAME', 50)
-        self.__db.appendColumnInt("ServerPresets",    'qly_TIME')
-        self.__db.appendColumnInt("ServerPresets",    'qly_IS_OPEN')
-
-        self.__db.appendColumnString("ServerPresets", 'rce_NAME', 50)
-        self.__db.appendColumnInt("ServerPresets",    'rce_LAPS')
-        self.__db.appendColumnInt("ServerPresets",    'rce_WAIT_TIME')
-        self.__db.appendColumnInt("ServerPresets",    'rce_IS_OPEN')
-
-        self.__db.appendColumnString("ServerPresets", 'wth_GRAPHICS', 50)
-        self.__db.appendColumnInt("ServerPresets",    'wth_BASE_TEMPERATURE_AMBIENT')
-        self.__db.appendColumnInt("ServerPresets",    'wth_VARIATION_AMBIENT')
-        self.__db.appendColumnInt("ServerPresets",    'wth_BASE_TEMPERATURE_ROAD')
-        self.__db.appendColumnInt("ServerPresets",    'wth_VARIATION_ROAD')
+                    if field['TYPE'] == "hidden":
+                        pass
+                    elif field['TYPE'] == "string":
+                        self.__db.appendColumnString("ServerPresets", db_col_name, field['SIZE'])
+                    elif field['TYPE'] in ["int", "enum"]:
+                        self.__db.appendColumnInt("ServerPresets", db_col_name)
+                    elif field['TYPE'] == "text":
+                        self.__db.appendColumnText("ServerPresets", db_col_name)
+                    else:
+                        print("group =", group, ", field =", field)
+                        raise NotImplementedError("Unknown field TYPE '%s'" % field['TYPE'])
 
 
         # --------------
@@ -301,7 +280,6 @@ class Installer(object):
         http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.__config['http_root_passwd']])
         http_root_password = http_root_password.decode("utf-8")
 
-        # path to
 
         # find server_cfg settings [SERVER]
         srv_cfg_server    = ""
@@ -366,6 +344,11 @@ class Installer(object):
                     srv_cfg_wth += ", "
                 srv_cfg_wth += "'" + key + "' => '" + self.__config[config_key] + "'"
 
+        # server_cfg
+        server_cfg_json = self.__parse_server_cfg_json()
+        server_cfg_json_dump = json.dumps(server_cfg_json)
+        server_cfg_json_dump = server_cfg_json_dump.replace("\"", "\\\"")
+
 
         with open(self.__config['path_http'] + "/classes/cConfig.php", "w") as f:
             f.write("<?php\n")
@@ -394,6 +377,7 @@ class Installer(object):
             f.write("    private $SrvCfg_Qualify = [" + srv_cfg_qly + "];\n")
             f.write("    private $SrvCfg_Race = [" + srv_cfg_rce + "];\n")
             f.write("    private $SrvCfg_Weather = [" + srv_cfg_wth + "];\n")
+            f.write("    private $SrvCfgJson = json_decode(\"%s\");\n" % server_cfg_json_dump)
             f.write("\n")
             f.write("    // this allows read-only access to private properties\n")
             f.write("    public function __get($name) {\n")

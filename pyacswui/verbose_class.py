@@ -21,10 +21,11 @@ class VerboseClass(object):
 
     def print(self, level, *args, **kwargs):
 
-        # printing new lines depending on last level
-        for i in range(level, self.__print_last_level):
-            print()
-
         if level <= self.__verbosity:
+
+            # printing new lines depending on last level
+            for i in range(level, self.__print_last_level):
+                print()
+
             print("  " * level, *args, **kwargs)
-        self.__print_last_level = level
+            self.__print_last_level = level

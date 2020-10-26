@@ -1,0 +1,785 @@
+{
+    "SERVER" : [
+
+        {
+            "FIELDSET": "Server General Settings",
+            "FIELDS": [
+                {
+                    "TAG" : "NAME",
+                    "NAME": "Name",
+                    "TYPE": "string",
+                    "SIZE": 80,
+                    "HELP": "Server Name",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "PASSWORD",
+                    "NAME": "Password",
+                    "TYPE": "string",
+                    "SIZE": 80,
+                    "HELP": "Server password",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "ADMIN_PASSWORD",
+                    "NAME": "Admin Password",
+                    "TYPE": "string",
+                    "SIZE": 25,
+                    "HELP": "The password needed to be recognized as server administrator: you can join the server using it to be recognized automatically. Type /help in the game's chat to see the command list",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "UDP_PORT",
+                    "NAME": "UDP Port",
+                    "TYPE": "int",
+                    "MIN": 1023,
+                    "MAX": 65535,
+                    "HELP": "UDP port number: open this port on your server's firewall",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "TCP_PORT",
+                    "NAME": "TCP Port",
+                    "TYPE": "int",
+                    "MIN": 1023,
+                    "MAX": 65535,
+                    "HELP": "TCP port number: open this port on your server's firewall",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "HTTP_PORT",
+                    "NAME": "HTTP Port",
+                    "TYPE": "int",
+                    "MIN": 1023,
+                    "MAX": 65535,
+                    "HELP": "Lobby port number: open these ports (both UDP and TCP) on your server's firewall",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "SEND_BUFFER_SIZE",
+                    "NAME": "Send Buffer Size",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 65535,
+                    "HELP": "",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "RECV_BUFFER_SIZE",
+                    "NAME": "Receive Buffer Size",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 65535,
+                    "HELP": "",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "CLIENT_SEND_INTERVAL_HZ",
+                    "NAME": "Client Send Interval",
+                    "TYPE": "int",
+                    "MIN": 10,
+                    "MAX": 50,
+                    "HELP": "Refresh rate of packet sending by the server. 10Hz = ~100ms. Higher number = higher MP quality = higher bandwidth resources needed. Really high values can create connection issues",
+                    "UNIT": "Hz"
+                }, {
+                    "TAG" : "NUM_THREADS",
+                    "NAME": "Number Of Threads",
+                    "TYPE": "int",
+                    "MIN": 1,
+                    "MAX": 64,
+                    "HELP": "Number of threads to run on",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "SLEEP_TIME",
+                    "NAME": "Sleep Time",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 999,
+                    "HELP": "??? - not documented, seems to be fixed to 1",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "REGISTER_TO_LOBBY",
+                    "NAME": "Register To Lobby",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"No"},
+                        {"VALUE":1, "TEXT":"Yes"}
+                    ],
+                    "HELP": "Register the AC Server to the main lobby",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "MAX_CLIENTS",
+                    "NAME": "Max Clients",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 999,
+                    "HELP": "Max number of clients (must be <= track's number of pits) - Will be reduced automatically",
+                    "UNIT": ""
+                } , {
+                    "TAG" : "WELCOME_MESSAGE",
+                    "NAME": "Welcome Message",
+                    "TYPE": "text",
+                    "HELP": "arbitrary welcome message"
+                }
+            ]
+        },
+
+
+        {
+            "FIELDSET": "Server Mode Settings",
+            "FIELDS": [
+                {
+                    "TAG" : "PICKUP_MODE_ENABLED",
+                    "NAME": "Pickup Mode",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"Disabled"},
+                        {"VALUE":1, "TEXT":"Enabled"}
+                    ],
+                    "HELP": "if 0 the server start in booking mode (do not use it). Warning: in pickup mode you have to list only a circuit under TRACK and you need to list a least one car in the entry_list",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "LOOP_MODE",
+                    "NAME": "Loop Mode",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"Disabled"},
+                        {"VALUE":1, "TEXT":"Enabled"}
+                    ],
+                    "HELP": "the server restarts from the first track, to disable this set it to 0",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "SUN_ANGLE",
+                    "NAME": "Sun Angle",
+                    "TYPE": "int",
+                    "MIN": -90,
+                    "MAX": 90,
+                    "HELP": "Angle of the position of the sun",
+                    "UNIT": "&deg;"
+                }, {
+                    "TAG" : "QUALIFY_MAX_WAIT_PERC",
+                    "NAME": "Qualifying Max Wait Percentage",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 500,
+                    "HELP": "The factor to calculate the remaining time in a qualify session after the session is ended: 120 means that 120% of the session fastest lap remains to end the current lap.",
+                    "UNIT": "&percnt;"
+                }, {
+                    "TAG" : "CARS",
+                    "TYPE": "hidden"
+                }, {
+                    "TAG" : "TRACK",
+                    "TYPE": "hidden"
+                }, {
+                    "TAG" : "CONFIG_TRACK",
+                    "TYPE": "hidden"
+                }, {
+                    "TAG" : "LEGAL_TYRES",
+                    "NAME": "Legal Tyres",
+                    "TYPE": "string",
+                    "SIZE": 50,
+                    "HELP": "List of tyres short names that are allowed",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "MAX_BALLAST_KG",
+                    "NAME": "Maximum Ballast",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 9999,
+                    "HELP": "The max total of ballast that can be added through the admin command",
+                    "UNIT": "kg"
+                }, {
+                    "TAG" : "RACE_OVER_TIME",
+                    "NAME": "Race-Over Time",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 9999,
+                    "HELP": "time remaining in seconds to finish the race from the moment the first one passes on the finish line",
+                    "UNIT": "s"
+                }, {
+                    "TAG" : "RACE_PIT_WINDOW_START",
+                    "NAME": "Race Pit Window Start",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 9999,
+                    "HELP": "pit window opens at lap/minute specified",
+                    "UNIT": "s, Lap"
+                }, {
+                    "TAG" : "RACE_PIT_WINDOW_END",
+                    "NAME": "Race Pit Window End",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 9999,
+                    "HELP": "pit window closes at lap/minute specified",
+                    "UNIT": "s, Lap"
+                }, {
+                    "TAG" : "REVERSED_GRID_RACE_POSITIONS",
+                    "NAME": "Reserved Grid Race Positions",
+                    "TYPE": "int",
+                    "MIN": -1,
+                    "MAX": 99,
+                    "HELP": "0 = no additional race, 1toX = only those position will be reversed for the next race, -1 = all the position will be reversed (Retired players will be on the last positions)",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "LOCKED_ENTRY_LIST",
+                    "NAME": "Locked Entry List",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"No"},
+                        {"VALUE":1, "TEXT":"Yes"}
+                    ],
+                    "HELP": "Only players already included in the entry list can join the server",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "START_RULE",
+                    "NAME": "Start Rule",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"Locked"},
+                        {"VALUE":1, "TEXT":"Teleport"},
+                        {"VALUE":2, "TEXT":"Drive-Through"}
+                    ],
+                    "HELP": "0 is car locked until start;   1 is teleport   ; 2 is drive-through (if race has 3 or less laps then the Teleport penalty is enabled)",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "RACE_GAS_PENALTY_DISABLED",
+                    "NAME": "Race Gas Penalty",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"0 Enabled"},
+                        {"VALUE":1, "TEXT":"1 Disabled"}
+                    ],
+                    "HELP": "0 = any cut will be penalized with the gas cut message; 1 = no penalization will be forced, but cuts will be saved in the race result json",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "TIME_OF_DAY_MULT",
+                    "NAME": "Time Multiplier",
+                    "TYPE": "int",
+                    "MIN": 1,
+                    "MAX": 99,
+                    "HELP": "multiplier for the time of day",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "RESULT_SCREEN_TIME",
+                    "NAME": "Time Multiplier",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 9999,
+                    "HELP": "Seconds of result screen between racing sessions",
+                    "UNIT": "s"
+                }, {
+                    "TAG" : "MAX_CONTACTS_PER_KM",
+                    "NAME": "Max Contacts",
+                    "TYPE": "int",
+                    "MIN": 1,
+                    "MAX": 9999,
+                    "HELP": "Maximum number times you can make contact with another car in 1 kilometer",
+                    "UNIT": "1/Km"
+                }, {
+                    "TAG" : "RACE_EXTRA_LAP",
+                    "NAME": "Race Extra Lap",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"No"},
+                        {"VALUE":1, "TEXT":"Yes"}
+                    ],
+                    "HELP": "If the race is timed, force an extra lap after the leader has crossed the line",
+                    "UNIT": ""
+                }
+            ]
+        },
+
+
+        {
+            "FIELDSET": "Server Voting Settings",
+            "FIELDS": [
+                {
+                    "TAG" : "KICK_QUORUM",
+                    "NAME": "Kick Quorum",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 100,
+                    "HELP": "Percentage that is required for the kick vote to pass",
+                    "UNIT": "&percnt;"
+                }, {
+                    "TAG" : "BLACKLIST_MODE",
+                    "NAME": "Blacklist Mode",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"Kick Until Rejoin"},
+                        {"VALUE":1, "TEXT":"Kick Until Server Restart"},
+                        {"VALUE":2, "TEXT":"Kick And Blacklist"}
+                    ],
+                    "HELP": "0 = normal kick, kicked player can rejoin; 1 = kicked player cannot rejoin until server restart; 2 = kick player and add to blacklist.txt, kicked player can not rejoin unless removed from blacklist (Better to use ban_id command rather than set this).",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "VOTING_QUORUM",
+                    "NAME": "Voting Quorum",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 100,
+                    "HELP": "Percentage that is required for the session vote to pass",
+                    "UNIT": "&percnt;"
+                }, {
+                    "TAG" : "VOTE_DURATION",
+                    "NAME": "Voting Duration",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 9999,
+                    "HELP": "Vote length in seconds",
+                    "UNIT": "s"
+                }
+            ]
+        },
+
+
+        {
+            "FIELDSET": "Server Realism Settings",
+            "FIELDS": [
+                {
+                    "TAG" : "FUEL_RATE",
+                    "NAME": "Fuel Rate",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 9999,
+                    "HELP": "Fuel usage from 0 (no fuel usage) to XXX (100 is the realistic one)",
+                    "UNIT": "&percnt;"
+                }, {
+                    "TAG" : "DAMAGE_MULTIPLIER",
+                    "NAME": "Damage",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 100,
+                    "HELP": "Damage from 0 (no damage) to 100 (full damage)",
+                    "UNIT": "&percnt;"
+                }, {
+                    "TAG" : "TYRE_WEAR_RATE",
+                    "NAME": "Tyre Wear Rate",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 9999,
+                    "HELP": "Tyre wear from 0 (no tyre wear) to XXX (100 is the realistic one)",
+                    "UNIT": "&percnt;"
+                }, {
+                    "TAG" : "ALLOWED_TYRES_OUT",
+                    "NAME": "Allowed Tyred Out",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 9999,
+                    "HELP": "??? - not documented",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "ABS_ALLOWED",
+                    "NAME": "ABS Allowed",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"Disabled"},
+                        {"VALUE":1, "TEXT":"Car Dependent"},
+                        {"VALUE":2, "TEXT":"Enabled"}
+                    ],
+                    "HELP": "0 -> no car can use ABS, 1 -> only car provided with ABS can use it; 2-> any car can use ABS",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "TC_ALLOWED",
+                    "NAME": "TC Allowed",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"Disabled"},
+                        {"VALUE":1, "TEXT":"Car Dependent"},
+                        {"VALUE":2, "TEXT":"Enabled"}
+                    ],
+                    "HELP": "0 -> no car can use TC, 1 -> only car provided with TC can use it; 2-> any car can use TC",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "STABILITY_ALLOWED",
+                    "NAME": "Stability Control",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"Disabled"},
+                        {"VALUE":1, "TEXT":"Allow"}
+                    ],
+                    "HELP": "Stability assist 0 -> OFF; 1 -> ON",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "AUTOCLUTCH_ALLOWED",
+                    "NAME": "Automatic Clutch",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"Disabled"},
+                        {"VALUE":1, "TEXT":"Allow"}
+                    ],
+                    "HELP": "Autoclutch assist 0 -> OFF; 1 -> ON",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "TYRE_BLANKETS_ALLOWED",
+                    "NAME": "Tyre Blankets",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"No"},
+                        {"VALUE":1, "TEXT":"Yes"}
+                    ],
+                    "HELP": "at the start of the session or after the pitstop the tyre will have the the optimal temperature",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "FORCE_VIRTUAL_MIRROR",
+                    "NAME": "Virtual Mirror",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"Optional"},
+                        {"VALUE":1, "TEXT":"Forced"}
+                    ],
+                    "HELP": "1 virtual mirror will be enabled for every client, 0 for mirror as optional",
+                    "UNIT": ""
+                }
+            ]
+        },
+
+
+        {
+            "FIELDSET": "Server UDP Plugin Settings",
+            "FIELDS": [
+                {
+                    "TAG" : "UDP_PLUGIN_LOCAL_PORT",
+                    "NAME": "UDP Plugin Local Port",
+                    "TYPE": "int",
+                    "MIN": 1024,
+                    "MAX": 65535,
+                    "HELP": "The port on which to listen for UDP messages from a plugin",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "UDP_PLUGIN_ADDRESS",
+                    "NAME": "UDP Plugin Address",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "HELP": "The address of the plugin to which UDP messages are sent (eg. 127.0.0.1:9603)",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "AUTH_PLUGIN_ADDRESS",
+                    "NAME": "Auth Plugin Address",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "HELP": "The address of the auth plugin",
+                    "UNIT": ""
+                }
+            ]
+        }
+    ],
+
+
+
+    "FTP" : [
+        {
+            "FIELDSET": "FTP",
+            "FIELDS": [
+                {
+                    "TAG" : "HOST",
+                    "NAME": "FTP Host",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "HELP": "The host address of the FTP server",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "LOGIN",
+                    "NAME": "FTP Login",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "HELP": "The user/login credential for the FTP server",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "PASSWORD",
+                    "NAME": "FTP password",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "HELP": "The password credential for the FTP server",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "FOLDER",
+                    "NAME": "FTP Folder",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "HELP": "The subdirectories to use on the FTP server",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "LINUX",
+                    "NAME": "Linux",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"No"},
+                        {"VALUE":1, "TEXT":"Yes"}
+                    ],
+                    "HELP": "If the FTP server run on a linux machine",
+                    "UNIT": ""
+                }
+            ]
+        }
+    ],
+
+
+
+    "BOOKING" : [
+        {
+            "FIELDSET": "Booking",
+            "FIELDS": [
+                {
+                    "TAG" : "NAME",
+                    "NAME": "Name",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "HELP": "Arbitrary of the session",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "TIME",
+                    "NAME": "Name",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MIN": 9999,
+                    "HELP": "Session length in minutes",
+                    "UNIT": "Min"
+                }
+            ]
+        }
+    ],
+
+
+
+    "PRACTICE" : [
+        {
+            "FIELDSET": "Practice",
+            "FIELDS": [
+                {
+                    "TAG" : "NAME",
+                    "NAME": "Name",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "HELP": "Arbitrary of the session",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "TIME",
+                    "NAME": "Time",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MIN": 9999,
+                    "HELP": "Session length in minutes",
+                    "UNIT": "Min"
+                }, {
+                    "TAG" : "IS_OPEN",
+                    "NAME": "Is Open",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"No Join"},
+                        {"VALUE":1, "TEXT":"Free Join"}
+                    ],
+                    "HELP": "0 = no join, 1 = free join",
+                    "UNIT": ""
+                }
+            ]
+        }
+    ],
+
+
+
+    "QUALIFY" : [
+        {
+            "FIELDSET": "Qualify",
+            "FIELDS": [
+                {
+                    "TAG" : "NAME",
+                    "NAME": "Name",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "HELP": "Arbitrary of the session",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "TIME",
+                    "NAME": "Time",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MIN": 9999,
+                    "HELP": "Session length in minutes",
+                    "UNIT": "Min"
+                }, {
+                    "TAG" : "IS_OPEN",
+                    "NAME": "Is Open",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"No Join"},
+                        {"VALUE":1, "TEXT":"Free Join"}
+                    ],
+                    "HELP": "0 = no join, 1 = free join",
+                    "UNIT": ""
+                }
+            ]
+        }
+    ],
+
+
+
+    "RACE" : [
+        {
+            "FIELDSET": "Race",
+            "FIELDS": [
+                {
+                    "TAG" : "NAME",
+                    "NAME": "Name",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "HELP": "Arbitrary of the session",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "LAPS",
+                    "NAME": "Laps",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MIN": 9999,
+                    "HELP": "length of the lap races",
+                    "UNIT": "Laps"
+                }, {
+                    "TAG" : "TIME",
+                    "NAME": "Time",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MIN": 9999,
+                    "HELP": "Session length in minutes",
+                    "UNIT": "Min"
+                }, {
+                    "TAG" : "WAIT_TIME",
+                    "NAME": "Wait Time",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MIN": 999,
+                    "HELP": "seconds before the start of the session",
+                    "UNIT": "s"
+                }, {
+                    "TAG" : "IS_OPEN",
+                    "NAME": "Is Open",
+                    "TYPE": "enum",
+                    "ENUMS": [
+                        {"VALUE":0, "TEXT":"No Join"},
+                        {"VALUE":1, "TEXT":"Free Join"},
+                        {"VALUE":2, "TEXT":"20s Join"}
+                    ],
+                    "HELP": "0 = no join, 1 = free join, 2 = free join until 20 seconds to the green light",
+                    "UNIT": ""
+                }
+            ]
+        }
+    ],
+
+
+
+    "DYNAMIC_TRACK" : [
+        {
+            "FIELDSET": "Dynamic Track",
+            "FIELDS": [
+                {
+                    "TAG" : "SESSION_START",
+                    "NAME": "Start Grip Level",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 100,
+                    "HELP": "% level of grip at session start",
+                    "UNIT": "&percnt;"
+                }, {
+                    "TAG" : "RANDOMNESS",
+                    "NAME": "Grip Randomness",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 100,
+                    "HELP": "level of randomness added to the start grip",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "LAP_GAIN",
+                    "NAME": "Grip Gain",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 999,
+                    "HELP": "how many laps are needed to add 1% grip",
+                    "UNIT": "&percnt; / Lap"
+                }, {
+                    "TAG" : "SESSION_TRANSFER",
+                    "NAME": "Grip Transfer",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 100,
+                    "HELP": "How much of the gained grip is to be added to the next session 100 -> all the gained grip. Example: difference between starting (90) and ending (96) grip in the session = 6%, with session_transfer = 50 then the next session is going to start with 93.",
+                    "UNIT": "&percnt;"
+                }
+            ]
+        }
+    ],
+
+
+
+    "WEATHER" : [
+        {
+            "FIELDSET": "Weather",
+            "FIELDS": [
+                {
+                    "TAG" : "GRAPHICS",
+                    "NAME": "Graphics",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "ENUMS": [],
+                    "HELP": "it's exactly one of the folder name that you find into 'content/weather' directory",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "BASE_TEMPERATURE_AMBIENT",
+                    "NAME": "Ambient Temperature",
+                    "TYPE": "int",
+                    "MIN": -50,
+                    "MAX": 100,
+                    "HELP": "temperature of the Ambient",
+                    "UNIT": "&deg;C"
+                }, {
+                    "TAG" : "VARIATION_AMBIENT",
+                    "NAME": "Ambient Variation",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 100,
+                    "HELP": "variation of the ambient's temperature. In this example final ambient's temperature can be 16 or 20",
+                    "UNIT": "&deg;C"
+                }, {
+                    "TAG" : "BASE_TEMPERATURE_ROAD",
+                    "NAME": "Relative Road Temperature",
+                    "TYPE": "int",
+                    "MIN": -50,
+                    "MAX": 100,
+                    "HELP": "Relative road temperature: this value will be added to the final ambient temp. In this example the road temperature will be between 22 (16 + 6) and 26 (20 + 6). It can be negative.",
+                    "UNIT": "&deg;C"
+                }, {
+                    "TAG" : "VARIATION_ROAD",
+                    "NAME": "Relative Road Variation",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 100,
+                    "HELP": "variation of the road's temperature. Like the ambient one",
+                    "UNIT": "&deg;C"
+                }, {
+                    "TAG" : "WIND_BASE_SPEED_MIN",
+                    "NAME": "Wind Speed Min",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 40,
+                    "HELP": "Min speed of the session possible",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "WIND_BASE_SPEED_MAX",
+                    "NAME": "Wind Speed Max",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 40,
+                    "HELP": "Max speed of session possible (max 40)",
+                    "UNIT": ""
+                }, {
+                    "TAG" : "WIND_BASE_DIRECTION",
+                    "NAME": "Wind Direction",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 360,
+                    "HELP": "Base direction of the wind (wind is pointing at); 0 = North, 90 = East etc",
+                    "UNIT": "&deg;"
+                }, {
+                    "TAG" : "WIND_VARIATION_DIRECTION",
+                    "NAME": "Wind Variation",
+                    "TYPE": "int",
+                    "MIN": 0,
+                    "MAX": 360,
+                    "HELP": "Variation (+ or -) of the base direction",
+                    "UNIT": "&deg;"
+                }
+            ]
+        }
+    ]
+}

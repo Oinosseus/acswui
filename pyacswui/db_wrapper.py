@@ -155,7 +155,11 @@ class DbWrapper(VerboseClass):
 
             # execute query
             cursor = self.__db_handle.cursor()
-            cursor.execute(query)
+            try:
+                cursor.execute(query)
+            except BaseException as e:
+                print("QUERY:", query)
+                raise e
             cursor.close()
             self.__db_handle.commit()
 
@@ -248,7 +252,7 @@ class DbWrapper(VerboseClass):
             cursor.execute(query)
         except BaseException as e:
             print("QUERY:", query)
-            raise e        
+            raise e
         for res in cursor.fetchall():
             ret_dict = {}
             for col in columns_array:
