@@ -524,7 +524,7 @@
                     "NAME": "Name",
                     "TYPE": "int",
                     "MIN": 0,
-                    "MIN": 9999,
+                    "MAX": 9999,
                     "HELP": "Session length in minutes",
                     "UNIT": "Min"
                 }
@@ -550,7 +550,7 @@
                     "NAME": "Time",
                     "TYPE": "int",
                     "MIN": 0,
-                    "MIN": 9999,
+                    "MAX": 9999,
                     "HELP": "Session length in minutes",
                     "UNIT": "Min"
                 }, {
@@ -586,7 +586,7 @@
                     "NAME": "Time",
                     "TYPE": "int",
                     "MIN": 0,
-                    "MIN": 9999,
+                    "MAX": 9999,
                     "HELP": "Session length in minutes",
                     "UNIT": "Min"
                 }, {
@@ -622,7 +622,7 @@
                     "NAME": "Laps",
                     "TYPE": "int",
                     "MIN": 0,
-                    "MIN": 9999,
+                    "MAX": 9999,
                     "HELP": "length of the lap races",
                     "UNIT": "Laps"
                 }, {
@@ -630,7 +630,7 @@
                     "NAME": "Time",
                     "TYPE": "int",
                     "MIN": 0,
-                    "MIN": 9999,
+                    "MAX": 9999,
                     "HELP": "Session length in minutes",
                     "UNIT": "Min"
                 }, {
@@ -638,7 +638,7 @@
                     "NAME": "Wait Time",
                     "TYPE": "int",
                     "MIN": 0,
-                    "MIN": 999,
+                    "MAX": 999,
                     "HELP": "seconds before the start of the session",
                     "UNIT": "s"
                 }, {

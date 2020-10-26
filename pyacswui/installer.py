@@ -346,8 +346,10 @@ class Installer(object):
 
         # server_cfg
         server_cfg_json = self.__parse_server_cfg_json()
-        server_cfg_json_dump = json.dumps(server_cfg_json)
-        server_cfg_json_dump = server_cfg_json_dump.replace("\"", "\\\"")
+        #server_cfg_json_dump = json.dumps(server_cfg_json)
+        #server_cfg_json_dump = server_cfg_json_dump.replace("\"", "\\\"")
+        with open(self.__config['path_http'] + "server_cfg.json", "w") as f:
+            json.dump(server_cfg_json, f, indent=4)
 
 
         with open(self.__config['path_http'] + "/classes/cConfig.php", "w") as f:
@@ -377,7 +379,7 @@ class Installer(object):
             f.write("    private $SrvCfg_Qualify = [" + srv_cfg_qly + "];\n")
             f.write("    private $SrvCfg_Race = [" + srv_cfg_rce + "];\n")
             f.write("    private $SrvCfg_Weather = [" + srv_cfg_wth + "];\n")
-            f.write("    private $SrvCfgJson = json_decode(\"%s\");\n" % server_cfg_json_dump)
+            f.write("    private $SrvCfgJsonPath = \"server_cfg.json\";\n")
             f.write("\n")
             f.write("    // this allows read-only access to private properties\n")
             f.write("    public function __get($name) {\n")
