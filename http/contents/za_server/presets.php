@@ -224,8 +224,8 @@ class presets extends cContentPage {
             foreach ($ServerCfgField['ENUMS'] as $enum) {
                 $opt_val = $enum['VALUE'];
                 $opt_text = $enum['TEXT'];
-                $opt_checked = ($opt_val == $value) ? "checked" : "";
-                $html .= "<option value=\"$opt_val\">$opt_text</option>";
+                $opt_checked = ($opt_val == $value) ? "selected" : "";
+                $html .= "<option value=\"$opt_val\" $opt_checked>$opt_text</option>";
             }
             $html .= "</select>";
             $html .= "</td></tr>";
