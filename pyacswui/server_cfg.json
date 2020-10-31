@@ -777,12 +777,11 @@
                 {
                     "TAG" : "GRAPHICS",
                     "NAME": "Graphics",
-                    "TYPE": "string",
-                    "SIZE": 100,
+                    "TYPE": "enum",
                     "ENUMS": [],
                     "HELP": "it's exactly one of the folder name that you find into 'content/weather' directory",
                     "UNIT": "",
-                    "DEFAULT": "5_light_clouds"
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "BASE_TEMPERATURE_AMBIENT",
                     "NAME": "Ambient Temperature",

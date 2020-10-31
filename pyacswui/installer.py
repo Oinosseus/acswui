@@ -42,6 +42,7 @@ class Installer(object):
         self.__work_cconfig()
         self.__work_scan_cars()
         self.__work_scan_tracks()
+        self.__work_server_cfg()
         self.__work_install_basics()
 
 
@@ -74,13 +75,14 @@ class Installer(object):
         # scan for weather enums
         weathers = []
         for w in sorted(os.listdir(self.__config['path_ac'] + "/content/weather")):
-            if w[:1] != "." and not os.path.isdir(self.__config['path_ac'] + "/content/cars/" + w):
+            if w[:1] != "." and os.path.isdir(self.__config['path_ac'] + "/content/weather/" + w):
                 weathers.append(w)
 
         # append to wether graphics
-        for w in json_obj["WEATHER"][0]["FIELDS"]:
-            if w["TAG"] == "GRAPHICS":
-                w["ENUMS"] = weathers
+        for field in json_obj["WEATHER"][0]["FIELDS"]:
+            if field["TAG"] == "GRAPHICS":
+                for i in range(len(weathers)):
+                    field["ENUMS"].append({"VALUE":i, "TEXT":weathers[i]})
 
         return json_obj
 
@@ -270,84 +272,11 @@ class Installer(object):
 
 
 
-
-    def __work_cconfig(self):
+    def __work_server_cfg(self):
 
         # user info
         if self.__verbosity > 0:
-            print("create cConfig.php")
-
-        # encrypt root password
-        http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.__config['http_root_passwd']])
-        http_root_password = http_root_password.decode("utf-8")
-
-
-        # find server_cfg settings [SERVER]
-        srv_cfg_server    = ""
-        for key in ['NAME', 'CARS', 'TRACK', 'CONFIG_TRACK', 'SUN_ANGLE', 'MAX_CLIENTS', 'RACE_OVER_TIME', 'ALLOWED_TYRES_OUT', 'UDP_PORT', 'TCP_PORT', 'HTTP_PORT', 'PASSWORD', 'LOOP_MODE', 'REGISTER_TO_LOBBY', 'PICKUP_MODE_ENABLED', 'SLEEP_TIME', 'VOTING_QUORUM', 'VOTE_DURATION', 'BLACKLIST_MODE', 'TC_ALLOWED', 'ABS_ALLOWED', 'STABILITY_ALLOWED', 'AUTOCLUTCH_ALLOWED', 'DAMAGE_MULTIPLIER', 'FUEL_RATE', 'TYRE_WEAR_RATE', 'CLIENT_SEND_INTERVAL_HZ', 'TYRE_BLANKETS_ALLOWED', 'ADMIN_PASSWORD', 'QUALIFY_MAX_WAIT_PERC', 'WELCOME_MESSAGE', 'FORCE_VIRTUAL_MIRROR', 'LEGAL_TYRES', 'MAX_BALLAST_KG', 'UDP_PLUGIN_LOCAL_PORT', 'UDP_PLUGIN_ADDRESS', 'AUTH_PLUGIN_ADDRESS']:
-            config_key = "http_srv_" + key
-            if config_key in self.__config and len(self.__config[config_key]) > 0:
-                if len(srv_cfg_server) > 0:
-                    srv_cfg_server += ", "
-                srv_cfg_server += "'" + key + "' => '" + self.__config[config_key] + "'"
-
-        # find server_cfg settings [DYNAMIC_TRACK]
-        srv_cfg_dyntrck    = ""
-        for key in ['SESSION_START', 'RANDOMNESS', 'LAP_GAIN', 'SESSION_TRANSFER']:
-            config_key = "http_dyt_" + key
-            if config_key in self.__config and len(self.__config[config_key]) > 0:
-                if len(srv_cfg_dyntrck) > 0:
-                    srv_cfg_dyntrck += ", "
-                srv_cfg_dyntrck += "'" + key + "' => '" + self.__config[config_key] + "'"
-
-        # find server_cfg settings [BOOKING]
-        srv_cfg_book    = ""
-        for key in ['NAME', 'TIME']:
-            config_key = "http_bok_" + key
-            if config_key in self.__config and len(self.__config[config_key]) > 0:
-                if len(srv_cfg_book) > 0:
-                    srv_cfg_book += ", "
-                srv_cfg_book += "'" + key + "' => '" + self.__config[config_key] + "'"
-
-        # find server_cfg settings [PRACTICE]
-        srv_cfg_prcts    = ""
-        for key in ['NAME', 'TIME', 'IS_OPEN']:
-            config_key = "http_prt_" + key
-            if config_key in self.__config and len(self.__config[config_key]) > 0:
-                if len(srv_cfg_prcts) > 0:
-                    srv_cfg_prcts += ", "
-                srv_cfg_prcts += "'" + key + "' => '" + self.__config[config_key] + "'"
-
-        # find server_cfg settings [QUALIFY]
-        srv_cfg_qly    = ""
-        for key in ['NAME', 'TIME', 'IS_OPEN']:
-            config_key = "http_qly_" + key
-            if config_key in self.__config and len(self.__config[config_key]) > 0:
-                if len(srv_cfg_qly) > 0:
-                    srv_cfg_qly += ", "
-                srv_cfg_qly += "'" + key + "' => '" + self.__config[config_key] + "'"
-
-        # find server_cfg settings [RACE]
-        srv_cfg_rce    = ""
-        for key in ['NAME', 'LAPS', 'WAIT_TIME', 'IS_OPEN']:
-            config_key = "http_rce_" + key
-            if config_key in self.__config and len(self.__config[config_key]) > 0:
-                if len(srv_cfg_rce) > 0:
-                    srv_cfg_rce += ", "
-                srv_cfg_rce += "'" + key + "' => '" + self.__config[config_key] + "'"
-
-        # find server_cfg settings [WEATHER]
-        srv_cfg_wth    = ""
-        for key in ['GRAPHICS', 'BASE_TEMPERATURE_AMBIENT', 'VARIATION_AMBIENT', 'BASE_TEMPERATURE_ROAD', 'VARIATION_ROAD']:
-            config_key = "http_wth_" + key
-            if config_key in self.__config and len(self.__config[config_key]) > 0:
-                if len(srv_cfg_wth) > 0:
-                    srv_cfg_wth += ", "
-                srv_cfg_wth += "'" + key + "' => '" + self.__config[config_key] + "'"
-
-
-        #################
-        # Server Presets
+            print("create http/server_cfg.json")
 
         # predefined server presets
         server_cfg_json = self.__parse_server_cfg_json()
@@ -374,8 +303,15 @@ class Installer(object):
             json.dump(server_cfg_json, f, indent=4)
 
 
-        ###############
-        # Write Config
+    def __work_cconfig(self):
+
+        # user info
+        if self.__verbosity > 0:
+            print("create cConfig.php")
+
+        # encrypt root password
+        http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.__config['http_root_passwd']])
+        http_root_password = http_root_password.decode("utf-8")
 
         with open(self.__config['path_http'] + "/classes/cConfig.php", "w") as f:
             f.write("<?php\n")
@@ -397,13 +333,6 @@ class Installer(object):
             f.write("    private $DbPasswd = \"%s\";\n" % self.__config['db_passwd'])
             f.write("\n")
             f.write("    // server_cfg\n")
-            f.write("    private $SrvCfg_Server = [" + srv_cfg_server + "];\n")
-            f.write("    private $SrvCfg_DynTrack = [" + srv_cfg_dyntrck + "];\n")
-            f.write("    private $SrvCfg_Booking = [" + srv_cfg_book + "];\n")
-            f.write("    private $SrvCfg_Practice = [" + srv_cfg_prcts + "];\n")
-            f.write("    private $SrvCfg_Qualify = [" + srv_cfg_qly + "];\n")
-            f.write("    private $SrvCfg_Race = [" + srv_cfg_rce + "];\n")
-            f.write("    private $SrvCfg_Weather = [" + srv_cfg_wth + "];\n")
             f.write("    private $SrvCfgJsonPath = \"server_cfg.json\";\n")
             f.write("\n")
             f.write("    // this allows read-only access to private properties\n")
