@@ -1,0 +1,31 @@
+[
+    {
+        "Name": "GT3",
+        "CarNames": [
+            "ks_ferrari_488_gt3",
+            "ks_nissan_gtr_gt3",
+            "ks_mclaren_650_gt3",
+            "mclaren_mp412c_gt3",
+            "mercedes_sls_gt3",
+            "ks_lamborghini_huracan_gt3",
+            "ks_porsche_911_gt3_cup_2017",
+            "ks_mercedes_amg_gt3",
+            "bmw_z4_gt3",
+            "ks_porsche_911_gt3_r_2016",
+            "ks_porsche_911_gt3_rs"
+        ]
+
+    },
+
+    {
+        "Name": "GT4",
+        "CarNames": [
+            "ks_porsche_cayman_gt4_std",
+            "ks_ford_gt40",
+            "ks_maserati_gt_mc_gt4",
+            "ks_porsche_cayman_gt4_clubsport",
+            "lotus_2_eleven_gt4"
+        ]
+
+    }
+]

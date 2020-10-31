@@ -470,3 +470,19 @@ class CommandInstallHttp(VerboseClass):
             if len(self.__db.findIds("ServerPresets", {"Name": preset['Name']})) == 0:
                 self.print(2, "Create server preset '%s" % preset['Name'])
                 self.__db.insertRow("ServerPresets", preset)
+
+        # default car classes
+        with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "basic_data_car_classes.json"), "r") as f:
+            json_string = f.read()
+        json_obj = json.loads(json_string)
+        for cclass in json_obj:
+            if len(self.__db.findIds("CarClasses", {"Name": cclass['Name']})) == 0:
+                self.print(2, "Create car class '%s" % cclass['Name'])
+                cc_id = self.__db.insertRow("CarClasses", {'Name': cclass['Name']})
+
+                for car_name in cclass['CarNames']:
+
+                    res = self.__db.fetch("Cars", ['Id'], {'Car': car_name})
+                    if len(res) == 1:
+                        car_id = res[0]['Id']
+                        self.__db.insertRow("CarClassesMap", {'Car': car_id, 'CarClass': cc_id, 'Ballast':0})
