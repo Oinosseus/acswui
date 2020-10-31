@@ -8,17 +8,13 @@
 import argparse
 import os
 import sys
-from pyacswui import CommandSrvctl, CommandSrvrun, ServerPackager, Installer
+from pyacswui import CommandSrvctl, CommandSrvrun, CommandInstallHttp, ServerPackager
 
 
 
 def workaround_srvpkg(args, config):
     srvpkg = ServerPackager(config, args.v)
     srvpkg.work()
-
-def workaround_install(args, config):
-    install = Installer(config, args.v, args.install_base_data)
-    install.work()
 
 
 
@@ -33,7 +29,6 @@ __helpstring += "./acswui -v --ini acswui.ini --install-base-data install\n"
 # main arguments
 argparser = argparse.ArgumentParser(prog="acswui", description="Assetto Corsa Server Web User Interface", epilog=__helpstring, formatter_class=argparse.RawTextHelpFormatter)
 argparser.add_argument('-i', '--ini', help="path to config file")
-argparser.add_argument('--install-base-data', action="store_true", help="install basic http data (default groups, etc.)")
 argparser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
 
 argparsersubs     = argparser.add_subparsers(dest='command')
@@ -42,9 +37,7 @@ argparser_srvpkg.set_defaults(func=workaround_srvpkg)
 
 CommandSrvctl(argparsersubs)
 CommandSrvrun(argparsersubs)
-
-argparser_install = argparsersubs.add_parser('install',help="install / update database and configure http server")
-argparser_install.set_defaults(func=workaround_install)
+CommandInstallHttp(argparsersubs)
 
 
 

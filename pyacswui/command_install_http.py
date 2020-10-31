@@ -4,13 +4,20 @@ import shutil
 import os
 import json
 from .db_wrapper import DbWrapper
+from .verbose_class import VerboseClass
 
-class Installer(object):
+class CommandInstallHttp(VerboseClass):
 
-    def __init__(self, config, verbosity = 0, install_base_data = False):
+    def __init__(self, argsubparser):
+        VerboseClass.__init__(self)
 
-        if type(config) != type({}):
-            raise TypeError("Parameter 'config' must be dict!")
+        argparser_cmd  = argsubparser.add_parser('install-http', help="install database and files to http target directory")
+        argparser_cmd.add_argument('--install-base-data', action="store_true", help="install basic http data (default groups, etc.)")
+        argparser_cmd.set_defaults(func=self.work)
+
+
+    def work(self, args, config):
+        self.Verbosity = int(args.v)
 
         # check http directory
         if 'path_http' not in config or not os.path.isdir(config['path_http']):
@@ -18,32 +25,18 @@ class Installer(object):
 
         self.__config = {}
         self.__config.update(config)
-        self.__verbosity = int(verbosity)
+
         self.__db = DbWrapper(config)
-        self.__db.Verbosity = self.__verbosity - 1
-
-        if install_base_data == True:
-            self.__install_base_data = True
-        else:
-            self.__install_base_data = False
-
-
-
-    def work(self):
-        """
-            1. create or update database tables
-            2. create cConfig.php
-            3. scan cars into database
-            4. scan tracks into database
-            5. install basic data
-        """
+        self.__db.Verbosity = self.Verbosity - 2
 
         self.__work_db_tables()
         self.__work_cconfig()
         self.__work_scan_cars()
         self.__work_scan_tracks()
         self.__work_server_cfg()
-        self.__work_install_basics()
+
+        if args.install_base_data:
+            self.__work_install_basics()
 
 
     def __parse_json(self, json_file, key_name, default_value):
@@ -90,12 +83,13 @@ class Installer(object):
 
     def __work_db_tables(self):
 
+        self.print(1, "Create database tables")
+
         # ------------
         #  red tables
 
         # check table installer
-        if self.__verbosity > 0:
-            print("check database table `installer`")
+        self.print(2, "check database table `installer`")
         self.__db.appendTable("installer")
         self.__db.appendColumnCurrentTimestamp("installer", "timestamp")
         self.__db.appendColumnString("installer", "version", 10)
@@ -105,22 +99,19 @@ class Installer(object):
         self.__db.insertRow("installer", {"version": "0.1a", "info": ""})
 
         # check table users
-        if self.__verbosity > 0:
-            print("check database table `Users`")
+        self.print(2, "check database table `Users`")
         self.__db.appendTable("Users")
         self.__db.appendColumnString("Users", "Login", 50)
         self.__db.appendColumnString("Users", "Password", 100)
         self.__db.appendColumnString("Users", "Steam64GUID", 50)
 
         # check table Groups
-        if self.__verbosity > 0:
-            print("check database table `Groups`")
+        self.print(2, "check database table `Groups`")
         self.__db.appendTable("Groups")
         self.__db.appendColumnString("Groups", "Name", 50)
 
         # check table UserGroupMap
-        if self.__verbosity > 0:
-            print("check database table `UserGroupMap`")
+        self.print(2, "check database table `UserGroupMap`")
         self.__db.appendTable("UserGroupMap")
         self.__db.appendColumnInt("UserGroupMap", "User")
         self.__db.appendColumnInt("UserGroupMap", "Group")
@@ -130,8 +121,7 @@ class Installer(object):
         #  grey tables
 
         # check table Cars
-        if self.__verbosity > 0:
-            print("check database table `Cars`")
+        self.print(2, "check database table `Cars`")
         self.__db.appendTable("Cars")
         self.__db.appendColumnString("Cars", "Car", 80)
         self.__db.appendColumnString("Cars", "Name", 80)
@@ -139,15 +129,13 @@ class Installer(object):
         self.__db.appendColumnString("Cars", "Brand", 80)
 
         # check table CarSkins
-        if self.__verbosity > 0:
-            print("check database table `CarSkins`")
+        self.print(2, "check database table `CarSkins`")
         self.__db.appendTable("CarSkins")
         self.__db.appendColumnInt("CarSkins", "Car")
         self.__db.appendColumnString("CarSkins", "Skin", 50)
 
         # check table Tracks
-        if self.__verbosity > 0:
-            print("check database table `Tracks`")
+        self.print(2, "check database table `Tracks`")
         self.__db.appendTable("Tracks")
         self.__db.appendColumnString("Tracks", "Track", 80)
         self.__db.appendColumnString("Tracks", "Config", 80)
@@ -159,8 +147,7 @@ class Installer(object):
         # ----------------
         #  Server Logging
 
-        if self.__verbosity > 0:
-            print("check database table `Sessions`")
+        self.print(2, "check database table `Sessions`")
         self.__db.appendTable("Sessions")
         self.__db.appendColumnInt("Sessions", "ProtocolVersion")
         self.__db.appendColumnInt("Sessions", "SessionIndex")
@@ -179,8 +166,7 @@ class Installer(object):
         self.__db.appendColumnUInt("Sessions", "Elapsed")
         self.__db.appendColumnCurrentTimestamp("Sessions", "Timestamp")
 
-        if self.__verbosity > 0:
-            print("check database table `Laps`")
+        self.print(2, "check database table `Laps`")
         self.__db.appendTable("Laps")
         self.__db.appendColumnInt("Laps", "Session")
         self.__db.appendColumnInt("Laps", "CarSkin")
@@ -190,8 +176,7 @@ class Installer(object):
         self.__db.appendColumnFloat("Laps", "Grip")
         self.__db.appendColumnCurrentTimestamp("Laps", "Timestamp")
 
-        if self.__verbosity > 0:
-            print("check database table `CollisionEnv`")
+        self.print(2, "check database table `CollisionEnv`")
         self.__db.appendTable("CollisionEnv")
         self.__db.appendColumnInt("CollisionEnv", "Session")
         self.__db.appendColumnInt("CollisionEnv", "CarSkin")
@@ -199,8 +184,7 @@ class Installer(object):
         self.__db.appendColumnFloat("CollisionEnv", "Speed")
         self.__db.appendColumnCurrentTimestamp("CollisionEnv", "Timestamp")
 
-        if self.__verbosity > 0:
-            print("check database table `CollisionCar`")
+        self.print(2, "check database table `CollisionCar`")
         self.__db.appendTable("CollisionCar")
         self.__db.appendColumnInt("CollisionCar", "Session")
         self.__db.appendColumnInt("CollisionCar", "CarSkin")
@@ -215,8 +199,7 @@ class Installer(object):
         # ----------------
         #  Server Presets
 
-        if self.__verbosity > 0:
-            print("check database table `ServerPresets`")
+        self.print(2, "check database table `ServerPresets`")
         self.__db.appendTable("ServerPresets")
         self.__db.appendColumnString("ServerPresets", "Name", 60)
         json = self.__parse_server_cfg_json()
@@ -243,13 +226,11 @@ class Installer(object):
         # --------------
         #  Car Classes
 
-        if self.__verbosity > 0:
-            print("check database table `CarClasses`")
+        self.print(2, "check database table `CarClasses`")
         self.__db.appendTable("CarClasses")
         self.__db.appendColumnString("CarClasses", 'Name', 50)
 
-        if self.__verbosity > 0:
-            print("check database table `CarClassesMap`")
+        self.print(2, "check database table `CarClassesMap`")
         self.__db.appendTable("CarClassesMap")
         self.__db.appendColumnInt("CarClassesMap", 'CarClass')
         self.__db.appendColumnInt("CarClassesMap", 'Car')
@@ -259,13 +240,11 @@ class Installer(object):
         # --------------
         #  Race Series
 
-        if self.__verbosity > 0:
-            print("check database table `RaceSeries`")
+        self.print(2, "check database table `RaceSeries`")
         self.__db.appendTable("RaceSeries")
         self.__db.appendColumnString("RaceSeries", 'Name', 50)
 
-        if self.__verbosity > 0:
-            print("check database table `RaceSeriesMap`")
+        self.print(2, "check database table `RaceSeriesMap`")
         self.__db.appendTable("RaceSeriesMap")
         self.__db.appendColumnInt("RaceSeriesMap", 'RaceSeries')
         self.__db.appendColumnInt("RaceSeriesMap", 'CarClass')
@@ -273,10 +252,7 @@ class Installer(object):
 
 
     def __work_server_cfg(self):
-
-        # user info
-        if self.__verbosity > 0:
-            print("create http/server_cfg.json")
+        self.print(1, "create http/server_cfg.json")
 
         # predefined server presets
         server_cfg_json = self.__parse_server_cfg_json()
@@ -304,10 +280,7 @@ class Installer(object):
 
 
     def __work_cconfig(self):
-
-        # user info
-        if self.__verbosity > 0:
-            print("create cConfig.php")
+        self.print(1, "create cConfig.php")
 
         # encrypt root password
         http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.__config['http_root_passwd']])
@@ -345,6 +318,7 @@ class Installer(object):
 
 
     def __work_scan_cars(self):
+        self.print(1, "scanning for cars")
 
         for car in os.listdir(self.__config['path_http'] + "/acs_content/cars"):
             car_path   = self.__config['path_http'] + "/acs_content/cars/" + car
@@ -358,8 +332,7 @@ class Installer(object):
                 for skin in os.listdir(self.__config['path_http'] + "/acs_content/cars/" + car + "/skins"):
                     car_skins.append(skin)
 
-            if self.__verbosity > 0:
-                print("Install car '" + car + "'")
+            self.print(2, "Found car '" + car + "'")
 
             # get IDs of existing cars (should be exactly one car)
             existing_car_ids = self.__db.findIds("Cars", {"Car": car})
@@ -382,6 +355,7 @@ class Installer(object):
 
 
     def __work_scan_tracks(self):
+        self.print(1, "Scanning for tracks")
 
         def interpret_length(length):
             ret = ""
@@ -435,8 +409,7 @@ class Installer(object):
         for track in os.listdir(self.__config['path_http'] + "/acs_content/tracks"):
             track_path   = self.__config['path_http'] + "/acs_content/tracks/" + track
 
-            if self.__verbosity > 0:
-                print("Install track '" + track + "'")
+            self.print(2, "Found track '" + track + "'")
 
             # update track
             if os.path.isfile(track_path + "/ui/ui_track.json"):
@@ -470,31 +443,30 @@ class Installer(object):
 
 
     def __work_install_basics(self):
-
-        if self.__verbosity > 0:
-            print("Install Base Data")
+        self.print(1, "Install base data")
 
         # add guest group
         if 'http_guest_group' in self.__config and len(self.__config['http_guest_group']) > 0:
             if len(self.__db.findIds("Groups", {"Name": self.__config['http_guest_group']})) == 0:
+                self.print(2, "Create guest group '%s'" % self.__config['http_guest_group'])
                 self.__db.insertRow("Groups", {"Name": self.__config['http_guest_group']})
 
-        # optional data
-        if self.__install_base_data:
+        # default groups
+        if len(self.__db.findIds("Groups", {"Name": "Driver"})) == 0:
+            self.print(2, "Create group 'Driver")
+            self.__db.insertRow("Groups", {"Name": "Driver"})
+        if len(self.__db.findIds("Groups", {"Name": "Race Orga"})) == 0:
+            self.print(2, "Create group 'Race Orga")
+            self.__db.insertRow("Groups", {"Name": "Race Orga"})
+        if len(self.__db.findIds("Groups", {"Name": "Server Admin"})) == 0:
+            self.print(2, "Create group 'Server Admin")
+            self.__db.insertRow("Groups", {"Name": "Server Admin"})
 
-            # default groups
-            if len(self.__db.findIds("Groups", {"Name": "Driver"})) == 0:
-                self.__db.insertRow("Groups", {"Name": "Driver"})
-            if len(self.__db.findIds("Groups", {"Name": "Race Orga"})) == 0:
-                self.__db.insertRow("Groups", {"Name": "Race Orga"})
-            if len(self.__db.findIds("Groups", {"Name": "Server Admin"})) == 0:
-                self.__db.insertRow("Groups", {"Name": "Server Admin"})
-
-            # default server preset 'Practice'
-            with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "basic_data_default_presets.json"), "r") as f:
-                json_string = f.read()
-            json_obj = json.loads(json_string)
-            for preset in json_obj:
-                print("HERE", preset['Name'])
-                if len(self.__db.findIds("ServerPresets", {"Name": preset['Name']})) == 0:
-                    self.__db.insertRow("ServerPresets", preset)
+        # default server preset 'Practice'
+        with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "basic_data_default_presets.json"), "r") as f:
+            json_string = f.read()
+        json_obj = json.loads(json_string)
+        for preset in json_obj:
+            if len(self.__db.findIds("ServerPresets", {"Name": preset['Name']})) == 0:
+                self.print(2, "Create server preset '%s" % preset['Name'])
+                self.__db.insertRow("ServerPresets", preset)
