@@ -210,12 +210,13 @@ class Installer(object):
 
 
 
-        # -------------
-        #  blue tables
+        # ----------------
+        #  Server Presets
 
         if self.__verbosity > 0:
             print("check database table `ServerPresets`")
         self.__db.appendTable("ServerPresets")
+        self.__db.appendColumnString("ServerPresets", "Name", 60)
         json = self.__parse_server_cfg_json()
 
         for group in json.keys():
@@ -344,13 +345,37 @@ class Installer(object):
                     srv_cfg_wth += ", "
                 srv_cfg_wth += "'" + key + "' => '" + self.__config[config_key] + "'"
 
-        # server_cfg
+
+        #################
+        # Server Presets
+
+        # predefined server presets
         server_cfg_json = self.__parse_server_cfg_json()
-        #server_cfg_json_dump = json.dumps(server_cfg_json)
-        #server_cfg_json_dump = server_cfg_json_dump.replace("\"", "\\\"")
+
+        # check fixed presets from ini file
+        for group in server_cfg_json.keys():
+            for fieldset in server_cfg_json[group]:
+                for field in fieldset['FIELDS']:
+                    config_key = group + "_" + field['TAG']
+
+                    # check for fixed values
+                    if config_key in self.__config:
+                        field['FIXED'] = True
+                        field['DEFAULT'] = self.__config[config_key]
+                    else:
+                        field['FIXED'] = False
+
+                    # ensure DEFAULT exists
+                    if 'DEFAULT' not in field:
+                        field['DEFAULT'] = ""
+
+        # dump to http directory
         with open(self.__config['path_http'] + "server_cfg.json", "w") as f:
             json.dump(server_cfg_json, f, indent=4)
 
+
+        ###############
+        # Write Config
 
         with open(self.__config['path_http'] + "/classes/cConfig.php", "w") as f:
             f.write("<?php\n")

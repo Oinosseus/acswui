@@ -10,21 +10,24 @@
                     "TYPE": "string",
                     "SIZE": 80,
                     "HELP": "Server Name",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": ""
                 }, {
                     "TAG" : "PASSWORD",
                     "NAME": "Password",
                     "TYPE": "string",
                     "SIZE": 80,
                     "HELP": "Server password",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": ""
                 }, {
                     "TAG" : "ADMIN_PASSWORD",
                     "NAME": "Admin Password",
                     "TYPE": "string",
                     "SIZE": 25,
                     "HELP": "The password needed to be recognized as server administrator: you can join the server using it to be recognized automatically. Type /help in the game's chat to see the command list",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": ""
                 }, {
                     "TAG" : "UDP_PORT",
                     "NAME": "UDP Port",
@@ -32,7 +35,8 @@
                     "MIN": 1023,
                     "MAX": 65535,
                     "HELP": "UDP port number: open this port on your server's firewall",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "9600"
                 }, {
                     "TAG" : "TCP_PORT",
                     "NAME": "TCP Port",
@@ -40,7 +44,8 @@
                     "MIN": 1023,
                     "MAX": 65535,
                     "HELP": "TCP port number: open this port on your server's firewall",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "9600"
                 }, {
                     "TAG" : "HTTP_PORT",
                     "NAME": "HTTP Port",
@@ -48,7 +53,8 @@
                     "MIN": 1023,
                     "MAX": 65535,
                     "HELP": "Lobby port number: open these ports (both UDP and TCP) on your server's firewall",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "8081"
                 }, {
                     "TAG" : "SEND_BUFFER_SIZE",
                     "NAME": "Send Buffer Size",
@@ -56,7 +62,8 @@
                     "MIN": 0,
                     "MAX": 65535,
                     "HELP": "",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "RECV_BUFFER_SIZE",
                     "NAME": "Receive Buffer Size",
@@ -64,7 +71,8 @@
                     "MIN": 0,
                     "MAX": 65535,
                     "HELP": "",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "CLIENT_SEND_INTERVAL_HZ",
                     "NAME": "Client Send Interval",
@@ -72,7 +80,8 @@
                     "MIN": 10,
                     "MAX": 50,
                     "HELP": "Refresh rate of packet sending by the server. 10Hz = ~100ms. Higher number = higher MP quality = higher bandwidth resources needed. Really high values can create connection issues",
-                    "UNIT": "Hz"
+                    "UNIT": "Hz",
+                    "DEFAULT": "15"
                 }, {
                     "TAG" : "NUM_THREADS",
                     "NAME": "Number Of Threads",
@@ -80,7 +89,8 @@
                     "MIN": 1,
                     "MAX": 64,
                     "HELP": "Number of threads to run on",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "2"
                 }, {
                     "TAG" : "SLEEP_TIME",
                     "NAME": "Sleep Time",
@@ -88,7 +98,8 @@
                     "MIN": 0,
                     "MAX": 999,
                     "HELP": "??? - not documented, seems to be fixed to 1",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "1"
                 }, {
                     "TAG" : "REGISTER_TO_LOBBY",
                     "NAME": "Register To Lobby",
@@ -98,7 +109,8 @@
                         {"VALUE":1, "TEXT":"Yes"}
                     ],
                     "HELP": "Register the AC Server to the main lobby",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "1"
                 }, {
                     "TAG" : "MAX_CLIENTS",
                     "NAME": "Max Clients",
@@ -106,7 +118,8 @@
                     "MIN": 0,
                     "MAX": 999,
                     "HELP": "Max number of clients (must be <= track's number of pits) - Will be reduced automatically",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "15"
                 } , {
                     "TAG" : "WELCOME_MESSAGE",
                     "NAME": "Welcome Message",
@@ -129,7 +142,8 @@
                         {"VALUE":1, "TEXT":"Enabled"}
                     ],
                     "HELP": "if 0 the server start in booking mode (do not use it). Warning: in pickup mode you have to list only a circuit under TRACK and you need to list a least one car in the entry_list",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "1"
                 }, {
                     "TAG" : "LOOP_MODE",
                     "NAME": "Loop Mode",
@@ -139,7 +153,8 @@
                         {"VALUE":1, "TEXT":"Enabled"}
                     ],
                     "HELP": "the server restarts from the first track, to disable this set it to 0",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "1"
                 }, {
                     "TAG" : "SUN_ANGLE",
                     "NAME": "Sun Angle",
@@ -147,7 +162,8 @@
                     "MIN": -90,
                     "MAX": 90,
                     "HELP": "Angle of the position of the sun",
-                    "UNIT": "&deg;"
+                    "UNIT": "&deg;",
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "QUALIFY_MAX_WAIT_PERC",
                     "NAME": "Qualifying Max Wait Percentage",
@@ -155,7 +171,8 @@
                     "MIN": 0,
                     "MAX": 500,
                     "HELP": "The factor to calculate the remaining time in a qualify session after the session is ended: 120 means that 120% of the session fastest lap remains to end the current lap.",
-                    "UNIT": "&percnt;"
+                    "UNIT": "&percnt;",
+                    "DEFAULT": "120"
                 }, {
                     "TAG" : "CARS",
                     "TYPE": "hidden"
@@ -171,7 +188,8 @@
                     "TYPE": "string",
                     "SIZE": 50,
                     "HELP": "List of tyres short names that are allowed",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": ""
                 }, {
                     "TAG" : "MAX_BALLAST_KG",
                     "NAME": "Maximum Ballast",
@@ -179,31 +197,35 @@
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "The max total of ballast that can be added through the admin command",
-                    "UNIT": "kg"
+                    "UNIT": "kg",
+                    "DEFAULT": "500"
                 }, {
                     "TAG" : "RACE_OVER_TIME",
-                    "NAME": "Race-Over Time",
+                    "NAME": "Race Over-Time",
                     "TYPE": "int",
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "time remaining in seconds to finish the race from the moment the first one passes on the finish line",
-                    "UNIT": "s"
+                    "UNIT": "s",
+                    "DEFAULT": "60"
                 }, {
                     "TAG" : "RACE_PIT_WINDOW_START",
-                    "NAME": "Race Pit Window Start",
+                    "NAME": "Pit Window Start",
                     "TYPE": "int",
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "pit window opens at lap/minute specified",
-                    "UNIT": "s, Lap"
+                    "UNIT": "Min, Lap",
+                    "DEFAULT": "5"
                 }, {
                     "TAG" : "RACE_PIT_WINDOW_END",
-                    "NAME": "Race Pit Window End",
+                    "NAME": "Pit Window End",
                     "TYPE": "int",
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "pit window closes at lap/minute specified",
-                    "UNIT": "s, Lap"
+                    "UNIT": "Min, Lap",
+                    "DEFAULT": "15"
                 }, {
                     "TAG" : "REVERSED_GRID_RACE_POSITIONS",
                     "NAME": "Reserved Grid Race Positions",
@@ -211,7 +233,8 @@
                     "MIN": -1,
                     "MAX": 99,
                     "HELP": "0 = no additional race, 1toX = only those position will be reversed for the next race, -1 = all the position will be reversed (Retired players will be on the last positions)",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "LOCKED_ENTRY_LIST",
                     "NAME": "Locked Entry List",
@@ -221,7 +244,8 @@
                         {"VALUE":1, "TEXT":"Yes"}
                     ],
                     "HELP": "Only players already included in the entry list can join the server",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "START_RULE",
                     "NAME": "Start Rule",
@@ -232,7 +256,8 @@
                         {"VALUE":2, "TEXT":"Drive-Through"}
                     ],
                     "HELP": "0 is car locked until start;   1 is teleport   ; 2 is drive-through (if race has 3 or less laps then the Teleport penalty is enabled)",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "2"
                 }, {
                     "TAG" : "RACE_GAS_PENALTY_DISABLED",
                     "NAME": "Race Gas Penalty",
@@ -242,7 +267,8 @@
                         {"VALUE":1, "TEXT":"1 Disabled"}
                     ],
                     "HELP": "0 = any cut will be penalized with the gas cut message; 1 = no penalization will be forced, but cuts will be saved in the race result json",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "TIME_OF_DAY_MULT",
                     "NAME": "Time Multiplier",
@@ -250,15 +276,17 @@
                     "MIN": 1,
                     "MAX": 99,
                     "HELP": "multiplier for the time of day",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "4"
                 }, {
                     "TAG" : "RESULT_SCREEN_TIME",
-                    "NAME": "Time Multiplier",
+                    "NAME": "Result Screen Time",
                     "TYPE": "int",
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "Seconds of result screen between racing sessions",
-                    "UNIT": "s"
+                    "UNIT": "s",
+                    "DEFAULT": "60"
                 }, {
                     "TAG" : "MAX_CONTACTS_PER_KM",
                     "NAME": "Max Contacts",
@@ -266,7 +294,8 @@
                     "MIN": 1,
                     "MAX": 9999,
                     "HELP": "Maximum number times you can make contact with another car in 1 kilometer",
-                    "UNIT": "1/Km"
+                    "UNIT": "1/Km",
+                    "DEFAULT": "10"
                 }, {
                     "TAG" : "RACE_EXTRA_LAP",
                     "NAME": "Race Extra Lap",
@@ -276,7 +305,8 @@
                         {"VALUE":1, "TEXT":"Yes"}
                     ],
                     "HELP": "If the race is timed, force an extra lap after the leader has crossed the line",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "1"
                 }
             ]
         },
@@ -292,7 +322,8 @@
                     "MIN": 0,
                     "MAX": 100,
                     "HELP": "Percentage that is required for the kick vote to pass",
-                    "UNIT": "&percnt;"
+                    "UNIT": "&percnt;",
+                    "DEFAULT": "75"
                 }, {
                     "TAG" : "BLACKLIST_MODE",
                     "NAME": "Blacklist Mode",
@@ -303,7 +334,8 @@
                         {"VALUE":2, "TEXT":"Kick And Blacklist"}
                     ],
                     "HELP": "0 = normal kick, kicked player can rejoin; 1 = kicked player cannot rejoin until server restart; 2 = kick player and add to blacklist.txt, kicked player can not rejoin unless removed from blacklist (Better to use ban_id command rather than set this).",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "1"
                 }, {
                     "TAG" : "VOTING_QUORUM",
                     "NAME": "Voting Quorum",
@@ -311,7 +343,8 @@
                     "MIN": 0,
                     "MAX": 100,
                     "HELP": "Percentage that is required for the session vote to pass",
-                    "UNIT": "&percnt;"
+                    "UNIT": "&percnt;",
+                    "DEFAULT": "75"
                 }, {
                     "TAG" : "VOTE_DURATION",
                     "NAME": "Voting Duration",
@@ -319,7 +352,8 @@
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "Vote length in seconds",
-                    "UNIT": "s"
+                    "UNIT": "s",
+                    "DEFAULT": "60"
                 }
             ]
         },
@@ -335,7 +369,8 @@
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "Fuel usage from 0 (no fuel usage) to XXX (100 is the realistic one)",
-                    "UNIT": "&percnt;"
+                    "UNIT": "&percnt;",
+                    "DEFAULT": "150"
                 }, {
                     "TAG" : "DAMAGE_MULTIPLIER",
                     "NAME": "Damage",
@@ -343,7 +378,8 @@
                     "MIN": 0,
                     "MAX": 100,
                     "HELP": "Damage from 0 (no damage) to 100 (full damage)",
-                    "UNIT": "&percnt;"
+                    "UNIT": "&percnt;",
+                    "DEFAULT": "100"
                 }, {
                     "TAG" : "TYRE_WEAR_RATE",
                     "NAME": "Tyre Wear Rate",
@@ -351,7 +387,8 @@
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "Tyre wear from 0 (no tyre wear) to XXX (100 is the realistic one)",
-                    "UNIT": "&percnt;"
+                    "UNIT": "&percnt;",
+                    "DEFAULT": "150"
                 }, {
                     "TAG" : "ALLOWED_TYRES_OUT",
                     "NAME": "Allowed Tyred Out",
@@ -359,7 +396,8 @@
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "??? - not documented",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "ABS_ALLOWED",
                     "NAME": "ABS Allowed",
@@ -370,7 +408,8 @@
                         {"VALUE":2, "TEXT":"Enabled"}
                     ],
                     "HELP": "0 -> no car can use ABS, 1 -> only car provided with ABS can use it; 2-> any car can use ABS",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "1"
                 }, {
                     "TAG" : "TC_ALLOWED",
                     "NAME": "TC Allowed",
@@ -381,7 +420,8 @@
                         {"VALUE":2, "TEXT":"Enabled"}
                     ],
                     "HELP": "0 -> no car can use TC, 1 -> only car provided with TC can use it; 2-> any car can use TC",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "1"
                 }, {
                     "TAG" : "STABILITY_ALLOWED",
                     "NAME": "Stability Control",
@@ -391,7 +431,8 @@
                         {"VALUE":1, "TEXT":"Allow"}
                     ],
                     "HELP": "Stability assist 0 -> OFF; 1 -> ON",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "AUTOCLUTCH_ALLOWED",
                     "NAME": "Automatic Clutch",
@@ -401,7 +442,8 @@
                         {"VALUE":1, "TEXT":"Allow"}
                     ],
                     "HELP": "Autoclutch assist 0 -> OFF; 1 -> ON",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "TYRE_BLANKETS_ALLOWED",
                     "NAME": "Tyre Blankets",
@@ -411,7 +453,8 @@
                         {"VALUE":1, "TEXT":"Yes"}
                     ],
                     "HELP": "at the start of the session or after the pitstop the tyre will have the the optimal temperature",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "FORCE_VIRTUAL_MIRROR",
                     "NAME": "Virtual Mirror",
@@ -421,7 +464,8 @@
                         {"VALUE":1, "TEXT":"Forced"}
                     ],
                     "HELP": "1 virtual mirror will be enabled for every client, 0 for mirror as optional",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "0"
                 }
             ]
         },
@@ -437,14 +481,16 @@
                     "MIN": 1024,
                     "MAX": 65535,
                     "HELP": "The port on which to listen for UDP messages from a plugin",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "9603"
                 }, {
                     "TAG" : "UDP_PLUGIN_ADDRESS",
                     "NAME": "UDP Plugin Address",
                     "TYPE": "string",
                     "SIZE": 100,
                     "HELP": "The address of the plugin to which UDP messages are sent (eg. 127.0.0.1:9603)",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "127.0.0.1:9602"
                 }, {
                     "TAG" : "AUTH_PLUGIN_ADDRESS",
                     "NAME": "Auth Plugin Address",
@@ -469,28 +515,32 @@
                     "TYPE": "string",
                     "SIZE": 100,
                     "HELP": "The host address of the FTP server",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": ""
                 }, {
                     "TAG" : "LOGIN",
                     "NAME": "FTP Login",
                     "TYPE": "string",
                     "SIZE": 100,
                     "HELP": "The user/login credential for the FTP server",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": ""
                 }, {
                     "TAG" : "PASSWORD",
                     "NAME": "FTP password",
                     "TYPE": "string",
                     "SIZE": 100,
                     "HELP": "The password credential for the FTP server",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": ""
                 }, {
                     "TAG" : "FOLDER",
                     "NAME": "FTP Folder",
                     "TYPE": "string",
                     "SIZE": 100,
                     "HELP": "The subdirectories to use on the FTP server",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "foo"
                 }, {
                     "TAG" : "LINUX",
                     "NAME": "Linux",
@@ -500,7 +550,8 @@
                         {"VALUE":1, "TEXT":"Yes"}
                     ],
                     "HELP": "If the FTP server run on a linux machine",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": 1
                 }
             ]
         }
@@ -518,7 +569,8 @@
                     "TYPE": "string",
                     "SIZE": 100,
                     "HELP": "Arbitrary of the session",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "Booking"
                 }, {
                     "TAG" : "TIME",
                     "NAME": "Name",
@@ -526,7 +578,8 @@
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "Session length in minutes",
-                    "UNIT": "Min"
+                    "UNIT": "Min",
+                    "DEFAULT": "10"
                 }
             ]
         }
@@ -544,7 +597,8 @@
                     "TYPE": "string",
                     "SIZE": 100,
                     "HELP": "Arbitrary of the session",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "Practice"
                 }, {
                     "TAG" : "TIME",
                     "NAME": "Time",
@@ -552,7 +606,8 @@
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "Session length in minutes",
-                    "UNIT": "Min"
+                    "UNIT": "Min",
+                    "DEFAULT": "15"
                 }, {
                     "TAG" : "IS_OPEN",
                     "NAME": "Is Open",
@@ -562,7 +617,8 @@
                         {"VALUE":1, "TEXT":"Free Join"}
                     ],
                     "HELP": "0 = no join, 1 = free join",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "1"
                 }
             ]
         }
@@ -580,7 +636,8 @@
                     "TYPE": "string",
                     "SIZE": 100,
                     "HELP": "Arbitrary of the session",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "Qualifying"
                 }, {
                     "TAG" : "TIME",
                     "NAME": "Time",
@@ -588,7 +645,8 @@
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "Session length in minutes",
-                    "UNIT": "Min"
+                    "UNIT": "Min",
+                    "DEFAULT": "10"
                 }, {
                     "TAG" : "IS_OPEN",
                     "NAME": "Is Open",
@@ -598,7 +656,8 @@
                         {"VALUE":1, "TEXT":"Free Join"}
                     ],
                     "HELP": "0 = no join, 1 = free join",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "1"
                 }
             ]
         }
@@ -616,7 +675,8 @@
                     "TYPE": "string",
                     "SIZE": 100,
                     "HELP": "Arbitrary of the session",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "Race"
                 }, {
                     "TAG" : "LAPS",
                     "NAME": "Laps",
@@ -624,7 +684,8 @@
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "length of the lap races",
-                    "UNIT": "Laps"
+                    "UNIT": "Laps",
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "TIME",
                     "NAME": "Time",
@@ -632,7 +693,8 @@
                     "MIN": 0,
                     "MAX": 9999,
                     "HELP": "Session length in minutes",
-                    "UNIT": "Min"
+                    "UNIT": "Min",
+                    "DEFAULT": "25"
                 }, {
                     "TAG" : "WAIT_TIME",
                     "NAME": "Wait Time",
@@ -640,7 +702,8 @@
                     "MIN": 0,
                     "MAX": 999,
                     "HELP": "seconds before the start of the session",
-                    "UNIT": "s"
+                    "UNIT": "s",
+                    "DEFAULT": "60"
                 }, {
                     "TAG" : "IS_OPEN",
                     "NAME": "Is Open",
@@ -651,7 +714,8 @@
                         {"VALUE":2, "TEXT":"20s Join"}
                     ],
                     "HELP": "0 = no join, 1 = free join, 2 = free join until 20 seconds to the green light",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "1"
                 }
             ]
         }
@@ -670,7 +734,8 @@
                     "MIN": 0,
                     "MAX": 100,
                     "HELP": "% level of grip at session start",
-                    "UNIT": "&percnt;"
+                    "UNIT": "&percnt;",
+                    "DEFAULT": "90"
                 }, {
                     "TAG" : "RANDOMNESS",
                     "NAME": "Grip Randomness",
@@ -678,7 +743,8 @@
                     "MIN": 0,
                     "MAX": 100,
                     "HELP": "level of randomness added to the start grip",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "3"
                 }, {
                     "TAG" : "LAP_GAIN",
                     "NAME": "Grip Gain",
@@ -686,7 +752,8 @@
                     "MIN": 0,
                     "MAX": 999,
                     "HELP": "how many laps are needed to add 1% grip",
-                    "UNIT": "&percnt; / Lap"
+                    "UNIT": "&percnt; / Lap",
+                    "DEFAULT": "20"
                 }, {
                     "TAG" : "SESSION_TRANSFER",
                     "NAME": "Grip Transfer",
@@ -694,7 +761,8 @@
                     "MIN": 0,
                     "MAX": 100,
                     "HELP": "How much of the gained grip is to be added to the next session 100 -> all the gained grip. Example: difference between starting (90) and ending (96) grip in the session = 6%, with session_transfer = 50 then the next session is going to start with 93.",
-                    "UNIT": "&percnt;"
+                    "UNIT": "&percnt;",
+                    "DEFAULT": "50"
                 }
             ]
         }
@@ -713,7 +781,8 @@
                     "SIZE": 100,
                     "ENUMS": [],
                     "HELP": "it's exactly one of the folder name that you find into 'content/weather' directory",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "5_light_clouds"
                 }, {
                     "TAG" : "BASE_TEMPERATURE_AMBIENT",
                     "NAME": "Ambient Temperature",
@@ -721,7 +790,8 @@
                     "MIN": -50,
                     "MAX": 100,
                     "HELP": "temperature of the Ambient",
-                    "UNIT": "&deg;C"
+                    "UNIT": "&deg;C",
+                    "DEFAULT": "25"
                 }, {
                     "TAG" : "VARIATION_AMBIENT",
                     "NAME": "Ambient Variation",
@@ -729,7 +799,8 @@
                     "MIN": 0,
                     "MAX": 100,
                     "HELP": "variation of the ambient's temperature. In this example final ambient's temperature can be 16 or 20",
-                    "UNIT": "&deg;C"
+                    "UNIT": "&deg;C",
+                    "DEFAULT": "3"
                 }, {
                     "TAG" : "BASE_TEMPERATURE_ROAD",
                     "NAME": "Relative Road Temperature",
@@ -737,7 +808,8 @@
                     "MIN": -50,
                     "MAX": 100,
                     "HELP": "Relative road temperature: this value will be added to the final ambient temp. In this example the road temperature will be between 22 (16 + 6) and 26 (20 + 6). It can be negative.",
-                    "UNIT": "&deg;C"
+                    "UNIT": "&deg;C",
+                    "DEFAULT": "25"
                 }, {
                     "TAG" : "VARIATION_ROAD",
                     "NAME": "Relative Road Variation",
@@ -745,7 +817,8 @@
                     "MIN": 0,
                     "MAX": 100,
                     "HELP": "variation of the road's temperature. Like the ambient one",
-                    "UNIT": "&deg;C"
+                    "UNIT": "&deg;C",
+                    "DEFAULT": "5"
                 }, {
                     "TAG" : "WIND_BASE_SPEED_MIN",
                     "NAME": "Wind Speed Min",
@@ -753,7 +826,8 @@
                     "MIN": 0,
                     "MAX": 40,
                     "HELP": "Min speed of the session possible",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "5"
                 }, {
                     "TAG" : "WIND_BASE_SPEED_MAX",
                     "NAME": "Wind Speed Max",
@@ -761,7 +835,8 @@
                     "MIN": 0,
                     "MAX": 40,
                     "HELP": "Max speed of session possible (max 40)",
-                    "UNIT": ""
+                    "UNIT": "",
+                    "DEFAULT": "35"
                 }, {
                     "TAG" : "WIND_BASE_DIRECTION",
                     "NAME": "Wind Direction",
@@ -769,7 +844,8 @@
                     "MIN": 0,
                     "MAX": 360,
                     "HELP": "Base direction of the wind (wind is pointing at); 0 = North, 90 = East etc",
-                    "UNIT": "&deg;"
+                    "UNIT": "&deg;",
+                    "DEFAULT": "0"
                 }, {
                     "TAG" : "WIND_VARIATION_DIRECTION",
                     "NAME": "Wind Variation",
@@ -777,7 +853,8 @@
                     "MIN": 0,
                     "MAX": 360,
                     "HELP": "Variation (+ or -) of the base direction",
-                    "UNIT": "&deg;"
+                    "UNIT": "&deg;",
+                    "DEFAULT": "180"
                 }
             ]
         }

@@ -3,10 +3,21 @@
 class presets extends cContentPage {
 
     public function __construct() {
+        global $acswuiConfig;
+        global $acswuiUser;
+        global $acswuiLog;
+
         $this->MenuName   = _("Presets");
         $this->TextDomain = "acswui";
         $this->RequirePermissions = ["View_ServerContent"];
-        $this->EditPermission = 'Server_EditPresets';
+
+        // class variables used for html processing
+        $this->CanEdit = false;
+        $this->CanViewFixed = false;
+        $this->CurrentPreset = NULL;
+        $this->CurrentData = array();
+        $this->ServerCfgJson = array();
+
     }
 
     public function getHtml() {
@@ -16,50 +27,32 @@ class presets extends cContentPage {
         global $acswuiDatabase;
         global $acswuiUser;
 
-        // edit permission
-        $permitted = $acswuiUser->hasPermission($this->EditPermission);
+        // check permissions
+        if ($acswuiUser->hasPermission('Server_Presets_Edit')) $this->CanEdit = true;
+        if ($acswuiUser->hasPermission('Server_Presets_ViewFixed')) $this->CanViewFixed = true;
 
-        // server_cfg json
-        $json_string = file_get_contents($acswuiConfig->SrvCfgJsonPath);
-        $server_cfg_json = json_decode($json_string, true);
-
-        // requested preset Id
+        // determine PresetId
         if (isset($_REQUEST['PRESET_ID'])) {
-            $preset_id = $_REQUEST['PRESET_ID'];
+            $this->CurrentPreset = (int) $_REQUEST['PRESET_ID'];
         } elseif (isset($_SESSION['PRESET_ID'])) {
-            $preset_id = $_SESSION['PRESET_ID'];
+            $this->CurrentPreset = (int) $_SESSION['PRESET_ID'];
         } else {
-            $preset_id = 0;
+            $this->CurrentPreset = 0;
         }
-        $_SESSION['PRESET_ID'] = $preset_id;
+        $_SESSION['PRESET_ID'] = $this->CurrentPreset;
+
+        // parse server_cfg json
+        $json_string = file_get_contents($acswuiConfig->SrvCfgJsonPath);
+        $this->ServerCfgJson = json_decode($json_string, true);
 
         // save preset
-        if (isset($_POST['SAVEALL']) && $preset_id > 0 && $preset_id != "NEW_PRESET") $this->saveall($preset_id, false);
-        if (isset($_POST['SAVEALL']) && $preset_id == "NEW_PRESET") $this->saveall(0, true);
-
-//         // set preset values
-//         $permitted = $acswuiUser->hasPermission($this->EditPermission);
-//         $this->preset_values = array();
-//         foreach ($this->preset_fields as $e) {
-//             $this->preset_values[$e] = "";
-//         }
-
-        // get actual preset values
-        if ($preset_id != 0 && $preset_id != "NEW_PRESET") {
-            $ret = $acswuiDatabase->fetch_2d_array("ServerPresets", ['Name'], ['Id' => $preset_id]);
-            $this->preset_values['Name'] = $ret[0]['Name'];
-
-//             // add field values
-//             foreach ($this->preset_fields as $e) {
-//                 if ($this->hasGlobalOverwrite($e)) {
-//                     $this->preset_values[$e] = $this->getGlobalOverwrite($e);
-//                 } else {
-//                     $this->preset_values[$e] = $ret[0][$e];
-//                 }
-//             }
-
+        if (isset($_POST['SAVE'])) {
+            if ($_POST['SAVE'] == "CURRENT") $this->saveCurrent();
+            if ($_POST['SAVE'] == "NEW") $this->saveNew();
         }
 
+        // request database
+        $this->updateCurrentData();
 
         // initialize the html output
         $html  = '';
@@ -74,20 +67,20 @@ class presets extends cContentPage {
         $html .= '<select name="PRESET_ID" onchange="this.form.submit()">';
 
         // existing presets
-        $amount_existing_presets = 0;
+        $current_preset_found = false;
         foreach ($acswuiDatabase->fetch_2d_array("ServerPresets", ['Id', "Name"], [], "Name") as $sp) {
-            $amount_existing_presets += 1;
-            $selected = ($preset_id == $sp['Id']) ? "selected" : "";
+            if ($this->CurrentPreset == $sp['Id']) {
+                $selected = "selected";
+                $current_preset_found = true;
+            } else {
+                $selected = "";
+            }
             $html .= '<option value="' . $sp['Id'] . '"' . $selected . '>' . $sp['Name'] . '</option>';
         }
-
-        // new preset
-        if ($permitted) {
-            if ($amount_existing_presets == 0)
-                $html .= '<option value=""></option>';
-            $selected = ($preset_id === "NEW_PRESET") ? "selected" : "";
-            $html .= '<option value="NEW_PRESET" ' . $selected . '>&lt;' . _("Create New Preset") . '&gt;</option>';
+        if (!$current_preset_found) {
+            $html .= '<option value="0" selected>???</option>';
         }
+
         $html .= '</select>';
         $html .= '</form><br>';
 
@@ -97,69 +90,24 @@ class presets extends cContentPage {
         //  Config Server
         // ---------------
 
-        $html .= "<form style=\"max-width: 1100px;\" method=\"post\"><input type=\"hidden\" name=\"PRESET_ID\" value=\"$preset_id\"/>";
+        $html .= "<form action=\"\" method=\"post\"><input type=\"hidden\" name=\"PRESET_ID\" value=\"" . $this->CurrentPreset . "\"/>";
 
         # preset name
-        $name = (isset($this->preset_values["Name"])) ? $this->preset_values['Name'] : "";
         $html .= "<fieldset>";
-        $html .= "Name: <input type=\"text\" name=\"Name\" value=\"$name\" " . (($permitted) ? "" : "readonly") . "/>";
+        $html .= "Preset Name: <input type=\"text\" name=\"Name\" value=\"" . $this->CurrentData['Name'] . "\" " . (($this->CanEdit) ? "" : "readonly") . "/>";
         $html .= "</fieldset>";
 
-        # save button
-        $html .= "<button type=\"submit\" name=\"SAVEALL\" value=\"TRUE\">" . _("Save") . "</button>";
+        # save buttons
+        $html .= "<button type=\"submit\" name=\"SAVE\" value=\"CURRENT\">" . _("Save Preset") . "</button>";
+        $html .= " ";
+        $html .= "<button type=\"submit\" name=\"SAVE\" value=\"NEW\">" . _("Save As New Preset") . "</button>";
 
-        foreach ($server_cfg_json as $group_name => $fieldsets) {
+        # generate form for server preset options
+        foreach ($this->ServerCfgJson as $group_name => $fieldsets) {
             foreach ($fieldsets as $fieldset) {
-                $html .= "<fieldset style=\"display: block; float: left;\"><legend>" . $fieldset['FIELDSET'] . "</legend><table>";
-
-                foreach ($fieldset['FIELDS'] as $field) {
-
-                    if ($field['TYPE'] == "string") {
-                        $name = $field['NAME'];
-                        $comment = $field['HELP'];
-                        $html .= "<tr><td>$name</td><td><input type=\"text\" name=\"\" value=\"\" title=\"$comment\" /></td></tr>";
-
-                    } else if ($field['TYPE'] == "int") {
-                        $name = $field['NAME'];
-                        $comment = $field['HELP'];
-                        $min = $field['MIN'];
-                        $max = $field['MAX'];
-                        $unit = $field['UNIT'];
-                        $html .= "<tr><td>$name</td><td><input type=\"number\" min=\"$min\" max=\"$max\" step=\"1\" name=\"\" value=\"\" title=\"$comment\">$unit</td></tr>";
-
-                    } else if ($field['TYPE'] == "enum") {
-                        $name = $field['NAME'];
-                        $comment = $field['HELP'];
-
-                        $html .= "<tr><td>$name</td><td>";
-                        $html .= "<select name=\"\" title=\"$comment\">";
-                        foreach ($field['ENUMS'] as $enum) {
-                            $opt_val = $enum['VALUE'];
-                            $opt_text = $enum['TEXT'];
-                            $html .= "<option value=\"$opt_val\">$opt_text</option>";
-                        }
-                        $html .= "</select>";
-                        $html .= "</td></tr>";
-
-                    } else if ($field['TYPE'] == "text") {
-                        $name = $field['NAME'];
-                        $comment = $field['HELP'];
-                        $html .= "<tr><td>$name</td><td><textarea name=\"\" title=\"$comment\"></textarea></td></tr>";
-
-                    } else if ($field['TYPE'] == "hidden") {
-                        // not show hidden elements
-
-                    } else {
-                        // TODO log error
-                        echo $field['TYPE'] .  "<br>";
-                    }
-
-
-                }
-                $html .= "</table></fieldset>";
+                $html .= $this->getFieldsetInputs($group_name, $fieldset);
             }
         }
-
 
         $html .= '</form>';
 
@@ -167,133 +115,228 @@ class presets extends cContentPage {
         return $html;
     }
 
-    function hasGlobalOverwrite($preset_key) {
-        global $acswuiConfig;
-        $key_prefix = substr($preset_key, 0, 4);
-        $key        = substr($preset_key, 4, strlen($preset_key) - 4);
-        $has = false;
-        if ($key_prefix == "srv_" && isset($acswuiConfig->SrvCfg_Server[$key]))   $has = true;
-        if ($key_prefix == "dyt_" && isset($acswuiConfig->SrvCfg_DynTrack[$key])) $has = true;
-        if ($key_prefix == "bok_" && isset($acswuiConfig->SrvCfg_Booking[$key]))  $has = true;
-        if ($key_prefix == "prt_" && isset($acswuiConfig->SrvCfg_Practice[$key])) $has = true;
-        if ($key_prefix == "qly_" && isset($acswuiConfig->SrvCfg_Qualify[$key]))  $has = true;
-        if ($key_prefix == "rce_" && isset($acswuiConfig->SrvCfg_Race[$key]))     $has = true;
-        if ($key_prefix == "wth_" && isset($acswuiConfig->SrvCfg_Weather[$key]))  $has = true;
-        return $has;
-    }
+    function getFieldsetInputs($group, $ServerCfgFieldset) {
+        $html = "";
+        foreach ($ServerCfgFieldset['FIELDS'] as $ServerCfgField) {
 
-    function getGlobalOverwrite($preset_key) {
-        global $acswuiConfig;
-        $key_prefix = substr($preset_key, 0, 4);
-        $key        = substr($preset_key, 4, strlen($preset_key) - 4);
-        $ret = NULL;
-        if ($key_prefix == "srv_" && isset($acswuiConfig->SrvCfg_Server[$key]))   $ret = $acswuiConfig->SrvCfg_Server[$key];
-        if ($key_prefix == "dyt_" && isset($acswuiConfig->SrvCfg_DynTrack[$key])) $ret = $acswuiConfig->SrvCfg_DynTrack[$key];
-        if ($key_prefix == "bok_" && isset($acswuiConfig->SrvCfg_Booking[$key]))  $ret = $acswuiConfig->SrvCfg_Booking[$key];
-        if ($key_prefix == "prt_" && isset($acswuiConfig->SrvCfg_Practice[$key])) $ret = $acswuiConfig->SrvCfg_Practice[$key];
-        if ($key_prefix == "qly_" && isset($acswuiConfig->SrvCfg_Qualify[$key]))  $ret = $acswuiConfig->SrvCfg_Qualify[$key];
-        if ($key_prefix == "rce_" && isset($acswuiConfig->SrvCfg_Race[$key]))     $ret = $acswuiConfig->SrvCfg_Race[$key];
-        if ($key_prefix == "wth_" && isset($acswuiConfig->SrvCfg_Weather[$key]))  $ret = $acswuiConfig->SrvCfg_Weather[$key];
-        return $ret;
-    }
+            // ignore fixed fields
+            if ($ServerCfgField['FIXED'] && !$this->CanViewFixed) continue;
 
-    function getTrInputText($preset_key, $permitted, $comment) {
-        $key        = substr($preset_key, 4, strlen($preset_key) - 4);
-        $permitted &= !$this->hasGlobalOverwrite($preset_key);
-        $readonly = ($permitted) ? "" : "readonly";
-        if ($this->hasGlobalOverwrite($preset_key)) {
-            $value = $this->getGlobalOverwrite($preset_key);
-        } else {
-            $value = $this->preset_values[$preset_key];
-        }
-        return "<tr><td>$key</td><td><input type=\"text\" name=\"$preset_key\" value=\"$value\" title=\"$comment\" $readonly></td></tr>";
-    }
+            // create html input
+            if ($ServerCfgField['TYPE'] == "string") {
+                $html .= $this->getTableInputRowString($group, $ServerCfgField);
 
-    function getTrInputTextarea($preset_key, $permitted, $comment) {
-        $key        = substr($preset_key, 4, strlen($preset_key) - 4);
-        $permitted &= !$this->hasGlobalOverwrite($preset_key);
-        $readonly = ($permitted) ? "" : "readonly";
-        if ($this->hasGlobalOverwrite($preset_key)) {
-            $value = $this->getGlobalOverwrite($preset_key);
-        } else {
-            $value = $this->preset_values[$preset_key];
-        }
-        return "<tr><td>$key</td><td><textarea name=\"$preset_key\" title=\"$comment\" $readonly>$value</textarea></td></tr>";
-    }
+            } else if ($ServerCfgField['TYPE'] == "int") {
+                $html .= $this->getTableInputRowInt($group, $ServerCfgField);
 
-    function getTrInputRange($preset_key, $min, $max, $unit, $permitted, $comment, $default = 0) {
-        $key        = substr($preset_key, 4, strlen($preset_key) - 4);
-        $permitted &= !$this->hasGlobalOverwrite($preset_key);
-        $readonly = ($permitted) ? "" : "readonly disabled";
-        if ($this->hasGlobalOverwrite($preset_key)) {
-            $value = $this->getGlobalOverwrite($preset_key);
-        } elseif ($this->preset_values[$preset_key] == "") {
-            $value = $default;
-        } else {
-            $value = $this->preset_values[$preset_key];
-        }
-        return "<tr><td>$key</td><td>$min$unit<input type=\"range\" min=\"$min\" max=\"$max\" step=\"1\" name=\"$preset_key\" value=\"$value\" title=\"$comment\" $readonly>$max$unit</td></tr>";
-    }
+            } else if ($ServerCfgField['TYPE'] == "enum") {
+                $html .= $this->getTableInputRowEnum($group, $ServerCfgField);
 
-    function getTrInputNumber($preset_key, $min, $max, $unit, $permitted, $comment, $default = 0) {
-        $key        = substr($preset_key, 4, strlen($preset_key) - 4);
-        $permitted &= !$this->hasGlobalOverwrite($preset_key);
-        $readonly = ($permitted) ? "" : "readonly";
-        if ($this->hasGlobalOverwrite($preset_key)) {
-            $value = $this->getGlobalOverwrite($preset_key);
-        } elseif ($this->preset_values[$preset_key] == "") {
-            $value = $default;
-        } else {
-            $value = $this->preset_values[$preset_key];
-        }
-        return "<tr><td>$key</td><td><input type=\"number\" min=\"$min\" max=\"$max\" step=\"1\" name=\"$preset_key\" value=\"$value\" title=\"$comment\" $readonly>$unit</td></tr>";
-    }
+            } else if ($ServerCfgField['TYPE'] == "text") {
+                $html .= $this->getTableInputRowText($group, $ServerCfgField);
 
-    function getTrInputList($preset_key, $names, $values, $permitted, $comment) {
-        $key        = substr($preset_key, 4, strlen($preset_key) - 4);
-        $permitted &= !$this->hasGlobalOverwrite($preset_key);
-        $readonly = ($permitted) ? "" : "readonly disabled";
-        $html  = "<tr><td>$key</td><td>";
-        $html .= "<select name=\"$preset_key\" title=\"$comment\" $readonly>";
-        for ($i=0; $i < count($names); $i++) {
-            if ($this->hasGlobalOverwrite($preset_key)) {
-                if ($values[$i] == $this->getGlobalOverwrite($preset_key)) {
-                    $html .= "<option value=\"" . $values[$i] . "\" selected>" . $names[$i] . "</option>";
-                }
+            } else if ($ServerCfgField['TYPE'] == "hidden") {
+                // not show hidden elements
+
             } else {
-                $selected = ($this->preset_values[$preset_key] == $values[$i]) ? "selected" : "";
-                $html .= "<option value=\"" . $values[$i] . "\" $selected>" . $names[$i] . "</option>";
+                // TODO log error
+                $html .= $ServerCfgField['TYPE'] .  "<br>";
             }
         }
-        $html .= "</select>";
-        $html .= "</td></tr>";
-        return $html;
+
+        // return html
+        if ($html == "") {
+            return "";
+        } else {
+            $fieldset_html = "<fieldset style=\"display: block; float: left;\"><legend>" . $ServerCfgFieldset['FIELDSET'] . "</legend><table>";
+            $fieldset_html .= $html;
+            $fieldset_html .= "</table></fieldset>";
+            return $fieldset_html;
+        }
+
+
     }
 
-    function saveall($id, $new=false) {
+
+    function getTableInputRowString($group, $ServerCfgField) {
+        $tag = $group . "_" . $ServerCfgField['TAG'];
+        $name = $ServerCfgField['NAME'];
+        $help = $ServerCfgField['HELP'];
+        $unit = $ServerCfgField['UNIT'];
+        $fixed = ($ServerCfgField['FIXED']) ? true : false;
+        $value = $this->CurrentData[$tag];
+
+        if ($this->CanEdit && !$fixed) {
+            return "<tr><td>$name</td><td><input type=\"text\" name=\"$tag\" value=\"$value\" title=\"$help\"/> $unit</td></tr>";
+        } else {
+            return "<tr><td>$name</td><td><span class=\"disabled_input\">$value $unit</span></td></tr>";
+        }
+
+    }
+
+
+    function getTableInputRowText($group, $ServerCfgField) {
+        $tag = $group . "_" . $ServerCfgField['TAG'];
+        $name = $ServerCfgField['NAME'];
+        $help = $ServerCfgField['HELP'];
+        $fixed = ($ServerCfgField['FIXED']) ? true : false;
+        $value = $this->CurrentData[$tag];
+
+        if ($this->CanEdit && !$fixed) {
+            return "<tr><td>$name</td><td><textarea name=\"$tag\" title=\"$help\">$value</textarea></td></tr>";
+        } else {
+            return "<tr><td>$name</td><td><span class=\"disabled_input\">$value $unit</span></td></tr>";
+        }
+
+    }
+
+
+    function getTableInputRowInt($group, $ServerCfgField) {
+        $tag = $group . "_" . $ServerCfgField['TAG'];
+        $name = $ServerCfgField['NAME'];
+        $help = $ServerCfgField['HELP'];
+        $unit = $ServerCfgField['UNIT'];
+        $fixed = ($ServerCfgField['FIXED']) ? true : false;
+        $min = $ServerCfgField['MIN'];
+        $max = $ServerCfgField['MAX'];
+        $value = $this->CurrentData[$tag];
+
+        if ($this->CanEdit && !$fixed) {
+            return "<tr><td>$name</td><td><input type=\"number\" min=\"$min\" max=\"$max\" step=\"1\" name=\"$tag\" value=\"$value\" title=\"$help\"> $unit</td></tr>";
+        } else {
+            return "<tr><td>$name</td><td><span class=\"disabled_input\">$value $unit</span></td></tr>";
+        }
+
+    }
+
+
+    function getTableInputRowEnum($group, $ServerCfgField) {
+        $tag = $group . "_" . $ServerCfgField['TAG'];
+        $name = $ServerCfgField['NAME'];
+        $help = $ServerCfgField['HELP'];
+        $unit = $ServerCfgField['UNIT'];
+        $fixed = ($ServerCfgField['FIXED']) ? true : false;
+        $value = $this->CurrentData[$tag];
+
+        if ($this->CanEdit && !$fixed) {
+            $html = "<tr><td>$name</td><td>";
+            $html .= "<select name=\"$tag\" title=\"$help\">";
+            foreach ($ServerCfgField['ENUMS'] as $enum) {
+                $opt_val = $enum['VALUE'];
+                $opt_text = $enum['TEXT'];
+                $opt_checked = ($opt_val == $value) ? "checked" : "";
+                $html .= "<option value=\"$opt_val\">$opt_text</option>";
+            }
+            $html .= "</select>";
+            $html .= "</td></tr>";
+            return $html;
+
+        } else {
+            foreach ($ServerCfgField['ENUMS'] as $enum) {
+                if ($enum['VALUE'] == $value) {
+                    $value = $enum['TEXT'];
+                    break;
+                }
+            }
+            return "<tr><td>$name</td><td><span class=\"disabled_input\">$value $unit</span></td></tr>";
+        }
+    }
+
+    function updateCurrentData() {
         global $acswuiDatabase;
-        global $acswuiUser;
+
+        // fetch columns
+        $columns = array();
+        $columns[] = "Id";
+        $columns[] = "Name";
+        foreach ($this->ServerCfgJson as $group_name => $fieldsets) {
+            foreach ($fieldsets as $fieldset) {
+                foreach ($fieldset['FIELDS'] as $field) {
+                    if ($field['TYPE'] == "hidden") continue;
+                    $columns[] = $group_name . "_" . $field['TAG'];
+                }
+            }
+        }
+
+        // prepare data array
+        $data = array();
+        foreach ($columns as $col) {
+            $data[$col] = "";
+        }
+
+        // overwrite data array with db values
+        $res = $acswuiDatabase->fetch_2d_array("ServerPresets", $columns, ['Id' => $this->CurrentPreset]);
+        if (count($res) == 1) {
+            foreach ($columns as $col) {
+                $data[$col] = $res[0][$col];
+            }
+        }
+
+        // scan for fixed values
+        foreach ($this->ServerCfgJson as $group_name => $fieldsets) {
+            foreach ($fieldsets as $fieldset) {
+                foreach ($fieldset['FIELDS'] as $field) {
+                    $col = $group_name . "_" . $field['TAG'];
+                    if ($field['FIXED']) {
+                        $data[$col] = $field['DEFAULT'];
+                    }
+                }
+            }
+        }
+
+        $this->CurrentData = $data;
+    }
+
+    function getPostData() {
+        // check permission
+        if (!$this->CanEdit) return;
+
+        // gather data columns
+        $data = array();
+        if (isset($_POST['Name'])) {
+            $data['Name'] = $_POST['Name'];
+        }
+        foreach ($this->ServerCfgJson as $group_name => $fieldsets) {
+            foreach ($fieldsets as $fieldset) {
+                foreach ($fieldset['FIELDS'] as $field) {
+                    if ($field['TYPE'] == "hidden") continue;
+
+                    $col = $group_name . "_" . $field['TAG'];
+
+                    if ($field['FIXED'] || !isset($_POST[$col])) {
+                        $val = $field['DEFAULT'];
+                    } else {
+                        $val = $_POST[$col];
+                    }
+
+                    $data[$col] = $val;
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    function saveCurrent() {
+        global $acswuiDatabase;
 
         // check permission
-        if (!$acswuiUser->hasPermission($this->EditPermission)) return;
+        if (!$this->CanEdit) return;
 
-        // get form data
-        $field_list = array();
-        if (isset($_POST["Name"])) {
-            $field_list["Name"] = $_POST["Name"];
-        }
-        foreach ($this->preset_fields as $p) {
-            if (isset($_POST[$p])) {
-                $field_list[$p] = $_POST[$p];
-            }
-        }
+        // save data
+        $data = $this->getPostData();
+        $acswuiDatabase->update_row("ServerPresets", $this->CurrentPreset, $data);
+    }
 
-        // update database
-        if ($new === true) {
-            $_REQUEST['PRESET_ID'] = $acswuiDatabase->insert_row("ServerPresets", $field_list);
-        } else {
-            $acswuiDatabase->update_row("ServerPresets", $id, $field_list);
-        }
+    function saveNew() {
+        global $acswuiDatabase;
+
+        // check permission
+        if (!$this->CanEdit) return;
+
+        // save data
+        $data = $this->getPostData();
+        $this->CurrentPreset = $acswuiDatabase->insert_row("ServerPresets", $data);
     }
 }
 

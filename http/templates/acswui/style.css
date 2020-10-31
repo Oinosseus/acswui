@@ -281,13 +281,11 @@ input[readonly]:focus,
 select[readonly],
 select[readonly]:focus,
 select[disabled],
-select[disabled]:focus{
+select[disabled]:focus,
+.disabled_input {
   color: #883440;
 }
 
 form label {
     display: block;
 }
-
-
-
