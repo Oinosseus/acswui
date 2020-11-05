@@ -3,11 +3,16 @@ import subprocess
 import signal
 import time
 import sys
+from .verbose_class import VerboseClass
+from .server_runner import ServerRunner
+from .db_wrapper import DbWrapper
 
 
-class CommandSrvctl(object):
+class CommandSrvctl(VerboseClass):
 
     def __init__(self, argsubparser):
+        VerboseClass.__init__(self)
+
         argparser_srvctl  = argsubparser.add_parser('srvctl', help="server control (start/stop/status of the AC server)")
         argparser_srvctl_subcommands = argparser_srvctl.add_subparsers(dest='subcommand')
 
@@ -39,25 +44,46 @@ class CommandSrvctl(object):
 
 
     def subCmdStatus(self, args, config):
-        print("online" if self.serverOnline() else "offline")
+        self.Verbosity = args.v
+
+        online = self.serverOnline()
+        self.print(1, "online" if online else "offline")
+        exit(0 if online else 1)
+
 
 
 
     def subCmdStart(self, args, config):
+        self.Verbosity = args.v
         pid = os.fork()
 
         # child process (server control)
         if pid == 0:
 
-            subprocess.Popen([sys.argv[0]], stdout=sp.PipeInput)
+            # setup database
+            database = DbWrapper(config)
+            database.Verbosity = self.Verbosity - 2
+
+            # start server runner
+            srv_run = ServerRunner()
+            srv_run.Verbosity = self.Verbosity - 1
+            srv_run.run(database, config['path_acs'])
 
         # host process
         else:
+
+            # wait and check if server is running
+            time.sleep(2.0);
+            if not self.serverOnline():
+                raise NotImplementedError("Could not start server!")
+
             print("Server started, PID=" , pid)
 
 
 
     def subCmdStop(self, args, config):
+        self.Verbosity = args.v
+
         pid = self.getPid()
         if pid is not None:
 
@@ -72,7 +98,7 @@ class CommandSrvctl(object):
 
             # check if successul
             if not self.serverOnline():
-                print("server stopped")
+                self.print(1, "server stopped")
                 return
 
             # kill
@@ -86,8 +112,9 @@ class CommandSrvctl(object):
 
             # check if successul
             if not self.serverOnline():
-                print("server killed")
+                self.print(1, "server killed")
                 return
 
             # could not stop server
-            print("failed to stop process", pid)
+            self.print(1, "failed to stop process", pid)
+            exit(1)

@@ -1,26 +1,19 @@
 import pymysql
-from .verbose_class import VerboseClass
+from .verbosity import Verbosity
 
-class DbWrapper(VerboseClass):
+class Database(object):
 
+    def __init__(self, host, port, database, user, password, verbosity=0):
+        self.__verbosity = Verbosity(verbosity)
 
-
-    def __init__(self, config):
-        VerboseClass.__init__(self)
-
-        if type(config) != type({}):
-            raise TypeError("Parameter 'config' must be dict!")
-
-        # check db values
-        for key in ["db_type", "db_host", "db_database", "db_port", "db_user", "db_passwd"]:
-            if key not in config:
-                raise TypeError("Config must contain '" + key + "'!")
-
-        self.__config = {}
-        self.__config.update(config)
+        self.__db_host = str(host)
+        self.__db_port = int(port)
+        self.__db_database = str(database)
+        self.__db_user = str(user)
+        self.__db_password = str(password)
 
         # connect to db_database
-        self.__db_handle = pymysql.connect(host=self.__config['db_host'], port=int(self.__config['db_port']), user=self.__config['db_user'], passwd=self.__config['db_passwd'], db=self.__config['db_database'], charset='utf8')
+        self.__db_handle = pymysql.connect(host=self.__db_host, port=self.__db_port, user=self.__db_user, passwd=self.__db_password, db=self.__db_database, charset='utf8')
 
 
 
@@ -38,8 +31,8 @@ class DbWrapper(VerboseClass):
 
         # check if table already exist
         table_exist = False
-        query = "SELECT `TABLE_NAME` FROM information_schema.TABLES WHERE table_schema = '%s';" % self.__config['db_database']
-        self.print(2, "  " + query)
+        query = "SELECT `TABLE_NAME` FROM information_schema.TABLES WHERE table_schema = '%s';" % self.__db_database
+        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
         for r in cursor.fetchall():
@@ -51,7 +44,7 @@ class DbWrapper(VerboseClass):
         if table_exist is False:
 
             query = "CREATE TABLE `" + tblname + "` ( `Id` INT NOT NULL AUTO_INCREMENT , PRIMARY KEY (`Id`)) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-            self.print(1, "    " + query)
+            self.__verbosity.print("    " + query)
 
             # execute query
             cursor = self.__db_handle.cursor()
@@ -66,7 +59,7 @@ class DbWrapper(VerboseClass):
             primary_index_found = False
             primary_index_correct = False
             query = "SHOW INDEX FROM %s WHERE Key_name = 'PRIMARY';" % tblname
-            self.print(2, "  " + query)
+            self.__verbosity.print("  " + query)
             cursor = self.__db_handle.cursor()
             cursor.execute(query)
             for r in cursor.fetchall():
@@ -82,7 +75,7 @@ class DbWrapper(VerboseClass):
                     query = "ALTER TABLE `" + tblname + "` DROP PRIMARY KEY, ADD PRIMARY KEY(`Id`);"
                 else:
                     query = "ALTER TABLE `" + tblname + "` ADD PRIMARY KEY(`Id`);"
-                self.print(1, "    " + query)
+                self.__verbosity.print("    " + query)
                 # execute query
                 cursor = self.__db_handle.cursor()
                 cursor.execute(query)
@@ -91,7 +84,7 @@ class DbWrapper(VerboseClass):
 
         # alter collation
         query = "ALTER TABLE `" + tblname + "` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
-        self.print(2, "    " + query)
+        self.__verbosity.print("    " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
         cursor.close()
@@ -106,14 +99,14 @@ class DbWrapper(VerboseClass):
         column_needs_change = False
 
         # check column info
-        query = "SELECT `COLUMN_NAME`, `COLUMN_TYPE`, `COLUMN_DEFAULT`, `EXTRA` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '%s' AND TABLE_NAME = '%s' AND COLUMN_NAME = '%s';" % (self.__config['db_database'], tblname, colname)
-        self.print(2, "  " + query)
+        query = "SELECT `COLUMN_NAME`, `COLUMN_TYPE`, `COLUMN_DEFAULT`, `EXTRA` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '%s' AND TABLE_NAME = '%s' AND COLUMN_NAME = '%s';" % (self.__db_database, tblname, colname)
+        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
         if cursor.rowcount > 0:
             column_exist = True
             res = cursor.fetchall()[0]
-            self.print(2, "    sql result: COLUMN_NAME=%s, COLUMN_TYPE=%s, COLUMN_DEFAULT=%s, EXTRA=%s" % (res[0], res[1], res[2], res[3]))
+            self.__verbosity.print("    sql result: COLUMN_NAME=%s, COLUMN_TYPE=%s, COLUMN_DEFAULT=%s, EXTRA=%s" % (res[0], res[1], res[2], res[3]))
             if res[0] != colname:
                 column_needs_change = True
             if coltype is not None and res[1].lower() != coltype.lower():
@@ -139,7 +132,7 @@ class DbWrapper(VerboseClass):
         if column_exist is False:
             # create query
             query = "ALTER TABLE `%s` ADD `%s` %s NOT NULL %s %s;" % (tblname, colname, coltype, coldefault, colextra)
-            self.print(1, "    " + query)
+            self.__verbosity.print("    " + query)
 
             # execute query
             cursor = self.__db_handle.cursor()
@@ -151,7 +144,7 @@ class DbWrapper(VerboseClass):
         elif column_needs_change is True:
             # create query
             query = "ALTER TABLE `%s` CHANGE `%s` `%s` %s NOT NULL %s %s;" % (tblname, colname, colname, coltype, coldefault, colextra)
-            self.print(1, "    " + query)
+            self.__verbosity.print("    " + query)
 
             # execute query
             cursor = self.__db_handle.cursor()
@@ -206,7 +199,7 @@ class DbWrapper(VerboseClass):
         query = "SELECT `Id` FROM `" + tblname + "` WHERE " + where + ";";
 
         # execute query
-        self.print(2, "  " + query)
+        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
         for res in cursor.fetchall():
@@ -214,7 +207,7 @@ class DbWrapper(VerboseClass):
         cursor.close()
 
         # user info
-        self.print(2, "  found IDs:", ret)
+        self.__verbosity.print("  found IDs:", ret)
 
         return ret
 
@@ -246,7 +239,7 @@ class DbWrapper(VerboseClass):
         query += ";"
 
         # execute query
-        self.print(3, "  " + query)
+        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         try:
             cursor.execute(query)
@@ -270,7 +263,6 @@ class DbWrapper(VerboseClass):
             Insert new row with values as defined in field_values.
             The functions returns the Id of the inserted row.
         """
-        #INSERT INTO `acswui`.`Cars` (`Id`, `Car`, `Name`, `Parent`, `Brand`) VALUES (NULL, 'foo', 'bar', 'mu', '')
 
         # create query
         fields = ""
@@ -285,7 +277,7 @@ class DbWrapper(VerboseClass):
         query = "INSERT INTO `" + tblname + "` (" + fields + ") VALUES (" + values + ");"
 
         # execute query
-        self.print(2, "  " + query)
+        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
 
@@ -303,7 +295,6 @@ class DbWrapper(VerboseClass):
         """
             Updates a row with values as defined in field_values.
         """
-        #UPDATE `acswui`.`Cars` SET `Parent` = '1', `Brand` = 'dfdfdsf' WHERE `Cars`.`Id` = 1;
 
         # create query
         set_string = ""
@@ -314,7 +305,7 @@ class DbWrapper(VerboseClass):
         query = "UPDATE `" + tblname + "` SET " + set_string + " WHERE `Id` = " + str(id_value) + ";"
 
         # execute query
-        self.print(2, "  " + query)
+        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
         cursor.close()

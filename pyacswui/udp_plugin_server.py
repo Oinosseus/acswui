@@ -1,5 +1,5 @@
 import socket
-from .verbose_class import VerboseClass
+from .verbosity import Verbosity
 from .udp_packet import UdpPacket
 
 
@@ -7,8 +7,10 @@ class DriverConnection(object):
 
     def __init__(self, database,
                  driver_name, driver_guid,
-                 car_id, car_model, car_skin):
+                 car_id, car_model, car_skin,
+                 verbosity=0):
 
+        self.__verbosity = Verbosity(verbosity)
         self.__car_id = car_id
 
         # ----------------
@@ -21,7 +23,7 @@ class DriverConnection(object):
         elif len(res) == 1:
             car_id = res[0]['Id']
         else:
-            print("car_model =", car_model, ", car_skin =", car_skin)
+            self.__verbosity.print("car_model =", car_model, ", car_skin =", car_skin)
             raise ValueError("Database table 'Cars' is ambigous!")
 
         car_skin_id = None
@@ -31,7 +33,7 @@ class DriverConnection(object):
         elif len(res) == 1:
             car_skin_id = res[0]['Id']
         else:
-            print("car_model =", car_model, ", car_skin =", car_skin)
+            self.__verbosity.print("car_model =", car_model, ", car_skin =", car_skin)
             raise ValueError("Database table 'CarSkins' is ambigous")
         self.__car_skin_id = car_skin_id
 
@@ -46,7 +48,7 @@ class DriverConnection(object):
             user_id = res[0]['Id']
             database.updateRow("Users", user_id, {"Login": driver_name})
         else:
-            print("driver_guid =", driver_guid)
+            self.__verbosity.print("driver_guid =", driver_guid)
             raise ValueError("Database table 'Users' is ambigous")
         self.__user_id = user_id
 
@@ -65,24 +67,35 @@ class DriverConnection(object):
 
 
 
-class UdpPluginServer(VerboseClass):
+class UdpPluginServer(object):
 
-    def __init__(self, address, read_port, db_wrapper):
-        VerboseClass.__init__(self)
+    def __init__(self, address, port, database, verbosity=0):
+        self.__verbosity = Verbosity(verbosity)
 
-        self.__database = db_wrapper
+        port = int(port)
+        self.__database = database
         self.__session_db_id = None
         self.__session_track_id = None
         self.__driver_connections = []
 
         # bind UDP socket
         self.__sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.__sock.bind((address, read_port))
+
+        try:
+            self.__sock.bind((address, int(port)))
+        except BaseException as be:
+            msg = "Could not bind UPD Plugin server to address "
+            msg += "'%s'" % address
+            msg += " on port %i!" % port
+            msg += "\n%s" % str(be)
+            raise BaseException(msg)
         self.__sock.settimeout(0.1)
 
 
 
     def process(self):
+        """ Thisn must be called periodically
+        """
 
         try:
             data, addr = self.__sock.recvfrom(2**12)
@@ -96,7 +109,7 @@ class UdpPluginServer(VerboseClass):
     def parse_packet(self, pkt):
 
         prot = pkt.readByte()
-        self.print(1, "UDP receive packet ", prot, "on address", pkt.Addr)
+        self.__verbosity.print("UDP receive packet ", prot, "on address", pkt.Addr)
 
 
         if prot == 50 or prot == 59:
@@ -107,14 +120,14 @@ class UdpPluginServer(VerboseClass):
             session_count = pkt.readByte()
 
             if prot == 50:
-                self.print(1 ,"ACSP_NEW_SESSION")
+                self.__verbosity.print(1 ,"ACSP_NEW_SESSION")
             else:
-                self.print(1, "ACSP_SESSION_INFO")
+                self.__verbosity.print("ACSP_SESSION_INFO")
 
-            self.print(2, "version:", version)
-            self.print(2, "sess_index:", sess_index)
-            self.print(2, "current_session_index:", current_session_index)
-            self.print(2, "session_count:", session_count)
+            self.__verbosity.print("version:", version)
+            self.__verbosity.print("sess_index:", sess_index)
+            self.__verbosity.print("current_session_index:", current_session_index)
+            self.__verbosity.print("session_count:", session_count)
 
             server_name = pkt.readStringW()
             track_name = pkt.readString()
@@ -128,16 +141,16 @@ class UdpPluginServer(VerboseClass):
             temp_road = pkt.readByte()
             weather_graphics = pkt.readString()
             elapsed_ms = pkt.readInt32()
-            self.print(2, "server name:", server_name)
-            self.print(2, "track name / config:", track_name, "/", track_config)
-            self.print(2, "session name:", session_name)
-            self.print(2, "session type:", session_type)
-            self.print(2, "session time:", session_time)
-            self.print(2, "session laps:", session_laps)
-            self.print(2, "session wait time:", session_waittime)
-            self.print(2, "temp amb / road:", temp_amb, "/", temp_road)
-            self.print(2, "weather graphics", weather_graphics)
-            self.print(2, "elapsed ms", elapsed_ms)
+            Verbosity(self.__verbosity).print("server name:", server_name)
+            Verbosity(self.__verbosity).print("track name / config:", track_name, "/", track_config)
+            Verbosity(self.__verbosity).print("session name:", session_name)
+            Verbosity(self.__verbosity).print("session type:", session_type)
+            Verbosity(self.__verbosity).print("session time:", session_time)
+            Verbosity(self.__verbosity).print("session laps:", session_laps)
+            Verbosity(self.__verbosity).print("session wait time:", session_waittime)
+            Verbosity(self.__verbosity).print("temp amb / road:", temp_amb, "/", temp_road)
+            Verbosity(self.__verbosity).print("weather graphics", weather_graphics)
+            Verbosity(self.__verbosity).print("elapsed ms", elapsed_ms)
 
             self.update_session(version, sess_index, current_session_index, session_count,
                                 server_name, track_name, track_config,
@@ -153,38 +166,38 @@ class UdpPluginServer(VerboseClass):
             car_model = pkt.readString()
             car_skin = pkt.readString()
 
-            self.print(2, "driver_name:", driver_name)
-            self.print(2, "driver_guid:", driver_guid)
-            self.print(2, "car_id:", car_id)
-            self.print(2, "car_model:", car_model)
-            self.print(2, "car_skin:", car_skin)
+            Verbosity(self.__verbosity).print("driver_name:", driver_name)
+            Verbosity(self.__verbosity).print("driver_guid:", driver_guid)
+            Verbosity(self.__verbosity).print("car_id:", car_id)
+            Verbosity(self.__verbosity).print("car_model:", car_model)
+            Verbosity(self.__verbosity).print("car_skin:", car_skin)
 
             if prot == 51:
-                self.print(1, "ACSP_NEW_CONNECTION")
+                self.__verbosity.print("ACSP_NEW_CONNECTION")
                 self.connection_new(driver_name, driver_guid,
                                     car_id, car_model, car_skin)
             else:
-                self.print(1, "ACSP_CONNECTION_CLOSED")
+                self.__verbosity.print("ACSP_CONNECTION_CLOSED")
                 self.connection_delete(car_id)
 
 
         elif prot == 53:
-            print("ACSP_CAR_UPDATE")
+            self.__verbosity.print("ACSP_CAR_UPDATE")
 
         elif prot == 54:
-            print("ACSP_CAR_INFO")
+            self.__verbosity.print("ACSP_CAR_INFO")
 
         elif prot == 55:
-            print("ACSP_END_SESSION")
+            self.__verbosity.print("ACSP_END_SESSION")
 
         elif prot == 73:
-            self.print(1, "ACSP_LAP_COMPLETED")
+            self.__verbosity.print("ACSP_LAP_COMPLETED")
             car_id = pkt.readByte()
             laptime = pkt.readUint32()
             cuts = pkt.readByte()
-            self.print(2, "car_id:", car_id)
-            self.print(2, "laptime:", laptime)
-            self.print(2, "cuts:", cuts)
+            Verbosity(self.__verbosity).print("car_id:", car_id)
+            Verbosity(self.__verbosity).print("laptime:", laptime)
+            Verbosity(self.__verbosity).print("cuts:", cuts)
 
             cars_count = pkt.readByte()
             for i in range(cars_count):
@@ -192,26 +205,26 @@ class UdpPluginServer(VerboseClass):
                 rtime = pkt.readUint32()
                 rlaps = pkt.readUint16()
                 has_completed_flag = pkt.readByte()
-                self.print(2, "rcar_id: ", rcar_id, ", rtime: ", rtime, ", rlaps: ", rlaps, ", has_completed_flag: ", has_completed_flag, sep="")
+                self.__verbosity.print("rcar_id: ", rcar_id, ", rtime: ", rtime, ", rlaps: ", rlaps, ", has_completed_flag: ", has_completed_flag, sep="")
 
             grip = pkt.readSingle()
-            self.print(2, "grip level:", grip)
+            self.__verbosity.print("grip level:", grip)
 
             self.complete_lap(car_id, laptime, cuts, grip)
 
 
         elif prot == 56:
             version = pkt.readByte()
-            print("ACSP_VERSION:", version)
+            self.__verbosity.print("ACSP_VERSION:", version)
 
 
         elif prot == 60:
             err_str = pkt.readStringW()
-            self.print(1, "ACSP_ERROR", err_str)
+            self.__verbosity.print("ACSP_ERROR", err_str)
 
 
         elif prot == 130:
-            self.print(1, "ACSP_CLIENT_EVENT")
+            self.__verbosity.print("ACSP_CLIENT_EVENT")
             ev_type = pkt.readByte()
             car_id = pkt.readByte()
             other_car_id = None
@@ -224,27 +237,27 @@ class UdpPluginServer(VerboseClass):
             rel_pos = pkt.readVector3f()
 
             if ev_type == 10: # collision with car
-                self.print(2, "Collision with other car")
+                Verbosity(self.__verbosity).print("Collision with other car")
                 self.collision_car(car_id, speed, other_car_id)
             elif ev_type == 11: # collision with environment
-                self.print(2, "Collision with environment")
+                Verbosity(self.__verbosity).print("Collision with environment")
                 self.collision_env(car_id, speed)
             else:
-                self.print(2, "undefined event")
+                Verbosity(self.__verbosity).print("undefined event")
 
-            self.print(3, "car_id:", car_id)
-            self.print(3, "other_car_id:", other_car_id)
-            self.print(3, "speed:", speed)
-            self.print(3, "world_pos:", world_pos)
-            self.print(3, "rel_pos:", rel_pos)
+            Verbosity(self.__verbosity).print("car_id:", car_id)
+            Verbosity(self.__verbosity).print("other_car_id:", other_car_id)
+            Verbosity(self.__verbosity).print("speed:", speed)
+            Verbosity(self.__verbosity).print("world_pos:", world_pos)
+            Verbosity(self.__verbosity).print("rel_pos:", rel_pos)
 
 
         elif prot == 57:
-            print("ACSP_CHAT")
+            self.__verbosity.print("ACSP_CHAT")
         elif prot == 58:
-            print("ACSP_CLIENT_LOADED")
+            self.__verbosity.print("ACSP_CLIENT_LOADED")
         else:
-            print("UNKNOWN PACKET", prot)
+            self.__verbosity.print("UNKNOWN PACKET", prot)
 
 
 
@@ -268,7 +281,8 @@ class UdpPluginServer(VerboseClass):
         # new connection
         dc = DriverConnection(self.__database,
                               driver_name, driver_guid,
-                              car_id, car_model, car_skin)
+                              car_id, car_model, car_skin,
+                              verbosity=self.__verbosity)
 
         # save connection
         self.__driver_connections.append(dc)
@@ -416,6 +430,6 @@ class UdpPluginServer(VerboseClass):
 
         if new_session:
             self.__session_db_id = self.__database.insertRow("Sessions", fields)
-            self.print(1, "New Session in Database:", fields)
+            self.__verbosity.print("New Session in Database:", fields)
         else:
             self.__database.updateRow("Sessions", self.__session_db_id, fields)

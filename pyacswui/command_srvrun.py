@@ -1,58 +1,90 @@
 import os
-import subprocess
 import signal
 import time
+import os.path
+from subprocess import Popen, DEVNULL
+from configparser import ConfigParser
+from .command import Command, ArgumentException
+from .database import Database
 from .udp_plugin_server import UdpPluginServer
-from .verbose_class import VerboseClass
-from .db_wrapper import DbWrapper
+from .verbosity import Verbosity
+
+class CommandSrvrun(Command):
+
+    def __init__(self, argparser):
+        Command.__init__(self, argparser, "srvrun", "run the ac server")
+
+        # logging
+        #self.add_argument('-l', '--log', help="if set, the acServer ouput will be logged to")
+
+        # database
+        self.add_argument('--db-host', help="Database host (not needed when global config is given)")
+        self.add_argument('--db-port', help="Database port (not needed when global config is given)")
+        self.add_argument('--db-database', help="Database name (not needed when global config is given)")
+        self.add_argument('--db-user', help="Database username (not needed when global config is given)")
+        self.add_argument('--db-password', help="Database password (not needed when global config is given)")
+
+        # server config
+        self.add_argument('--path-server-cfg', help="Path to server_cfg.ini file")
+        self.add_argument('--path-entry-list', help="Path to entry_list.ini file")
+        self.add_argument('--path-acs', help="Path to AC server directory")
+        self.add_argument('--name-acs', default="acServer", help="Name of AC server executable")
+        self.add_argument('--acs-log', help="Path to write AC server output to (optional)")
 
 
-class CommandSrvrun(VerboseClass):
-
-    def __init__(self, argsubparser):
-        VerboseClass.__init__(self)
-
-        ap = argsubparser.add_parser('srvrun', help="run the ac server")
-        ap.set_defaults(func=self.run)
-
-        self.__server_proc = None
-        self.__udp_srv = None
-        self.__database = None
-
-
-    def run(self, args, config):
-        self.print(1, "prepare environment")
-        self.Verbosity = args.v
+    def process(self):
 
         # setup database
-        self.__database = DbWrapper(config)
-        self.__database.Verbosity = self.Verbosity - 2
+        self.Verbosity.print("Setup Database")
+        db = Database(host=self.getArg("db_host"),
+                      port=self.getArg("db_port"),
+                      database=self.getArg("db_database"),
+                      user=self.getArg("db_user"),
+                      password=self.getArg("db_password"),
+                      verbosity=Verbosity(self.Verbosity)
+                      )
 
-        # setup UDP plugin listener
-        self.print(2, "starting acServer")
-        self.__udp_srv = UdpPluginServer("127.0.0.1", 9603, self.__database)
-        self.__udp_srv.Verbosity = self.Verbosity - 1
+        # read server config
+        self.Verbosity.print("Read config files")
+        server_cfg = ConfigParser()
+        server_cfg.read(self.getArg("path_server_cfg"))
+        entry_list = ConfigParser()
+        entry_list.read(self.getArg("path_entry_list"))
 
-        # start acServer as separate process
-        self.print(2, "starting acServer")
-        self.__server_proc = subprocess.Popen("./acServer", cwd=config['path_acs'], stdout=subprocess.DEVNULL)
+        # setup UDP Plugin
+        self.Verbosity.print("Setup UDP plugin server")
+        udpp_cfg = server_cfg['SERVER']['UDP_PLUGIN_ADDRESS'].split(":")
+        udpp_addr = udpp_cfg[0]
+        udpp_port = udpp_cfg[1]
+        udpp = UdpPluginServer(udpp_addr, udpp_port, db, verbosity=self.Verbosity)
+        udpp.process() # run once just to check that it works
+
+        # start ac server as separate process
+        self.Verbosity.print("Start AC server")
+        acs_cmd = []
+        acs_cmd.append(os.path.join(self.getArg("path_acs"), self.getArg("name_acs")))
+        acs_cmd.append(">")
+        try:
+            stdout = open(self.getArg("acs_log"), "w")
+        except ArgumentException as e:
+            stdout = DEVNULL
+        acs_cmd.append("&")
+        acs_proc = Popen(acs_cmd, cwd=self.getArg("path_acs"), stdout=stdout, stderr=stdout)
 
         # run server
-        self.print(1, "run server")
+        self.Verbosity.print("Processing ...")
         while True:
 
             # process server
             try:
-                self.__udp_srv.process()
+                udpp.process()
             except BaseException as e:
-                self.__server_proc.terminate()
-                self.__server_proc.wait(timeout=5.0)
+                acs_proc.terminate()
+                acs_proc.wait(timeout=5.0)
                 raise e
 
             # quit parsing when acServer is stopped
-            ret = self.__server_proc.poll()
+            ret = acs_proc.poll()
             if ret is not None:
-                self.print(2, "acServer has finished with returncode", ret)
+                self.Verbosity.print("AC server has finished with returncode", ret)
                 break
-
-        self.print(1, "finish ac server run")
