@@ -58,8 +58,12 @@ class control extends cContentPage {
         //                     Process Requested Action
         // --------------------------------------------------------------------
 
-        if (isset($_POST['ACTION']) && $_POST['ACTION'] == "START_SERVER") {
-            $this->start_server();
+        if (isset($_POST['ACTION'])) {
+            if ($_POST['ACTION'] == "START_SERVER") {
+                $this->start_server();
+            } else if ($_POST['ACTION'] == "STOP_SERVER") {
+                $this->stop_server();
+            }
         }
 
 
@@ -82,49 +86,56 @@ class control extends cContentPage {
 
 
         // --------------------------------------------------------------------
-        //                            Start Server
+        //                            Server Control
         // --------------------------------------------------------------------
 
-        $html .= "<h1>Start Server</h1>";
         $html .= '<form action="" method="post">';
 
-        // preset
-        $html .= "Server Preset";
-        $html .= '<select name="PRESET_ID">';
-        foreach ($acswuiDatabase->fetch_2d_array("ServerPresets", ['Id', "Name"], [], "Name") as $sp) {
-            $selected = ($this->CurrentPresetId == $sp['Id']) ? "selected" : "";
-            $html .= '<option value="' . $sp['Id'] . '"' . $selected . '>' . $sp['Name'] . '</option>';
+        if (!$this->server_online()) {
+
+            $html .= "<h1>Start Server</h1>";
+
+            // preset
+            $html .= "Server Preset";
+            $html .= '<select name="PRESET_ID">';
+            foreach ($acswuiDatabase->fetch_2d_array("ServerPresets", ['Id', "Name"], [], "Name") as $sp) {
+                $selected = ($this->CurrentPresetId == $sp['Id']) ? "selected" : "";
+                $html .= '<option value="' . $sp['Id'] . '"' . $selected . '>' . $sp['Name'] . '</option>';
+            }
+            $html .= '</select>';
+            $html .= '<br>';
+
+            # car class
+            $html .= "Car Class";
+            $html .= '<select name="CARCLASS_ID">';
+            foreach ($acswuiDatabase->fetch_2d_array("CarClasses", ['Id', "Name"], [], "Name") as $sp) {
+                $selected = ($this->CurrentCarClassId == $sp['Id']) ? "selected" : "";
+                $html .= '<option value="' . $sp['Id'] . '"' . $selected . '>' . $sp['Name'] . '</option>';
+            }
+            $html .= '</select>';
+            $html .= '<br>';
+
+            # track
+            $html .= "Track";
+            $html .= '<select name="TRACK_ID">';
+            foreach ($acswuiDatabase->fetch_2d_array("Tracks", ['Id', "Name", "Pitboxes", "Length"], [], "Name") as $t) {
+                $selected = ($this->CurrentTrackId == $t['Id']) ? "selected" : "";
+                $name_str = $t['Name'];
+                $name_str .= " " . $t['Length'] . "m";
+                $name_str .= " (" . $t['Pitboxes'] . "pits)";
+                $html .= '<option value="' . $t['Id'] . '"' . $selected . ">$name_str</option>";
+            }
+            $html .= '</select>';
+            $html .= '<br>';
+
+            # start
+            $html .= '<button type="submit" name="ACTION" value="START_SERVER">' . _("Start Server") . '</button>';
+
+
+
+        } else {
+            $html .= '<button type="submit" name="ACTION" value="STOP_SERVER">' . _("Stop Server") . '</button>';
         }
-        $html .= '</select>';
-        $html .= '<br>';
-
-        # car class
-        $html .= "Car Class";
-        $html .= '<select name="CARCLASS_ID">';
-        foreach ($acswuiDatabase->fetch_2d_array("CarClasses", ['Id', "Name"], [], "Name") as $sp) {
-            $selected = ($this->CurrentCarClassId == $sp['Id']) ? "selected" : "";
-            $html .= '<option value="' . $sp['Id'] . '"' . $selected . '>' . $sp['Name'] . '</option>';
-        }
-        $html .= '</select>';
-        $html .= '<br>';
-
-        # track
-        $html .= "Track";
-        $html .= '<select name="TRACK_ID">';
-        foreach ($acswuiDatabase->fetch_2d_array("Tracks", ['Id', "Name", "Pitboxes", "Length"], [], "Name") as $t) {
-            $selected = ($this->CurrentTrackId == $t['Id']) ? "selected" : "";
-            $name_str = $t['Name'];
-            $name_str .= " " . $t['Length'] . "m";
-            $name_str .= " (" . $t['Pitboxes'] . "pits)";
-            $html .= '<option value="' . $t['Id'] . '"' . $selected . ">$name_str</option>";
-        }
-        $html .= '</select>';
-        $html .= '<br>';
-
-        # start
-        $html .= '<button type="submit" name="ACTION" value="START_SERVER">' . _("Start Server") . '</button>';
-
-
         $html .= '</form>';
 
 
@@ -187,12 +198,29 @@ class control extends cContentPage {
     }
 
 
+    public function stop_server() {
+        if (!$this->CanStartServer) return;
+        if (!$this->server_online()) return;
+
+        $old_path = getcwd();
+        $cmd_str = array();
+        $cmd_ret = 0;
+        $cmd = "pgrep acServer";
+        exec($cmd, $cmd_str, $cmd_ret);
+        if ($cmd_ret == 0) {
+            $cmd = "kill " . $cmd_str[0];
+            exec($cmd, $cmd_str, $cmd_ret);
+        }
+        sleep(2);
+    }
+
     public function start_server() {
         global $acswuiConfig;
         global $acswuiLog;
         global $acswuiDatabase;
 
         if (!$this->CanStartServer) return;
+        if ($this->server_online()) return;
 
 
         // --------------------------------------------------------------------
@@ -313,8 +341,10 @@ class control extends cContentPage {
         $cmd .= " >\"" . $acswuiConfig->LogPath . "/acswui_srvrun.log\" 2>&1 &";
         exec($cmd, $cmd_str, $cmd_ret);
         foreach ($cmd_str as $line) echo "$line<br>";
-        echo "Server started: $cmd_ret<br>";
-        echo "$cmd<br>";
+//         echo "Server started: $cmd_ret<br>";
+//         echo "$cmd<br>";
+
+        sleep(2);
 
         if ($cmd_ret !== 0) {
             $msg = "Could not start server!\n";
