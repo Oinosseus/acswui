@@ -350,10 +350,10 @@
                     "NAME": "Voting Duration",
                     "TYPE": "int",
                     "MIN": 0,
-                    "MAX": 9999,
+                    "MAX": 30,
                     "HELP": "Vote length in seconds",
                     "UNIT": "s",
-                    "DEFAULT": "60"
+                    "DEFAULT": "20"
                 }
             ]
         },
@@ -394,10 +394,10 @@
                     "NAME": "Allowed Tyred Out",
                     "TYPE": "int",
                     "MIN": 0,
-                    "MAX": 9999,
+                    "MAX": 4,
                     "HELP": "??? - not documented",
                     "UNIT": "",
-                    "DEFAULT": "0"
+                    "DEFAULT": "2"
                 }, {
                     "TAG" : "ABS_ALLOWED",
                     "NAME": "ABS Allowed",

@@ -181,19 +181,29 @@ class control extends cContentPage {
         }
 
         // get preset data from db
-        $db_columns = $acswuiDatabase->fetch_column_names("ServerPresets");
+        $db_columns = array(); //$acswuiDatabase->fetch_column_names("ServerPresets");
+        foreach ($ServerCfgJson as $group_name => $fieldsets) {
+            foreach ($fieldsets as $fieldset) {
+                foreach ($fieldset['FIELDS'] as $field) {
+                    if ($field['TYPE'] == "hidden") continue;
+                    $db_columns[] = $group_name . "_" . $field['TAG'];
+                }
+            }
+        }
         $res = $acswuiDatabase->fetch_2d_array("ServerPresets", $db_columns, ['Id' => $this->CurrentPresetId]);
         if (count($res) !== 1) {
             $acswuiLog->logWarning("Ignore server start with not existing preset Id " . $this->CurrentPresetId);
             return;
         }
-        foreach ($db_columns as $col) {
-            if ($col == "Id" || $col == "Name") continue;
-            $val = $res[0][$col];
-            $ex = explode("_", $col, 2);
-            $grp = $ex[0];
-            $field = $ex[1];
-            $preset_data[$grp][$field] = $val;
+        foreach ($ServerCfgJson as $group_name => $fieldsets) {
+            foreach ($fieldsets as $fieldset) {
+                foreach ($fieldset['FIELDS'] as $field) {
+                    if ($field['TYPE'] == "hidden") continue;
+                    $db_column = $group_name . "_" . $field['TAG'];
+                    $val = $res[0][$db_column];
+                    $preset_data[$group_name][$field['TAG']] = $val;
+                }
+            }
         }
 
         // overwrite fixed values
