@@ -24,6 +24,19 @@ class control extends cContentPage {
         return FALSE;
     }
 
+    private function get_fixed($group_name, $server_cfg_field) {
+        // returns the fixed value of a server preset element
+        // return False, when element is not fixed
+        global $acswuiConfig;
+
+        $key = $group_name . "_" . $server_cfg_field['TAG'];
+        if (array_key_exists($key, $acswuiConfig->FixedServerConfig) === TRUE) {
+            return $acswuiConfig->FixedServerConfig[$key];
+        } else {
+            return FALSE;
+        }
+    }
+
     public function getHtml() {
 
         // access global data
@@ -148,7 +161,7 @@ class control extends cContentPage {
         global $acswuiDatabase;
 
         // parse server_cfg json
-        $json_string = file_get_contents($acswuiConfig->SrvCfgJsonPath);
+        $json_string = file_get_contents($acswuiConfig->AcsContent . "/server_cfg.json");
         $ServerCfgJson = json_decode($json_string, true);
 
         // prepare return data
@@ -187,8 +200,9 @@ class control extends cContentPage {
         foreach ($ServerCfgJson as $group_name => $fieldsets) {
             foreach ($fieldsets as $fieldset) {
                 foreach ($fieldset['FIELDS'] as $field) {
-                    if ($field['FIXED']) {
-                        $preset_data[$group_name][$field['TAG']] = $field['DEFAULT'];
+                    $fixed_val = $this->get_fixed($group_name, $field);
+                    if ($fixed_val !== FALSE) {
+                        $preset_data[$group_name][$field['TAG']] = $fixed_val;
                     }
                 }
             }

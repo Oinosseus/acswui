@@ -20,6 +20,21 @@ class presets extends cContentPage {
 
     }
 
+
+    private function get_fixed($group_name, $server_cfg_field) {
+        // returns the fixed value of a server preset element
+        // return False, when element is not fixed
+        global $acswuiConfig;
+
+        $key = $group_name . "_" . $server_cfg_field['TAG'];
+        if (array_key_exists($key, $acswuiConfig->FixedServerConfig) === TRUE) {
+            return $acswuiConfig->FixedServerConfig[$key];
+        } else {
+            return FALSE;
+        }
+    }
+
+
     public function getHtml() {
 
         // access global data
@@ -42,7 +57,7 @@ class presets extends cContentPage {
         $_SESSION['PRESET_ID'] = $this->CurrentPreset;
 
         // parse server_cfg json
-        $json_string = file_get_contents($acswuiConfig->SrvCfgJsonPath);
+        $json_string = file_get_contents($acswuiConfig->AcsContent . "/server_cfg.json");
         $this->ServerCfgJson = json_decode($json_string, true);
 
         // save preset
@@ -116,11 +131,13 @@ class presets extends cContentPage {
     }
 
     function getFieldsetInputs($group, $ServerCfgFieldset) {
+        global $acswuiConfig;
+
         $html = "";
         foreach ($ServerCfgFieldset['FIELDS'] as $ServerCfgField) {
 
             // ignore fixed fields
-            if ($ServerCfgField['FIXED'] && !$this->CanViewFixed) continue;
+            if ($this->get_fixed($group, $ServerCfgField) == FALSE && !$this->CanViewFixed) continue;
 
             // create html input
             if ($ServerCfgField['TYPE'] == "string") {
@@ -163,13 +180,13 @@ class presets extends cContentPage {
         $name = $ServerCfgField['NAME'];
         $help = $ServerCfgField['HELP'];
         $unit = $ServerCfgField['UNIT'];
-        $fixed = ($ServerCfgField['FIXED']) ? true : false;
+        $fixed_val = $this->get_fixed($group, $ServerCfgField);
         $value = $this->CurrentData[$tag];
 
-        if ($this->CanEdit && !$fixed) {
+        if ($this->CanEdit && $fixed_val === FALSE) {
             return "<tr><td>$name</td><td><input type=\"text\" name=\"$tag\" value=\"$value\" title=\"$help\"/> $unit</td></tr>";
         } else {
-            return "<tr><td>$name</td><td><span class=\"disabled_input\">$value $unit</span></td></tr>";
+            return "<tr><td>$name</td><td><span class=\"disabled_input\">$fixed_val $unit</span></td></tr>";
         }
 
     }
@@ -179,13 +196,13 @@ class presets extends cContentPage {
         $tag = $group . "_" . $ServerCfgField['TAG'];
         $name = $ServerCfgField['NAME'];
         $help = $ServerCfgField['HELP'];
-        $fixed = ($ServerCfgField['FIXED']) ? true : false;
+        $fixed_val = $this->get_fixed($group, $ServerCfgField);
         $value = $this->CurrentData[$tag];
 
-        if ($this->CanEdit && !$fixed) {
+        if ($this->CanEdit && $fixed_val === FALSE) {
             return "<tr><td>$name</td><td><textarea name=\"$tag\" title=\"$help\">$value</textarea></td></tr>";
         } else {
-            return "<tr><td>$name</td><td><span class=\"disabled_input\">$value $unit</span></td></tr>";
+            return "<tr><td>$name</td><td><span class=\"disabled_input\">$fixed_val</span></td></tr>";
         }
 
     }
@@ -196,15 +213,15 @@ class presets extends cContentPage {
         $name = $ServerCfgField['NAME'];
         $help = $ServerCfgField['HELP'];
         $unit = $ServerCfgField['UNIT'];
-        $fixed = ($ServerCfgField['FIXED']) ? true : false;
+        $fixed_val = $this->get_fixed($group, $ServerCfgField);
         $min = $ServerCfgField['MIN'];
         $max = $ServerCfgField['MAX'];
         $value = $this->CurrentData[$tag];
 
-        if ($this->CanEdit && !$fixed) {
+        if ($this->CanEdit && $fixed_val === FALSE) {
             return "<tr><td>$name</td><td><input type=\"number\" min=\"$min\" max=\"$max\" step=\"1\" name=\"$tag\" value=\"$value\" title=\"$help\"> $unit</td></tr>";
         } else {
-            return "<tr><td>$name</td><td><span class=\"disabled_input\">$value $unit</span></td></tr>";
+            return "<tr><td>$name</td><td><span class=\"disabled_input\">$fixed_val $unit</span></td></tr>";
         }
 
     }
@@ -215,10 +232,10 @@ class presets extends cContentPage {
         $name = $ServerCfgField['NAME'];
         $help = $ServerCfgField['HELP'];
         $unit = $ServerCfgField['UNIT'];
-        $fixed = ($ServerCfgField['FIXED']) ? true : false;
+        $fixed_val = $this->get_fixed($group, $ServerCfgField);
         $value = $this->CurrentData[$tag];
 
-        if ($this->CanEdit && !$fixed) {
+        if ($this->CanEdit && $fixed_val === FALSE) {
             $html = "<tr><td>$name</td><td>";
             $html .= "<select name=\"$tag\" title=\"$help\">";
             foreach ($ServerCfgField['ENUMS'] as $enum) {
@@ -233,7 +250,7 @@ class presets extends cContentPage {
 
         } else {
             foreach ($ServerCfgField['ENUMS'] as $enum) {
-                if ($enum['VALUE'] == $value) {
+                if ($enum['VALUE'] == $fixed_val) {
                     $value = $enum['TEXT'];
                     break;
                 }
@@ -277,8 +294,9 @@ class presets extends cContentPage {
             foreach ($fieldsets as $fieldset) {
                 foreach ($fieldset['FIELDS'] as $field) {
                     $col = $group_name . "_" . $field['TAG'];
-                    if ($field['FIXED']) {
-                        $data[$col] = $field['DEFAULT'];
+                    $fixed_val = $this->get_fixed($group_name, $field);
+                    if ($fixed_val !== FALSE) {
+                        $data[$col] = $fixed_val;
                     }
                 }
             }
@@ -303,8 +321,9 @@ class presets extends cContentPage {
 
                     $col = $group_name . "_" . $field['TAG'];
 
-                    if ($field['FIXED'] || !isset($_POST[$col])) {
-                        $val = $field['DEFAULT'];
+                    $fixed_val = $this->get_fixed($group_name, $field);
+                    if ($fixed_val !== FALSE || !isset($_POST[$col])) {
+                        $val = $fixed_val;
                     } else {
                         $val = $_POST[$col];
                     }

@@ -2,6 +2,7 @@
 
 function getImgTrack($track_id) {
 
+    global $acswuiConfig;
     global $acswuiDatabase;
     global $acswuiLog;
 
@@ -12,10 +13,11 @@ function getImgTrack($track_id) {
         return "";
     }
 
+
     if (strlen($res[0]['Config']) > 0) {
-        $path = "acs_content/tracks/" . $res[0]['Track'] . "/ui/" . $res[0]['Config'] . "/preview.png";
+        $path = $acswuiConfig->AcsContent . "/content/tracks/" . $res[0]['Track'] . "/ui/" . $res[0]['Config'] . "/preview.png";
     } else {
-        $path = "acs_content/tracks/" . $res[0]['Track'] . "/ui/preview.png";
+        $path = $acswuiConfig->AcsContent . "/content/tracks/" . $res[0]['Track'] . "/ui/preview.png";
     }
 
     $ret = "<img src=\"$path\">";
@@ -35,6 +37,7 @@ function getImgCarSkin($carskin_id, $img_id = "") {
     //       The 'id' attribute content of the <img> tag.
     //
 
+    global $acswuiConfig;
     global $acswuiDatabase;
     global $acswuiLog;
 
@@ -61,7 +64,7 @@ function getImgCarSkin($carskin_id, $img_id = "") {
     $car_name  = $res[0]['Name'];
     $car_brand = $res[0]['Brand'];
 
-    $path = "acs_content/cars/$car/skins/$skin/preview.jpg";
+    $path = $acswuiConfig->AcsContent . "/content/cars/$car/skins/$skin/preview.jpg";
 
 
     $ret = "<img src=\"$path\" $id alt=\"$car $skin\" title=\"Brand: $car_brand\nCar: $car_name ($car)\nSkin: $skin\">";

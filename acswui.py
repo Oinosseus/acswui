@@ -10,7 +10,7 @@ import os
 import sys
 import json
 #from pyacswui import CommandSrvctl, , ServerPackager
-from pyacswui import CommandSrvrun, CommandInstallHttp
+from pyacswui import CommandInstallFiles, CommandInstallHttp, CommandSrvrun
 
 
 
@@ -32,7 +32,7 @@ argparsersubs     = argparser.add_subparsers(dest='command')
 #argparser_srvpkg  = argparsersubs.add_parser('srvpkg', help="server packager - preparing files for http and ac server")
 #argparser_srvpkg.set_defaults(func=workaround_srvpkg)
 
-#CommandSrvctl(argparsersubs)
+CommandInstallFiles(argparsersubs)
 CommandSrvrun(argparsersubs)
 CommandInstallHttp(argparsersubs)
 

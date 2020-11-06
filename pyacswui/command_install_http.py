@@ -28,24 +28,20 @@ class CommandInstallHttp(Command):
         self.add_argument('--http-root-password', help="Password for root user")
         self.add_argument('--http-guest-group', default="Visitor", help="Group name of visitors that are not logged in")
         self.add_argument('--http-default-tmplate', default="acswui", help="Default template for http")
+        self.add_argument('--http-guid', help="Name of webserver group on the server (needed to chmod access rights)")
 
-        self.add_argument('--path-acs', help="path to AC server directory")
-        self.add_argument('--path-ac', help="path to AC installation directory")
+        self.add_argument('--path-acs-target', help="path to AC server target directory")
         self.add_argument('--install-base-data', action="store_true", help="install basic http data (default groups, etc.)")
-
-
-        ######################
-        # Parse SevrerCfgJson
-
-        # read template
-        with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "server_cfg.json"), "r") as f:
-            json_string = f.read()
-        self.__server_cfg_json = json.loads(json_string)
-
+        self.add_argument('--http-path-acs-content', help="Path that stores AC data for http access (eg. track car preview images)")
 
 
         ##########################
         # Server Config Arguments
+
+        # read server_cfg json
+        with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "server_cfg.json"), "r") as f:
+            json_string = f.read()
+        self.__server_cfg_json = json.loads(json_string)
 
         for groupname in self.__server_cfg_json.keys():
             for fieldsets in self.__server_cfg_json[groupname]:
@@ -67,34 +63,20 @@ class CommandInstallHttp(Command):
                              verbosity=Verbosity(self.Verbosity)
                              )
 
-        # preparations
-        self.__scan_weather()
-
         # install work
         self.__work_db_tables()
         self.__work_cconfig()
         self.__work_scan_cars()
         self.__work_scan_tracks()
-        self.__work_server_cfg()
 
         if self.getArg("install_base_data"):
             self.__work_install_basics()
 
+        # create log directory
+        if not os.path.isdir(self.getArg("http_log_path")):
+            os.mkdir(self.getArg("http_log_path"))
 
-    def __scan_weather(self):
-
-        # scan for weather enums
-        weathers = []
-        for w in sorted(os.listdir(self.getArg('path_ac') + "/content/weather")):
-            if w[:1] != "." and os.path.isdir(self.getArg('path_ac') + "/content/weather/" + w):
-                weathers.append(w)
-
-        # append to wether graphics
-        for field in self.__server_cfg_json["WEATHER"][0]["FIELDS"]:
-            if field["TAG"] == "GRAPHICS":
-                for i in range(len(weathers)):
-                    field["ENUMS"].append({"VALUE":i, "TEXT":weathers[i]})
-
+        self.__set_chmod()
 
 
     def __parse_json(self, json_file, key_name, default_value):
@@ -120,9 +102,6 @@ class CommandInstallHttp(Command):
 
         self.Verbosity.print("Create database tables")
 
-        # ------------
-        #  red tables
-
         # check table installer
         Verbosity(self.Verbosity).print("check database table `installer`")
         self.__db.appendTable("installer")
@@ -131,7 +110,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnText("installer", "info")
 
         # insert installer info
-        self.__db.insertRow("installer", {"version": "0.1a", "info": ""})
+        self.__db.insertRow("installer", {"version": "0.0", "info": ""})
 
         # check table users
         Verbosity(self.Verbosity).print("check database table `Users`")
@@ -150,10 +129,6 @@ class CommandInstallHttp(Command):
         self.__db.appendTable("UserGroupMap")
         self.__db.appendColumnInt("UserGroupMap", "User")
         self.__db.appendColumnInt("UserGroupMap", "Group")
-
-
-        # -------------
-        #  grey tables
 
         # check table Cars
         Verbosity(self.Verbosity).print("check database table `Cars`")
@@ -178,10 +153,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnFloat("Tracks", "Length")
         self.__db.appendColumnInt("Tracks", "Pitboxes")
 
-
-        # ----------------
-        #  Server Logging
-
+        # check table Sessions
         Verbosity(self.Verbosity).print("check database table `Sessions`")
         self.__db.appendTable("Sessions")
         self.__db.appendColumnInt("Sessions", "ProtocolVersion")
@@ -201,6 +173,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnUInt("Sessions", "Elapsed")
         self.__db.appendColumnCurrentTimestamp("Sessions", "Timestamp")
 
+        # check table Laps
         Verbosity(self.Verbosity).print("check database table `Laps`")
         self.__db.appendTable("Laps")
         self.__db.appendColumnInt("Laps", "Session")
@@ -211,6 +184,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnFloat("Laps", "Grip")
         self.__db.appendColumnCurrentTimestamp("Laps", "Timestamp")
 
+        # check table CollisionEnv
         Verbosity(self.Verbosity).print("check database table `CollisionEnv`")
         self.__db.appendTable("CollisionEnv")
         self.__db.appendColumnInt("CollisionEnv", "Session")
@@ -219,6 +193,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnFloat("CollisionEnv", "Speed")
         self.__db.appendColumnCurrentTimestamp("CollisionEnv", "Timestamp")
 
+        # check table CollisionCar
         Verbosity(self.Verbosity).print("check database table `CollisionCar`")
         self.__db.appendTable("CollisionCar")
         self.__db.appendColumnInt("CollisionCar", "Session")
@@ -229,11 +204,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnInt("CollisionCar", "OtherCarSkin")
         self.__db.appendColumnCurrentTimestamp("CollisionCar", "Timestamp")
 
-
-
-        # ----------------
-        #  Server Presets
-
+        # check table ServerPresets
         Verbosity(self.Verbosity).print("check database table `ServerPresets`")
         self.__db.appendTable("ServerPresets")
         self.__db.appendColumnString("ServerPresets", "Name", 60)
@@ -256,59 +227,29 @@ class CommandInstallHttp(Command):
                         print("group =", group, ", field =", field)
                         raise NotImplementedError("Unknown field TYPE '%s'" % field['TYPE'])
 
-
-        # --------------
-        #  Car Classes
-
+        # check table CarClasses
         Verbosity(self.Verbosity).print("check database table `CarClasses`")
         self.__db.appendTable("CarClasses")
         self.__db.appendColumnString("CarClasses", 'Name', 50)
 
+        # check table CarClassesMap
         Verbosity(self.Verbosity).print("check database table `CarClassesMap`")
         self.__db.appendTable("CarClassesMap")
         self.__db.appendColumnInt("CarClassesMap", 'CarClass')
         self.__db.appendColumnInt("CarClassesMap", 'Car')
         self.__db.appendColumnInt("CarClassesMap", 'Ballast')
 
-
-        # --------------
-        #  Race Series
-
+        # check table RaceSeries
         Verbosity(self.Verbosity).print("check database table `RaceSeries`")
         self.__db.appendTable("RaceSeries")
         self.__db.appendColumnString("RaceSeries", 'Name', 50)
 
+        # check table RaceSeriesMap
         Verbosity(self.Verbosity).print("check database table `RaceSeriesMap`")
         self.__db.appendTable("RaceSeriesMap")
         self.__db.appendColumnInt("RaceSeriesMap", 'RaceSeries')
         self.__db.appendColumnInt("RaceSeriesMap", 'CarClass')
 
-
-
-    def __work_server_cfg(self):
-        self.Verbosity.print("create http/server_cfg.json")
-
-        # check fixed presets from ini file
-        for group in self.__server_cfg_json.keys():
-            for fieldset in self.__server_cfg_json[group]:
-                for field in fieldset['FIELDS']:
-                    config_key = group + "_" + field['TAG']
-
-                    # check for fixed values
-                    try:
-                        val = self.getArg(config_key)
-                        field['DEFAULT'] = val
-                        field['FIXED'] = True
-                    except ArgumentException as e:
-                        field['FIXED'] = False
-
-                    # ensure DEFAULT exists
-                    if 'DEFAULT' not in field:
-                        field['DEFAULT'] = ""
-
-        # dump to http directory
-        with open(self.getArg('http_path') + "/server_cfg.json", "w") as f:
-            json.dump(self.__server_cfg_json, f, indent=4)
 
 
     def __work_cconfig(self):
@@ -320,7 +261,7 @@ class CommandInstallHttp(Command):
 
         # determine reltive path from http to ac server
         path_current = os.path.abspath(os.curdir)
-        path_acserverdir = os.path.abspath(os.path.join(path_current, self.getArg('path_acs')))
+        path_acserverdir = os.path.abspath(os.path.join(path_current, self.getArg('path-acs-target')))
 
         # path to this command
         path_http2cmd = os.path.abspath(os.path.join(path_current, "acswui.py"))
@@ -328,16 +269,27 @@ class CommandInstallHttp(Command):
         # path for logs
         path_log = os.path.abspath(self.getArg('http_log_path'))
 
-        # acswui.py command json argument
-        acscmdjson = []
-        acscmdjson.append("\\\"path_acs\\\":\\\"%s\\\"" % path_acserverdir)
-        acscmdjson.append("\\\"db_host\\\":\\\"%s\\\"" % self.getArg("db_host"))
-        acscmdjson.append("\\\"db_database\\\":\\\"%s\\\"" % self.getArg("db_database"))
-        acscmdjson.append("\\\"db_port\\\":\\\"%s\\\"" % self.getArg("db_port"))
-        acscmdjson.append("\\\"db_user\\\":\\\"%s\\\"" % self.getArg("db_user"))
-        acscmdjson.append("\\\"db_passwd\\\":\\\"%s\\\"" % self.getArg("db_password"))
-        acscmdjson = ",".join(acscmdjson)
-        acscmdjson = "{" + acscmdjson + "}"
+        # path for acs-content
+        path_http = os.path.abspath(self.getArg("http-path"))
+        path_acscontent = os.path.abspath(self.getArg("http-path-acs-content"))
+        path_acscontent = os.path.relpath(path_acscontent, path_http)
+
+        # fixed server settings
+        fixed_server_settings = []
+        for group in self.__server_cfg_json.keys():
+            for fieldset in self.__server_cfg_json[group]:
+                for field in fieldset['FIELDS']:
+                    config_key = group + "_" + field['TAG']
+
+                    # check for fixed values
+                    try:
+                        val = self.getArg(config_key)
+                    except ArgumentException as e:
+                        val = None
+
+                    if val is not None:
+                        fixed_server_settings.append("\"%s\"=>\"%s\"" % (config_key, val))
+        fixed_server_settings = ",".join(fixed_server_settings)
 
         with open(self.getArg('http_path') + "/classes/cConfig.php", "w") as f:
             f.write("<?php\n")
@@ -352,7 +304,6 @@ class CommandInstallHttp(Command):
             f.write("    private $AcServerPath = \"%s\";\n" % path_acserverdir)
             f.write("    private $AcswuiCmdDir = \"%s\";\n" % path_current)
             f.write("    private $AcswuiCmd = \"%s\";\n" % path_http2cmd)
-            f.write("    private $AcswuiCmdJson = '%s';\n" % acscmdjson)
             f.write("\n")
             f.write("    // database constants\n")
             f.write("    private $DbHost = \"%s\";\n" % self.getArg('db_host'))
@@ -362,7 +313,8 @@ class CommandInstallHttp(Command):
             f.write("    private $DbPasswd = \"%s\";\n" % self.getArg('db_password'))
             f.write("\n")
             f.write("    // server_cfg\n")
-            f.write("    private $SrvCfgJsonPath = \"server_cfg.json\";\n")
+            f.write("    private $AcsContent = \"%s\";\n" % path_acscontent)
+            f.write("    private $FixedServerConfig = array(%s);\n" % fixed_server_settings)
             f.write("\n")
             f.write("    // this allows read-only access to private properties\n")
             f.write("    public function __get($name) {\n")
@@ -376,16 +328,16 @@ class CommandInstallHttp(Command):
     def __work_scan_cars(self):
         self.Verbosity.print("scanning for cars")
 
-        for car in os.listdir(self.getArg('http_path') + "/acs_content/cars"):
-            car_path   = self.getArg('http_path') + "/acs_content/cars/" + car
+        for car in os.listdir(self.getArg('http-path-acs-content') + "/content/cars"):
+            car_path   = self.getArg('http-path-acs-content') + "/content/cars/" + car
             car_name   = self.__parse_json(car_path + "/ui/ui_car.json", "name", car)
             car_parent = self.__parse_json(car_path + "/ui/ui_car.json", "parent", "")
             car_brand  = self.__parse_json(car_path + "/ui/ui_car.json", "brand", "")
 
             # get skins
             car_skins = []
-            if os.path.isdir(self.getArg('http_path') + "/acs_content/cars/" + car + "/skins"):
-                for skin in os.listdir(self.getArg('http_path') + "/acs_content/cars/" + car + "/skins"):
+            if os.path.isdir(self.getArg('http-path-acs-content') + "/content/cars/" + car + "/skins"):
+                for skin in os.listdir(self.getArg('http-path-acs-content') + "/content/cars/" + car + "/skins"):
                     car_skins.append(skin)
 
             Verbosity(self.Verbosity).print("Found car '" + car + "'")
@@ -462,8 +414,8 @@ class CommandInstallHttp(Command):
 
 
 
-        for track in os.listdir(self.getArg('http_path') + "/acs_content/tracks"):
-            track_path   = self.getArg('http_path') + "/acs_content/tracks/" + track
+        for track in os.listdir(self.getArg('http-path-acs-content') + "/content/tracks"):
+            track_path   = self.getArg('http-path-acs-content') + "/content/tracks/" + track
 
             Verbosity(self.Verbosity).print("Found track '" + track + "'")
 
@@ -547,3 +499,67 @@ class CommandInstallHttp(Command):
                     if len(res) == 1:
                         car_id = res[0]['Id']
                         self.__db.insertRow("CarClassesMap", {'Car': car_id, 'CarClass': cc_id, 'Ballast':0})
+
+
+
+    def __set_chmod(self):
+        self.Verbosity.print("Setting webserver access rights")
+        verb2 = Verbosity(self.Verbosity)
+
+        #######################
+        # ACS Target Directory
+
+        # change group of acs target directory
+        cmd = ["chgrp", "-R", self.getArg("http-guid"), self.getArg("path-acs-target")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
+
+        # change access to acs target directory
+        cmd = ["chmod", "-R", "g+r", self.getArg("path-acs-target")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
+        cmd = ["chmod", "-R", "g+w", os.path.join(self.getArg("path-acs-target"), "cfg")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
+
+
+        ########################
+        # HTTP Target Directory
+
+        # change group of http target directory
+        cmd = ["chgrp", "-R", self.getArg("http-guid"), self.getArg("http-path")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
+
+        # change access to http target directory
+        cmd = ["chmod", "-R", "g+r", self.getArg("http-path")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
+
+
+        #####################
+        # HTTP Log Directory
+
+        # change group of http target directory
+        cmd = ["chgrp", "-R", self.getArg("http-guid"), self.getArg("http-log-path")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
+
+        # change access to http target directory
+        cmd = ["chmod", "-R", "g+wr", self.getArg("http-log-path")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
+
+
+        ########################
+        # ACS Content Directory
+
+        # change group of acs-content target directory
+        cmd = ["chgrp", "-R", self.getArg("http-guid"), self.getArg("http-path-acs-content")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
+
+        # change access to acs-content target directory
+        cmd = ["chmod", "-R", "g+r", self.getArg("http-path-acs-content")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)

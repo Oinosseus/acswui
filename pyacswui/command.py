@@ -66,17 +66,19 @@ class Command(object):
 
     def getArg(self, arg_name):
 
-        if not hasattr(self.__args, arg_name):
+        arg_name_escaped = arg_name.replace("-", "_")
+
+        if not hasattr(self.__args, arg_name_escaped):
             raise ArgumentException("Argument '%s' is not defined at argparser!" % str(arg_name))
 
         # try to find from argparser
-        from_args = getattr(self.__args, arg_name)
+        from_args = getattr(self.__args, arg_name_escaped)
         if from_args is not None:
             return from_args
 
         # try to find it from global arguments (INI or JSON)
-        if arg_name in self.__arg_dict:
-            return self.__arg_dict[arg_name]
+        if arg_name_escaped in self.__arg_dict:
+            return self.__arg_dict[arg_name_escaped]
 
         raise ArgumentException("Argument '%s' is neither set as commandline argument, nor in INI, nor in JSON!" % arg_name)
 
