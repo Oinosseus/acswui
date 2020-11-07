@@ -6,27 +6,91 @@ class stats_track extends cContentPage {
         $this->MenuName   = _("Track Laps");
         $this->PageTitle  = "Track Best Lap Times";
         $this->TextDomain = "acswui";
-        $this->RequirePermissions = ["View_ServerContent"];
+        $this->RequirePermissions = ["View_Statistics"];
 
         // class local vars
         $this->CurrentTrackId = Null;
-        $this->CarSkinCache = array();
+//         $this->CarNameCacheSkin = array();
+        $this->CarNameCacheId = array();
     }
 
-    private function getCarName($car_skin_id) {
+    private function getCarNameFromSkin($car_skin_id) {
         global $acswuiDatabase;
-        if (array_key_exists($car_skin_id, $this->CarSkinCache)) {
-            return $this->CarSkinCache[$car_skin_id];
+        if (array_key_exists($car_skin_id, $this->CarNameCacheSkin)) {
+            return $this->CarNameCacheSkin[$car_skin_id];
         } else {
             $query = "SELECT Cars.Name FROM `CarSkins` INNER JOIN Cars ON CarSkins.Car=Cars.Id WHERE CarSkins.Id = $car_skin_id LIMIT 1;";
             $res = $acswuiDatabase->fetch_raw_select($query);
             if (count($res) == 1) {
-                $this->CarSkinCache[$car_skin_id] = $res[0]['Name'];
-                return $this->CarSkinCache[$car_skin_id];
+                $this->CarNameCacheSkin[$car_skin_id] = $res[0]['Name'];
+                return $this->CarNameCacheSkin[$car_skin_id];
             }
         }
         return "";
     }
+
+
+
+    private function getCarNameFromId($car_id) {
+        global $acswuiDatabase;
+        if (array_key_exists($car_id, $this->CarNameCacheId)) {
+            return $this->CarNameCacheId[$car_id];
+        } else {
+            $res = $acswuiDatabase->fetch_2d_array("Cars", ['Name'], ['Id'=>$car_id]);
+            if (count($res) == 1) {
+                $this->CarNameCacheId[$car_id] = $res[0]['Name'];
+                return $this->CarNameCacheId[$car_id];
+            }
+        }
+        return "";
+    }
+
+
+
+    private function get_driver_best_lap($user_id, $track_id, $cars_id_list) {
+        // return the best lap of a user on a certain track with one of the cars in list
+        // If no best lap is found, Null is returned.
+        // Else an array with keys LapId, Laptime, Grip, Timestamp, Car is returned
+        global $acswuiDatabase;
+
+        $laptime = Null;
+        $grip = Null;
+        $timestamp = Null;
+        $car = Null;
+        $lapid = Null;
+
+        $query = "SELECT Laps.Id, Laps.Laptime, Laps.Grip, Laps.Timestamp, Laps.CarSkin, CarSkins.Car FROM `Laps`";
+        $query .= " INNER JOIN Sessions ON Laps.Session=Sessions.Id";
+        $query .= " INNER JOIN CarSkins ON Laps.CarSkin=CarSkins.Id";
+        $query .= " WHERE Sessions.Track=$track_id AND Laps.User=$user_id AND Laps.Cuts=0 ORDER BY Laps.Id ASC;";
+        foreach ($acswuiDatabase->fetch_raw_select($query) as $row) {
+
+            // ingore not requested cars
+            if (!in_array($row['Car'], $cars_id_list)) continue;
+
+            if ($laptime === Null || $row['Laptime'] < $laptime) {
+                $laptime = $row['Laptime'];
+                $grip = $row['Grip'];
+                $timestamp = $row['Timestamp'];
+                $car = $row['Car'];
+                $lapid = $row['Id'];
+            }
+        }
+
+        if ($laptime === Null) {
+            return Null;
+        } else {
+            $ret = array();
+            $ret['Laptime'] = $laptime;
+            $ret['Grip'] = $grip;
+            $ret['Timestamp'] = $timestamp;
+            $ret['Car'] = $car;
+            $ret['LapId'] = $lapid;
+            return $ret;
+        }
+    }
+
+
 
     public function getHtml() {
         // access global data
@@ -95,47 +159,53 @@ class stats_track extends cContentPage {
 
 
         // --------------------------------------------------------------------
-        //                            Bast Laps
+        //                            Best Laps
         // --------------------------------------------------------------------
 
-        $html .= "<h1>" . _("Best Laps") . "</h1>";
-
-        // find drivers best laps
-        $driver_best_laps = array();
-        foreach ($drivers as $driver_id => $driver_login) {
-            // get all sessions of requested track
-            $track_id = $this->CurrentTrackId;
-            $query = "SELECT Laps.Laptime, Laps.Grip, Laps.Timestamp, Laps.CarSkin FROM `Laps` INNER JOIN Sessions ON Laps.Session=Sessions.Id WHERE Sessions.Track=$track_id AND Laps.User=$driver_id AND Laps.Cuts=0 ORDER BY Laps.Laptime ASC LIMIT 1;";
-            $res = $acswuiDatabase->fetch_raw_select($query);
-            if (count($res) > 0) {
-                $best_lap = array();
-                $best_lap['Driver'] = $driver_login;
-                $best_lap['Laptime'] = $res[0]['Laptime'];
-                $best_lap['Grip'] = $res[0]['Grip'];
-                $best_lap['Timestamp'] = $res[0]['Timestamp'];
-                $best_lap['Car'] = $this->getCarName($res[0]['CarSkin']);
-                $driver_best_laps[] = $best_lap;
-            }
-        }
-
-        // sort
         function compare_laptimes($lt1, $lt2) {
             return ($lt1['Laptime'] < $lt2['Laptime']) ? -1 : 1;
         }
-        uasort($driver_best_laps, 'compare_laptimes');
 
-        $html .= '<table>';
-        $html .= '<tr><th>' . _("Laptime") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Grip") . '</th><th>' . _("Date") . '</th>';
-        foreach ($driver_best_laps as $dbl) {
-            $html .= "<tr>";
-            $html .= "<td>" . laptime2str($dbl['Laptime']) . "</td>";
-            $html .= "<td>" . $dbl['Driver'] . "</td>";
-            $html .= "<td>" . $dbl['Car'] . "</td>";
-            $html .= "<td>" . sprintf("%0.1f", 100 * $dbl['Grip']) . "&percnt;</td>";
-            $html .= "<td>" . $dbl['Timestamp'] . "</td>";
-            $html .= "</tr>";
+        foreach ($acswuiDatabase->fetch_2d_array("CarClasses", ['Id', 'Name'], [], 'Name') as $carclass_row) {
+            $carclass_id = $carclass_row['Id'];
+            $carclass_name = $carclass_row['Name'];
+
+            // get list of car IDs in carclass
+            $cars = array();
+            foreach ($acswuiDatabase->fetch_2d_array("CarClassesMap", ['Car'], ['CarClass' => $carclass_id]) as $cars_row) {
+                $cars[] = $cars_row['Car'];
+            }
+
+            // find drivers best laps
+            $driver_best_laps = array();
+            foreach ($drivers as $driver_id => $driver_login) {
+
+                $best_lap = $this->get_driver_best_lap($driver_id, $this->CurrentTrackId, $cars);
+                if ($best_lap !== Null) {
+                    $best_lap['Driver'] = $driver_login;
+                    $driver_best_laps[] = $best_lap;
+                }
+            }
+
+            // sort
+            uasort($driver_best_laps, 'compare_laptimes');
+
+            // generate html
+            $html .= "<h1>$carclass_name</h1>";
+            $html .= '<table>';
+            $html .= '<tr><th>' . _("Laptime") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Grip") . '</th><th>' . _("Date") . '</th><th>' . _("Lap Id") . '</th>';
+            foreach ($driver_best_laps as $dbl) {
+                $html .= "<tr>";
+                $html .= "<td>" . laptime2str($dbl['Laptime']) . "</td>";
+                $html .= "<td>" . $dbl['Driver'] . "</td>";
+                $html .= "<td>" . $this->getCarNameFromId($dbl['Car']) . "</td>";
+                $html .= "<td>" . sprintf("%0.1f", 100 * $dbl['Grip']) . "&percnt;</td>";
+                $html .= "<td>" . $dbl['Timestamp'] . "</td>";
+                $html .= "<td>" . $dbl['LapId'] . "</td>";
+                $html .= "</tr>";
+            }
+            $html .= '</table>';
         }
-        $html .= '</table>';
 
         return $html;
     }
