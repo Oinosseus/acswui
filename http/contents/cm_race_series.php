@@ -6,7 +6,7 @@ class cm_race_series extends cContentPage {
         $this->MenuName   = _("Race Series");
         $this->PageTitle  = _("Race Series");
         $this->TextDomain = "acswui";
-        $this->RequirePermissions = ["View_ServerContent"];
+        $this->RequirePermissions = ["BetaFeatures", "View_ServerContent"];
         $this->EditPermission     = 'RaceSeries_Edit';
     }
 

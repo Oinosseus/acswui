@@ -166,6 +166,25 @@ class cUser {
 
     }
 
+
+    // returns True when password is correct for current user
+    public function confirmPassword($password) {
+        global $acswuiConfig;
+        global $acswuiDatabase;
+
+        if ($this->IsRoot) {
+            return password_verify($password, $acswuiConfig->RootPassword);
+
+        } else {
+            $row = $acswuiDatabase->fetch_2d_array("Users", ["Password"], ['Id' => $this->Id]);
+            if (count($row) === 1) {
+                return password_verify($password, $row[0]['Password']);
+            }
+        }
+
+        return FALSE;
+    }
+
 }
 
 ?>
