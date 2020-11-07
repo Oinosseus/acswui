@@ -752,7 +752,7 @@
                     "MIN": 0,
                     "MAX": 999,
                     "HELP": "how many laps are needed to add 1% grip",
-                    "UNIT": "&percnt; / Lap",
+                    "UNIT": "Laps / 1&percnt;",
                     "DEFAULT": "20"
                 }, {
                     "TAG" : "SESSION_TRANSFER",
