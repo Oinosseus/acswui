@@ -2,6 +2,7 @@ import os
 import signal
 import time
 import os.path
+import sys
 from subprocess import Popen, DEVNULL
 from configparser import ConfigParser
 from .command import Command, ArgumentException
@@ -74,11 +75,13 @@ class CommandSrvrun(Command):
         # run server
         self.Verbosity.print("Processing ...")
         while True:
+            sys.stdout.flush()
 
             # process server
             try:
                 udpp.process()
             except BaseException as e:
+                self.Verbosity.print("Received Exception:", str(e))
                 acs_proc.terminate()
                 acs_proc.wait(timeout=5.0)
                 raise e

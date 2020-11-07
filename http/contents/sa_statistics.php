@@ -1,9 +1,9 @@
 <?php
 
-class sa_session extends cContentPage {
+class sa_statistics extends cContentPage {
 
     public function __construct() {
-        $this->MenuName   = _("Session");
+        $this->MenuName   = _("Statistics");
         $this->TextDomain = "acswui";
         $this->RequirePermissions = ["View_ServerContent"];
     }

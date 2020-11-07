@@ -108,7 +108,20 @@
 
         // execute query
         $query = "SELECT $colums_list FROM $table $where_string $order;";
-        $result = $this->db_handle->query($query);
+        return $this->fetch_raw_select($query);
+    }
+
+
+
+    // Returns an 2D associative array for an SQL SELECT query
+    public function fetch_raw_select($query_string) {
+
+        global $acswuiConfig;
+        global $acswuiLog;
+        $ret = array();
+
+        // execute query
+        $result = $this->db_handle->query($query_string);
         if ($result === False) {
             $acswuiLog->LogError("Failed SQL query: " . $query . "\nERROR: " . $this->db_handle->error);
         } else {
@@ -118,6 +131,7 @@
 
         return $ret;
     }
+
 
 
     // update a row in a table

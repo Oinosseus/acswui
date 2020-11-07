@@ -1,12 +1,12 @@
 <?php
 
-class stats extends cContentPage {
+class stats_session extends cContentPage {
 
     public function __construct() {
-        $this->MenuName   = _("Status");
-        $this->PageTitle  = "Session Status";
+        $this->MenuName   = _("Session");
+        $this->PageTitle  = "Session Statistics";
         $this->TextDomain = "acswui";
-        $this->RequirePermissions = ["View_Session"];
+        $this->RequirePermissions = ["View_Statistics"];
 
         // class local vars
         $this->SessionId = Null;

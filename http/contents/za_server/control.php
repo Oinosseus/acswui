@@ -346,7 +346,7 @@ class control extends cContentPage {
         $old_path = getcwd();
         $cmd_str = array();
         $cmd_ret = 0;
-        $cmd = "nohup ". $acswuiConfig->AcswuiCmd . " srvrun";
+        $cmd = "nohup ". $acswuiConfig->AcswuiCmd . " -vvvvvv srvrun";
         $cmd .= " --db-host \"" . $acswuiConfig->DbHost . "\"";
         $cmd .= " --db-port \"" . $acswuiConfig->DbPort . "\"";
         $cmd .= " --db-database \"" . $acswuiConfig->DbDatabase . "\"";
@@ -356,19 +356,18 @@ class control extends cContentPage {
         $cmd .= " --acs-log \"" . $acswuiConfig->LogPath . "/acserver.log\"";
         $cmd .= " --path-server-cfg \"" . $acswuiConfig->AcServerPath . "/cfg/server_cfg.ini\"";
         $cmd .= " --path-entry-list \"" . $acswuiConfig->AcServerPath . "/cfg/entry_list.ini\"";
-        $cmd .= " >\"" . $acswuiConfig->LogPath . "/acswui_srvrun.log\" 2>&1 &";
+//         $cmd .= " </dev/null >" . $acswuiConfig->LogPath . "/acswui_srvrun.log 2>&1 &";
+        $cmd .= " >/dev/null 2>&1 &";
         exec($cmd, $cmd_str, $cmd_ret);
-        foreach ($cmd_str as $line) echo "$line<br>";
+//         foreach ($cmd_str as $line) echo "$line<br>";
 //         echo "Server started: $cmd_ret<br>";
-//         echo "$cmd<br>";
+//         echo htmlentities($cmd) ."<br>";
 
         sleep(2);
 
         if ($cmd_ret !== 0) {
             $msg = "Could not start server!\n";
             $msg .= "CMD: $cmd\n";
-            $msg .= "Returncode: $cmd_ret\n";
-            $msg .= "STDOUT: " . implode("\n", $cmd_str);
             $acswuiLog->logError($msg);
         }
 

@@ -81,6 +81,7 @@ class UdpPluginServer(object):
         # bind UDP socket
         self.__sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
+        Verbosity(self.__verbosity).print("Bind UdpPluginSever to %s:%i" % (address, int(port)))
         try:
             self.__sock.bind((address, int(port)))
         except BaseException as be:
