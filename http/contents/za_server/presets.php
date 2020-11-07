@@ -8,6 +8,7 @@ class presets extends cContentPage {
         global $acswuiLog;
 
         $this->MenuName   = _("Presets");
+        $this->PageTitle  = "Server Presets";
         $this->TextDomain = "acswui";
         $this->RequirePermissions = ["View_ServerContent"];
 
@@ -113,9 +114,11 @@ class presets extends cContentPage {
         $html .= "</fieldset>";
 
         # save buttons
-        $html .= "<button type=\"submit\" name=\"SAVE\" value=\"CURRENT\">" . _("Save Preset") . "</button>";
-        $html .= " ";
-        $html .= "<button type=\"submit\" name=\"SAVE\" value=\"NEW\">" . _("Save As New Preset") . "</button>";
+        if ($this->CanEdit) {
+            $html .= "<button type=\"submit\" name=\"SAVE\" value=\"CURRENT\">" . _("Save Preset") . "</button>";
+            $html .= " ";
+            $html .= "<button type=\"submit\" name=\"SAVE\" value=\"NEW\">" . _("Save As New Preset") . "</button>";
+        }
 
         # generate form for server preset options
         foreach ($this->ServerCfgJson as $group_name => $fieldsets) {
@@ -137,7 +140,7 @@ class presets extends cContentPage {
         foreach ($ServerCfgFieldset['FIELDS'] as $ServerCfgField) {
 
             // ignore fixed fields
-            if ($this->get_fixed($group, $ServerCfgField) == FALSE && !$this->CanViewFixed) continue;
+            if ($this->get_fixed($group, $ServerCfgField) !== FALSE && !$this->CanViewFixed) continue;
 
             // create html input
             if ($ServerCfgField['TYPE'] == "string") {
@@ -196,13 +199,14 @@ class presets extends cContentPage {
         $tag = $group . "_" . $ServerCfgField['TAG'];
         $name = $ServerCfgField['NAME'];
         $help = $ServerCfgField['HELP'];
-        $fixed_val = $this->get_fixed($group, $ServerCfgField);
         $value = $this->CurrentData[$tag];
+        $fixed_val = $this->get_fixed($group, $ServerCfgField);
+        if ($fixed_val !== FALSE) $value = $fixed_val;
 
         if ($this->CanEdit && $fixed_val === FALSE) {
             return "<tr><td>$name</td><td><textarea name=\"$tag\" title=\"$help\">$value</textarea></td></tr>";
         } else {
-            return "<tr><td>$name</td><td><span class=\"disabled_input\">$fixed_val</span></td></tr>";
+            return "<tr><td>$name</td><td><span class=\"disabled_input\">$value</span></td></tr>";
         }
 
     }
@@ -213,15 +217,16 @@ class presets extends cContentPage {
         $name = $ServerCfgField['NAME'];
         $help = $ServerCfgField['HELP'];
         $unit = $ServerCfgField['UNIT'];
-        $fixed_val = $this->get_fixed($group, $ServerCfgField);
         $min = $ServerCfgField['MIN'];
         $max = $ServerCfgField['MAX'];
         $value = $this->CurrentData[$tag];
+        $fixed_val = $this->get_fixed($group, $ServerCfgField);
+        if ($fixed_val !== FALSE) $value = $fixed_val;
 
         if ($this->CanEdit && $fixed_val === FALSE) {
             return "<tr><td>$name</td><td><input type=\"number\" min=\"$min\" max=\"$max\" step=\"1\" name=\"$tag\" value=\"$value\" title=\"$help\"> $unit</td></tr>";
         } else {
-            return "<tr><td>$name</td><td><span class=\"disabled_input\">$fixed_val $unit</span></td></tr>";
+            return "<tr><td>$name</td><td><span class=\"disabled_input\">$value $unit</span></td></tr>";
         }
 
     }
@@ -232,8 +237,9 @@ class presets extends cContentPage {
         $name = $ServerCfgField['NAME'];
         $help = $ServerCfgField['HELP'];
         $unit = $ServerCfgField['UNIT'];
-        $fixed_val = $this->get_fixed($group, $ServerCfgField);
         $value = $this->CurrentData[$tag];
+        $fixed_val = $this->get_fixed($group, $ServerCfgField);
+        if ($fixed_val !== FALSE) $value = $fixed_val;
 
         if ($this->CanEdit && $fixed_val === FALSE) {
             $html = "<tr><td>$name</td><td>";
@@ -250,7 +256,7 @@ class presets extends cContentPage {
 
         } else {
             foreach ($ServerCfgField['ENUMS'] as $enum) {
-                if ($enum['VALUE'] == $fixed_val) {
+                if ($enum['VALUE'] == $value) {
                     $value = $enum['TEXT'];
                     break;
                 }
