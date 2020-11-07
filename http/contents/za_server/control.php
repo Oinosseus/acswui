@@ -313,11 +313,11 @@ class control extends cContentPage {
         }
 
         // determine amount of cars
-        $car_amount = (int) $server_cfg_data['SERVER']['MAX_CLIENTS'];
-        $track_pitboxes = (int) $track_pitboxes;
-        if ($track_pitboxes < $car_amount) $car_amount = $track_pitboxes;
+//         $car_amount = (int) $server_cfg_data['SERVER']['MAX_CLIENTS'];
+//         $track_pitboxes = (int) $track_pitboxes;
+//         if ($track_pitboxes < $car_amount) $car_amount = $track_pitboxes;
 
-        for ($entry_idx = 0; $entry_idx < $car_amount; ++$entry_idx) {
+        for ($entry_idx = 0; $entry_idx < $track_pitboxes; ++$entry_idx) {
 
             $car_name = $car_names_list[$entry_idx % count($car_names_list)];
 
@@ -358,7 +358,7 @@ class control extends cContentPage {
         $cmd .= " --path-entry-list \"" . $acswuiConfig->AcServerPath . "/cfg/entry_list.ini\"";
 //         $cmd .= " </dev/null >" . $acswuiConfig->LogPath . "/acswui_srvrun.log 2>&1 &";
         $cmd .= " >/dev/null 2>&1 &";
-        exec($cmd, $cmd_str, $cmd_ret);
+//         exec($cmd, $cmd_str, $cmd_ret);
 //         foreach ($cmd_str as $line) echo "$line<br>";
 //         echo "Server started: $cmd_ret<br>";
 //         echo htmlentities($cmd) ."<br>";
