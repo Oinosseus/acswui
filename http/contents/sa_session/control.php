@@ -4,9 +4,9 @@ class control extends cContentPage {
 
     public function __construct() {
         $this->MenuName   = _("Control");
-        $this->PageTitle  = "Server Control";
+        $this->PageTitle  = "Session Control";
         $this->TextDomain = "acswui";
-        $this->RequirePermissions = ["View_ServerContent"];
+        $this->RequirePermissions = ["View_Session"];
 
         // class local vars
         $this->CanStartServer = false;
@@ -51,7 +51,7 @@ class control extends cContentPage {
         // --------------------------------------------------------------------
 
         // check permissions
-        if ($acswuiUser->hasPermission('Server_Control_StartServer')) $this->CanStartServer = true;
+        if ($acswuiUser->hasPermission('Session_Start')) $this->CanStartServer = true;
 
         if (isset($_POST['PRESET_ID'])) {
             $this->CurrentPresetId = (int) $_POST['PRESET_ID'];

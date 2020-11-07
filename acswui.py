@@ -10,7 +10,7 @@ import os
 import sys
 import json
 #from pyacswui import CommandSrvctl, , ServerPackager
-from pyacswui import CommandInstallFiles, CommandInstallHttp, CommandSrvrun
+from pyacswui import CommandInstallFiles, CommandInstallHttp, CommandSrvrun, CommandDbCleanup
 
 
 
@@ -19,23 +19,20 @@ from pyacswui import CommandInstallFiles, CommandInstallHttp, CommandSrvrun
 # ---------------------------------
 
 __helpstring  = "Examples for complete safe setup:\n"
-__helpstring += "./acswui -v --ini acswui.ini srvpkg\n"
-__helpstring += "./acswui -v --ini acswui.ini --install-base-data install\n"
+__helpstring += "./acswui -vvv --ini local.ini install-files\n"
+__helpstring += "./acswui -vv --ini remote.ini install-http --http-root-password my-secret\n"
 
 # main arguments
 argparser = argparse.ArgumentParser(prog="acswui", description="Assetto Corsa Server Web User Interface", epilog=__helpstring, formatter_class=argparse.RawTextHelpFormatter)
 argparser.add_argument('-i', '--ini', help="read arguments from INI file")
 argparser.add_argument('-j', '--json', help="read arguments from json string")
 argparser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
-
 argparsersubs     = argparser.add_subparsers(dest='command')
-#argparser_srvpkg  = argparsersubs.add_parser('srvpkg', help="server packager - preparing files for http and ac server")
-#argparser_srvpkg.set_defaults(func=workaround_srvpkg)
 
 CommandInstallFiles(argparsersubs)
-CommandSrvrun(argparsersubs)
 CommandInstallHttp(argparsersubs)
-
+CommandSrvrun(argparsersubs)
+CommandDbCleanup(argparsersubs)
 
 
 # ---------------------

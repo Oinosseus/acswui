@@ -232,7 +232,9 @@ class Database(object):
             where += " `" + key + "` = " + self.__db_handle.escape((where_dict[key]))
 
         # create query
-        query = "SELECT " + select + " FROM `" + tblname + "` WHERE " + where + "";
+        query = "SELECT " + select + " FROM `" + tblname + "`"
+        if len(where) > 0:
+            query += " WHERE " + where;
         if sort_by_cloumn is not None:
             query += " ORDER BY `" + sort_by_cloumn + "` "
             query += "ASC" if order_asc else "DESC"
@@ -303,6 +305,21 @@ class Database(object):
                 set_string += ", "
             set_string += "`" + str(key) + "` = " + self.__db_handle.escape(str(field_values[key]))
         query = "UPDATE `" + tblname + "` SET " + set_string + " WHERE `Id` = " + str(id_value) + ";"
+
+        # execute query
+        self.__verbosity.print("  " + query)
+        cursor = self.__db_handle.cursor()
+        cursor.execute(query)
+        cursor.close()
+        self.__db_handle.commit()
+
+
+
+    def deleteRow(self, tblname, id_value):
+        """
+            Deletes the row with id_value from table tblname
+        """
+        query = "DELETE FROM `" + tblname + "` WHERE `Id` = " + self.__db_handle.escape(id_value)
 
         # execute query
         self.__verbosity.print("  " + query)

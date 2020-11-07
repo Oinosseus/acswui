@@ -58,6 +58,7 @@ include("functions/getMenuArrayFromContentDir.php");
 include("functions/getPreferredClientLanguage.php");
 include("functions/getActiveMenuFromMenuArray.php");
 include("functions/getImg.php");
+include("functions/laptime.php");
 
 
 
