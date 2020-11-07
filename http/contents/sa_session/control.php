@@ -6,10 +6,9 @@ class control extends cContentPage {
         $this->MenuName   = _("Control");
         $this->PageTitle  = "Session Control";
         $this->TextDomain = "acswui";
-        $this->RequirePermissions = ["View_Session"];
+        $this->RequirePermissions = ["Session_Control"];
 
         // class local vars
-        $this->CanStartServer = false;
         $this->CurrentPresetId = Null;
         $this->CurrentCarClassId = Null;
         $this->CurrentTrackId = Null;
@@ -49,9 +48,6 @@ class control extends cContentPage {
         // --------------------------------------------------------------------
         //                        Process Post Data
         // --------------------------------------------------------------------
-
-        // check permissions
-        if ($acswuiUser->hasPermission('Session_Start')) $this->CanStartServer = true;
 
         if (isset($_POST['PRESET_ID'])) {
             $this->CurrentPresetId = (int) $_POST['PRESET_ID'];
@@ -223,7 +219,6 @@ class control extends cContentPage {
 
 
     public function stop_server() {
-        if (!$this->CanStartServer) return;
         if (!$this->server_online()) return;
 
         $old_path = getcwd();
@@ -243,7 +238,6 @@ class control extends cContentPage {
         global $acswuiLog;
         global $acswuiDatabase;
 
-        if (!$this->CanStartServer) return;
         if ($this->server_online()) return;
 
 
