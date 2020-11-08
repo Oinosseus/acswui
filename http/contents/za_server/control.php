@@ -358,7 +358,7 @@ class control extends cContentPage {
         $cmd .= " --path-entry-list \"" . $acswuiConfig->AcServerPath . "/cfg/entry_list.ini\"";
 //         $cmd .= " </dev/null >" . $acswuiConfig->LogPath . "/acswui_srvrun.log 2>&1 &";
         $cmd .= " >/dev/null 2>&1 &";
-//         exec($cmd, $cmd_str, $cmd_ret);
+        exec($cmd, $cmd_str, $cmd_ret);
 //         foreach ($cmd_str as $line) echo "$line<br>";
 //         echo "Server started: $cmd_ret<br>";
 //         echo htmlentities($cmd) ."<br>";
