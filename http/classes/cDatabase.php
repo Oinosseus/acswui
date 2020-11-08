@@ -123,7 +123,7 @@
         // execute query
         $result = $this->db_handle->query($query_string);
         if ($result === False) {
-            $acswuiLog->LogError("Failed SQL query: " . $query . "\nERROR: " . $this->db_handle->error);
+            $acswuiLog->LogError("Failed SQL query: " . $query_string . "\nERROR: " . $this->db_handle->error);
         } else {
             $ret = $result->fetch_all(MYSQLI_ASSOC);
             $result->close();
