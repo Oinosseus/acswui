@@ -51,14 +51,23 @@ class control extends cContentPage {
 
         if (isset($_POST['PRESET_ID'])) {
             $this->CurrentPresetId = (int) $_POST['PRESET_ID'];
+            $_SESSION['SERVER_CONTROL_PRESET_ID'] = $this->CurrentPresetId;
+        } else if (isset($_SESSION['SERVER_CONTROL_PRESET_ID'])) {
+            $this->CurrentPresetId = (int) $_SESSION['SERVER_CONTROL_PRESET_ID'];
         }
 
         if (isset($_POST['CARCLASS_ID'])) {
             $this->CurrentCarClassId = (int) $_POST['CARCLASS_ID'];
+            $_SESSION['SERVER_CONTROL_CARCLASS_ID'] = $this->CurrentCarClassId;
+        } else if (isset($_SESSION['SERVER_CONTROL_CARCLASS_ID'])) {
+            $this->CurrentCarClassId = (int) $_SESSION['SERVER_CONTROL_CARCLASS_ID'];
         }
 
         if (isset($_POST['TRACK_ID'])) {
             $this->CurrentTrackId = (int) $_POST['TRACK_ID'];
+            $_SESSION['SERVER_CONTROL_TRACK_ID'] = $this->CurrentTrackId;
+        } else if (isset($_SESSION['SERVER_CONTROL_TRACK_ID'])) {
+            $this->CurrentTrackId = (int) $_SESSION['SERVER_CONTROL_TRACK_ID'];
         }
 
 
