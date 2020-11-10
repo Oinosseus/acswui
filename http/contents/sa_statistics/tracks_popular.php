@@ -26,10 +26,9 @@ class tracks_popular extends cContentPage {
 
         // scan tracks
         $tracks = array();
-        foreach ($acswuiDatabase->fetch_2d_array("Tracks", ['Id', 'Name', 'Config', 'Length', 'Pitboxes']) as $row) {
+        foreach ($acswuiDatabase->fetch_2d_array("Tracks", ['Id', 'Name', 'Length', 'Pitboxes']) as $row) {
 
             $t['Name'] = $row['Name'];
-            if ($row['Config'] != "") $t['Name'] .= " - " . $row['Config'];
             $t['Length'] = $row['Length'];
             $t['Pitboxes'] = $row['Pitboxes'];
             $t['DrivenLaps'] = 0;
