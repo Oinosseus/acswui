@@ -53,6 +53,12 @@ include("classes/cContentPage.php");
 include("classes/cNonContentPage.php");
 include("classes/cUser.php");
 
+// database table wrapper classes
+include("classes/db_wrapper/cTrack.php");
+include("classes/db_wrapper/cCarSkin.php");
+include("classes/db_wrapper/cCar.php");
+include("classes/db_wrapper/cCarClass.php");
+
 // functions
 include("functions/getMenuArrayFromContentDir.php");
 include("functions/getPreferredClientLanguage.php");

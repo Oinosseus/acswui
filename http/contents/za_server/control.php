@@ -1,5 +1,58 @@
 <?php
 
+
+class CarEntry {
+
+    private $Car = NULL;
+    private $SkinIndex = 0;
+
+    //! @param $car A Car object
+    public function __construct($car) {
+        $this->Car = $car;
+    }
+
+    public function model() {
+        return $this->Car->model();
+    }
+
+    public function skin() {
+        $skins = $this->Car->skins();
+        if ($this->SkinIndex >= count($skins)) return "";
+        $skin = $skins[$this->SkinIndex];
+        $this->SkinIndex += 1;
+        return $skin->skin();
+    }
+}
+
+
+
+class CarEntries {
+    private $Entries = array();
+    private $Index = 0;
+
+    //! @param $cars list of Car objects
+    public function __construct($cars) {
+        foreach($cars as $car) {
+            $this->Entries[] = new CarEntry($car);
+        }
+    }
+
+    public function getNextEntry() {
+
+        // wrap index
+        if ($this->Index >= count($this->Entries)) $this->Index = 0;
+
+        $entry = $this->Entries[$this->Index];
+
+        // increment index
+        ++$this->Index;
+
+        return $entry;
+    }
+}
+
+
+
 class control extends cContentPage {
 
     public function __construct() {
@@ -242,6 +295,7 @@ class control extends cContentPage {
         sleep(2);
     }
 
+
     public function start_server() {
         global $acswuiConfig;
         global $acswuiLog;
@@ -266,28 +320,15 @@ class control extends cContentPage {
         $server_cfg_data = $this->getPresetData();
 
         // determine track
-        $res = $acswuiDatabase->fetch_2d_array("Tracks", ['Track', 'Config', 'Pitboxes'], ['Id' => $this->CurrentTrackId]);
-        if (count($res) !== 1) {
-            $acswuiLog->logWarning("Cannot find track id " . $this->CurrentTrackId . " to start server!");
-            return;
-        }
-        $track_pitboxes = (int) $res[0]['Pitboxes'];
-        $server_cfg_data['SERVER']['TRACK'] = $res[0]['Track'];
-        $server_cfg_data['SERVER']['CONFIG_TRACK'] = $res[0]['Config'];
+        $track = new Track($this->CurrentTrackId);
+        $server_cfg_data['SERVER']['TRACK'] = $track->track();
+        $server_cfg_data['SERVER']['CONFIG_TRACK'] = $track->Config();
 
         // determine cars
+        $carclass = new CarClass($this->CurrentCarClassId);
         $car_names_list = [];
-        $res = $acswuiDatabase->fetch_2d_array("CarClassesMap", ['Car'], ['CarClass' => $this->CurrentCarClassId]);
-        foreach ($res as $row) {
-            $car_id = $row['Car'];
-
-            // get car name
-            $car_res = $acswuiDatabase->fetch_2d_array("Cars", ['Car'], ['Id' => $car_id]);
-            if (count($car_res) !== 1) {
-                $acswuiLog->logError("Cannot find car Id $car_id!");
-                return;
-            }
-            $car_names_list[] = $car_res[0]['Car'];
+        foreach ($carclass->cars() as $car) {
+            $car_names_list[] = $car->model();
         }
         $server_cfg_data['SERVER']['CARS'] = implode(";", $car_names_list);
 
@@ -321,18 +362,16 @@ class control extends cContentPage {
             return;
         }
 
-        // determine amount of cars
-//         $car_amount = (int) $server_cfg_data['SERVER']['MAX_CLIENTS'];
-//         $track_pitboxes = (int) $track_pitboxes;
-//         if ($track_pitboxes < $car_amount) $car_amount = $track_pitboxes;
-
-        for ($entry_idx = 0; $entry_idx < $track_pitboxes; ++$entry_idx) {
+        $entries = new CarEntries($carclass->cars());
+        for ($entry_idx = 0; $entry_idx < $track->pitboxes(); ++$entry_idx) {
 
             $car_name = $car_names_list[$entry_idx % count($car_names_list)];
 
+            $entry = $entries->getNextEntry();
+
             fwrite($entry_list_fd, "[CAR_$entry_idx]\n");
-            fwrite($entry_list_fd, "MODEL=$car_name\n");
-            fwrite($entry_list_fd, "SKIN=\n");
+            fwrite($entry_list_fd, "MODEL=" . $entry->model() . "\n");
+            fwrite($entry_list_fd, "SKIN=" . $entry->skin() . "\n");
             fwrite($entry_list_fd, "SPECTATOR_MODE=0\n");
             fwrite($entry_list_fd, "DRIVERNAME=\n");
             fwrite($entry_list_fd, "TEAM=\n");
