@@ -165,7 +165,7 @@ class stats_session extends cContentPage {
 
             $html .= "<tr $class>";
             $html .= "<td>" . ($l['Id'] - $laps_min_id + 1) . "</td>";
-            $html .= "<td>" . HumanValue::format($row['Laptime'], "LAPTIME") . "</td>";
+            $html .= "<td>" . HumanValue::format($l['Laptime'], "LAPTIME") . "</td>";
             $html .= "<td>" . $l['Cuts'] . "</td>";
             $html .= "<td>" . $drivers[$l['User']] . "</td>";
             $html .= "<td>" . $this->getCarName($l['CarSkin']) . "</td>";
