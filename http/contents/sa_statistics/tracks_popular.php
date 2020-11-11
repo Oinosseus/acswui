@@ -17,11 +17,6 @@ class tracks_popular extends cContentPage {
         global $acswuiDatabase;
         global $acswuiUser;
 
-        function compare_driven_length($t1, $t2) {
-            $driven_t1 = $t1['DrivenLaps'] * $t1['Length'];
-            $driven_t2 = $t2['DrivenLaps'] * $t2['Length'];
-            return ($driven_t1 > $driven_t2) ? -1 : 1;
-        }
 
 
         // scan tracks
@@ -50,18 +45,23 @@ class tracks_popular extends cContentPage {
         $html = "";
 
         // sort
+        $tracks = Track::listTracks();
+        function compare_driven_length($t1, $t2) {
+            return ($t1->drivenMeters() > $t2->drivenMeters()) ? -1 : 1;
+        }
         uasort($tracks, 'compare_driven_length');
 
         $html .= '<table>';
         $html .= '<tr><th>Track</th><th>Pitboxes</th><th>Length [km]</th><th>Driven Laps</th><th colspan="2">Driven</th></tr>';
         foreach ($tracks as $t) {
+            if ($t->drivenLaps() == 0) continue;
             $html .= '<tr>';
-            $html .= '<td>' . $t['Name'] . '</td>';
-            $html .= '<td>' . $t['Pitboxes'] . '</td>';
-            $html .= '<td>' . sprintf("%.2f", $t['Length'] / 1000) . 'km</td>';
-            $html .= '<td>' . $t['DrivenLaps'] . '</td>';
-            $html .= '<td>' . sprintf("%.1f", $t['DrivenSeconds'] / 3600) . 'h</td>';
-            $html .= '<td>' . sprintf("%.0f", $t['Length'] * $t['DrivenLaps'] / 1000) . 'km</td>';
+            $html .= '<td>' . $t->name() . '</td>';
+            $html .= '<td>' . $t->pitboxes() . '</td>';
+            $html .= '<td>' . HumanValue::format($t->length(), "m") . '</td>';
+            $html .= '<td>' . $t->drivenLaps() . '</td>';
+            $html .= '<td>' . HumanValue::format($t->drivenSeconds(), "s") . '</td>';
+            $html .= '<td>' . HumanValue::format($t->drivenMeters(), "m") . '</td>';
             $html .= '</tr>';
         }
 

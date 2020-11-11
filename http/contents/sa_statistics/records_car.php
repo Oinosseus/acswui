@@ -180,7 +180,7 @@ class records_car extends cContentPage {
                 $car_brand = $cars[$dbl['Car']]['Brand'];
                 $car_name = $cars[$dbl['Car']]['Name'];
                 $html .= "<tr>";
-                $html .= "<td>" . laptime2str($dbl['Laptime']) . "</td>";
+                $html .= "<td>" . HumanValue::format($dbl['Laptime'], "LAPTIME") . "</td>";
                 $html .= "<td>" . $dbl['Driver'] . "</td>";
                 $html .= "<td>$car_brand - $car_name</td>";
                 $html .= "<td>" . sprintf("%0.1f", 100 * $dbl['Grip']) . "&percnt;</td>";

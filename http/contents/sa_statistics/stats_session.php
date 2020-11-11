@@ -109,10 +109,10 @@ class stats_session extends cContentPage {
             if (in_array($row['User'], $listed_users)) continue;
 
             $html .= '<tr>';
-            $html .= "<td>" . laptime2str($row['Laptime']) . "</td>";
+            $html .= "<td>" . HumanValue::format($row['Laptime'], "LAPTIME") . "</td>";
             $html .= "<td>" . $drivers[$row['User']] . "</td>";
             $html .= "<td>" . $this->getCarName($row['CarSkin']) . "</td>";
-            $html .= "<td>" . (100 * $row['Grip']) . "&percnt;</td>";
+            $html .= "<td>" . sprintf("%0.1f", 100 * $row['Grip']) . "&percnt;</td>";
             $html .= '</tr>';
 
             $listed_users[] = $row['User'];
@@ -165,11 +165,11 @@ class stats_session extends cContentPage {
 
             $html .= "<tr $class>";
             $html .= "<td>" . ($l['Id'] - $laps_min_id + 1) . "</td>";
-            $html .= "<td>" . laptime2str($l['Laptime']) . "</td>";
+            $html .= "<td>" . HumanValue::format($row['Laptime'], "LAPTIME") . "</td>";
             $html .= "<td>" . $l['Cuts'] . "</td>";
             $html .= "<td>" . $drivers[$l['User']] . "</td>";
             $html .= "<td>" . $this->getCarName($l['CarSkin']) . "</td>";
-            $html .= "<td>" . (100 * $l['Grip']) . "&percnt;</td>";
+            $html .= "<td>" . sprintf("%0.1f", 100 * $l['Grip']) . "&percnt;</td>";
             $html .= '</tr>';
         }
         $html .= '</table>';

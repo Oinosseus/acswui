@@ -11,6 +11,9 @@ class Track {
     private $Name = NULL;
     private $Length = NULL;
     private $Pitboxes = NULL;
+    private $DrivenLaps = NULL;
+    private $DrivenMeters = NULL;
+    private $DrivenSeconds = NULL;
 
     /**
      * @param $id Database table id
@@ -33,6 +36,11 @@ class Track {
         $this->Name = $res[0]['Name'];
         $this->Length = (int) $res[0]['Length'];
         $this->Pitboxes = (int) $res[0]['Pitboxes'];
+    }
+
+    //! @return The unique database row ID of the Track
+    public function id() {
+        return $this->Id;
     }
 
     //! @return Track identification name
@@ -60,6 +68,57 @@ class Track {
         return $this->Pitboxes;
     }
 
+    //! @return Amount of laps turned on this track
+    public function drivenLaps() {
+        if ($this->DrivenLaps !== NULL) return $this->DrivenLaps;
+        $this->updateDriven();
+        return $this->DrivenLaps;
+    }
+
+    //! @return Amount of driven meters on a track
+    public function drivenMeters() {
+        if ($this->DrivenMeters !== NULL) return $this->DrivenMeters;
+        $this->updateDriven();
+        return $this->DrivenMeters;
+    }
+
+    //! @return Amount of driven seconds on a track
+    public function drivenSeconds() {
+        if ($this->DrivenSeconds !== NULL) return $this->DrivenSeconds;
+        $this->updateDriven();
+        return $this->DrivenSeconds();
+    }
+
+    //! Update the caches for DrivenMeters and DrivenSeconds
+    private function updateDriven() {
+        global $acswuiDatabase;
+
+        $this->DrivenSeconds = 0;
+        $this->DrivenMeters = 0;
+
+        $query = "SELECT Laps.Laptime FROM Laps";
+        $query .= " INNER JOIN Sessions ON Sessions.Id=Laps.Session";
+        $query .= " WHERE Sessions.Track=" . $this->id();
+        $res = $acswuiDatabase->fetch_raw_select($query);
+        $this->DrivenLaps = count($res);
+        $this->DrivenMeters = $this->DrivenLaps * $this->length();
+        foreach ($res as $row) {
+            $this->DrivenSeconds += $row['Laptime'] / 1000;
+        }
+    }
+
+    //! @return An array of all available Track objects in alphabetical order
+    public static function listTracks() {
+        global $acswuiDatabase;
+
+        $list = array();
+
+        foreach ($acswuiDatabase->fetch_2d_array("Tracks", ['Id'], [], 'Name') as $row) {
+            $list[] = new Track($row['Id']);
+        }
+
+        return $list;
+    }
 }
 
 ?>

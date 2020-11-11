@@ -52,6 +52,7 @@ include("classes/cTemplate.php");
 include("classes/cContentPage.php");
 include("classes/cNonContentPage.php");
 include("classes/cUser.php");
+include("classes/cHumanValue.php");
 
 // database table wrapper classes
 include("classes/db_wrapper/cTrack.php");
@@ -65,7 +66,6 @@ include("functions/getPreferredClientLanguage.php");
 include("functions/getActiveMenuFromMenuArray.php");
 include("functions/getImg.php");
 include("functions/statistics.php");
-include("functions/laptime.php");
 
 
 

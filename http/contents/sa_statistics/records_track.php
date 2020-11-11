@@ -151,7 +151,7 @@ class records_track extends cContentPage {
             $html .= '<tr><th>' . _("Laptime") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Grip") . '</th><th>' . _("Date") . '</th><th>' . _("Lap Id") . '</th>';
             foreach ($driver_best_laps as $dbl) {
                 $html .= "<tr>";
-                $html .= "<td>" . laptime2str($dbl['Laptime']) . "</td>";
+                $html .= "<td>" . HumanValue::format($dbl['Laptime'], "LAPTIME") . "</td>";
                 $html .= "<td>" . $dbl['Driver'] . "</td>";
                 $html .= "<td>" . $this->getCarNameFromId($dbl['Car']) . "</td>";
                 $html .= "<td>" . sprintf("%0.1f", 100 * $dbl['Grip']) . "&percnt;</td>";

@@ -47,9 +47,27 @@ class CarClass {
         return $this->Cars;
     }
 
+    //! @return The unique Database row ID of the CarClass
+    public function id() {
+        return $this->Id;
+    }
+
     //! @return Name of the CarClass
     public function name() {
         return $this->Name;
+    }
+
+    //! @return An array of all available CarClass objects in alphabetical order
+    public static function listClasses() {
+        global $acswuiDatabase;
+
+        $list = array();
+
+        foreach ($acswuiDatabase->fetch_2d_array("CarClasses", ['Id'], [], 'Name') as $row) {
+            $list[] = new CarClass($row['Id']);
+        }
+
+        return $list;
     }
 }
 

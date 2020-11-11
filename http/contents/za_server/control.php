@@ -179,9 +179,9 @@ class control extends cContentPage {
             # car class
             $html .= "Car Class";
             $html .= '<select name="CARCLASS_ID">';
-            foreach ($acswuiDatabase->fetch_2d_array("CarClasses", ['Id', "Name"], [], "Name") as $sp) {
-                $selected = ($this->CurrentCarClassId == $sp['Id']) ? "selected" : "";
-                $html .= '<option value="' . $sp['Id'] . '"' . $selected . '>' . $sp['Name'] . '</option>';
+            foreach (CarClass::listClasses() as $carclass) {
+                $selected = ($this->CurrentCarClassId == $carclass->id()) ? "selected" : "";
+                $html .= '<option value="' . $carclass->id() . '"' . $selected . '>' . $carclass->name() . '</option>';
             }
             $html .= '</select>';
             $html .= '<br>';
@@ -189,12 +189,12 @@ class control extends cContentPage {
             # track
             $html .= "Track";
             $html .= '<select name="TRACK_ID">';
-            foreach ($acswuiDatabase->fetch_2d_array("Tracks", ['Id', "Name", "Pitboxes", "Length"], [], "Name") as $t) {
-                $selected = ($this->CurrentTrackId == $t['Id']) ? "selected" : "";
-                $name_str = $t['Name'];
-                $name_str .= " " . $t['Length'] . "m";
-                $name_str .= " (" . $t['Pitboxes'] . "pits)";
-                $html .= '<option value="' . $t['Id'] . '"' . $selected . ">$name_str</option>";
+            foreach (Track::listTracks() as $t) {
+                $selected = ($this->CurrentTrackId == $t->id()) ? "selected" : "";
+                $name_str = $t->name();
+                $name_str .= " (" . sprintf("%0.1f", $t->length()/1000) . "km";
+                $name_str .= ", " . $t->pitboxes() . "pits)";
+                $html .= '<option value="' . $t->id() . '"' . $selected . ">" . $name_str . "</option>";
             }
             $html .= '</select>';
             $html .= '<br>';
