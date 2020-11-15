@@ -3,6 +3,7 @@ import subprocess
 import shutil
 import os
 import json
+import re
 from .command import Command, ArgumentException
 from .database import Database
 from .verbosity import Verbosity
@@ -293,7 +294,7 @@ class CommandInstallHttp(Command):
             slot_php_array += "]";
             server_slot_list.append(slot_php_array)
             slot_nr += 1
-        server_slots = "[" + (", ".join(server_slot_list)) + "]";
+        server_slots = ", ".join(server_slot_list)
 
         # fixed server settings
         fixed_server_settings = []
@@ -304,8 +305,8 @@ class CommandInstallHttp(Command):
 
                     # check for fixed values
                     try:
-                        val = self.getArg(config_key)
-                    except ArgumentException as e:
+                        val = self.getIniSection("FIXED_SERVER_SETTINGS")[config_key]
+                    except KeyError as e:
                         val = None
 
                     if val is not None:
@@ -336,7 +337,7 @@ class CommandInstallHttp(Command):
             f.write("    // server_cfg\n")
             f.write("    private $AcsContent = \"%s\";\n" % path_acscontent)
             f.write("    private $FixedServerConfig = array(%s);\n" % fixed_server_settings)
-            f.write("    private $ServerSlots = %s;\n" % server_slots)
+            f.write("    private $ServerSlots = array(%s);\n" % server_slots)
             f.write("\n")
             f.write("    // this allows read-only access to private properties\n")
             f.write("    public function __get($name) {\n")
@@ -350,7 +351,7 @@ class CommandInstallHttp(Command):
     def __work_scan_cars(self):
         self.Verbosity.print("scanning for cars")
 
-        for car in os.listdir(self.getArg('http-path-acs-content') + "/content/cars"):
+        for car in sorted(os.listdir(self.getArg('http-path-acs-content') + "/content/cars")):
             car_path   = self.getArg('http-path-acs-content') + "/content/cars/" + car
             car_name   = self.__parse_json(car_path + "/ui/ui_car.json", "name", car)
             car_parent = self.__parse_json(car_path + "/ui/ui_car.json", "parent", "")
@@ -387,42 +388,30 @@ class CommandInstallHttp(Command):
     def __work_scan_tracks(self):
         self.Verbosity.print("Scanning for tracks")
 
+
+        REGEX_COMP_TRACKLENGTH = re.compile("([0-9]*[,\.]?[0-9]*)\s*(m|km)?(.*)")
         def interpret_length(length):
             ret = ""
 
-            length = str(length.strip())
+            match = REGEX_COMP_TRACKLENGTH.match(length)
+            if not match:
+                raise ValueError("Could not extract length information from string '%s'!\nCheck ui_track.json" % length)
 
-            # catch decimal number out of string
-            sep_found    = False
-            for char in length:
-                if char in "0123456789":
-                    ret += char
-                elif len(ret) > 0 and char in ".,":
-                    if not sep_found:
-                        sep_found = True
-                        ret += char
-                    else:
-                        break
-                else:
-                    break
-            ret = ret.strip()
+            #print("MATCH:", "'", match.group(1), "'", match.group(2), "'", match.group(3))
+            length = match.group(1)
+            if length == "":
+                length = "0"
+            length = length.replace(",", ".")
+            length = float(length)
+            unit = match.group(2)
+            rest = match.group(3)
 
-            # stop if to decimal value could be found
-            if len(ret) == 0:
-                return 0.0
+            if unit == "km":
+                length *= 1000
+            #print("MATCH:", length, unit, "//", rest)
 
-            # catch unit if length
-            unit = length.split(ret, 1)[1].strip()
+            return length
 
-            # convert length to float
-            ret = float(ret.replace(",", "."))
-
-            # interpret unit
-            if unit[:2].lower() == "km":
-                ret *= 1000.0
-
-            #print("LENGTH before=", length, "after=", ret, "unit=", unit)
-            return ret
 
         def interpret_pitboxes(pitbxs):
             ret = 0
@@ -436,7 +425,7 @@ class CommandInstallHttp(Command):
 
 
 
-        for track in os.listdir(self.getArg('http-path-acs-content') + "/content/tracks"):
+        for track in sorted(os.listdir(self.getArg('http-path-acs-content') + "/content/tracks")):
             track_path   = self.getArg('http-path-acs-content') + "/content/tracks/" + track
 
             Verbosity(self.Verbosity).print("Found track '" + track + "'")
