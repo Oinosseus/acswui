@@ -5,6 +5,14 @@
             "FIELDSET": "Server General Settings",
             "FIELDS": [
                 {
+                    "TAG" : "NAME",
+                    "NAME": "Name",
+                    "TYPE": "string",
+                    "SIZE": 80,
+                    "HELP": "Server Name",
+                    "UNIT": "",
+                    "DEFAULT": ""
+                }, {
                     "TAG" : "PASSWORD",
                     "NAME": "Password",
                     "TYPE": "string",
@@ -20,6 +28,33 @@
                     "HELP": "The password needed to be recognized as server administrator: you can join the server using it to be recognized automatically. Type /help in the game's chat to see the command list",
                     "UNIT": "",
                     "DEFAULT": ""
+                }, {
+                    "TAG" : "UDP_PORT",
+                    "NAME": "UDP Port",
+                    "TYPE": "int",
+                    "MIN": 1023,
+                    "MAX": 65535,
+                    "HELP": "UDP port number: open this port on your server's firewall",
+                    "UNIT": "",
+                    "DEFAULT": "9600"
+                }, {
+                    "TAG" : "TCP_PORT",
+                    "NAME": "TCP Port",
+                    "TYPE": "int",
+                    "MIN": 1023,
+                    "MAX": 65535,
+                    "HELP": "TCP port number: open this port on your server's firewall",
+                    "UNIT": "",
+                    "DEFAULT": "9600"
+                }, {
+                    "TAG" : "HTTP_PORT",
+                    "NAME": "HTTP Port",
+                    "TYPE": "int",
+                    "MIN": 1023,
+                    "MAX": 65535,
+                    "HELP": "Lobby port number: open these ports (both UDP and TCP) on your server's firewall",
+                    "UNIT": "",
+                    "DEFAULT": "8081"
                 }, {
                     "TAG" : "SEND_BUFFER_SIZE",
                     "NAME": "Send Buffer Size",
@@ -47,6 +82,15 @@
                     "HELP": "Refresh rate of packet sending by the server. 10Hz = ~100ms. Higher number = higher MP quality = higher bandwidth resources needed. Really high values can create connection issues",
                     "UNIT": "Hz",
                     "DEFAULT": "15"
+                }, {
+                    "TAG" : "NUM_THREADS",
+                    "NAME": "Number Of Threads",
+                    "TYPE": "int",
+                    "MIN": 1,
+                    "MAX": 64,
+                    "HELP": "Number of threads to run on",
+                    "UNIT": "",
+                    "DEFAULT": "2"
                 }, {
                     "TAG" : "SLEEP_TIME",
                     "NAME": "Sleep Time",
@@ -129,6 +173,15 @@
                     "HELP": "The factor to calculate the remaining time in a qualify session after the session is ended: 120 means that 120% of the session fastest lap remains to end the current lap.",
                     "UNIT": "&percnt;",
                     "DEFAULT": "120"
+                }, {
+                    "TAG" : "CARS",
+                    "TYPE": "hidden"
+                }, {
+                    "TAG" : "TRACK",
+                    "TYPE": "hidden"
+                }, {
+                    "TAG" : "CONFIG_TRACK",
+                    "TYPE": "hidden"
                 }, {
                     "TAG" : "LEGAL_TYRES",
                     "NAME": "Legal Tyres",
@@ -413,6 +466,38 @@
                     "HELP": "1 virtual mirror will be enabled for every client, 0 for mirror as optional",
                     "UNIT": "",
                     "DEFAULT": "0"
+                }
+            ]
+        },
+
+
+        {
+            "FIELDSET": "Server UDP Plugin Settings",
+            "FIELDS": [
+                {
+                    "TAG" : "UDP_PLUGIN_LOCAL_PORT",
+                    "NAME": "UDP Plugin Local Port",
+                    "TYPE": "int",
+                    "MIN": 1024,
+                    "MAX": 65535,
+                    "HELP": "The port on which to listen for UDP messages from a plugin",
+                    "UNIT": "",
+                    "DEFAULT": "9603"
+                }, {
+                    "TAG" : "UDP_PLUGIN_ADDRESS",
+                    "NAME": "UDP Plugin Address",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "HELP": "The address of the plugin to which UDP messages are sent (eg. 127.0.0.1:9603)",
+                    "UNIT": "",
+                    "DEFAULT": "127.0.0.1:9602"
+                }, {
+                    "TAG" : "AUTH_PLUGIN_ADDRESS",
+                    "NAME": "Auth Plugin Address",
+                    "TYPE": "string",
+                    "SIZE": 100,
+                    "HELP": "The address of the auth plugin",
+                    "UNIT": ""
                 }
             ]
         }
