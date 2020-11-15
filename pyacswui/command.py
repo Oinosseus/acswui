@@ -1,4 +1,6 @@
 import configparser
+import os.path
+import shutil
 from .verbosity import Verbosity
 
 
@@ -73,3 +75,41 @@ class Command(object):
 
     def process(self):
         raise NotImplementedError("You must subclass the Command class and overload the process() method!")
+
+
+
+    def mkdirs(self, dirs):
+        """
+            Create complete directory path.
+            No error is raised if path already existent.
+        """
+        if not os.path.isdir(dirs):
+            os.makedirs(dirs)
+
+
+
+    def copytree(self, src, dst):
+        """
+            Copies a source directory to a destination directory,
+            including all subdirectories and files
+        """
+
+        # ignore if src and dst are equal
+        src = os.path.abspath(src)
+        dst = os.path.abspath(dst)
+        if src == dst:
+            return
+
+        if not os.path.isdir(src):
+            raise ValueError("Source path must be a directory: " + str(src))
+        if not os.path.isdir(dst):
+            self.mkdirs(dst)
+
+        for entry in os.listdir(src):
+            entry_src = os.path.join(src, entry)
+            entry_dst = os.path.join(dst, entry)
+
+            if os.path.isdir(entry_src):
+                self.copytree(entry_src, entry_dst)
+            elif os.path.isfile(entry_src):
+                shutil.copy(entry_src, entry_dst)

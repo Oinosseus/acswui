@@ -21,16 +21,6 @@ class CommandInstallFiles(Command):
 
 
 
-    def _mkdirs(self, dirs):
-        """
-            Create complete directory path.
-            No error is raised if path already existent.
-        """
-        if not os.path.isdir(dirs):
-            os.makedirs(dirs)
-
-
-
     def __copy2acs(self, *ac_file):
         """ Copy a file from AC source directory to AC server target directory
             Ignored when files does not exist
@@ -41,7 +31,7 @@ class CommandInstallFiles(Command):
         src_file = os.path.join(self.getArg("path-ac"), *ac_file)
         dst_file = os.path.join(self.getArg("path-acs-target"), *ac_file)
         if os.path.isfile(src_file):
-            self._mkdirs(os.path.dirname(dst_file))
+            self.mkdirs(os.path.dirname(dst_file))
             shutil.copy(src_file, dst_file)
             return True
         return False
@@ -55,9 +45,9 @@ class CommandInstallFiles(Command):
             @return True if file exist
         """
         src_file = os.path.join(self.getArg("path-ac"), *ac_file)
-        dst_file = os.path.join(self.getArg("http-path"), self.getArg("http-path-acs-content"), *ac_file)
+        dst_file = os.path.join(self.getArg("http-path-acs-content"), *ac_file)
         if os.path.isfile(src_file):
-            self._mkdirs(os.path.dirname(dst_file))
+            self.mkdirs(os.path.dirname(dst_file))
             shutil.copy(src_file, dst_file)
 
             suffix = src_file[-4:].lower()
@@ -150,7 +140,7 @@ class CommandInstallFiles(Command):
                     if self.__copy2http(path_ac_car, "skins", skin, "preview.jpg"):
                         pass
                     elif self.__copy2http(path_ac_car, "skins", skin, "Preview.jpg"):
-                        path = os.path.join(self.getArg("http-path-acs-content"), self.getArg("http-path-acs-content"), "cars", car, "skins", skin)
+                        path = os.path.join(self.getArg("http-path-acs-content"), "cars", car, "skins", skin)
                         src = os.path.join(path, "Preview.jpg")
                         dst = os.path.join(path, "preview.jpg")
                         shutil.move(src, dst)
@@ -212,11 +202,11 @@ class CommandInstallFiles(Command):
         path_http = os.path.abspath(self.getArg("http-path"))
         if not os.path.isdir(path_http):
             verb2.print("create http target directory: " + path_http)
-            self._mkdirs(path_http)
+            self.mkdirs(path_http)
 
         verb2.print("create new directory: " + path_http)
         http_src = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "http")
-        shutil.copytree(http_src, self.getArg("http-path"))
+        self.copytree(http_src, self.getArg("http-path"))
 
         path_acs_content = self.getArg("http-path-acs-content")
         if os.path.isdir(path_acs_content):
@@ -224,12 +214,12 @@ class CommandInstallFiles(Command):
             shutil.rmtree(path_acs_content)
 
         verb2.print("create acs_content directory: " + path_acs_content)
-        os.mkdir(path_acs_content)
+        self.mkdirs(path_acs_content)
 
 
 
     def __create_server_cfg_json(self):
-        self.Verbosity.print("create http/server_cfg.json")
+        self.Verbosity.print("create server_cfg.json")
 
         # read template
         with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "server_cfg.json"), "r") as f:
@@ -262,33 +252,25 @@ class CommandInstallFiles(Command):
 
 
         # ---------------------------------------------------------------------
-        # 1. Delete current ACs target directory
-
-        path_acs_target = os.path.abspath(self.getArg("path-acs-target"))
-        if os.path.isdir(path_acs_target):
-            verb2.print("delete current directory: " + path_acs_target)
-            shutil.rmtree(path_acs_target)
-
-
-        # ---------------------------------------------------------------------
         # 2. Create new AC server directories
 
         verb2.print("Create new directories")
+        path_acs_target = os.path.abspath(self.getArg("path-acs-target"))
 
         verb3.print(path_acs_target)
-        os.mkdir(path_acs_target)
+        self.mkdirs(path_acs_target)
 
         path_acs_target_cfg = os.path.join(path_acs_target, "cfg")
         verb3.print(path_acs_target_cfg)
-        os.mkdir(path_acs_target_cfg)
+        self.mkdirs(path_acs_target_cfg)
 
         path_acs_target_system = os.path.join(path_acs_target, "system")
         verb3.print(path_acs_target_system)
-        os.mkdir(path_acs_target_system)
+        self.mkdirs(path_acs_target_system)
 
         path_acs_target_system_data = os.path.join(path_acs_target_system, "data")
         verb3.print(path_acs_target_system_data)
-        os.mkdir(path_acs_target_system_data)
+        self.mkdirs(path_acs_target_system_data)
 
 
         # ---------------------------------------------------------------------
