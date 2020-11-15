@@ -55,10 +55,13 @@ include("classes/cUser.php");
 include("classes/cHumanValue.php");
 
 // database table wrapper classes
+include("classes/db_wrapper/cUser.php");
 include("classes/db_wrapper/cTrack.php");
 include("classes/db_wrapper/cCarSkin.php");
 include("classes/db_wrapper/cCar.php");
 include("classes/db_wrapper/cCarClass.php");
+include("classes/db_wrapper/cSession.php");
+include("classes/db_wrapper/cLap.php");
 
 // functions
 include("functions/getMenuArrayFromContentDir.php");

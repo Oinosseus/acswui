@@ -10,23 +10,10 @@ class CarSkin {
     private $Skin = NULL;
 
     /**
-     * @param $car_id Database table id
+     * @param $id Database table id
      */
-    public function __construct($car_skin_id) {
-        global $acswuiLog;
-        global $acswuiDatabase;
-
-        $this->Id = $car_skin_id;
-
-        // get basic information
-        $res = $acswuiDatabase->fetch_2d_array("CarSkins", ['Car', 'Skin'], ['Id'=>$this->Id]);
-        if (count($res) !== 1) {
-            $acswuiLog->logError("Cannot find CarSkins.Id=" . $this->Id);
-            return;
-        }
-
-        $this->Car = $res[0]['Car'];
-        $this->Skin = $res[0]['Skin'];
+    public function __construct($id) {
+        $this->Id = $id;
     }
 
     //! @return Id of the CarSkin
@@ -34,16 +21,42 @@ class CarSkin {
         return $this->Id;
     }
 
+    //! @return A Car object
+    public function car() {
+        if ($this->Car === NULL) $this->updateFromDb();
+        return $this->Car;
+    }
+
     //! @return Id of referring Car
     public function carId() {
-        return $this->Car;
+        if ($this->Car === NULL) $this->updateFromDb();
+        return $this->Car->id();
     }
 
     //! @return Name of the skin
     public function skin() {
+        if ($this->Skin === NULL) $this->updateFromDb();
         return $this->Skin;
     }
 
+    private function updateFromDb() {
+        global $acswuiDatabase;
+        global $acswuiLog;
+
+        // request from db
+        $columns = array();
+        $columns[] = 'Car';
+        $columns[] = 'Skin';
+
+        $res = $acswuiDatabase->fetch_2d_array("CarSkins", ['Car', 'Skin'], ['Id'=>$this->Id]);
+        if (count($res) !== 1) {
+            $acswuiLog->logError("Cannot find CarSkins.Id=" . $this->Id);
+            return;
+        }
+
+        $this->Car = new Car($res[0]['Car']);
+        $this->Skin = $res[0]['Skin'];
+    }
 }
 
 ?>

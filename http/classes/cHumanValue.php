@@ -9,12 +9,14 @@ class HumanValue {
     private $UnitPrefix = NULL;
     private $Unit = NULL;
 
-    public function __construct(int $value, $unit="") {
+    public function __construct($value, $unit="") {
 
         if ($unit === "LAPTIME") {
             $this->formatLaptime($value, $unit);
         } else if ($unit === "s") {
             $this->formatSeconds($value, $unit);
+        } else if ($unit === "%") {
+            $this->formatPercent($value, $unit);
         } else {
             $this->formatArbitrary($value, $unit);
         }
@@ -87,6 +89,35 @@ class HumanValue {
         }
 
         $this->UnitPrefix = "";
+    }
+
+    private function formatPercent(float $value, $unit) {
+        if ($value >= 100) {
+            $this->Value = sprintf("%d", $value);
+            $this->UnitPrefix = "";
+            $this->Unit = "&percnt;";
+        } else if ($value >= 10) {
+            $this->Value = sprintf("%0.1f", $value);
+            $this->UnitPrefix = "";
+            $this->Unit = "&percnt;";
+        } else if ($value >= 1) {
+            $this->Value = sprintf("%0.2f", $value);
+            $this->UnitPrefix = "";
+            $this->Unit = "&percnt;";
+        } else if ($value >= 0.1) {
+            $this->Value = sprintf("%0.2f", $value*10);
+            $this->UnitPrefix = "";
+            $this->Unit = "&permil;";
+        } else if ($value >= 0.001) {
+            $this->Value = sprintf("%d", $value*10e3);
+            $this->UnitPrefix = "";
+            $this->Unit = "ppm";
+        } else {
+            $this->Value = sprintf("%0.2f", $value*10e3);
+            $this->UnitPrefix = "";
+            $this->Unit = "ppm";
+        }
+
     }
 
     private function formatArbitrary(int $value, $unit) {

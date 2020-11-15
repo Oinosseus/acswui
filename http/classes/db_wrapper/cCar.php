@@ -15,35 +15,29 @@ class Car {
      * @param $id Database table id
      */
     public function __construct($id) {
-        global $acswuiLog;
-        global $acswuiDatabase;
-
         $this->Id = $id;
+    }
 
-        // get basic information
-        $res = $acswuiDatabase->fetch_2d_array("Cars", ['Car', 'Name', 'Brand'], ['Id'=>$this->Id]);
-        if (count($res) !== 1) {
-            $acswuiLog->logError("Cannot find Cars.Id=" . $this->Id);
-            return;
-        }
-
-        $this->Model = $res[0]['Car'];
-        $this->Name = $res[0]['Name'];
-        $this->Brand = $res[0]['Brand'];
+    //! @return The database table id
+    public function id() {
+        return $this->Id;
     }
 
     //! @return model name of the car
     public function model() {
+        if ($this->Model === NULL) $this->updateFromDb();
         return $this->Model;
     }
 
     //! @return User friendly name of the car
     public function name() {
+        if ($this->Name === NULL) $this->updateFromDb();
         return $this->Name;
     }
 
     //! @return User friendly brand name of the car
     public function brand() {
+        if ($this->Brand === NULL) $this->updateFromDb();
         $this->Brand;
     }
 
@@ -65,6 +59,21 @@ class Car {
         return $this->Skins;
     }
 
+    private function updateFromDb() {
+        global $acswuiDatabase;
+        global $acswuiLog;
+
+        // get basic information
+        $res = $acswuiDatabase->fetch_2d_array("Cars", ['Car', 'Name', 'Brand'], ['Id'=>$this->Id]);
+        if (count($res) !== 1) {
+            $acswuiLog->logError("Cannot find Cars.Id=" . $this->Id);
+            return;
+        }
+
+        $this->Model = $res[0]['Car'];
+        $this->Name = $res[0]['Name'];
+        $this->Brand = $res[0]['Brand'];
+    }
 }
 
 ?>

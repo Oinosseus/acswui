@@ -12,7 +12,7 @@ function loginAction() {
 
     // ajax login request
     var ajax = new XMLHttpRequest();
-    ajax.open("POST","?NONCONTENT=user&ACTION=login", false);
+    ajax.open("POST","?NONCONTENT=ncUserLogon&ACTION=login", false);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send("USERNAME=" + username + "&PASSWORD=" + userpass);
 
@@ -29,7 +29,7 @@ function loginAction() {
 function logoutAction() {
     // ajax logout request
     var ajax = new XMLHttpRequest();
-    ajax.open("POST","?NONCONTENT=user&ACTION=logout", false);
+    ajax.open("POST","?NONCONTENT=ncUserLogon&ACTION=logout", false);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send("");
 

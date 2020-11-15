@@ -90,13 +90,3 @@
 table tr.lap_invalid {
   color: #883440;
 }
-
-table tr.lap_latest td {
-    font-weight: bold;
-    background-color: rgba(200, 200, 200, 0.2);
-}
-
-table tr.lap_invalid.lap_latest {
-  color: #623;
-}
-

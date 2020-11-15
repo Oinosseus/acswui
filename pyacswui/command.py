@@ -1,3 +1,4 @@
+import configparser
 from .verbosity import Verbosity
 
 
@@ -11,7 +12,7 @@ class Command(object):
 
 
     def __init__(self, argparse, cmd_name, cmd_help):
-        self.__arg_dict = {}
+        self.__ini_dict = {}
         self.__argparse = argparse.add_parser(cmd_name, help=cmd_help)
         self.__argparse.set_defaults(CmdObject=self)
         self.__args = None
@@ -36,31 +37,9 @@ class Command(object):
         self.__verbosity = Verbosity(self.__args.v)
 
         if self.__args.ini is not None:
-            with open(self.__args.ini, "r") as f:
-                for line in f.readlines():
-
-                    line = line.strip()
-
-                    # ignore commented lines
-                    if line[:1] == "#":
-                        continue
-
-                    # ignore empty lines
-                    if line == "":
-                        continue
-
-                    # split keys and values
-                    split = line.split("=",1)
-                    if len(split) > 1:
-                        self.__arg_dict.update({split[0].strip(): split[1].strip()})
-
-        if self.__args.json is not None:
-            json_obj = json.loads(self.__args.json)
-            for key, value in json_obj.items():
-                self.__arg_dict.update({key: value})
-
-        #for key, val in self.__arg_dict.items():
-            #print("HERE", key, val)
+            cp = configparser.ConfigParser()
+            cp.read(self.__args.ini)
+            self.__ini_dict = cp
 
 
 
@@ -77,10 +56,18 @@ class Command(object):
             return from_args
 
         # try to find it from global arguments (INI or JSON)
-        if arg_name_escaped in self.__arg_dict:
-            return self.__arg_dict[arg_name_escaped]
+        if arg_name_escaped in self.__ini_dict['COMMANDLINE_ARGUMENTS']:
+            return self.__ini_dict['COMMANDLINE_ARGUMENTS'][arg_name_escaped]
 
         raise ArgumentException("Argument '%s' is neither set as commandline argument, nor in INI, nor in JSON!" % arg_name)
+
+
+
+    def getIniSection(self, section_name):
+        if section_name in self.__ini_dict:
+            return self.__ini_dict[section_name]
+        else:
+            return None
 
 
 

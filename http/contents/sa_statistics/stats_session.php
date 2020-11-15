@@ -91,6 +91,34 @@ class stats_session extends cContentPage {
 
 
 
+        // --------------------------------------------------------------------
+        //                          Get Session Data
+        // --------------------------------------------------------------------
+
+        $session = new Session($this->SessionId);
+
+//         foreach ($session->drivers() as $driver) {
+//             $html .= "<table>";
+//             foreach ($session->drivenLaps() as $lap) {
+//                 if ($lap->user()->id() != $driver->id()) continue;
+//                 if ($lap->cuts() != 0) continue;
+//                 $html .= "<tr>";
+//                 $html .= "<td>" . ($lap->id() - $session->firstDrivenLap()->id() + 1) . "</td>";
+//                 $html .= "<td>" . $lap->laptime() . "</td>";
+//                 $html .= "<td>" . $lap->user()->login() . "</td>";
+//                 $html .= "</tr>";
+//             }
+//             $html .= "<table>";
+//         }
+
+        // get laps, ordered by laptime
+        $laps = array();
+        $laps = $session->drivenLaps();
+        function compare_laptime($l1, $l2) {
+            return ($l1->laptime() < $l2->laptime()) ? -1 : 1;
+        }
+        usort($laps, "compare_laptime");
+
 
 
         // --------------------------------------------------------------------
@@ -101,22 +129,82 @@ class stats_session extends cContentPage {
 
 
         $html .= '<table>';
-        $html .= '<tr><th>' . _("Laptime") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Grip") . '</th>';
+        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Grip") . '</th>';
 
-        $listed_users = [];
-        $laps = $acswuiDatabase->fetch_2d_array("Laps", ['User', 'Laptime', 'Grip', 'CarSkin'], ['Session'=>$this->SessionId, 'Cuts'=>0], "Laptime", TRUE);
-        foreach ($laps as $row) {
-            if (in_array($row['User'], $listed_users)) continue;
+        $listed_user_ids = array();
+        foreach ($laps as $lap) {
+            if (in_array($lap->user()->id(), $listed_user_ids)) continue;
+
+            $lap_number = $lap->id() - $session->firstDrivenLap()->id() + 1;
 
             $html .= '<tr>';
-            $html .= "<td>" . HumanValue::format($row['Laptime'], "LAPTIME") . "</td>";
-            $html .= "<td>" . $drivers[$row['User']] . "</td>";
-            $html .= "<td>" . $this->getCarName($row['CarSkin']) . "</td>";
-            $html .= "<td>" . sprintf("%0.1f", 100 * $row['Grip']) . "&percnt;</td>";
+            $html .= "<td>$lap_number</td>";
+            $html .= "<td>" . HumanValue::format($lap->laptime(), "LAPTIME") . "</td>";
+            $html .= "<td>" . $lap->user()->login() . "</td>";
+            $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
+            $html .= "<td>" . HumanValue::format(100 * $lap->grip(), "%") . "</td>";
             $html .= '</tr>';
 
-            $listed_users[] = $row['User'];
+            $listed_user_ids[] = $lap->user()->id();
         }
+        $html .= '</table>';
+
+
+        // --------------------------------------------------------------------
+        //                               Session Info
+        // --------------------------------------------------------------------
+
+        $html .= "<h1>" . _("Session Info") . "</h1>";
+
+        // sesion info
+        $html .= '<table>';
+
+        $html .= '<tr>';
+        $html .= '<th>' . _("Server/Session Name") . '</th>';
+        $html .= '<th>' . _("Track") . '</th>';
+        $html .= '<th>' . (($session->laps() == 0) ? _("Time") : _("Laps")) . '</th>';
+        $html .= '<th>' . _("Temp Amb / Road") . '</th>';
+        $html .= '<th>' . _("Grip") . '</th>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+        $html .= '<td>' . $session->serverName() . " / " . $session->name() . '</td>';
+        $html .= '<td>' . $session->track()->name() . '</td>';
+        $html .= '<td>' . (($session->laps() == 0) ? $session->time() : $session->laps()) . '</td>';
+        $html .= '<td>' . HumanValue::format($session->tempAmb(), "°C") . " / " . HumanValue::format($session->tempRoad(), "°C") . '</td>';
+        $html .= '<td>';
+        if (count($session->drivenLaps()) > 0) {
+            $html .= HumanValue::format($session->drivenLaps()[count($session->drivenLaps()) - 1]->grip() * 100, "%");
+            $html .= " - ";
+            $html .= HumanValue::format($session->drivenLaps()[0]->grip() * 100, "%");
+        }
+        $html .= '</td>';
+        $html .= '</tr>';
+
+        $html .= '</table>';
+
+        // driver summary
+        $html .= '<br><br><table>';
+
+        $html .= '<tr>';
+        $html .= '<th>' . _("Driver") . '</th>';
+        $html .= '<th colspan="3">' . _("Driven") . '</th>';
+        $html .= '</tr>';
+
+        foreach ($session->drivers() as $user) {
+
+            $lap_count = 0;
+            foreach ($laps as $lap) {
+                if ($lap->user()->id() == $user->id()) ++$lap_count;
+            }
+
+            $html .= '<tr>';
+            $html .= '<td>' . $user->login() . '</th>';
+            $html .= '<td>' . HumanValue::format($lap_count, "laps") . '</td>';
+            $html .= '<td>' . HumanValue::format($lap_count * $session->track()->length(), "m") . '</td>';
+            $html .= '</tr>';
+        }
+
         $html .= '</table>';
 
 
@@ -125,54 +213,29 @@ class stats_session extends cContentPage {
         //                               Laps
         // --------------------------------------------------------------------
 
-        $html .= "<h1>" . _("All Laps") . "</h1>";
+        $html .= "<h1>" . _("Best Laps") . "</h1>";
+
+        // html dump
         $html .= '<table>';
         $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Cuts") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Grip") . '</th>';
-        $laps = $acswuiDatabase->fetch_2d_array("Laps", ['User', 'Laptime', 'Cuts', 'Grip', 'CarSkin', 'Id'], ['Session'=>$this->SessionId], "Id", FALSE);
-
-        // determine minimum lap id
-        $laps_min_id = Null;
-        foreach ($laps as $l) {
-            if ($laps_min_id === NUll || $l['Id'] < $laps_min_id) $laps_min_id = $l['Id'];
-        }
-
-        // find latest lap per driver
-        $latest_lap_drivers = array();
-        for ($i=0; $i < count($laps); ++$i) {
-            if (in_array($laps[$i]['User'], $latest_lap_drivers)) {
-                $laps[$i]['LatestLap'] = FALSE;
-            } else {
-                $laps[$i]['LatestLap'] = TRUE;
-                $latest_lap_drivers[] = $laps[$i]['User'];
-            }
-        }
-
-
-        // sort best lap times
-        function compare_laptimes($l1, $l2) {
-            return ($l1['Laptime'] < $l2['Laptime']) ? -1 : 1;
-        }
-        uasort($laps, 'compare_laptimes');
-
-
-        // dump laps
-        foreach ($laps as $l) {
-
+        foreach ($laps as $lap) {
             $class = "class=\"";
-            $class .= ($l['Cuts'] > 0) ? " lap_invalid" : "";
-            $class .= ($l['LatestLap']) ? " lap_latest" : "";
+            $class .= ($lap->cuts() > 0) ? " lap_invalid" : "";
             $class .= "\"";
 
+            $lap_number = $lap->id() - $session->firstDrivenLap()->id() + 1;
+
             $html .= "<tr $class>";
-            $html .= "<td>" . ($l['Id'] - $laps_min_id + 1) . "</td>";
-            $html .= "<td>" . HumanValue::format($l['Laptime'], "LAPTIME") . "</td>";
-            $html .= "<td>" . $l['Cuts'] . "</td>";
-            $html .= "<td>" . $drivers[$l['User']] . "</td>";
-            $html .= "<td>" . $this->getCarName($l['CarSkin']) . "</td>";
-            $html .= "<td>" . sprintf("%0.1f", 100 * $l['Grip']) . "&percnt;</td>";
+            $html .= "<td>" . $lap_number . "</td>";
+            $html .= "<td>" . HumanValue::format($lap->laptime(), "LAPTIME") . "</td>";
+            $html .= "<td>" . $lap->cuts() . "</td>";
+            $html .= "<td>" . $lap->user()->login() . "</td>";
+            $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
+            $html .= "<td>" . HumanValue::format(100 * $lap->grip(), "%") . "</td>";
             $html .= '</tr>';
         }
         $html .= '</table>';
+
 
 
 

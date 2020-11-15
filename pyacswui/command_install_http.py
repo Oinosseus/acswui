@@ -60,7 +60,7 @@ class CommandInstallHttp(Command):
                              database=self.getArg("db_database"),
                              user=self.getArg("db_user"),
                              password=self.getArg("db_password"),
-                             verbosity=Verbosity(self.Verbosity)
+                             verbosity=Verbosity(Verbosity(self.Verbosity))
                              )
 
         # install work
@@ -274,6 +274,27 @@ class CommandInstallHttp(Command):
         path_acscontent = os.path.abspath(self.getArg("http-path-acs-content"))
         path_acscontent = os.path.relpath(path_acscontent, path_http)
 
+        # server slots
+        server_slot_list = []
+        slot_nr = 0
+        while True:
+            slot_dict = self.getIniSection("SERVER_SLOT_" + str(slot_nr))
+            if slot_dict is None:
+                break
+            slot_php_array = "[";
+            slot_php_array += "'ID'=>" + str(slot_nr) + ", "
+            slot_php_array += "'NAME'=>\"" + slot_dict['NAME'] + "\", "
+            slot_php_array += "'UDP_PORT'=>" + slot_dict['UDP_PORT'] + ", "
+            slot_php_array += "'TCP_PORT'=>" + slot_dict['TCP_PORT'] + ", "
+            slot_php_array += "'HTTP_PORT'=>" + slot_dict['HTTP_PORT'] + ", "
+            slot_php_array += "'UDP_PLUGIN_LOCAL_PORT'=>" + slot_dict['UDP_PLUGIN_LOCAL_PORT'] + ", "
+            slot_php_array += "'UDP_PLUGIN_ADDRESS'=>\"" + slot_dict['UDP_PLUGIN_ADDRESS'] + "\", "
+            slot_php_array += "'NUM_THREADS'=>" + slot_dict['NUM_THREADS'] + ", "
+            slot_php_array += "]";
+            server_slot_list.append(slot_php_array)
+            slot_nr += 1
+        server_slots = "[" + (", ".join(server_slot_list)) + "]";
+
         # fixed server settings
         fixed_server_settings = []
         for group in self.__server_cfg_json.keys():
@@ -315,6 +336,7 @@ class CommandInstallHttp(Command):
             f.write("    // server_cfg\n")
             f.write("    private $AcsContent = \"%s\";\n" % path_acscontent)
             f.write("    private $FixedServerConfig = array(%s);\n" % fixed_server_settings)
+            f.write("    private $ServerSlots = %s;\n" % server_slots)
             f.write("\n")
             f.write("    // this allows read-only access to private properties\n")
             f.write("    public function __get($name) {\n")

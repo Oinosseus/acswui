@@ -99,12 +99,9 @@ class CommandInstallFiles(Command):
 
 
     def process(self):
-
         self.__create_dirs_http()
         self.__create_dirs_acs()
-
         self.__create_server_cfg_json()
-
         self.__scan_cars()
         self.__scan_tracks()
 
@@ -213,9 +210,9 @@ class CommandInstallFiles(Command):
         verb3 = Verbosity(verb2)
 
         path_http = os.path.abspath(self.getArg("http-path"))
-        if os.path.isdir(path_http):
-            verb2.print("delete current directory: " + path_http)
-            shutil.rmtree(path_http)
+        if not os.path.isdir(path_http):
+            verb2.print("create http target directory: " + path_http)
+            self._mkdirs(path_http)
 
         verb2.print("create new directory: " + path_http)
         http_src = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "http")
@@ -253,7 +250,7 @@ class CommandInstallFiles(Command):
                     field["ENUMS"].append({"VALUE":i, "TEXT":weathers[i]})
 
         # dump to http directory
-        with open(os.path.join(self.getArg('http-path'), self.getArg("http-path-acs-content"), "server_cfg.json"), "w") as f:
+        with open(os.path.join(self.getArg("http-path-acs-content"), "server_cfg.json"), "w") as f:
             json.dump(server_cfg_json, f, indent=4)
 
 
@@ -306,3 +303,21 @@ class CommandInstallFiles(Command):
         src_file = os.path.join(self.getArg("path-acs-source"), "system", "data", "surfaces.ini")
         verb3.print(src_file)
         shutil.copy(src_file, path_acs_target_system_data)
+
+
+        # ---------------------------------------------------------------------
+        # 4. Create acServer binary for each server slot
+
+        verb2.print("Ccreate acServer binary for every server slot")
+        slot_nr = 0
+        while True:
+            slot_dict = self.getIniSection("SERVER_SLOT_" + str(slot_nr))
+            if slot_dict is None:
+                break
+
+            src = os.path.join(path_acs_target, "acServer")
+            dst = os.path.join(path_acs_target, "acServer" + str(slot_nr))
+            verb3.print(dst)
+            shutil.copy(src, dst)
+
+            slot_nr += 1

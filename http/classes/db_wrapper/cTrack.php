@@ -11,9 +11,14 @@ class Track {
     private $Name = NULL;
     private $Length = NULL;
     private $Pitboxes = NULL;
+    private $Drivers = NULL;
     private $DrivenLaps = NULL;
     private $DrivenMeters = NULL;
     private $DrivenSeconds = NULL;
+
+    private $Popularity = NULL;
+
+    private static $LongestDrivenTrack = NULL;
 
     /**
      * @param $id Database table id
@@ -68,6 +73,30 @@ class Track {
         return $this->Pitboxes;
     }
 
+    //! @return A list of User objects that have driven at least a lap on this track
+    public function drivers() {
+        global $acswuiDatabase;
+
+        if ($this->Drivers !== NULL) return $this->Drivers;
+
+        // determine driven users
+        $driver_ids = array();
+        $query = "SELECT Laps.User FROM Laps";
+        $query .= " INNER JOIN Sessions ON Sessions.Id=Laps.Session";
+        $query .= " WHERE Sessions.Track=" . $this->Id;
+        foreach ($acswuiDatabase->fetch_raw_select($query) as $lap) {
+            if (!in_array($lap['User'], $driver_ids)) $driver_ids[] = $lap['User'];
+        }
+
+        // populate user list
+        $this->Drivers = array();
+        foreach ($driver_ids as $id) {
+            $this->Drivers[] = new User($id);
+        }
+
+        return $this->Drivers;
+    }
+
     //! @return Amount of laps turned on this track
     public function drivenLaps() {
         if ($this->DrivenLaps !== NULL) return $this->DrivenLaps;
@@ -107,6 +136,20 @@ class Track {
         }
     }
 
+    //! @return A floating point Number [0,1] that represents the popularity of the track
+    public function popularity() {
+        global $acswuiDatabase;
+
+        if ($this->Popularity !== NULL) return $this->Popularity;
+
+        // determine longest track
+        $this->Popularity = 1.0;
+        $this->Popularity *= $this->drivenMeters() / (Track::longestDrivenTrack()->drivenMeters());
+        $this->Popularity *= count($this->drivers()) / count(User::listDrivers());
+
+        return $this->Popularity;
+    }
+
     //! @return An array of all available Track objects in alphabetical order
     public static function listTracks() {
         global $acswuiDatabase;
@@ -118,6 +161,24 @@ class Track {
         }
 
         return $list;
+    }
+
+    //! @return The longest track
+    public static function longestDrivenTrack() {
+        global $acswuiDatabase;
+        if (Track::$LongestDrivenTrack !== NULL) return Track::$LongestDrivenTrack;
+
+        $ldt = NULL;
+        $ldt_driven_length = 0;
+        foreach (Track::listTracks() as $t) {
+            if ($ldt === NULL || $t->drivenMeters() > $ldt_driven_length) {
+                $ldt = $t;
+                $ldt_driven_length = $t->drivenMeters();
+            }
+        }
+        Track::$LongestDrivenTrack = $ldt;
+
+        return Track::$LongestDrivenTrack;
     }
 }
 
