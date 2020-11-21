@@ -1,5 +1,6 @@
 import socket
 from configparser import ConfigParser
+import json
 from .verbosity import Verbosity
 from .udp_packet import UdpPacket
 from .udp_plugin_session import UdpPluginSession
@@ -9,28 +10,42 @@ from .udp_plugin_car_entry import UdpPluginCarEntry
 
 class UdpPluginServer(object):
 
-    def __init__(self, address, port, database, entry_list_path, verbosity=0):
+    def __init__(self,
+                 port_server, port_plugin,
+                 database,
+                 entry_list_path,
+                 realtime_json_path = None,
+                 verbosity=0):
+
+        # This is the typical duration for the process() method
+        # used for UDP polling timeout
+        # and for realtime data update
+        self.__PROCESS_TIME = 0.1 # seconds
+
         self.__verbosity = Verbosity(verbosity)
         self.__session = None
         self.__entries = []
-
-        port = int(port)
         self.__database = database
         self.__driver_connections = []
+        self.__realtime_json_path = realtime_json_path
+
+        self.__port_plugin = int(port_plugin)
+        self.__port_server = int(port_server)
 
         # bind UDP socket
         self.__sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-        Verbosity(self.__verbosity).print("Bind UdpPluginSever to %s:%i" % (address, int(port)))
+        address = "127.0.0.1"
+        Verbosity(self.__verbosity).print("Bind UdpPluginSever to %s:%i" % (address, self.__port_plugin))
         try:
-            self.__sock.bind((address, int(port)))
+            self.__sock.bind((address, self.__port_plugin))
         except BaseException as be:
             msg = "Could not bind UPD Plugin server to address "
             msg += "'%s'" % address
-            msg += " on port %i!" % port
+            msg += " on port %i!" % self.__port_plugin
             msg += "\n%s" % str(be)
             raise BaseException(msg)
-        self.__sock.settimeout(0.1)
+        self.__sock.settimeout(self.__PROCESS_TIME)
 
         # parse car entries
         entry_list = ConfigParser()
@@ -54,6 +69,8 @@ class UdpPluginServer(object):
         except socket.timeout:
             pass
 
+        self.dump_realtime_json()
+
 
 
     def parse_packet(self, pkt):
@@ -64,7 +81,12 @@ class UdpPluginServer(object):
 
         # ACSP_NEW_SESSION
         if prot == 50:
+
+            # set new session object
             self.__session = UdpPluginSession(self.__database, pkt, self.__verbosity)
+
+            # enable realtime update
+            self.enable_realtime_report()
 
         # ACSP_SESSION_INFO
         elif prot == 59:
@@ -80,7 +102,6 @@ class UdpPluginServer(object):
             car_id = pkt.readByte()
             car_model = pkt.readString()
             car_skin = pkt.readString()
-
             entry = self.get_car_entry(car_id, car_model, car_skin)
             entry.occupy(driver_name, driver_guid)
 
@@ -99,7 +120,15 @@ class UdpPluginServer(object):
 
         # ACSP_CAR_UPDATE
         elif prot == 53:
-            self.__verbosity.print("ACSP_CAR_UPDATE")
+            car_id = pkt.readByte()
+            pos = pkt.readVector3f()
+            velocity = pkt.readVector3f()
+            gear = pkt.readByte()
+            engine_rpm = pkt.readUint16()
+            normalized_spline_pos = pkt.readSingle();
+
+            entry = self.get_car_entry(car_id)
+            entry.realtime_update(pos, velocity, gear, engine_rpm, normalized_spline_pos)
 
 
         # ACSP_CAR_INFO
@@ -216,4 +245,42 @@ class UdpPluginServer(object):
             raise ValueError("Cannot understand driver connection of requested CarId %i!" %car_id)
 
         return entry
-    
+
+
+
+    def enable_realtime_report(self):
+        rate_milliseconds = int(self.__PROCESS_TIME * 1000)
+
+        data = bytearray(100)
+        data[0] = 200
+        data[1] = 0xff & rate_milliseconds
+        data[2] = 0xff & (rate_milliseconds >> 8)
+
+        self.__sock.sendto(data, ("127.0.0.1", self.__port_server))
+
+
+
+    def dump_realtime_json(self):
+        if self.__realtime_json_path is None or self.__realtime_json_path == "":
+            return
+        if self.__session is None:
+            return
+
+        # collect session data
+        data_session = {}
+        data_session['Id'] = self.__session.Id
+
+        # collect entry data
+        data_entries = []
+        for e in self.__entries:
+            if e.DriverId is not None:
+                data_entries.append(e.RealtimeJsonDict)
+
+        # merge data
+        data = {}
+        data["Session"] = data_session
+        data["Entries"] = data_entries
+
+        # dump data
+        with open(self.__realtime_json_path, "w") as f:
+            json.dump(data, f, indent=4)

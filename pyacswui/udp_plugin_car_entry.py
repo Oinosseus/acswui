@@ -24,6 +24,16 @@ class UdpPluginCarEntry(object):
         self.__driver_name = None
         self.__driver_guid = None
 
+        # car realtime data
+        self.__rtd_position =  [0.0, 0.0, 0.0]
+        self.__rtd_velocity = [0.0, 0.0, 0.0]
+        self.__rtd_gear = 1
+        self.__rtd_engine_rpm = 0
+        self.__rtd_normalized_spline_pos = 0;
+        self.__last_lap_time = 0
+        self.__last_lap_cuts = 0
+        self.__last_lap_grip = 0
+
         # determine ballast
         self.__ballast = 0
         if 'BALLAST' in entry_dict and entry_dict['BALLAST'] != "":
@@ -81,6 +91,22 @@ class UdpPluginCarEntry(object):
     def DriverId(self):
         return self.__driver_id
 
+    @property
+    def RealtimeJsonDict(self):
+        d = {}
+        d['Id'] = self.__id
+        d['SkinId'] = self.__car_skin_id
+        d['DriverId'] = self.__driver_id
+        d['Position'] = self.__rtd_position
+        d['Velocity'] = self.__rtd_velocity
+        d['Gear'] = self.__rtd_gear
+        d['Rpm'] = self.__rtd_engine_rpm
+        d['NormalizedSplinePos'] = self.__rtd_normalized_spline_pos
+        d['LastLapTime'] = self.__last_lap_time
+        d['LastLapCuts'] = self.__last_lap_cuts
+        d['LastLapGrip'] = self.__last_lap_grip
+        return d
+
 
     def occupy(self, driver_name, driver_guid):
         """ Incomming driver connection
@@ -134,6 +160,11 @@ class UdpPluginCarEntry(object):
         fields['Grip'] = grip
         self.__db.insertRow("Laps", fields)
 
+        self.__last_lap_time = laptime
+        self.__last_lap_cuts = cuts
+        self.__last_lap_grip = grip
+
+
 
     def collision(self, session, speed, other_car_entry=None):
 
@@ -169,3 +200,17 @@ class UdpPluginCarEntry(object):
             fields['OtherUser'] = other_car_entry.DriverId
             fields['OtherCarSkin'] = other_car_entry.CarSkinId
             self.__db.insertRow("CollisionCar", fields)
+
+
+    def realtime_update(self,
+                   position,
+                   velocity,
+                   gear,
+                   engine_rpm,
+                   normalized_spline_pos):
+
+        self.__rtd_position = position
+        self.__rtd_velocity = velocity
+        self.__rtd_gear = gear
+        self.__rtd_engine_rpm = engine_rpm
+        self.__rtd_normalized_spline_pos = normalized_spline_pos;

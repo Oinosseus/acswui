@@ -29,6 +29,7 @@ class CommandSrvrun(Command):
         self.add_argument('--path-server-cfg', help="Path to server_cfg.ini file")
         self.add_argument('--path-entry-list', help="Path to entry_list.ini file")
         self.add_argument('--path-acs-target', help="Path to AC server directory")
+        self.add_argument('--path-realtime-json', help="Optional file that gets updated with realtime information")
         self.add_argument('--name-acs', default="acServer", help="Name of AC server executable")
         self.add_argument('--acs-log', help="Path to write AC server output to (optional)")
 
@@ -52,11 +53,17 @@ class CommandSrvrun(Command):
 
         # setup UDP Plugin
         self.Verbosity.print("Setup UDP plugin server")
+        udpp_port_server = server_cfg['SERVER']['UDP_PLUGIN_LOCAL_PORT']
         udpp_cfg = server_cfg['SERVER']['UDP_PLUGIN_ADDRESS'].split(":")
         udpp_addr = udpp_cfg[0]
-        udpp_port = udpp_cfg[1]
-        udpp = UdpPluginServer(udpp_addr, udpp_port, db,
-                               self.getArg("path_entry_list"),
+        udpp_port_plugin = udpp_cfg[1]
+        try:
+            realtime_json_path = self.getArg("path-realtime-json")
+        except ArgumentException:
+            realtime_json_path = None
+        udpp = UdpPluginServer(udpp_port_server, udpp_port_plugin, db,
+                               self.getArg("path-entry-list"),
+                               realtime_json_path,
                                verbosity=self.Verbosity)
         udpp.process() # run once just to ensure that it does not crash immediately
 
