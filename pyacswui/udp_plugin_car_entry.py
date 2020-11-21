@@ -198,7 +198,7 @@ class UdpPluginCarEntry(object):
             fields['User'] = self.__driver_id
             fields['Speed'] = speed
             fields['OtherUser'] = other_car_entry.DriverId
-            fields['OtherCarSkin'] = other_car_entry.CarSkinId
+            fields['OtherCarSkin'] = other_car_entry.SkinId
             self.__db.insertRow("CollisionCar", fields)
 
 

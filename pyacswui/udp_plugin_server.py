@@ -76,7 +76,6 @@ class UdpPluginServer(object):
     def parse_packet(self, pkt):
 
         prot = pkt.readByte()
-        self.__verbosity.print("UDP receive packet ", prot, "on address", pkt.Addr)
 
 
         # ACSP_NEW_SESSION

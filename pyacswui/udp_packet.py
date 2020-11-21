@@ -53,7 +53,7 @@ class UdpPacket(object):
         b1 = self.readByte()
         b0 = self.readByte()
         single = struct.unpack("!f", bytes([b0, b1, b2, b3]))
-        return single
+        return single[0]
 
 
     def readVector3f(self):

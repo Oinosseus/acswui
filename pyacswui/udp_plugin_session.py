@@ -13,22 +13,21 @@ class UdpPluginSession(object):
             raise TypeError("Parameter 'packet' must be a UdpPacket object!")
 
         self.__db = database
+        self.__db_field_cache = {}
+        self.__db_id = None
         self.__verbosity = Verbosity(verbosity)
-
-        # status vars to identify session
-        self.__id = None
-        self.__track_id = None
-        self.__session_index = None
-        self.__current_session_index = None
-        self.__session_type = None
 
         # calling this update creates a new session
         self.update(packet)
 
 
+
     @property
     def Id(self):
-        return self.__id
+        if self.__db_id is None:
+            self.__save_cache()
+        return self.__db_id
+
 
 
     def update(self, packet):
@@ -70,43 +69,50 @@ class UdpPluginSession(object):
             fields['Pitboxes'] = 0
             track_id = self.__database.insertRow("Tracks", fields)
 
-        # check wether to create a new session
-        create_new_session = False
-        create_new_session |= self.__id is None
-        create_new_session |= self.__track_id != track_id
-        create_new_session |= self.__session_index != session_index
-        create_new_session |= self.__current_session_index != current_session_index
-        create_new_session |= self.__session_type != session_type
-
-        # save session identification status vars
-        self.__track_id = track_id
-        self.__session_index = session_index
-        self.__current_session_index = current_session_index
-        self.__session_type = session_type
+        # check if update is a new session
+        is_new_session = False
+        if 'ProtocolVersion' not in self.__db_field_cache or self.__db_field_cache['ProtocolVersion'] != protocol_version:
+            is_new_session = True
+        if 'SessionIndex' not in self.__db_field_cache or self.__db_field_cache['SessionIndex'] != session_index:
+            is_new_session = True
+        if 'CurrentSessionIndex' not in self.__db_field_cache or self.__db_field_cache['CurrentSessionIndex'] != current_session_index:
+            is_new_session = True
+        if 'Track' not in self.__db_field_cache or self.__db_field_cache['Track'] != track_id:
+            is_new_session = True
+        if 'Type' not in self.__db_field_cache or self.__db_field_cache['Type'] != session_type:
+            is_new_session = True
 
         # setup database fields
-        fields = {}
-        fields['ProtocolVersion'] = protocol_version
-        fields['SessionIndex'] = self.__session_index
-        fields['CurrentSessionIndex'] = self.__current_session_index
-        fields['SessionCount'] = session_count
-        fields['ServerName'] = server_name
-        fields['Track'] = self.__track_id
-        fields['Name'] = session_name
-        fields['Type'] = self.__session_type
-        fields['Time'] = session_time
-        fields['Laps'] = session_laps
-        fields['WaitTime'] = session_waittime
-        fields['TempAmb'] = temp_amb
-        fields['TempRoad'] = temp_road
-        fields['WheatherGraphics'] = weather_graphics
-        fields['Elapsed'] = elapsed_ms
+        self.__db_field_cache = {}
+        self.__db_field_cache['ProtocolVersion'] = protocol_version
+        self.__db_field_cache['SessionIndex'] = session_index
+        self.__db_field_cache['CurrentSessionIndex'] = current_session_index
+        self.__db_field_cache['SessionCount'] = session_count
+        self.__db_field_cache['ServerName'] = server_name
+        self.__db_field_cache['Track'] = track_id
+        self.__db_field_cache['Name'] = session_name
+        self.__db_field_cache['Type'] = session_type
+        self.__db_field_cache['Time'] = session_time
+        self.__db_field_cache['Laps'] = session_laps
+        self.__db_field_cache['WaitTime'] = session_waittime
+        self.__db_field_cache['TempAmb'] = temp_amb
+        self.__db_field_cache['TempRoad'] = temp_road
+        self.__db_field_cache['WheatherGraphics'] = weather_graphics
+        self.__db_field_cache['Elapsed'] = elapsed_ms
 
-        # update database
-        if create_new_session:
-            self.__id = self.__db.insertRow("Sessions", fields)
-            self.__verbosity.print("New Session: Id =", self.__id, ", name =", session_name)
+        # immediately save cache when existing session is updated
+        # If new session, inform that cache needs to be saved
+        if not is_new_session:
+            self.__save_cache()
+        else:
+            self.__db_id = None
+            self.__verbosity.print("New Session: Id =", self.__db_id, ", name =", session_name)
+
+
+
+    def __save_cache(self):
+        if self.__db_id is None:
+            self.__db_id = self.__db.insertRow("Sessions", self.__db_field_cache)
 
         else:
-            self.__database.updateRow("Sessions", self.__id, fields)
-
+            self.__database.updateRow("Sessions", self.__db_id, self.__db_field_cache)
