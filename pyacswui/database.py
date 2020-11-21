@@ -158,6 +158,12 @@ class Database(object):
 
 
 
+    def appendColumnTinyInt(self, tblname, colname):
+        self.__appendColumn(tblname, colname, "tinyint", "'0'")
+
+    def appendColumnSmallInt(self, tblname, colname):
+        self.__appendColumn(tblname, colname, "smallint", "'0'")
+
     def appendColumnInt(self, tblname, colname):
         self.__appendColumn(tblname, colname, "int", "'0'")
 

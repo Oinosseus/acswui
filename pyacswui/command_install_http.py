@@ -171,7 +171,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnInt("Sessions", "TempAmb")
         self.__db.appendColumnInt("Sessions", "TempRoad")
         self.__db.appendColumnString("Sessions", 'WheatherGraphics', 50)
-        self.__db.appendColumnUInt("Sessions", "Elapsed")
+        self.__db.appendColumnInt("Sessions", "Elapsed")
         self.__db.appendColumnCurrentTimestamp("Sessions", "Timestamp")
 
         # check table Laps
@@ -183,6 +183,8 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnUInt("Laps", "Laptime")
         self.__db.appendColumnInt("Laps", "Cuts")
         self.__db.appendColumnFloat("Laps", "Grip")
+        self.__db.appendColumnTinyInt("Laps", "Ballast")
+        self.__db.appendColumnSmallInt("Laps", "Restrictor")
         self.__db.appendColumnCurrentTimestamp("Laps", "Timestamp")
 
         # check table CollisionEnv

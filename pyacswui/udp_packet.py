@@ -13,6 +13,11 @@ class UdpPacket(object):
         return self.__addr
 
 
+    @property
+    def Index(self):
+        return self.__index
+
+
     def readByte(self):
         data = self.__data[self.__index]
         self.__index += 1
