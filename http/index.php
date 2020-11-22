@@ -43,7 +43,7 @@ if (!function_exists("password_verify")) {
 //  = Include Library =
 // =====================
 
-// classes
+// basic classes
 include("classes/cConfig.php");
 include("classes/cLog.php");
 include("classes/cDatabase.php");
@@ -52,7 +52,11 @@ include("classes/cTemplate.php");
 include("classes/cContentPage.php");
 include("classes/cNonContentPage.php");
 include("classes/cUser.php");
+
+// enhanced
 include("classes/cHumanValue.php");
+include("classes/cServerSlot.php");
+include("classes/cEntryList.php");
 
 // database table wrapper classes
 include("classes/db_wrapper/cUser.php");
@@ -62,6 +66,7 @@ include("classes/db_wrapper/cCar.php");
 include("classes/db_wrapper/cCarClass.php");
 include("classes/db_wrapper/cSession.php");
 include("classes/db_wrapper/cLap.php");
+include("classes/db_wrapper/cServerPreset.php");
 
 // functions
 include("functions/getMenuArrayFromContentDir.php");

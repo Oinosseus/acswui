@@ -36,24 +36,13 @@ class CommandInstallHttp(Command):
         self.add_argument('--http-path-acs-content', help="Path that stores AC data for http access (eg. track car preview images)")
 
 
-        ##########################
-        # Server Config Arguments
-
-        # read server_cfg json
-        with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "server_cfg.json"), "r") as f:
-            json_string = f.read()
-        self.__server_cfg_json = json.loads(json_string)
-
-        for groupname in self.__server_cfg_json.keys():
-            for fieldsets in self.__server_cfg_json[groupname]:
-                for field in fieldsets['FIELDS']:
-                    if field['TYPE'].lower() != 'hidden':
-                        groupname = groupname.replace("_", "-")
-                        tag = field['TAG'].replace("_", "-")
-                        self.add_argument('--%s-%s' % (groupname, tag), help="Set to make this server preset setting fixed")
-
 
     def process(self):
+
+        # read server_cfg json
+        with open(os.path.join(self.getArg("http-path-acs-content"), "server_cfg.json"), "r") as f:
+            json_string = f.read()
+        self.__server_cfg_json = json.loads(json_string)
 
         # setup database
         self.__db = Database(host=self.getArg("db_host"),
@@ -212,23 +201,21 @@ class CommandInstallHttp(Command):
         self.__db.appendTable("ServerPresets")
         self.__db.appendColumnString("ServerPresets", "Name", 60)
 
-        for group in self.__server_cfg_json.keys():
-            for fieldset in self.__server_cfg_json[group]:
-                for field in fieldset['FIELDS']:
+        for section in self.__server_cfg_json:
+            for fieldset in self.__server_cfg_json[section]:
+                for tag in self.__server_cfg_json[section][fieldset]:
+                    tag_dict = self.__server_cfg_json[section][fieldset][tag]
+                    db_col_name = tag_dict['DB_COLUMN_NAME']
 
-                    db_col_name = group + '_' + field['TAG']
-
-                    if field['TYPE'] == "hidden":
-                        pass
-                    elif field['TYPE'] == "string":
-                        self.__db.appendColumnString("ServerPresets", db_col_name, field['SIZE'])
-                    elif field['TYPE'] in ["int", "enum"]:
+                    if tag_dict['TYPE'] == "string":
+                        self.__db.appendColumnString("ServerPresets", db_col_name, tag_dict['SIZE'])
+                    elif tag_dict['TYPE'] in ["int", "enum"]:
                         self.__db.appendColumnInt("ServerPresets", db_col_name)
-                    elif field['TYPE'] == "text":
+                    elif tag_dict['TYPE'] == "text":
                         self.__db.appendColumnText("ServerPresets", db_col_name)
                     else:
-                        print("group =", group, ", field =", field)
-                        raise NotImplementedError("Unknown field TYPE '%s'" % field['TYPE'])
+                        print("db_col_name =", db_col_name)
+                        raise NotImplementedError("Unknown field TYPE '%s'" % tag_dict['TYPE'])
 
         # check table CarClasses
         Verbosity(self.Verbosity).print("check database table `CarClasses`")
@@ -274,8 +261,8 @@ class CommandInstallHttp(Command):
 
         # path for acs-content
         path_http = os.path.abspath(self.getArg("http-path"))
-        path_acscontent = os.path.abspath(self.getArg("http-path-acs-content"))
-        path_acscontent = os.path.relpath(path_acscontent, path_http)
+        path_acscontent_absolute = os.path.abspath(self.getArg("http-path-acs-content"))
+        path_acscontent_relative = os.path.relpath(path_acscontent_absolute, path_http)
 
         # server slots
         server_slot_list = []
@@ -284,35 +271,39 @@ class CommandInstallHttp(Command):
             slot_dict = self.getIniSection("SERVER_SLOT_" + str(slot_nr))
             if slot_dict is None:
                 break
-            slot_php_array = "[";
-            slot_php_array += "'ID'=>" + str(slot_nr) + ", "
-            slot_php_array += "'NAME'=>\"" + slot_dict['NAME'] + "\", "
-            slot_php_array += "'UDP_PORT'=>" + slot_dict['UDP_PORT'] + ", "
-            slot_php_array += "'TCP_PORT'=>" + slot_dict['TCP_PORT'] + ", "
-            slot_php_array += "'HTTP_PORT'=>" + slot_dict['HTTP_PORT'] + ", "
-            slot_php_array += "'UDP_PLUGIN_LOCAL_PORT'=>" + slot_dict['UDP_PLUGIN_LOCAL_PORT'] + ", "
-            slot_php_array += "'UDP_PLUGIN_ADDRESS'=>\"" + slot_dict['UDP_PLUGIN_ADDRESS'] + "\", "
-            slot_php_array += "'NUM_THREADS'=>" + slot_dict['NUM_THREADS'] + ", "
-            slot_php_array += "]";
+            slot_php_array = [];
+
+            for section in self.__server_cfg_json:
+                for fieldset in self.__server_cfg_json[section]:
+                    for tag in self.__server_cfg_json[section][fieldset]:
+                        tag_dict = self.__server_cfg_json[section][fieldset][tag]
+                        db_col_name = tag_dict['DB_COLUMN_NAME']
+
+                        # check for fixed values
+                        if db_col_name in slot_dict:
+                            slot_php_array.append("'%s'=>\"%s\"" % (db_col_name, slot_dict[db_col_name]))
+
+            slot_php_array = "[" + (", ".join(slot_php_array)) + "]";
             server_slot_list.append(slot_php_array)
             slot_nr += 1
-        server_slots = ", ".join(server_slot_list)
+        server_slots = ",\n                                 ".join(server_slot_list)
 
         # fixed server settings
         fixed_server_settings = []
-        for group in self.__server_cfg_json.keys():
-            for fieldset in self.__server_cfg_json[group]:
-                for field in fieldset['FIELDS']:
-                    config_key = group + "_" + field['TAG']
+        for section in self.__server_cfg_json:
+            for fieldset in self.__server_cfg_json[section]:
+                for tag in self.__server_cfg_json[section][fieldset]:
+                    tag_dict = self.__server_cfg_json[section][fieldset][tag]
+                    db_col_name = tag_dict['DB_COLUMN_NAME']
 
                     # check for fixed values
                     try:
-                        val = self.getIniSection("FIXED_SERVER_SETTINGS")[config_key]
+                        val = self.getIniSection("FIXED_SERVER_SETTINGS")[db_col_name]
                     except KeyError as e:
                         val = None
 
                     if val is not None:
-                        fixed_server_settings.append("\"%s\"=>\"%s\"" % (config_key, val))
+                        fixed_server_settings.append("\"%s\"=>\"%s\"" % (db_col_name, val))
         fixed_server_settings = ",".join(fixed_server_settings)
 
         with open(self.getArg('http_path') + "/classes/cConfig.php", "w") as f:
@@ -337,7 +328,8 @@ class CommandInstallHttp(Command):
             f.write("    private $DbPasswd = \"%s\";\n" % self.getArg('db_password'))
             f.write("\n")
             f.write("    // server_cfg\n")
-            f.write("    private $AcsContent = \"%s\";\n" % path_acscontent)
+            f.write("    private $AcsContent = \"%s\";\n" % path_acscontent_relative)
+            f.write("    private $AcsContentAbsolute = \"%s\";\n" % path_acscontent_absolute)
             f.write("    private $FixedServerConfig = array(%s);\n" % fixed_server_settings)
             f.write("    private $ServerSlots = array(%s);\n" % server_slots)
             f.write("\n")

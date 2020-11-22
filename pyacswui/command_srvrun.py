@@ -81,8 +81,8 @@ class CommandSrvrun(Command):
         except ArgumentException as e:
             stdout = DEVNULL
         acs_cmd.append("&")
-        #acs_proc = Popen(acs_cmd, cwd=self.getArg("path_acs_target"), stdout=stdout, stderr=stdout)
-        acs_proc = Popen(acs_cmd, stdout=stdout, stderr=stdout)
+        acs_proc = Popen(acs_cmd, cwd=self.getArg("path_acs_target"), stdout=stdout, stderr=stdout)
+        #acs_proc = Popen(acs_cmd, stdout=stdout, stderr=stdout)
 
         # run server
         self.Verbosity.print("Processing ...")

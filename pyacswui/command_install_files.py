@@ -226,18 +226,23 @@ class CommandInstallFiles(Command):
             json_string = f.read()
         server_cfg_json = json.loads(json_string)
 
+        # append database column names,
+        # append curent value
+        for section in server_cfg_json:
+            for fieldset in server_cfg_json[section]:
+                for tag in server_cfg_json[section][fieldset]:
+                    tag_dict = server_cfg_json[section][fieldset][tag]
+                    tag_dict['DB_COLUMN_NAME'] = section + "_" + tag
+                    tag_dict['CURRENT'] = tag_dict['DEFAULT']
+
         # scan for weather enums
-        weathers = []
+        json_enum = server_cfg_json["WEATHER_0"]['Weather']["GRAPHICS"]['ENUMS']
         weather_path = os.path.join(self.getArg('path-ac'), "content", "weather")
+        weather_index = 0
         for w in sorted(os.listdir(weather_path)):
             if w[:1] != "." and os.path.isdir(os.path.join(weather_path, w)):
-                weathers.append(w)
-
-        # append to wether graphics
-        for field in server_cfg_json["WEATHER"][0]["FIELDS"]:
-            if field["TAG"] == "GRAPHICS":
-                for i in range(len(weathers)):
-                    field["ENUMS"].append({"VALUE":i, "TEXT":weathers[i]})
+                json_enum.append({"VALUE":weather_index, "TEXT":w})
+                weather_index += 1
 
         # dump to http directory
         with open(os.path.join(self.getArg("http-path-acs-content"), "server_cfg.json"), "w") as f:

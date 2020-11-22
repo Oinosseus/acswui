@@ -1,58 +1,6 @@
 <?php
 
 
-class CarEntry {
-
-    private $Car = NULL;
-    private $SkinIndex = 0;
-
-    //! @param $car A Car object
-    public function __construct($car) {
-        $this->Car = $car;
-    }
-
-    public function model() {
-        return $this->Car->model();
-    }
-
-    public function skin() {
-        $skins = $this->Car->skins();
-        if ($this->SkinIndex >= count($skins)) return "";
-        $skin = $skins[$this->SkinIndex];
-        $this->SkinIndex += 1;
-        return $skin->skin();
-    }
-}
-
-
-
-class CarEntries {
-    private $Entries = array();
-    private $Index = 0;
-
-    //! @param $cars list of Car objects
-    public function __construct($cars) {
-        foreach($cars as $car) {
-            $this->Entries[] = new CarEntry($car);
-        }
-    }
-
-    public function getNextEntry() {
-
-        // wrap index
-        if ($this->Index >= count($this->Entries)) $this->Index = 0;
-
-        $entry = $this->Entries[$this->Index];
-
-        // increment index
-        ++$this->Index;
-
-        return $entry;
-    }
-}
-
-
-
 class control extends cContentPage {
 
     public function __construct() {
@@ -62,18 +10,10 @@ class control extends cContentPage {
         $this->RequirePermissions = ["Session_Control"];
 
         // class local vars
-        $this->CurrentPresetId = Null;
-        $this->CurrentCarClassId = Null;
-        $this->CurrentTrackId = Null;
-    }
-
-    private function server_online() {
-        global $acswuiConfig;
-        global $acswuiLog;
-
-        exec("pgrep acServer", $cmd_str, $cmd_ret);
-        if ($cmd_ret === 0) return TRUE;
-        return FALSE;
+        $this->CurrentServerSlot = Null;
+        $this->CurrentPreset = Null;
+        $this->CurrentCarClass = Null;
+        $this->CurrentTrack = Null;
     }
 
     private function get_fixed($group_name, $server_cfg_field) {
@@ -102,25 +42,32 @@ class control extends cContentPage {
         //                        Process Post Data
         // --------------------------------------------------------------------
 
+        if (isset($_POST['SERVERSLOT_ID'])) {
+            $this->CurrentServerSlot = new ServerSlot((int) $_POST['SERVERSLOT_ID']);
+            $_SESSION['SERVER_CONTROL_SERVERSLOT_ID'] = $this->CurrentServerSlot->id();
+        } else if (isset($_SESSION['SERVER_CONTROL_SERVERSLOT_ID'])) {
+            $this->CurrentServerSlot = new ServerSlot((int) $_SESSION['SERVER_CONTROL_SERVERSLOT_ID']);
+        }
+
         if (isset($_POST['PRESET_ID'])) {
-            $this->CurrentPresetId = (int) $_POST['PRESET_ID'];
-            $_SESSION['SERVER_CONTROL_PRESET_ID'] = $this->CurrentPresetId;
+            $this->CurrentPreset = new ServerPreset((int) $_POST['PRESET_ID']);
+            $_SESSION['SERVER_CONTROL_PRESET_ID'] = $this->CurrentPreset->id();
         } else if (isset($_SESSION['SERVER_CONTROL_PRESET_ID'])) {
-            $this->CurrentPresetId = (int) $_SESSION['SERVER_CONTROL_PRESET_ID'];
+            $this->CurrentPresetId = new ServerPreset((int) $_SESSION['SERVER_CONTROL_PRESET_ID']);
         }
 
         if (isset($_POST['CARCLASS_ID'])) {
-            $this->CurrentCarClassId = (int) $_POST['CARCLASS_ID'];
-            $_SESSION['SERVER_CONTROL_CARCLASS_ID'] = $this->CurrentCarClassId;
+            $this->CurrentCarClass = new CarClass((int) $_POST['CARCLASS_ID']);
+            $_SESSION['SERVER_CONTROL_CARCLASS_ID'] = $this->CurrentCarClass->id();
         } else if (isset($_SESSION['SERVER_CONTROL_CARCLASS_ID'])) {
-            $this->CurrentCarClassId = (int) $_SESSION['SERVER_CONTROL_CARCLASS_ID'];
+            $this->CurrentCarClassId = new CarClass((int) $_SESSION['SERVER_CONTROL_CARCLASS_ID']);
         }
 
         if (isset($_POST['TRACK_ID'])) {
-            $this->CurrentTrackId = (int) $_POST['TRACK_ID'];
-            $_SESSION['SERVER_CONTROL_TRACK_ID'] = $this->CurrentTrackId;
+            $this->CurrentTrack = new Track((int) $_POST['TRACK_ID']);
+            $_SESSION['SERVER_CONTROL_TRACK_ID'] = $this->CurrentTrack->id();
         } else if (isset($_SESSION['SERVER_CONTROL_TRACK_ID'])) {
-            $this->CurrentTrackId = (int) $_SESSION['SERVER_CONTROL_TRACK_ID'];
+            $this->CurrentTrackId = new Track((int) $_SESSION['SERVER_CONTROL_TRACK_ID']);
         }
 
 
@@ -131,9 +78,15 @@ class control extends cContentPage {
 
         if (isset($_POST['ACTION'])) {
             if ($_POST['ACTION'] == "START_SERVER") {
-                $this->start_server();
+                if ($this->CurrentServerSlot->online() === FALSE) {
+                    $this->CurrentServerSlot->start($this->CurrentPreset,
+                                                    $this->CurrentCarClass,
+                                                    $this->CurrentTrack);
+                }
             } else if ($_POST['ACTION'] == "STOP_SERVER") {
-                $this->stop_server();
+                if ($this->CurrentServerSlot->online() === TRUE) {
+                    $this->CurrentServerSlot->stop();
+                }
             }
         }
 
@@ -148,11 +101,20 @@ class control extends cContentPage {
         // --------------------------------------------------------------------
 
         $html .= "<h1>Server Status</h1>";
-        if ($this->server_online()) {
-            $html .= '<span style="color:#0d0; font-weight:bold; font-size:1.5em;">ONLINE</span><br>';
+
+        $html .= "<table>";
+        $html .= "<tr><th>Server</th><th>Status</th></tr>";
+        foreach (ServerSlot::listSlots() as $ss) {
+            $html .= "<tr>";
+            $html .= "<td>" . $ss->name() . "</td>";
+        if ($ss->online()) {
+            $html .= '<td style="color:#0d0; font-weight:bold;">online</td>';
         } else {
-            $html .= '<span style="color:#d00; font-weight:bold; font-size:1.5em;">OFFLINE</span><br>';
+            $html .= '<td style="color:#d00; font-weight:bold;">offline</td>';
         }
+            $html .= "</tr>";
+        }
+        $html .= "</table>";
 
 
 
@@ -160,54 +122,64 @@ class control extends cContentPage {
         //                            Server Control
         // --------------------------------------------------------------------
 
-        $html .= '<form action="" method="post">';
 
-        if (!$this->server_online()) {
+        foreach (ServerSlot::listSlots() as $ss) {
 
-            $html .= "<h1>Start Server</h1>";
+            if (!$acswuiUser->hasPermission("Session_Control_Slot" . $ss->id())) continue;
 
-            // preset
-            $html .= "Server Preset";
-            $html .= '<select name="PRESET_ID">';
-            foreach ($acswuiDatabase->fetch_2d_array("ServerPresets", ['Id', "Name"], [], "Name") as $sp) {
-                $selected = ($this->CurrentPresetId == $sp['Id']) ? "selected" : "";
-                $html .= '<option value="' . $sp['Id'] . '"' . $selected . '>' . $sp['Name'] . '</option>';
+            $html .= "<h1>Cobntrol Server &quot;" . $ss->name() . "&quot;</h1>";
+            $html .= '<form action="" method="post">';
+            $html .= '<input type="hidden" name="SERVERSLOT_ID" value="' . $ss->id() . '">';
+
+            if ($ss->online()) {
+                $html .= '<span style="color:#0d0; font-weight:bold; font-size: 1.5em;">online</span><br>';
+                $html .= '<button type="submit" name="ACTION" value="STOP_SERVER">' . _("Stop Server") . '</button>';
+
+            } else {
+                $html .= '<span style="color:#d00; font-weight:bold; font-size: 1.0em;">offline</span>';
+
+                // preset
+                $html .= "Server Preset";
+                $html .= '<select name="PRESET_ID">';
+                foreach (ServerPreset::listPresets() as $sp) {
+                    if ($this->CurrentPreset === NULL) $this->CurrentPreset = $sp;
+                    $selected = ($this->CurrentPreset->id() == $sp->id()) ? "selected" : "";
+                    $html .= '<option value="' . $sp->id() . '"' . $selected . '>' . $sp->name() . '</option>';
+                }
+                $html .= '</select>';
+                $html .= '<br>';
+
+                # car class
+                $html .= "Car Class";
+                $html .= '<select name="CARCLASS_ID">';
+                foreach (CarClass::listClasses() as $cc) {
+                    if ($this->CurrentCarClass === NULL) $this->CurrentCarClass = $cc;
+                    $selected = ($this->CurrentCarClass->id() == $cc->id()) ? "selected" : "";
+                    $html .= '<option value="' . $cc->id() . '"' . $selected . '>' . $cc->name() . '</option>';
+                }
+                $html .= '</select>';
+                $html .= '<br>';
+
+                # track
+                $html .= "Track";
+                $html .= '<select name="TRACK_ID">';
+                foreach (Track::listTracks() as $t) {
+                    if ($this->CurrentTrack === NULL) $this->CurrentTrack = $t;
+                    $selected = ($this->CurrentTrack->id() == $t->id()) ? "selected" : "";
+                    $name_str = $t->name();
+                    $name_str .= " (" . sprintf("%0.1f", $t->length()/1000) . "km";
+                    $name_str .= ", " . $t->pitboxes() . "pits)";
+                    $html .= '<option value="' . $t->id() . '"' . $selected . ">" . $name_str . "</option>";
+                }
+                $html .= '</select>';
+                $html .= '<br>';
+
+                # start
+                $html .= '<button type="submit" name="ACTION" value="START_SERVER">' . _("Start Server") . '</button>';
             }
-            $html .= '</select>';
-            $html .= '<br>';
 
-            # car class
-            $html .= "Car Class";
-            $html .= '<select name="CARCLASS_ID">';
-            foreach (CarClass::listClasses() as $carclass) {
-                $selected = ($this->CurrentCarClassId == $carclass->id()) ? "selected" : "";
-                $html .= '<option value="' . $carclass->id() . '"' . $selected . '>' . $carclass->name() . '</option>';
-            }
-            $html .= '</select>';
-            $html .= '<br>';
-
-            # track
-            $html .= "Track";
-            $html .= '<select name="TRACK_ID">';
-            foreach (Track::listTracks() as $t) {
-                $selected = ($this->CurrentTrackId == $t->id()) ? "selected" : "";
-                $name_str = $t->name();
-                $name_str .= " (" . sprintf("%0.1f", $t->length()/1000) . "km";
-                $name_str .= ", " . $t->pitboxes() . "pits)";
-                $html .= '<option value="' . $t->id() . '"' . $selected . ">" . $name_str . "</option>";
-            }
-            $html .= '</select>';
-            $html .= '<br>';
-
-            # start
-            $html .= '<button type="submit" name="ACTION" value="START_SERVER">' . _("Start Server") . '</button>';
-
-
-
-        } else {
-            $html .= '<button type="submit" name="ACTION" value="STOP_SERVER">' . _("Stop Server") . '</button>';
+            $html .= '</form>';
         }
-        $html .= '</form>';
 
 
         return $html;
@@ -277,148 +249,6 @@ class control extends cContentPage {
         }
 
         return $preset_data;
-    }
-
-
-    public function stop_server() {
-        if (!$this->server_online()) return;
-
-        $old_path = getcwd();
-        $cmd_str = array();
-        $cmd_ret = 0;
-        $cmd = "pgrep acServer";
-        exec($cmd, $cmd_str, $cmd_ret);
-        if ($cmd_ret == 0) {
-            $cmd = "kill " . $cmd_str[0];
-            exec($cmd, $cmd_str, $cmd_ret);
-        }
-        sleep(2);
-    }
-
-
-    public function start_server() {
-        global $acswuiConfig;
-        global $acswuiLog;
-        global $acswuiDatabase;
-
-        if ($this->server_online()) return;
-
-
-        // --------------------------------------------------------------------
-        //                        server_cfg.ini
-        // --------------------------------------------------------------------
-
-        // open server_cfg.ini for writing
-        $server_cfg_path = $acswuiConfig->AcServerPath . "/cfg/server_cfg.ini";
-        $server_cfg_fd = fopen($server_cfg_path, 'w');
-        if ($server_cfg_fd === False) {
-            $acswuiLog->logError("Cannot open '$server_cfg_path' for writing!");
-            return;
-        }
-
-        // get server_cfg data
-        $server_cfg_data = $this->getPresetData();
-
-        // determine track
-        $track = new Track($this->CurrentTrackId);
-        $server_cfg_data['SERVER']['TRACK'] = $track->track();
-        $server_cfg_data['SERVER']['CONFIG_TRACK'] = $track->Config();
-
-        // determine cars
-        $carclass = new CarClass($this->CurrentCarClassId);
-        $car_names_list = [];
-        foreach ($carclass->cars() as $car) {
-            $car_names_list[] = $car->model();
-        }
-        $server_cfg_data['SERVER']['CARS'] = implode(";", $car_names_list);
-
-
-        // write server_cfg
-        foreach ($server_cfg_data as $section_name => $section_data) {
-            if ($section_name == "WEATHER") $section_name .= "_0";
-            fwrite($server_cfg_fd, "[$section_name]\n");
-
-            foreach ($section_data as $tag_name => $tag_value) {
-                fwrite($server_cfg_fd, "$tag_name=$tag_value\n");
-            }
-
-            fwrite($server_cfg_fd, "\n");
-        }
-
-        // finish creating server_cfg.ini
-        fclose($server_cfg_fd);
-
-
-
-        // --------------------------------------------------------------------
-        //                        entry_list.ini
-        // --------------------------------------------------------------------
-
-        // open entry_list.ini for writing
-        $entry_list_path = $acswuiConfig->AcServerPath . "/cfg/entry_list.ini";
-        $entry_list_fd = fopen($entry_list_path, 'w');
-        if ($entry_list_fd === False) {
-            $acswuiLog->logError("Cannot open '$entry_list_path' for writing!");
-            return;
-        }
-
-        $entries = new CarEntries($carclass->cars());
-        for ($entry_idx = 0; $entry_idx < $track->pitboxes(); ++$entry_idx) {
-
-            $car_name = $car_names_list[$entry_idx % count($car_names_list)];
-
-            $entry = $entries->getNextEntry();
-
-            fwrite($entry_list_fd, "[CAR_$entry_idx]\n");
-            fwrite($entry_list_fd, "MODEL=" . $entry->model() . "\n");
-            fwrite($entry_list_fd, "SKIN=" . $entry->skin() . "\n");
-            fwrite($entry_list_fd, "SPECTATOR_MODE=0\n");
-            fwrite($entry_list_fd, "DRIVERNAME=\n");
-            fwrite($entry_list_fd, "TEAM=\n");
-            fwrite($entry_list_fd, "GUID=\n");
-            fwrite($entry_list_fd, "BALLAST=0\n");
-            fwrite($entry_list_fd, "RESTRICTOR=0\n");
-            fwrite($entry_list_fd, "\n");
-        }
-
-
-        // finish creating entry_list.ini
-        fclose($entry_list_fd);
-
-
-
-        // --------------------------------------------------------------------
-        //                        Start Server
-        // --------------------------------------------------------------------
-
-        $old_path = getcwd();
-        $cmd_str = array();
-        $cmd_ret = 0;
-        $cmd = "nohup ". $acswuiConfig->AcswuiCmd . " -vvvvvv srvrun";
-        $cmd .= " --db-host \"" . $acswuiConfig->DbHost . "\"";
-        $cmd .= " --db-port \"" . $acswuiConfig->DbPort . "\"";
-        $cmd .= " --db-database \"" . $acswuiConfig->DbDatabase . "\"";
-        $cmd .= " --db-user \"" . $acswuiConfig->DbUser . "\"";
-        $cmd .= " --db-password \"" . $acswuiConfig->DbPasswd . "\"";
-        $cmd .= " --path-acs \"" . $acswuiConfig->AcServerPath . "\"";
-        $cmd .= " --acs-log \"" . $acswuiConfig->LogPath . "/acserver.log\"";
-        $cmd .= " --path-server-cfg \"" . $acswuiConfig->AcServerPath . "/cfg/server_cfg.ini\"";
-        $cmd .= " --path-entry-list \"" . $acswuiConfig->AcServerPath . "/cfg/entry_list.ini\"";
-//         $cmd .= " </dev/null >" . $acswuiConfig->LogPath . "/acswui_srvrun.log 2>&1 &";
-        $cmd .= " >/dev/null 2>&1 &";
-        exec($cmd, $cmd_str, $cmd_ret);
-//         foreach ($cmd_str as $line) echo "$line<br>";
-//         echo "Server started: $cmd_ret<br>";
-//         echo htmlentities($cmd) ."<br>";
-
-        sleep(2);
-
-        if ($cmd_ret !== 0) {
-            $msg = "Could not start server!\n";
-            $msg .= "CMD: $cmd\n";
-            $acswuiLog->logError($msg);
-        }
-
     }
 }
 
