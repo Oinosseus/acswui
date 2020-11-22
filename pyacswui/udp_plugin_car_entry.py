@@ -158,6 +158,8 @@ class UdpPluginCarEntry(object):
         fields['LapTime'] = laptime
         fields['Cuts'] = cuts
         fields['Grip'] = grip
+        fields['Ballast'] = self.__ballast
+        fields['Restrictor'] = self.__restrictor
         self.__db.insertRow("Laps", fields)
 
         self.__last_lap_time = laptime
