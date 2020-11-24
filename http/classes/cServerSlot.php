@@ -139,7 +139,7 @@ class ServerSlot {
         $cmd .= " >/dev/null 2>&1 &";
         exec($cmd, $cmd_str, $cmd_ret);
         foreach ($cmd_str as $line) echo "$line<br>";
-        echo "Server started: $cmd_ret<br>";
+//         echo "Server started: $cmd_ret<br>";
 //         echo htmlentities($cmd) ."<br>";
 
         sleep(2);

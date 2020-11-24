@@ -11,6 +11,10 @@ class EntryListCar {
         $this->Car = $car;
     }
 
+    public function car() {
+        return $this->Car;
+    }
+
     public function model() {
         return $this->Car->model();
     }
@@ -86,8 +90,8 @@ class EntryList {
             fwrite($fd, "DRIVERNAME=\n");
             fwrite($fd, "TEAM=\n");
             fwrite($fd, "GUID=\n");
-            fwrite($fd, "BALLAST=0\n");
-            fwrite($fd, "RESTRICTOR=0\n");
+            fwrite($fd, "BALLAST=" . $this->CarClass->ballast($entry->car()) . "\n");
+            fwrite($fd, "RESTRICTOR=" . $this->CarClass->restrictor($entry->car()) . "\n");
             fwrite($fd, "\n");
         }
 
