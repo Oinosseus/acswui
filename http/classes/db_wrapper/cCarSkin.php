@@ -33,6 +33,22 @@ class CarSkin {
         return $this->Car->id();
     }
 
+    //! @return Html img tag containing preview image
+    public function htmlImg($img_id="", $max_height=NULL) {
+        global $acswuiConfig;
+
+        $car_model = $this->car()->model();
+        $car_name = $this->car()->name();
+        $car_brand = $this->car()->brand();
+        $skin = $this->skin();
+        $img_id = ($img_id == "") ? "":"id=\"$img_id\"";
+        $max_height = ($max_height === NULL) ? "" : "height=\"$max_height\"";
+
+        $path = $acswuiConfig->AcsContent . "/content/cars/$car_model/skins/$skin/preview.jpg";
+
+        return "<img src=\"$path\" $img_id alt=\"$car_model $skin\" title=\"Brand: $car_brand\nCar: $car_name\nSkin: $skin\" $max_height>";
+    }
+
     //! @return Name of the skin
     public function skin() {
         if ($this->Skin === NULL) $this->updateFromDb();

@@ -227,7 +227,8 @@ class CommandInstallHttp(Command):
         self.__db.appendTable("CarClassesMap")
         self.__db.appendColumnInt("CarClassesMap", 'CarClass')
         self.__db.appendColumnInt("CarClassesMap", 'Car')
-        self.__db.appendColumnInt("CarClassesMap", 'Ballast')
+        self.__db.appendColumnSmallInt("CarClassesMap", 'Ballast')
+        self.__db.appendColumnSmallInt("CarClassesMap", 'Restrictor')
 
         # check table RaceSeries
         Verbosity(self.Verbosity).print("check database table `RaceSeries`")
@@ -473,12 +474,9 @@ class CommandInstallHttp(Command):
         if len(self.__db.findIds("Groups", {"Name": "Driver"})) == 0:
             Verbosity(self.Verbosity).print("Create group 'Driver")
             self.__db.insertRow("Groups", {"Name": "Driver"})
-        if len(self.__db.findIds("Groups", {"Name": "Race Orga"})) == 0:
-            Verbosity(self.Verbosity).print("Create group 'Race Orga")
-            self.__db.insertRow("Groups", {"Name": "Race Orga"})
-        if len(self.__db.findIds("Groups", {"Name": "Server Admin"})) == 0:
-            Verbosity(self.Verbosity).print("Create group 'Server Admin")
-            self.__db.insertRow("Groups", {"Name": "Server Admin"})
+        if len(self.__db.findIds("Groups", {"Name": "Car Expert"})) == 0:
+            Verbosity(self.Verbosity).print("Create group 'Car Expert")
+            self.__db.insertRow("Groups", {"Name": "Car Expert"})
 
         # default server preset 'Practice'
         with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "basic_data_default_presets.json"), "r") as f:

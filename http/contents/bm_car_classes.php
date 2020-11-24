@@ -7,7 +7,8 @@ class bm_car_classes extends cContentPage {
         $this->TextDomain = "acswui";
         $this->PageTitle  = _("Car Classes");
         $this->RequirePermissions = ["View_ServerContent"];
-        $this->EditPermission     = 'CarClass_Edit';
+        $this->CurrentCarClass = NULL;
+        $this->CanEdit = FALSE;
     }
 
     public function getHtml() {
@@ -23,6 +24,8 @@ class bm_car_classes extends cContentPage {
         $carclass_name = "";
         $carclass_cars = array(); // a list of cars that are in the car class
 
+        // check permisstions
+        if ($acswuiUser->hasPermission('CarClass_Edit')) $this->CanEdit = TRUE;
 
 
         // --------------------------------------------------------------------
@@ -31,34 +34,34 @@ class bm_car_classes extends cContentPage {
 
         // get requested class
         if (isset($_REQUEST['CARCLASS_ID'])) {
-            $carclass_id = $_REQUEST['CARCLASS_ID'];
+            $this->CurrentCarClass = new CarClass((int) $_REQUEST['CARCLASS_ID']);
         } else if (isset($_SESSION['CARCLASS_ID'])) {
-            $carclass_id = $_SESSION['CARCLASS_ID'];
+            $this->CurrentCarClass = new CarClass((int) $_SESSION['CARCLASS_ID']);
         }
 
-        // check requested car class
-        if ($carclass_id !== 'NEW_CARCLASS') {
-            $carclass_id_exists = False;
-            $carclass_id_first  = Null;
-            foreach ($acswuiDatabase->fetch_2d_array("CarClasses", ['Id', 'Name'], []) as $rs) {
-                // check if $carclass_id exists
-                if ($rs['Id'] === $carclass_id) {
-                    $carclass_id_exists = True;
-                    $carclass_name = $rs['Name'];
-                }
-                // save first existing Id
-                if (is_null($carclass_id_first)) {
-                    $carclass_id_first = $rs['Id'];
-                }
-            }
-
-            // set race class if request is invalid
-            if ($carclass_id_exists !== True)
-                $carclass_id = $carclass_id_first;
-
-            // save last requested race class
-            $_SESSION['CARCLASS_ID'] = $carclass_id;
-        }
+//         // check requested car class
+//         if ($carclass_id !== 'NEW_CARCLASS') {
+//             $carclass_id_exists = False;
+//             $carclass_id_first  = Null;
+//             foreach ($acswuiDatabase->fetch_2d_array("CarClasses", ['Id', 'Name'], []) as $rs) {
+//                 // check if $carclass_id exists
+//                 if ($rs['Id'] === $carclass_id) {
+//                     $carclass_id_exists = True;
+//                     $carclass_name = $rs['Name'];
+//                 }
+//                 // save first existing Id
+//                 if (is_null($carclass_id_first)) {
+//                     $carclass_id_first = $rs['Id'];
+//                 }
+//             }
+//
+//             // set race class if request is invalid
+//             if ($carclass_id_exists !== True)
+//                 $carclass_id = $carclass_id_first;
+//
+//             // save last requested race class
+//             $_SESSION['CARCLASS_ID'] = $carclass_id;
+//         }
 
 
 
@@ -66,43 +69,49 @@ class bm_car_classes extends cContentPage {
         //                             SAVE ACTION
         // --------------------------------------------------------------------
 
-        if ($acswuiUser->hasPermission($this->EditPermission) && isset($_REQUEST['ACTION']) && $_REQUEST['ACTION']=="SAVE") {
 
-            // create new car class
-            if ($carclass_id === "NEW_CARCLASS" && isset($_POST['CARCLASS_NAME'])) {
-                $carclass_id = $acswuiDatabase->insert_row("CarClasses", ["Name" => $_POST['CARCLASS_NAME']]);
-                $_SESSION['CARCLASS_ID'] = $carclass_id;
+        // delete car class
+        if (   $this->CanEdit
+            && isset($_REQUEST['ACTION'])
+            && $this->CurrentCarClass !== NULL
+            && $_REQUEST['ACTION'] == "DELETE") {
+            $this->CurrentCarClass->delete();
+            $this->CurrentCarClass = NULL;
+        }
+
+        // new car class
+        if (   $this->CanEdit
+            && isset($_REQUEST['ACTION'])
+            && $_REQUEST['ACTION'] == "NEW") {
+            $this->CurrentCarClass = CarClass::createNew(_("New Car Class Name"));
+        }
+
+        // delete car
+        if ($this->CurrentCarClass !== NULL && $this->CanEdit && isset($_REQUEST['DELETE_CAR'])) {
+            $car = new Car((int) $_REQUEST['DELETE_CAR']);
+            $this->CurrentCarClass->removeCar($car);
+        }
+
+        // save
+        if (   $this->CanEdit
+            && isset($_REQUEST['ACTION'])
+            && $this->CurrentCarClass !== NULL
+            && $_REQUEST['ACTION'] == "SAVE") {
+
+            // save name
+            $this->CurrentCarClass->rename($_POST['CARCLASS_NAME']);
+
+            // save ballast/restrictor
+            foreach ($this->CurrentCarClass->cars() as $car) {
+                $id = $car->id();
+                $this->CurrentCarClass->setBallast($car, (int) $_POST["BALLAST_$id"]);
+                $this->CurrentCarClass->setRestrictor($car, (int) $_POST["RESTRICTOR_$id"]);
             }
 
-            // save car class
-            $carclass_name = $_POST['CARCLASS_NAME'];
-            $acswuiDatabase->update_row("CarClasses", $carclass_id, ['Name' => $carclass_name]);
-
-            // remove race class car
-            if (isset($_REQUEST['DELETE_CAR'])) {
-                $del_id = $_REQUEST['DELETE_CAR'];
-
-                // delete race class car
-                $acswuiDatabase->delete_row("CarClassesMap", $del_id);
-            }
-
-            // update carclass map
-            foreach($acswuiDatabase->fetch_2d_array("CarClassesMap", ['Id'], ['CarClass' => $carclass_id]) as $ccm) {
-
-                // overwrite with new values
-                $id = $ccm['Id'];
-                $field_list = array();
-                if (isset($_POST["BALLAST_$id"])) $field_list["Ballast"] = $_POST["BALLAST_$id"];
-
-                // update database
-                if (count($field_list)) $acswuiDatabase->update_row("CarClassesMap", $id, $field_list);
-            }
-
-            // map new cars
-            foreach($acswuiDatabase->fetch_2d_array("Cars", ["Id"]) as $c) {
-                if (isset($_POST['ADD_CAR_' . $c['Id']])) {
-                    $acswuiDatabase->insert_row("CarClassesMap", ['CarClass' => $carclass_id, 'Car' => $c['Id']]);
-                }
+            // add cars
+            foreach (Car::listCars() as $car) {
+                if (!isset($_POST["ADD_CAR_" . $car->id()])) continue;
+                $this->CurrentCarClass->addCar($car);
             }
         }
 
@@ -112,29 +121,39 @@ class bm_car_classes extends cContentPage {
         //                     Car Class Selection
         // --------------------------------------------------------------------
 
-        $html .= "<form action=\"?ACTION=\" method=\"post\">";
+        $html .= "<form method=\"post\">";
         $html .= "<select name=\"CARCLASS_ID\" onchange=\"this.form.submit()\">";
 
         # list existing classes
-        $carclasses = $acswuiDatabase->fetch_2d_array("CarClasses", ['Id', "Name"], [], "Name");
-        foreach ($carclasses as $cc) {
-            $selected = ($cc['Id'] == $carclass_id) ? "selected" : "";
-            $html .= "<option value=\"" . $cc['Id'] . "\" $selected>" . $cc['Name'] ."</option>";
+        foreach (CarClass::listClasses() as $cc) {
+            if ($this->CurrentCarClass === NULL) $this->CurrentCarClass = $cc;
+            $selected = ($cc->id() == $this->CurrentCarClass->id()) ? "selected" : "";
+            $html .= "<option value=\"" . $cc->id() . "\" $selected>" . $cc->name() ."</option>";
         }
 
-        # add new class
-        if ($acswuiUser->hasPermission($this->EditPermission)) {
-            # insert empty select if no classes availale
-            # workaround for creating a new class when no class is available
-            if (count($carclasses) == 0)
-                $html .= "<option value=\"\" selected></option>";
-
-            # create new
-            $selected = ($carclass_id == 'NEW_CARCLASS') ? "selected" : "";
-            $html .= "<option value=\"NEW_CARCLASS\" $selected>&lt;" . _("Create New Car Class") . "&gt;</option>";
-        }
+//         # add new class
+//         if ($this->CanEdit) {
+//             # insert empty select if no classes availale
+//             # workaround for creating a new class when no class is available
+//             if (count(CarClass::listClasses()) == 0)
+//                 $html .= "<option value=\"\" selected></option>";
+//
+//             # create new
+//             $html .= "<option value=\"NEW_CARCLASS\">&lt;" . _("Create New Car Class") . "&gt;</option>";
+//         }
 
         $html .= "</select>";
+        $html .= "</form>";
+
+        // add/delete class
+        $html .= "<form method=\"post\">";
+        if ($this->CurrentCarClass !== NULL) {
+            $id = $this->CurrentCarClass->id();
+            $html .= "<input type=\"hidden\" name=\"CARCLASS_ID\" value=\"$id\">";
+            $html .= "<button type=\"submit\" name=\"ACTION\" value=\"DELETE\">" . _("Delete Car Class") . "</button>";
+        }
+        $html .= " ";
+        $html .= "<button type=\"submit\" name=\"ACTION\" value=\"NEW\">" . _("Add New Car Class") . "</button>";
         $html .= "</form>";
 
 
@@ -143,14 +162,25 @@ class bm_car_classes extends cContentPage {
         //                        General Class Setup
         // --------------------------------------------------------------------
 
-        $html .= "<form action=\"?ACTION=SAVE\" method=\"post\">";
-        $html .= "<input type=\"hidden\" name=\"CARCLASS_ID\" value=\"$carclass_id\">";
+        $html .= "<form method=\"post\">";
 
-        $html .= "<h1>" . _("General Car Class Setup") . "</h1>";
+        if ($this->CurrentCarClass !== NULL) {
+            $id = $this->CurrentCarClass->id();
+            $name = $this->CurrentCarClass->name();
 
-        # class name
-        $permitted = $acswuiUser->hasPermission($this->EditPermission);
-        $html .= "Name: <input type=\"text\" name=\"CARCLASS_NAME\" value=\"$carclass_name\" " . (($permitted) ? "" : "readonly") . "/>";
+            $html .= "<input type=\"hidden\" name=\"CARCLASS_ID\" value=\"$id\">";
+
+            $html .= "<h1>" . _("General Car Class Setup") . "</h1>";
+
+            # class name
+            if ($this->CanEdit) {
+                $html .= "Name: <input type=\"text\" name=\"CARCLASS_NAME\" value=\"$name\" /> ";
+                $html .= "<button type=\"submit\" name=\"ACTION\" value=\"SAVE\">" . _("Save Car Class") . "</button> ";
+            } else {
+                $html .= "Name: <span class=\"disabled_input\">$name</span>";
+            }
+
+        }
 
 
 
@@ -158,65 +188,59 @@ class bm_car_classes extends cContentPage {
         //                           Available Cars
         // --------------------------------------------------------------------
 
-        $html .= "<h1>" . _("Cars Assinged To Class") . "</h1>";
+        if ($this->CurrentCarClass !== NULL) {
 
-        // race class cars
-        $html .= "<table id=\"available_cars\">";
-        $html .= "<tr>";
-        $html .= "<th>". _("Car") ."</th>";
-        $html .= "<th>". _("Ballast") ."</th>";
-        $html .= "</tr>";
+            $html .= "<h1>" . _("Cars Assinged To Class") . "</h1>";
 
-        foreach ($acswuiDatabase->fetch_2d_array("CarClassesMap", ['Id', "Car", 'Ballast'], ['CarClass' => $carclass_id]) as $ccm)  {
-            // remeber existing car
-            $carclass_cars[] = $ccm['Car'];
-
-            // get car infos
-            $cars  = $acswuiDatabase->fetch_2d_array("Cars", ['Id', 'Car', "Name", 'Brand'], ['Id' => $ccm['Car']]);
-            $car   = $cars[0];
-            $skins = $acswuiDatabase->fetch_2d_array("CarSkins", ['Id'], ['Car' => $ccm['Car']]);
-            $skin  = $skins[0];
-
-            // check edit permissions
-            $readonly = ($acswuiUser->hasPermission($this->EditPermission)) ? "":"readonly";
-            $disabled = ($acswuiUser->hasPermission($this->EditPermission)) ? "":"disabled";
-
-            // get values
-            $ballast = $ccm['Ballast'];
-
-            // output row
-            $rsc_id = $ccm['Id'];
+            // race class cars
+            $html .= "<table id=\"available_cars\">";
             $html .= "<tr>";
-            $html .= "<td>" . $car['Name'] . getImgCarSkin($skin['Id'], $car['Car']) . "</td>";
-            $html .= "<td><input type=\"number\"   name=\"BALLAST_$rsc_id\" value=\"$ballast\" $readonly></td>";
-            if ($acswuiUser->hasPermission($this->EditPermission)) {
-                $html .= "<td><button type=\"submit\"  name=\"DELETE_CAR\" value=\"$rsc_id\" >" . _("delete") . "</button></td>";
-            }
+            $html .= "<th>". _("Car") ."</th>";
+            $html .= "<th>". _("Ballast") ."</th>";
+            $html .= "<th>". _("Restrictor") ."</th>";
             $html .= "</tr>";
+
+            foreach ($this->CurrentCarClass->cars() as $car)  {
+//                 // remeber existing car
+//                 $carclass_cars[] = $ccm['Car'];
+
+                // get values
+                $ballast = $this->CurrentCarClass->ballast($car);
+                $restrictor = $this->CurrentCarClass->restrictor($car);
+
+                // output row
+                $car_id = $car->id();
+                $html .= "<tr>";
+                $html .= "<td>" . $car->name() . getImgCarSkin($car->skins()[0]->id(), $car->id()) . "</td>";
+                if ($this->CanEdit) {
+                    $html .= "<td><input type=\"number\"   name=\"BALLAST_$car_id\" min=\"0\" max=\"9999\" step=\"1\" size=\"5\" value=\"$ballast\"> kg</td>";
+                    $html .= "<td><input type=\"number\"   name=\"RESTRICTOR_$car_id\" max=\"100\" min=\"0\" step=\"1\" size=\"3\" value=\"$restrictor\"> &percnt;</td>";
+                    $html .= "<td><button type=\"submit\"  name=\"DELETE_CAR\" value=\"$car_id\" >" . _("delete") . "</button></td>";
+                } else {
+                    $html .= "<td><span class=\"disabled_input\">". HumanValue::format($ballast, "kg") . "</span></td>";
+                    $html .= "<td><span class=\"disabled_input\">". HumanValue::format($restrictor, "%") . "</span></td>";
+                }
+                $html .= "</tr>";
+            }
+
+            $html .= '</table>';
         }
-
-
-        if ($acswuiUser->hasPermission($this->EditPermission)) {
-            $html .= "<tr><td colspan=\"5\"><button type=\"submit\">" . _("Save Car Class") . "</button></td></tr>";
-        }
-
-        $html .= '</table>';
-
 
         // --------------------------------------------------------------------
         //                           Car Add Form
         // --------------------------------------------------------------------
 
-        if ($acswuiUser->hasPermission($this->EditPermission)) {
+        if ($this->CanEdit && $this->CurrentCarClass !== NULL) {
 
             $html .= "<h1>" . _("Add New Cars") . "</h1>";
             $html .= _("Select below all cars that shall be added to the car class.");
 
             // find all brands
             $brands = array();
-            foreach ($acswuiDatabase->fetch_2d_array("Cars", ["Brand"], [], "Brand") as $b) {
-                if (!in_array($b['Brand'], $brands)) $brands[count($brands)] = $b['Brand'];
+            foreach (Car::listCars() as $car) {
+                if (!in_array($car->brand(), $brands)) $brands[] = $car->brand();
             }
+            natsort($brands);
 
             // view cars of each brand
             foreach ($brands as $b) {
@@ -224,31 +248,25 @@ class bm_car_classes extends cContentPage {
                 $html .= "<h2>$b</h2>";
 
                 // scan all cars of a brand
-                foreach($acswuiDatabase->fetch_2d_array("Cars", ["Id", "Car", "Brand", "Name"], ['Brand' => $b], "Name") as $c) {
-
-                    // get skins
-                    $skins = $acswuiDatabase->fetch_2d_array("CarSkins", ['Id', 'Skin'], ['Car' => $c['Id']]);
+                foreach(Car::listCars() as $car) {
+                    if ($car->brand() != $b) continue;
 
                     // view car
                     $html .= '<div class="car_add_option">';
-                    if (in_array($c['Id'], $carclass_cars)) {
-                        $html .= "<input type=\"checkbox\" id=\"car_add_option_id_" . $c['Id'] . "\" checked disabled></input>";
+                    if ($this->CurrentCarClass->validCar($car)) {
+                        $html .= "<input type=\"checkbox\" id=\"car_add_option_id_" . $car->id() . "\" checked disabled></input>";
                     } else {
-                        $html .= "<input type=\"checkbox\" id=\"car_add_option_id_" . $c['Id'] . "\" name=\"ADD_CAR_" . $c['Id'] . "\" value=\"TRUE\"></input>";
+                        $html .= "<input type=\"checkbox\" id=\"car_add_option_id_" . $car->id() . "\" name=\"ADD_CAR_" . $car->id() . "\" value=\"TRUE\"></input>";
                     }
-                    $html .= "<label for=\"car_add_option_id_" . $c['Id'] . "\">";
-                    $html .= $c["Name"];
-                    if (count($skins) > 0) $html .= getImgCarSkin($skins[0]['Id']);
+                    $html .= "<label for=\"car_add_option_id_" . $car->id() . "\">";
+                    $html .= $car->name();
+                    if (count($car->skins()) > 0) $html .= $car->skins()[0]->htmlImg();
                     $html .= "</label></div>";
                 }
             }
         }
 
 
-
-        if ($acswuiUser->hasPermission($this->EditPermission)) {
-            $html .= "<br><br><button type=\"submit\">" . _("Save Car Class") . "</button>";
-        }
 
         $html .= '</form>';
 

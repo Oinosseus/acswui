@@ -88,7 +88,7 @@ ul.MainMenu li a.active {
 
 ul.MainMenu ul {
   list-style-type: none;
-  padding-left: 20px;
+  padding-left: 0px;
   margin: 0px;
   margin-right: 5px;
   margin-top: 10px;
@@ -113,7 +113,7 @@ ul.MainMenu ul a {
   margin-left: 0px;
   box-shadow: none;
   border-radius: 0px;
-  width: 150px;
+/*   width: 150px; */
   background: none;
 }
 

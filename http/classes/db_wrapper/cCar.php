@@ -6,21 +6,46 @@
 class Car {
 
     private $Id = NULL;
+//     private $CarClass = NULL;
     private $Model = NULL;
     private $Name = NULL;
     private $Brand = NULL;
     private $Skins = NULL;
+    private static $AllCarsList = NULL;
 
     /**
      * @param $id Database table id
+     * @param $car_class An optional CarClass object
      */
-    public function __construct($id) {
+    public function __construct($id) {//, $car_class = NULL) {
         $this->Id = $id;
+//         $this->CarClass = $car_class;
+    }
+
+    //! @return User friendly brand name of the car
+    public function brand() {
+        if ($this->Brand === NULL) $this->updateFromDb();
+        return $this->Brand;
     }
 
     //! @return The database table id
     public function id() {
         return $this->Id;
+    }
+
+    //! @return An array of all available Car objects, ordered by name
+    public static function listCars() {
+        global $acswuiDatabase;
+
+        if (Car::$AllCarsList !== NULL) return Car::$AllCarsList;
+
+        Car::$AllCarsList = array();
+
+        foreach ($acswuiDatabase->fetch_2d_array("Cars", ['Id'], [], 'Name') as $row) {
+            Car::$AllCarsList[] = new Car($row['Id']);
+        }
+
+        return Car::$AllCarsList;
     }
 
     //! @return model name of the car
@@ -33,12 +58,6 @@ class Car {
     public function name() {
         if ($this->Name === NULL) $this->updateFromDb();
         return $this->Name;
-    }
-
-    //! @return User friendly brand name of the car
-    public function brand() {
-        if ($this->Brand === NULL) $this->updateFromDb();
-        $this->Brand;
     }
 
     /**
