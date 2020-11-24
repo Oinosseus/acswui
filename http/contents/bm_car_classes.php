@@ -20,12 +20,10 @@ class bm_car_classes extends cContentPage {
 
         // reused variables
         $html  = '';
-        $carclass_id = 0;
-        $carclass_name = "";
-        $carclass_cars = array(); // a list of cars that are in the car class
 
         // check permisstions
         if ($acswuiUser->hasPermission('CarClass_Edit')) $this->CanEdit = TRUE;
+
 
 
         // --------------------------------------------------------------------
@@ -38,30 +36,6 @@ class bm_car_classes extends cContentPage {
         } else if (isset($_SESSION['CARCLASS_ID'])) {
             $this->CurrentCarClass = new CarClass((int) $_SESSION['CARCLASS_ID']);
         }
-
-//         // check requested car class
-//         if ($carclass_id !== 'NEW_CARCLASS') {
-//             $carclass_id_exists = False;
-//             $carclass_id_first  = Null;
-//             foreach ($acswuiDatabase->fetch_2d_array("CarClasses", ['Id', 'Name'], []) as $rs) {
-//                 // check if $carclass_id exists
-//                 if ($rs['Id'] === $carclass_id) {
-//                     $carclass_id_exists = True;
-//                     $carclass_name = $rs['Name'];
-//                 }
-//                 // save first existing Id
-//                 if (is_null($carclass_id_first)) {
-//                     $carclass_id_first = $rs['Id'];
-//                 }
-//             }
-//
-//             // set race class if request is invalid
-//             if ($carclass_id_exists !== True)
-//                 $carclass_id = $carclass_id_first;
-//
-//             // save last requested race class
-//             $_SESSION['CARCLASS_ID'] = $carclass_id;
-//         }
 
 
 
@@ -201,8 +175,6 @@ class bm_car_classes extends cContentPage {
             $html .= "</tr>";
 
             foreach ($this->CurrentCarClass->cars() as $car)  {
-//                 // remeber existing car
-//                 $carclass_cars[] = $ccm['Car'];
 
                 // get values
                 $ballast = $this->CurrentCarClass->ballast($car);
