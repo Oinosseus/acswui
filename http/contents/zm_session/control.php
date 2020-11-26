@@ -53,21 +53,21 @@ class control extends cContentPage {
             $this->CurrentPreset = new ServerPreset((int) $_POST['PRESET_ID']);
             $_SESSION['SERVER_CONTROL_PRESET_ID'] = $this->CurrentPreset->id();
         } else if (isset($_SESSION['SERVER_CONTROL_PRESET_ID'])) {
-            $this->CurrentPresetId = new ServerPreset((int) $_SESSION['SERVER_CONTROL_PRESET_ID']);
+            $this->CurrentPreset = new ServerPreset((int) $_SESSION['SERVER_CONTROL_PRESET_ID']);
         }
 
         if (isset($_POST['CARCLASS_ID'])) {
             $this->CurrentCarClass = new CarClass((int) $_POST['CARCLASS_ID']);
             $_SESSION['SERVER_CONTROL_CARCLASS_ID'] = $this->CurrentCarClass->id();
         } else if (isset($_SESSION['SERVER_CONTROL_CARCLASS_ID'])) {
-            $this->CurrentCarClassId = new CarClass((int) $_SESSION['SERVER_CONTROL_CARCLASS_ID']);
+            $this->CurrentCarClass = new CarClass((int) $_SESSION['SERVER_CONTROL_CARCLASS_ID']);
         }
 
         if (isset($_POST['TRACK_ID'])) {
             $this->CurrentTrack = new Track((int) $_POST['TRACK_ID']);
             $_SESSION['SERVER_CONTROL_TRACK_ID'] = $this->CurrentTrack->id();
         } else if (isset($_SESSION['SERVER_CONTROL_TRACK_ID'])) {
-            $this->CurrentTrackId = new Track((int) $_SESSION['SERVER_CONTROL_TRACK_ID']);
+            $this->CurrentTrack = new Track((int) $_SESSION['SERVER_CONTROL_TRACK_ID']);
         }
 
 
