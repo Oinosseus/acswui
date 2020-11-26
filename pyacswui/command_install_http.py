@@ -140,7 +140,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnString("Tracks", "Track", 80)
         self.__db.appendColumnString("Tracks", "Config", 80)
         self.__db.appendColumnString("Tracks", "Name", 80)
-        self.__db.appendColumnFloat("Tracks", "Length")
+        self.__db.appendColumnUInt("Tracks", "Length")
         self.__db.appendColumnInt("Tracks", "Pitboxes")
 
         # check table Sessions
@@ -172,8 +172,8 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnUInt("Laps", "Laptime")
         self.__db.appendColumnInt("Laps", "Cuts")
         self.__db.appendColumnFloat("Laps", "Grip")
-        self.__db.appendColumnTinyInt("Laps", "Ballast")
-        self.__db.appendColumnSmallInt("Laps", "Restrictor")
+        self.__db.appendColumnSmallInt("Laps", "Ballast")
+        self.__db.appendColumnTinyInt("Laps", "Restrictor")
         self.__db.appendColumnCurrentTimestamp("Laps", "Timestamp")
 
         # check table CollisionEnv
