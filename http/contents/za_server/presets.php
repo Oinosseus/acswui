@@ -69,7 +69,8 @@ class presets extends cContentPage {
         // existing presets
         $current_preset_found = false;
         foreach (ServerPreset::listPresets() as $sp) {
-            if ($this->CurrentPreset !== NULL && $this->CurrentPreset->id() == $sp->id()) {
+            if ($this->CurrentPreset === NULL) $this->CurrentPreset = $sp;
+            if ($this->CurrentPreset->id() == $sp->id()) {
                 $selected = "selected";
                 $current_preset_found = true;
             } else {
