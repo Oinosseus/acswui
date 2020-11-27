@@ -356,9 +356,10 @@ class CommandInstallHttp(Command):
             car_skins = []
             if os.path.isdir(self.getArg('http-path-acs-content') + "/content/cars/" + car + "/skins"):
                 for skin in os.listdir(self.getArg('http-path-acs-content') + "/content/cars/" + car + "/skins"):
+                    if skin == "":
+                        raise NotImplementedError("Unexpected empty skin name for car '%s'" % car)
                     car_skins.append(skin)
 
-            Verbosity(self.Verbosity).print("Found car '" + car + "'")
 
             # get IDs of existing cars (should be exactly one car)
             existing_car_ids = self.__db.findIds("Cars", {"Car": car})
@@ -367,16 +368,19 @@ class CommandInstallHttp(Command):
             if len(existing_car_ids) == 0:
                 self.__db.insertRow("Cars", {"Car": car, "Name": car_name, "Parent": 0, "Brand": car_brand})
                 existing_car_ids = self.__db.findIds("Cars", {"Car": car})
+                Verbosity(self.Verbosity).print("Found new car '" + car + "'")
 
             # update all existing cars
             for eci in existing_car_ids:
                 self.__db.updateRow("Cars", eci, {"Car": car, "Name": car_name, "Parent": 0, "Brand": car_brand})
 
                 # insert not existing skins
+                added_skins = 0
                 for skin in car_skins:
                     existing_car_skins = self.__db.findIds("CarSkins", {"Car": eci, "Skin": skin})
                     if len(existing_car_skins) == 0:
                         self.__db.insertRow("CarSkins", {"Car": eci, "Skin": skin})
+                        added_skins += 1
 
 
 
@@ -405,6 +409,11 @@ class CommandInstallHttp(Command):
                 length *= 1000
             #print("MATCH:", length, unit, "//", rest)
 
+            # Guessing when a track is less than 100m the length was desired to be in [km]
+            # workaround for tracks with wrong comma setting
+            if length < 100:
+                length *= 1000
+
             return length
 
 
@@ -423,7 +432,6 @@ class CommandInstallHttp(Command):
         for track in sorted(os.listdir(self.getArg('http-path-acs-content') + "/content/tracks")):
             track_path   = self.getArg('http-path-acs-content') + "/content/tracks/" + track
 
-            Verbosity(self.Verbosity).print("Found track '" + track + "'")
 
             # update track
             if os.path.isfile(track_path + "/ui/ui_track.json"):
@@ -435,6 +443,7 @@ class CommandInstallHttp(Command):
                 existing_track_ids = self.__db.findIds("Tracks", {"Track": track})
                 if len(existing_track_ids) == 0:
                     self.__db.insertRow("Tracks", {"Track": track, "Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs})
+                    Verbosity(self.Verbosity).print("Found new track '" + track + "'")
                 else:
                     self.__db.updateRow("Tracks", existing_track_ids[0], {"Track": track, "Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs})
 
