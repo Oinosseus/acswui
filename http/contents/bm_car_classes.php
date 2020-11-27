@@ -12,11 +12,7 @@ class bm_car_classes extends cContentPage {
     }
 
     public function getHtml() {
-
-        // access global data
-        global $acswuiDatabase;
         global $acswuiUser;
-        global $acswuiLog;
 
         // reused variables
         $html  = '';

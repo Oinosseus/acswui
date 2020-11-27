@@ -22,6 +22,10 @@ class Car {
 //         $this->CarClass = $car_class;
     }
 
+    public function __toString() {
+        return "Car(Id=" . $this->Id . ")";
+    }
+
     //! @return User friendly brand name of the car
     public function brand() {
         if ($this->Brand === NULL) $this->updateFromDb();

@@ -17,6 +17,7 @@ class CarClass {
 
     private $BallastMap = NULL;
     private $RestrictorMap = NULL;
+    private $OccupationMap = NULL;
 
     private static $CarClassesList = NULL;
 //     private static $LongestDrivenCarClass = NULL;
@@ -26,6 +27,10 @@ class CarClass {
      */
     public function __construct(int $id) {
         $this->Id = (int) $id;
+    }
+
+    public function __toString() {
+        return "CarClass(Id=" . $this->Id . ")";
     }
 
     /**
@@ -80,8 +85,8 @@ class CarClass {
     }
 
     private function clearCache() {
-        $Name = NULL;
-        $Cars = NULL;
+        $this->Name = NULL;
+        $this->Cars = NULL;
 
 //         $Drivers = NULL;
 //         $DrivenLaps = NULL;
@@ -89,8 +94,9 @@ class CarClass {
 //         $DrivenMeters = NULL;
 //         $Popularity = NULL;
 
-        $BallastMap = NULL;
-        $RestrictorMap = NULL;
+        $this->BallastMap = NULL;
+        $this->RestrictorMap = NULL;
+        $this->OccupationMap = NULL;
 
         CarClass::$CarClassesList = NULL;
 //         CarClass::$LongestDrivenCarClass = NULL;
@@ -207,6 +213,89 @@ class CarClass {
         $this->Name = $res[0]['Name'];
 
         return $this->Name;
+    }
+
+    /**
+     * @param $car The requeted Car object
+     * @return A list of CarClassOccupation objects
+     */
+    public function occupations(Car $car) {
+        global $acswuiDatabase;
+
+        if ($this->OccupationMap !== NULL) return $this->OccupationMap[$car->id()];
+
+        // initilaize array
+        $this->OccupationMap = array();
+        foreach ($this->cars() as $c) {
+            $this->OccupationMap[$c->id()] = array();
+        }
+
+        // update with occupations
+        $query = "SELECT CarClassOccupationMap.Id, CarSkins.Car FROM CarClassOccupationMap";
+        $query .= " INNER JOIN CarSkins ON CarSkins.Id=CarClassOccupationMap.CarSkin";
+        $query .= " WHERE CarClassOccupationMap.CarClass = " . $this->Id;
+        foreach ($acswuiDatabase->fetch_raw_select($query) as $row) {
+            $this->OccupationMap[$row['Car']][] = new CarClassOccupation($row['Id']);
+        }
+
+        return $this->OccupationMap[$car->id()];
+    }
+
+    /**
+     * @param $user The user object that wants to occupy
+     * @param $skin The skin that shall be used for occupation (when ==NULL, the occupation is released)
+     */
+    public function occupy(User $user, CarSKin $skin = NULL) {
+        global $acswuiDatabase;
+        global $acswuiLog;
+
+        // release occupation
+        if ($skin === NULL) {
+            $res = $acswuiDatabase->fetch_2d_array("CarClassOccupationMap", ['Id'],
+                            ['User'=>$user->id(), 'CarClass'=>$this->Id]);
+            foreach ($res as $row) {
+                $acswuiDatabase->delete_row("CarClassOccupationMap", $row['Id']);
+            }
+            return;
+        }
+
+        // check if skin is valid
+        $skin_is_valid = FALSE;
+        foreach ($this->cars() as $car) {
+            if ($skin->car()->id() == $car->id()) $skin_is_valid = TRUE;
+        }
+        if ($skin_is_valid !== TRUE) {
+            $acswuiLog->logError("Invalid car occupation");
+            return;
+        }
+
+        // check if car and skin is already occupied
+        $res = $acswuiDatabase->fetch_2d_array("CarClassOccupationMap", ['Id'],
+                        ['CarSkin'=>$skin->id(), 'CarClass'=>$this->Id]);
+        if (count($res) !== 0) {
+            $acswuiLog->logWarning("Ignoring overlapping car occupation");
+            return;
+        }
+
+        // check if user has already occupated
+        $res = $acswuiDatabase->fetch_2d_array("CarClassOccupationMap", ['Id'],
+                        ['User'=>$user->id(), 'CarClass'=>$this->Id]);
+        if (count($res) == 0) {
+            $acswuiDatabase->insert_row("CarClassOccupationMap",
+                ['CarClass'=>$this->Id, 'User'=>$user->id(), 'CarSkin'=>$skin->id()]);
+        } else if (count($res) == 1) {
+            $acswuiDatabase->update_row("CarClassOccupationMap", $res[0]['Id'],
+                ['CarClass'=>$this->Id, 'User'=>$user->id(), 'CarSkin'=>$skin->id()]);
+        } else {
+            $acswuiLog->logWarning("Overlapping car occupations for car class=" . $this->Id . " user=" . $user->id());
+            foreach ($res as $row) {
+                $acswuiDatabase->delete_row("CarClassOccupationMap", $row['Id']);
+            }
+            $acswuiDatabase->insert_row("CarClassOccupationMap",
+                ['CarClass'=>$this->Id, 'User'=>$user->id(), 'CarSkin'=>$skin->id()]);
+        }
+
+        $this->clearCache();
     }
 
     /**

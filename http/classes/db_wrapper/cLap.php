@@ -25,6 +25,10 @@ class Lap {
         $this->Session = $session;
     }
 
+    public function __toString() {
+        return "Lap(Id=" . $this->Id . ")";
+    }
+
     //! @return Ballast of the car in this lap [kg]
     public function ballast() {
         if ($this->Ballast === NULL) $this->updateFromDb();

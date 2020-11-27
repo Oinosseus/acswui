@@ -67,6 +67,7 @@ include("classes/db_wrapper/cCarClass.php");
 include("classes/db_wrapper/cSession.php");
 include("classes/db_wrapper/cLap.php");
 include("classes/db_wrapper/cServerPreset.php");
+include("classes/db_wrapper/cCarClassOccupation.php");
 
 // functions
 include("functions/getMenuArrayFromContentDir.php");

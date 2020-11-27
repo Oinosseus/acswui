@@ -73,6 +73,40 @@
 
 
 /******************************************************************************
+ *                #contents__bm_car_classes__occupation
+ ******************************************************************************/
+
+#contents__bm_car_classes__occupation div.car_skin_option{
+    display:inline-block;
+    margin: 5px;
+    border-radius: 5px;
+    width: auto;
+}
+
+#contents__bm_car_classes__occupation div.car_skin_option input[type=radio] {
+    display: none;
+}
+
+#contents__bm_car_classes__occupation div.car_skin_option label {
+    background-color: rgba(0,0,0,0.2);
+    padding: 5px;
+}
+
+#contents__bm_car_classes__occupation div.car_skin_option label:hover {
+    background-color: rgba(0,0,0,0.5);
+}
+
+#contents__bm_car_classes__occupation div.car_skin_option input[type=radio]:checked + label {
+    background-color: rgba(255,0,0,0.75);
+}
+
+#contents__bm_car_classes__occupation div.car_skin_option input[type=radio]:disabled + label {
+    background-color: rgba(0,0,0,0.75);
+}
+
+
+
+/******************************************************************************
  *              #contents__yy_race_classes__b_rclass_entries
  ******************************************************************************/
 

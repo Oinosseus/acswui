@@ -230,6 +230,13 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnSmallInt("CarClassesMap", 'Ballast')
         self.__db.appendColumnSmallInt("CarClassesMap", 'Restrictor')
 
+        # check table CarClassOccupationMap
+        Verbosity(self.Verbosity).print("check database table `CarClassOccupationMap`")
+        self.__db.appendTable("CarClassOccupationMap")
+        self.__db.appendColumnUInt("CarClassOccupationMap", 'CarClass')
+        self.__db.appendColumnUInt("CarClassOccupationMap", 'User')
+        self.__db.appendColumnUInt("CarClassOccupationMap", 'CarSkin')
+
         # check table RaceSeries
         Verbosity(self.Verbosity).print("check database table `RaceSeries`")
         self.__db.appendTable("RaceSeries")

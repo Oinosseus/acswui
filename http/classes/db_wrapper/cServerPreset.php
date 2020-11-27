@@ -10,6 +10,10 @@ class ServerPresetField {
         $this->Tag = $field_tag;
     }
 
+    public function __toString() {
+        return "ServerPreset(Id=" . $this->Id . ")";
+    }
+
     //! @return The tag name of the field
     public function tag() {
         return $this->Tag;

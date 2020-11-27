@@ -16,6 +16,10 @@ class CarSkin {
         $this->Id = $id;
     }
 
+    public function __toString() {
+        return "CarSkin(Id=" . $this->Id . ")";
+    }
+
     //! @return Id of the CarSkin
     public function id() {
         return $this->Id;

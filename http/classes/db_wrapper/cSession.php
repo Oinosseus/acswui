@@ -33,6 +33,10 @@ class Session {
         $this->Id = $id;
     }
 
+    public function __toString() {
+        return "Session(Id=" . $this->Id . ")";
+    }
+
     //! @return The database table id
     public function id() {
         return $this->Id;

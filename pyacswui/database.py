@@ -49,7 +49,7 @@ class Database(object):
         # create query
         if table_exist is False:
 
-            query = "CREATE TABLE `" + tblname + "` ( `Id` INT NOT NULL AUTO_INCREMENT , PRIMARY KEY (`Id`)) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+            query = "CREATE TABLE `" + tblname + "` ( `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT , PRIMARY KEY (`Id`)) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
             self.__verbosity.print("    " + query)
 
             # execute query
@@ -60,6 +60,13 @@ class Database(object):
 
         # table already exist
         else:
+
+            # ensure that Id is unsigned int
+            query = "ALTER TABLE `" + tblname + "` CHANGE `Id` `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT;"
+            cursor = self.__db_handle.cursor()
+            cursor.execute(query)
+            cursor.close()
+            self.__db_handle.commit()
 
             # check index
             primary_index_found = False

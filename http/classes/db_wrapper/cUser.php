@@ -18,6 +18,10 @@ class User {
         $this->Id = $id;
     }
 
+    public function __toString() {
+        return "User(Id=" . $this->Id . ")";
+    }
+
     //! @return The database table id
     public function id() {
         return $this->Id;

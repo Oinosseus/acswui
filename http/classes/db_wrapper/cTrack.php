@@ -27,6 +27,10 @@ class Track {
         $this->Id = (int) $id;
     }
 
+    public function __toString() {
+        return "Track(Id=" . $this->Id . ")";
+    }
+
     private function cacheUpdateBasics() {
         global $acswuiLog;
         global $acswuiDatabase;

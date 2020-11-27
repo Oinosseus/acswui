@@ -45,9 +45,9 @@ CommandCalcStats(argparsersubs)
 args = argparser.parse_args()
 args.CmdObject.readArgs(args)
 
-duration_start = time.clock()
+duration_start = time.monotonic()
 args.CmdObject.process()
-duration_end = time.clock()
+duration_end = time.monotonic()
 
 if args.v >=2:
     duration = duration_end - duration_start
