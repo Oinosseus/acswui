@@ -23,6 +23,12 @@ class Database(object):
 
 
 
+    @property
+    def Handle(self):
+        return self.__db_handle
+
+
+
     def appendTable(self, tblname):
         """
             Create table if not existent.

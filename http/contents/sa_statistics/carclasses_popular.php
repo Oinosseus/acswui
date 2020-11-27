@@ -11,35 +11,26 @@ class carclasses_popular extends cContentPage {
     }
 
     public function getHtml() {
-        // access global data
         global $acswuiConfig;
-        global $acswuiLog;
-        global $acswuiDatabase;
-        global $acswuiUser;
 
+        // get statistics
+        $file_path = $acswuiConfig->AcsContent . "/stats_carclass_popularity.json";
+        $stats = json_decode(file_get_contents($file_path), TRUE);
 
 
 
         $html = "";
 
-        // list of car classes
-        $carclasses = CarClass::listClasses();
-        function compare_popularity($cc1, $cc2) {
-            return ($cc1->popularity() > $cc2->popularity()) ? -1 : 1;
-        }
-        uasort($carclasses, 'compare_popularity');
-
         $html .= '<table>';
         $html .= '<tr><th>Popularity</th><th>Car Class</th><th>Drivers</th><th colspan="3">Driven</th></tr>';
-        foreach ($carclasses as $cc) {
-            if ($cc->drivenLaps() == 0) continue;
+        foreach ($stats as $s) {
             $html .= '<tr>';
-            $html .= '<td>' . HumanValue::format($cc->popularity() * 100, "%") . '</td>';
-            $html .= '<td>' . $cc->name() . '</td>';
-            $html .= '<td>' . count($cc->drivers()) . '</td>';
-            $html .= '<td>' . HumanValue::format($cc->drivenLaps(), "L") . '</td>';
-            $html .= '<td>' . HumanValue::format($cc->drivenSeconds(), "s") . '</td>';
-            $html .= '<td>' . HumanValue::format($cc->drivenMeters(), "m") . '</td>';
+            $html .= '<td>' . HumanValue::format($s['Popularity'] * 100, "%") . '</td>';
+            $html .= '<td>' . $s['Name'] . '</td>';
+            $html .= '<td>' . count($s['DriversList']) . '</td>';
+            $html .= '<td>' . HumanValue::format($s['DrivenLaps'], "L") . '</td>';
+            $html .= '<td>' . HumanValue::format($s['DrivenSeconds'], "s") . '</td>';
+            $html .= '<td>' . HumanValue::format($s['DrivenMeters'], "m") . '</td>';
             $html .= '</tr>';
         }
 

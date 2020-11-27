@@ -12,6 +12,8 @@ class Lap {
     private $Laptime = NULL;
     private $Cuts = NULL;
     private $Grip = NULL;
+    private $Ballast = NULL;
+    private $Restrictor = NULL;
     private $Timestamp = NULL;
 
     /**
@@ -23,34 +25,16 @@ class Lap {
         $this->Session = $session;
     }
 
-
-    //! @return The database table id
-    public function id() {
-        return $this->Id;
-    }
-
-    //! @return The according Session object
-    public function session() {
-        if ($this->Session === NULL) $this->updateFromDb();
-        return $this->Session;
+    //! @return Ballast of the car in this lap [kg]
+    public function ballast() {
+        if ($this->Ballast === NULL) $this->updateFromDb();
+        return $this->Ballast;
     }
 
     //! @return A CarSkin object (which was used when driving the lap)
     public function carSkin() {
         if ($this->CarSkin === NULL) $this->updateFromDb();
         return $this->CarSkin;
-    }
-
-    //! @return A User object (which represents the dirver of the lap)
-    public function user() {
-        if ($this->User === NULL) $this->updateFromDb();
-        return $this->User;
-    }
-
-    //! @return The laptime in miliseconds
-    public function laptime() {
-        if ($this->Laptime === NULL) $this->updateFromDb();
-        return $this->Laptime;
     }
 
     //! @return The amount of cuts in the lap
@@ -63,6 +47,29 @@ class Lap {
     public function grip() {
         if ($this->Grip === NULL) $this->updateFromDb();
         return $this->Grip;
+    }
+
+    //! @return The database table id
+    public function id() {
+        return $this->Id;
+    }
+
+    //! @return The laptime in miliseconds
+    public function laptime() {
+        if ($this->Laptime === NULL) $this->updateFromDb();
+        return $this->Laptime;
+    }
+
+    //! @return Restrictor of the car in this lap [%]
+    public function restrictor() {
+        if ($this->Restrictor === NULL) $this->updateFromDb();
+        return $this->Restrictor;
+    }
+
+    //! @return The according Session object
+    public function session() {
+        if ($this->Session === NULL) $this->updateFromDb();
+        return $this->Session;
     }
 
     //! @return A DateTime object trepresening when the lap was recorded
@@ -83,6 +90,8 @@ class Lap {
         $columns[] = 'Laptime';
         $columns[] = 'Cuts';
         $columns[] = 'Grip';
+        $columns[] = 'Ballast';
+        $columns[] = 'Restrictor';
         $columns[] = 'Timestamp';
 
         $res = $acswuiDatabase->fetch_2d_array("Laps", $columns, ['Id'=>$this->Id]);
@@ -105,8 +114,17 @@ class Lap {
         $this->Laptime = $res[0]['Laptime'];
         $this->Cuts = $res[0]['Cuts'];
         $this->Grip = $res[0]['Grip'];
+        $this->Ballast = $res[0]['Ballast'];
+        $this->Restrictor = $res[0]['Restrictor'];
         $this->Timestamp = new DateTime($res[0]['Timestamp']);
     }
+
+    //! @return A User object (which represents the dirver of the lap)
+    public function user() {
+        if ($this->User === NULL) $this->updateFromDb();
+        return $this->User;
+    }
+
 }
 
 ?>

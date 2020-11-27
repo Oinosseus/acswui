@@ -217,7 +217,7 @@ class laps extends cContentPage {
 
         // html dump
         $html .= '<table>';
-        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Cuts") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Grip") . '</th>';
+        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Cuts") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th>';
         foreach ($laps as $lap) {
             $class = "class=\"";
             $class .= ($lap->cuts() > 0) ? " lap_invalid" : "";
@@ -231,6 +231,8 @@ class laps extends cContentPage {
             $html .= "<td>" . $lap->cuts() . "</td>";
             $html .= "<td>" . $lap->user()->login() . "</td>";
             $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
+            $html .= "<td>" . HumanValue::format($lap->ballast(), "kg") . "</td>";
+            $html .= "<td>" . HumanValue::format($lap->restrictor(), "%") . "</td>";
             $html .= "<td>" . HumanValue::format(100 * $lap->grip(), "%") . "</td>";
             $html .= '</tr>';
         }

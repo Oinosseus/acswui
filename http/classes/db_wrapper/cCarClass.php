@@ -9,17 +9,17 @@ class CarClass {
     private $Name = NULL;
     private $Cars = NULL;
 
-    private $Drivers = NULL;
-    private $DrivenLaps = NULL;
-    private $DrivenSeconds = NULL;
-    private $DrivenMeters = NULL;
-    private $Popularity = NULL;
+//     private $Drivers = NULL;
+//     private $DrivenLaps = NULL;
+//     private $DrivenSeconds = NULL;
+//     private $DrivenMeters = NULL;
+//     private $Popularity = NULL;
 
     private $BallastMap = NULL;
     private $RestrictorMap = NULL;
 
     private static $CarClassesList = NULL;
-    private static $LongestDrivenCarClass = NULL;
+//     private static $LongestDrivenCarClass = NULL;
 
     /**
      * @param $id Database table id
@@ -83,17 +83,17 @@ class CarClass {
         $Name = NULL;
         $Cars = NULL;
 
-        $Drivers = NULL;
-        $DrivenLaps = NULL;
-        $DrivenSeconds = NULL;
-        $DrivenMeters = NULL;
-        $Popularity = NULL;
+//         $Drivers = NULL;
+//         $DrivenLaps = NULL;
+//         $DrivenSeconds = NULL;
+//         $DrivenMeters = NULL;
+//         $Popularity = NULL;
 
         $BallastMap = NULL;
         $RestrictorMap = NULL;
 
         CarClass::$CarClassesList = NULL;
-        CarClass::$LongestDrivenCarClass = NULL;
+//         CarClass::$LongestDrivenCarClass = NULL;
     }
 
     /**
@@ -121,29 +121,29 @@ class CarClass {
         $acswuiDatabase->delete_row("CarClasses", $this->Id);
     }
 
-    //! @return The amount of driven laps with this car class
-    public function drivenLaps() {
-        if ($this->DrivenLaps === NULL) $this->updateDriven();
-        return $this->DrivenLaps;
-    }
+//     //! @return The amount of driven laps with this car class
+//     public function drivenLaps() {
+//         if ($this->DrivenLaps === NULL) $this->updateDriven();
+//         return $this->DrivenLaps;
+//     }
 
-    //! @return The amount of driven meters with this car class
-    public function drivenMeters() {
-        if ($this->DrivenMeters === NULL) $this->updateDriven();
-        return $this->DrivenMeters;
-    }
+//     //! @return The amount of driven meters with this car class
+//     public function drivenMeters() {
+//         if ($this->DrivenMeters === NULL) $this->updateDriven();
+//         return $this->DrivenMeters;
+//     }
 
-    //! @return The amount of driven seconds with this car class
-    public function drivenSeconds() {
-        if ($this->DrivenSeconds === NULL) $this->updateDriven();
-        return $this->DrivenSeconds;
-    }
+//     //! @return The amount of driven seconds with this car class
+//     public function drivenSeconds() {
+//         if ($this->DrivenSeconds === NULL) $this->updateDriven();
+//         return $this->DrivenSeconds;
+//     }
 
-    //! @return A list of User objects that drove at least one lap in this car class
-    public function drivers() {
-        if ($this->Drivers === NULL) $this->updateDriven();
-        return $this->Drivers;
-    }
+//     //! @return A list of User objects that drove at least one lap in this car class
+//     public function drivers() {
+//         if ($this->Drivers === NULL) $this->updateDriven();
+//         return $this->Drivers;
+//     }
 
     private function getCarMapId($car) {
         global $acswuiDatabase;
@@ -175,24 +175,24 @@ class CarClass {
         return CarClass::$CarClassesList;
     }
 
-    //! @return The longest track
-    public static function longestDrivenCarClass() {
-        global $acswuiDatabase;
-        if (CarClass::$LongestDrivenCarClass !== NULL) return CarClass::$LongestDrivenCarClass;
-
-        $ldcc = NULL;
-        $ldcc_driven_length = 0;
-        foreach (CarClass::listClasses() as $cc) {
-            $driven_length = $cc->drivenMeters();
-            if ($ldcc === NULL || $driven_length > $ldcc_driven_length) {
-                $ldcc = $cc;
-                $ldcc_driven_length = $driven_length;
-            }
-        }
-        CarClass::$LongestDrivenCarClass = $ldcc;
-
-        return CarClass::$LongestDrivenCarClass;
-    }
+//     //! @return The longest track
+//     public static function longestDrivenCarClass() {
+//         global $acswuiDatabase;
+//         if (CarClass::$LongestDrivenCarClass !== NULL) return CarClass::$LongestDrivenCarClass;
+//
+//         $ldcc = NULL;
+//         $ldcc_driven_length = 0;
+//         foreach (CarClass::listClasses() as $cc) {
+//             $driven_length = $cc->drivenMeters();
+//             if ($ldcc === NULL || $driven_length > $ldcc_driven_length) {
+//                 $ldcc = $cc;
+//                 $ldcc_driven_length = $driven_length;
+//             }
+//         }
+//         CarClass::$LongestDrivenCarClass = $ldcc;
+//
+//         return CarClass::$LongestDrivenCarClass;
+//     }
 
     //! @return Name of the CarClass
     public function name() {
@@ -249,27 +249,27 @@ class CarClass {
     }
 
 
-    //! @return A floating point Number [0,1] that represents the popularity of the car class
-    public function popularity() {
-        global $acswuiDatabase;
-
-        if ($this->Popularity !== NULL) return $this->Popularity;
-
-        // determine longest track
-        $this->Popularity = 1.0;
-        if (CarClass::LongestDrivenCarClass()->drivenMeters() > 0) {
-            $this->Popularity *= $this->drivenMeters() / (CarClass::LongestDrivenCarClass()->drivenMeters());
-        } else {
-            $this->Popularity = 0;
-        }
-        if (User::listDrivers() > 0) {
-            $this->Popularity *= count($this->drivers()) / count(User::listDrivers());
-        } else {
-            $this->Popularity = 0;
-        }
-
-        return $this->Popularity;
-    }
+//     //! @return A floating point Number [0,1] that represents the popularity of the car class
+//     public function popularity() {
+//         global $acswuiDatabase;
+//
+//         if ($this->Popularity !== NULL) return $this->Popularity;
+//
+//         // determine longest track
+//         $this->Popularity = 1.0;
+//         if (CarClass::LongestDrivenCarClass()->drivenMeters() > 0) {
+//             $this->Popularity *= $this->drivenMeters() / (CarClass::LongestDrivenCarClass()->drivenMeters());
+//         } else {
+//             $this->Popularity = 0;
+//         }
+//         if (User::listDrivers() > 0) {
+//             $this->Popularity *= count($this->drivers()) / count(User::listDrivers());
+//         } else {
+//             $this->Popularity = 0;
+//         }
+//
+//         return $this->Popularity;
+//     }
 
     /**
      * Set A new ballast value for a cetain car in the class
@@ -313,39 +313,44 @@ class CarClass {
         $acswuiDatabase->update_row("CarClassesMap", $map_id, ['Restrictor'=>$restrictor]);
     }
 
-    //! Update the caches for DrivenMeters and DrivenSeconds
-    private function updateDriven() {
-        global $acswuiDatabase;
-
-        // list allowed CarIds
-        $allowed_car_ids = array();
-        foreach ($this->cars() as $car) {
-            if (!in_array($car->id(), $allowed_car_ids)) $allowed_car_ids[] = $car->id();
-        }
-
-        $this->DrivenLaps = 0;
-        $this->DrivenSeconds = 0;
-        $this->DrivenMeters = 0;
-        $this->Drivers = array();
-        $driver_ids = array();
-
-        $query = "SELECT Laps.Laptime, CarSkins.Car, Laps.User, Tracks.Length FROM Laps";
-        $query .= " INNER JOIN Sessions ON Sessions.Id=Laps.Session";
-        $query .= " INNER JOIN CarSkins ON CarSkins.Id=Laps.CarSkin";
-        $query .= " INNER JOIN Tracks ON Tracks.Id=Sessions.Track";
-        foreach ($acswuiDatabase->fetch_raw_select($query) as $row) {
-            if (!in_array($row['Car'], $allowed_car_ids)) continue;
-
-            $this->DrivenLaps += 1;
-            $this->DrivenSeconds += $row['Laptime'] / 1000;
-            $this->DrivenMeters += $row['Length'];
-            if (!in_array($row['User'], $driver_ids)) $driver_ids[] = $row['User'];
-        }
-
-        foreach ($driver_ids as $uid) {
-            $this->Drivers[] = new User($uid);
-        }
-    }
+//     //! Update the caches for DrivenMeters and DrivenSeconds
+//     private function updateDriven() {
+//         global $acswuiDatabase;
+//
+//         // list allowed CarIds
+//         $allowed_car_ids = array();
+//         foreach ($this->cars() as $car) {
+//             if (!in_array($car->id(), $allowed_car_ids)) $allowed_car_ids[] = $car->id();
+//         }
+//
+//         $this->DrivenLaps = 0;
+//         $this->DrivenSeconds = 0;
+//         $this->DrivenMeters = 0;
+//         $this->Drivers = array();
+//         $driver_ids = array();
+//
+//         $query = "SELECT Laps.Laptime, CarSkins.Car, Laps.User, Tracks.Length, Laps.Ballast, Laps.Restrictor FROM Laps";
+//         $query .= " INNER JOIN Sessions ON Sessions.Id=Laps.Session";
+//         $query .= " INNER JOIN CarSkins ON CarSkins.Id=Laps.CarSkin";
+//         $query .= " INNER JOIN Tracks ON Tracks.Id=Sessions.Track";
+//         foreach ($acswuiDatabase->fetch_raw_select($query) as $row) {
+//
+//             // skip invalid cars
+//             $car = new Car($row['Car']);
+//             if (!$this->validCar($car)) continue;
+//             if ($row['Ballast'] < $this->ballast($car)) continue;
+//             if ($row['Restrictor'] < $this->restrictor($car)) continue;
+//
+//             $this->DrivenLaps += 1;
+//             $this->DrivenSeconds += $row['Laptime'] / 1000;
+//             $this->DrivenMeters += $row['Length'];
+//             if (!in_array($row['User'], $driver_ids)) $driver_ids[] = $row['User'];
+//         }
+//
+//         foreach ($driver_ids as $uid) {
+//             $this->Drivers[] = new User($uid);
+//         }
+//     }
 
     //! @return True if the requested car object is part of this car class
     public function validCar(Car $car) {

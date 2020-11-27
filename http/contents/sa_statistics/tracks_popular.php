@@ -11,37 +11,25 @@ class tracks_popular extends cContentPage {
     }
 
     public function getHtml() {
-        // access global data
         global $acswuiConfig;
-        global $acswuiLog;
-        global $acswuiDatabase;
-        global $acswuiUser;
 
-
-
+        // get statistics
+        $file_path = $acswuiConfig->AcsContent . "/stats_track_popularity.json";
+        $popular_tracks = json_decode(file_get_contents($file_path), TRUE);
 
         $html = "";
 
-        // list of tracks
-        $tracks = Track::listTracks();
-        function compare_popularity($t1, $t2) {
-            return ($t1->popularity() > $t2->popularity()) ? -1 : 1;
-        }
-        uasort($tracks, 'compare_popularity');
-
         $html .= '<table>';
-        $html .= '<tr><th>Popularity</th><th>Track</th><th>Pitboxes</th><th>Length</th><th>Drivers</th><th colspan="3">Driven</th></tr>';
-        foreach ($tracks as $t) {
-            if ($t->drivenLaps() == 0) continue;
+        $html .= '<tr><th>Popularity</th><th>Track</th><th>Pitboxes</th><th>Length</th><th>Drivers</th><th colspan="2">Driven</th></tr>';
+        foreach ($popular_tracks as $pt) {
             $html .= '<tr>';
-            $html .= '<td>' . HumanValue::format($t->popularity() * 100, "%") . '</td>';
-            $html .= '<td>' . $t->name() . '</td>';
-            $html .= '<td>' . $t->pitboxes() . '</td>';
-            $html .= '<td>' . HumanValue::format($t->length(), "m") . '</td>';
-            $html .= '<td>' . count($t->drivers()) . '</td>';
-            $html .= '<td>' . HumanValue::format($t->drivenLaps(), "L") . '</td>';
-            $html .= '<td>' . HumanValue::format($t->drivenSeconds(), "s") . '</td>';
-            $html .= '<td>' . HumanValue::format($t->drivenMeters(), "m") . '</td>';
+            $html .= '<td>' . HumanValue::format($pt['Popularity'] * 100, "%") . '</td>';
+            $html .= '<td>' . $pt['Name'] . '</td>';
+            $html .= '<td>' . $pt['Pitboxes'] . '</td>';
+            $html .= '<td>' . HumanValue::format($pt['Length'], "m") . '</td>';
+            $html .= '<td>' . count($pt['DriversList']) . '</td>';
+            $html .= '<td>' . HumanValue::format($pt['DrivenLaps'], "L") . '</td>';
+            $html .= '<td>' . HumanValue::format($pt['DrivenMeters'], "m") . '</td>';
             $html .= '</tr>';
         }
 

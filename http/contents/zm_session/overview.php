@@ -187,7 +187,7 @@ class overview extends cContentPage {
 
 
         $html .= '<table>';
-        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Grip") . '</th>';
+        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th>';
 
         $listed_user_ids = array();
         foreach ($laps as $lap) {
@@ -200,6 +200,8 @@ class overview extends cContentPage {
             $html .= "<td>" . HumanValue::format($lap->laptime(), "LAPTIME") . "</td>";
             $html .= "<td>" . $lap->user()->login() . "</td>";
             $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
+            $html .= "<td>" . HumanValue::format($lap->ballast(), "kg") . "</td>";
+            $html .= "<td>" . HumanValue::format($lap->restrictor(), "%") . "</td>";
             $html .= "<td>" . HumanValue::format(100 * $lap->grip(), "%") . "</td>";
             $html .= "<td>" . $lap->carSkin()->htmlImg("", 100) . "</td>";
             $html .= '</tr>';
