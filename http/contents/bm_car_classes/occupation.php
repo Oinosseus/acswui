@@ -79,20 +79,20 @@ class occupation extends cContentPage {
             $html .= "</table>";
         }
 
-        // form for occupation selection
-        $html .= "<h1>" . _("Occupy Seat") . "</h1>";
-        $html .= "<form method=\"post\">";
-        $html .= '<input type="hidden" name="CARCLASS_ID" value="' . $this->CurrentCarClass->id() . '">';
-        $html .= '<button type="submit" name="ACTION" value="DELETE">' . _("DELETE Seat Occupation") . '</button> ';
-        $html .= '<button type="submit" name="ACTION" value="SAVE">' . _("Save Seat Occupation") . '</button>';
-
 
         # list all cars
-        if ($this->CurrentCarClass !== NULL) {
+        if ($this->CurrentCarClass !== NULL && $this->CanOccupy === TRUE) {
+
+            // form for occupation selection
+            $html .= "<h1>" . _("Occupy Seat") . "</h1>";
+            $html .= "<form method=\"post\">";
+            $html .= '<input type="hidden" name="CARCLASS_ID" value="' . $this->CurrentCarClass->id() . '">';
+            $html .= '<button type="submit" name="ACTION" value="DELETE">' . _("DELETE Seat Occupation") . '</button> ';
+            $html .= '<button type="submit" name="ACTION" value="SAVE">' . _("Save Seat Occupation") . '</button>';
+
+
             foreach ($this->CurrentCarClass->cars() as $car) {
                 $html .= "<h2>" . $car->name() . "</h2>";
-
-
 
                 // find occupations of other drivers
                 $current_occupations = array();
