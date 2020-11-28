@@ -1,6 +1,7 @@
 import pymysql
 import json
 import os.path
+import subprocess
 from .command import Command
 from .database import Database
 from .verbosity import Verbosity
@@ -20,6 +21,7 @@ class CommandCalcStats(Command):
         self.add_argument('--db-database', help="Database name (not needed when global config is given)")
         self.add_argument('--db-user', help="Database username (not needed when global config is given)")
         self.add_argument('--db-password', help="Database password (not needed when global config is given)")
+        self.add_argument('--http-guid', help="Name of webserver group on the server (needed to chmod access rights)")
 
         # http settings
         self.add_argument('--http-path-acs-content', help="Path that stores AC data for http access (eg. track car preview images)")
@@ -60,6 +62,24 @@ class CommandCalcStats(Command):
 
 
 
+    def __dump_json(self, var, filepath):
+
+        # dump json to file
+        with open(filepath, "w") as f:
+            json.dump(var, f, indent=4)
+
+        # chnage group if requested
+        try:
+            self.getArg("http-guid")
+            chgrp = True
+        except ArgumentException:
+            chgrp = False
+        if chgrp:
+            cmd = ["chgrp", self.getArg("http-guid"), filepath]
+            subprocess.run(cmd)
+
+
+
     def __calc_general_stats(self):
         self.Verbosity.print("general statistics")
 
@@ -96,8 +116,7 @@ class CommandCalcStats(Command):
         stat_result_dict['DrivenSecondsInValid'] = int(stat_result_dict['DrivenSecondsInValid'] / 1000)
 
         # dump
-        with open(os.path.join(self.getArg('http-path-acs-content'), "stats_general.json"), "w") as f:
-            json.dump(stat_result_dict, f, indent=4)
+        self.__dump_json(stat_result_dict, os.path.join(self.getArg('http-path-acs-content'), "stats_general.json"))
         self.Verbosity2.print("DrivenLapsValid:", stat_result_dict['DrivenLapsValid'])
         self.Verbosity2.print("DrivenLapsInvalid:", stat_result_dict['DrivenLapsInvalid'])
         self.Verbosity2.print("DrivenSecondsValid:", stat_result_dict['DrivenSecondsValid'])
@@ -170,8 +189,7 @@ class CommandCalcStats(Command):
             track_popularity_list.append(track_dict[1])
 
         # dump
-        with open(os.path.join(self.getArg('http-path-acs-content'), "stats_track_popularity.json"), "w") as f:
-            json.dump(track_popularity_list, f, indent=4)
+        self.__dump_json(track_popularity_list, os.path.join(self.getArg('http-path-acs-content'), "stats_track_popularity.json"))
 
 
 
@@ -265,8 +283,7 @@ class CommandCalcStats(Command):
             carclass_popularity_list.append(carclass_tuple[1])
 
         # dump
-        with open(os.path.join(self.getArg('http-path-acs-content'), "stats_carclass_popularity.json"), "w") as f:
-            json.dump(carclass_popularity_list, f, indent=4)
+        self.__dump_json(carclass_popularity_list, os.path.join(self.getArg('http-path-acs-content'), "stats_carclass_popularity.json"))
 
 
 
@@ -358,8 +375,7 @@ class CommandCalcStats(Command):
 
 
         # dump
-        with open(os.path.join(self.getArg('http-path-acs-content'), "stats_track_records.json"), "w") as f:
-            json.dump(track_records_dict, f, indent=4)
+        self.__dump_json(track_records_dict, os.path.join(self.getArg('http-path-acs-content'), "stats_track_records.json"))
 
 
 
@@ -452,5 +468,4 @@ class CommandCalcStats(Command):
 
 
         # dump
-        with open(os.path.join(self.getArg('http-path-acs-content'), "stats_carclass_records.json"), "w") as f:
-            json.dump(carclass_records_dict, f, indent=4)
+        self.__dump_json(carclass_records_dict, os.path.join(self.getArg('http-path-acs-content'), "stats_carclass_records.json"))
