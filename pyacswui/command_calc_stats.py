@@ -26,7 +26,7 @@ class CommandCalcStats(Command):
         self.add_argument('--db-user', help="Database username (not needed when global config is given)")
         self.add_argument('--db-password', help="Database password (not needed when global config is given)")
         self.add_argument('--http-guid', help="Name of webserver group on the server (needed to chmod access rights)")
-        self.add_argument('--fast', action="store_true", help="If not set a full update is done")
+        self.add_argument('--fast', action="store_true", help="Try to just update the new data instead of everything")
 
         # http settings
         self.add_argument('--http-path-acs-content', help="Path that stores AC data for http access (eg. track car preview images)")
@@ -495,7 +495,7 @@ class CommandCalcStats(Command):
         self.Verbosity.print("session lap diagrams")
 
         # configuration
-        FILTER_MIN_LAPS = 3
+        FILTER_MIN_LAPS = 5
         FILTER_MAX_SIGMA = 0.1
 
         # diagram output path
@@ -624,7 +624,7 @@ class CommandCalcStats(Command):
 
 
             # skip empty diagrams
-            if len(lap_data_list_filtered) == 0 and len(lap_data_list_raw) == 0:
+            if len(lap_data_list_filtered) < 2 and len(lap_data_list_raw) < 2:
                 continue
 
 
