@@ -623,6 +623,11 @@ class CommandCalcStats(Command):
                     lap_data_list_raw.append(ld)
 
 
+            # skip empty diagrams
+            if len(lap_data_list_filtered) == 0 and len(lap_data_list_raw) == 0:
+                continue
+
+
             # generate plot
             matplotlib.pyplot.xkcd()
             fig, ax = matplotlib.pyplot.subplots()
