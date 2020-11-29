@@ -216,10 +216,10 @@ class CarClass {
     }
 
     /**
-     * @param $car The requeted Car object
+     * @param $car The requested Car object (All valid cars when NULL is given)
      * @return A list of CarClassOccupation objects
      */
-    public function occupations(Car $car) {
+    public function occupations(Car $car = NULL) {
         global $acswuiDatabase;
 
         if ($this->OccupationMap !== NULL) return $this->OccupationMap[$car->id()];
@@ -238,7 +238,15 @@ class CarClass {
             $this->OccupationMap[$row['Car']][] = new CarClassOccupation($row['Id']);
         }
 
-        return $this->OccupationMap[$car->id()];
+        if ($car !== NULL) {
+            return $this->OccupationMap[$car->id()];
+        } else {
+            $all_occupations = array();
+            foreach ($this->OccupationMap as $occupations) {
+                $all_occupations  = array_merge($all_occupations, $occupations);
+            }
+            return $all_occupations;
+        }
     }
 
     /**
