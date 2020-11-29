@@ -82,7 +82,7 @@ class laps extends cContentPage {
 
             $selected = ($this->SessionId == $row['Id']) ? "selected" : "";
             $id = $row['Id'];
-            $name = $row['Timestamp'] . " - $track - " . $row['Name'];
+            $name = "[" . $row['Id'] . "] " . $row['Timestamp'] . " - $track - " . $row['Name'];
             $html .= "<option value=\"$id\" $selected >$name</option>";
         }
         $html .= '</select>';
@@ -95,21 +95,14 @@ class laps extends cContentPage {
         //                          Get Session Data
         // --------------------------------------------------------------------
 
-        $session = new Session($this->SessionId);
+        # check if session diagram exists
+        $svg_path = $acswuiConfig->AcsContent . "/session_lap_diagrams/session_" . $this->SessionId . ".svg";
+        if (file_exists($svg_path)) {
+            $html .= "<img src=\"$svg_path\" class=\"session_lap_diagram\">";
+        }
 
-//         foreach ($session->drivers() as $driver) {
-//             $html .= "<table>";
-//             foreach ($session->drivenLaps() as $lap) {
-//                 if ($lap->user()->id() != $driver->id()) continue;
-//                 if ($lap->cuts() != 0) continue;
-//                 $html .= "<tr>";
-//                 $html .= "<td>" . ($lap->id() - $session->firstDrivenLap()->id() + 1) . "</td>";
-//                 $html .= "<td>" . $lap->laptime() . "</td>";
-//                 $html .= "<td>" . $lap->user()->login() . "</td>";
-//                 $html .= "</tr>";
-//             }
-//             $html .= "<table>";
-//         }
+
+        $session = new Session($this->SessionId);
 
         // get laps, ordered by laptime
         $laps = array();
@@ -117,103 +110,7 @@ class laps extends cContentPage {
         function compare_laptime($l1, $l2) {
             return ($l1->laptime() < $l2->laptime()) ? -1 : 1;
         }
-//         usort($laps, "compare_laptime");
 
-
-
-//         // --------------------------------------------------------------------
-//         //                               Leaderboard
-//         // --------------------------------------------------------------------
-//
-//         $html .= "<h1>" . _("Leaderboard") . "</h1>";
-//
-//
-//         $html .= '<table>';
-//         $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Grip") . '</th>';
-//
-//         $listed_user_ids = array();
-//         foreach ($laps as $lap) {
-//             if (in_array($lap->user()->id(), $listed_user_ids)) continue;
-//
-//             $lap_number = $lap->id() - $session->firstDrivenLap()->id() + 1;
-//
-//             $html .= '<tr>';
-//             $html .= "<td>$lap_number</td>";
-//             $html .= "<td>" . HumanValue::format($lap->laptime(), "LAPTIME") . "</td>";
-//             $html .= "<td>" . $lap->user()->login() . "</td>";
-//             $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
-//             $html .= "<td>" . HumanValue::format(100 * $lap->grip(), "%") . "</td>";
-//             $html .= '</tr>';
-//
-//             $listed_user_ids[] = $lap->user()->id();
-//         }
-//         $html .= '</table>';
-
-
-//         // --------------------------------------------------------------------
-//         //                               Session Info
-//         // --------------------------------------------------------------------
-//
-//         $html .= "<h1>" . _("Session Info") . "</h1>";
-//
-//         // sesion info
-//         $html .= '<table>';
-//
-//         $html .= '<tr>';
-//         $html .= '<th>' . _("Server/Session Name") . '</th>';
-//         $html .= '<th>' . _("Track") . '</th>';
-//         $html .= '<th>' . (($session->laps() == 0) ? _("Time") : _("Laps")) . '</th>';
-//         $html .= '<th>' . _("Temp Amb / Road") . '</th>';
-//         $html .= '<th>' . _("Grip") . '</th>';
-//         $html .= '</tr>';
-//
-//         $html .= '<tr>';
-//         $html .= '<td>' . $session->serverName() . " / " . $session->name() . '</td>';
-//         $html .= '<td>' . $session->track()->name() . '</td>';
-//         $html .= '<td>' . (($session->laps() == 0) ? $session->time() : $session->laps()) . '</td>';
-//         $html .= '<td>' . HumanValue::format($session->tempAmb(), "°C") . " / " . HumanValue::format($session->tempRoad(), "°C") . '</td>';
-//         $html .= '<td>';
-//         if (count($session->drivenLaps()) > 0) {
-//             $html .= HumanValue::format($session->drivenLaps()[count($session->drivenLaps()) - 1]->grip() * 100, "%");
-//             $html .= " - ";
-//             $html .= HumanValue::format($session->drivenLaps()[0]->grip() * 100, "%");
-//         }
-//         $html .= '</td>';
-//         $html .= '</tr>';
-//
-//         $html .= '</table>';
-//
-//         // driver summary
-//         $html .= '<br><br><table>';
-//
-//         $html .= '<tr>';
-//         $html .= '<th>' . _("Driver") . '</th>';
-//         $html .= '<th colspan="3">' . _("Driven") . '</th>';
-//         $html .= '</tr>';
-//
-//         foreach ($session->drivers() as $user) {
-//
-//             $lap_count = 0;
-//             foreach ($laps as $lap) {
-//                 if ($lap->user()->id() == $user->id()) ++$lap_count;
-//             }
-//
-//             $html .= '<tr>';
-//             $html .= '<td>' . $user->login() . '</th>';
-//             $html .= '<td>' . HumanValue::format($lap_count, "laps") . '</td>';
-//             $html .= '<td>' . HumanValue::format($lap_count * $session->track()->length(), "m") . '</td>';
-//             $html .= '</tr>';
-//         }
-//
-//         $html .= '</table>';
-
-
-
-        // --------------------------------------------------------------------
-        //                               Laps
-        // --------------------------------------------------------------------
-
-//         $html .= "<h1>" . _("Best Laps") . "</h1>";
 
         // html dump
         $html .= '<table>';

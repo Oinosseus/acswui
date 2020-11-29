@@ -1,7 +1,11 @@
-import pymysql
 import json
 import os.path
+import pymysql
+import statistics
 import subprocess
+import matplotlib
+import matplotlib.pyplot
+
 from .command import Command
 from .database import Database
 from .verbosity import Verbosity
@@ -59,6 +63,19 @@ class CommandCalcStats(Command):
         self.__calc_carclass_popularity()
         self.__calc_track_records()
         self.__calc_carclass_records()
+        self.__calc_session_lap_diagrams()
+
+
+
+    def change_group(self, path):
+        try:
+            self.getArg("http-guid")
+            chgrp = True
+        except ArgumentException:
+            chgrp = False
+        if chgrp:
+            cmd = ["chgrp", self.getArg("http-guid"), path]
+            subprocess.run(cmd)
 
 
 
@@ -67,16 +84,7 @@ class CommandCalcStats(Command):
         # dump json to file
         with open(filepath, "w") as f:
             json.dump(var, f, indent=4)
-
-        # chnage group if requested
-        try:
-            self.getArg("http-guid")
-            chgrp = True
-        except ArgumentException:
-            chgrp = False
-        if chgrp:
-            cmd = ["chgrp", self.getArg("http-guid"), filepath]
-            subprocess.run(cmd)
+        self.change_group(filepath)
 
 
 
@@ -469,3 +477,150 @@ class CommandCalcStats(Command):
 
         # dump
         self.__dump_json(carclass_records_dict, os.path.join(self.getArg('http-path-acs-content'), "stats_carclass_records.json"))
+
+
+
+    def __calc_session_lap_diagrams(self):
+        self.Verbosity.print("session lap diagrams")
+
+        # configuration
+        FILTER_MIN_LAPS = 5
+        FILTER_MAX_SIGMA = 0.1
+
+        # diagram output path
+        path_dir = os.path.join(self.getArg('http-path-acs-content'), "session_lap_diagrams")
+        self.mkdirs(path_dir)
+        self.change_group(path_dir)
+
+
+        # ---------------------------------------------------------------------
+        #                            Helper Structures
+        # ---------------------------------------------------------------------
+
+        class LapData(object):
+            def __init__(self, user_id, user_login, first_lap_id_in_session, overall_best_laptime):
+                self.UserLogin = str(user_login)
+                self.UserId = user_id
+                self.__first_id = int(first_lap_id_in_session)
+                self.__overall_best = int(overall_best_laptime)
+                self.LapNumbers = []
+                self.Laptimes = []
+                self.LapDeltas = []
+
+            def addLap(self, lap_id, lap_time):
+                self.LapNumbers.append(int(lap_id) - self.__first_id + 1)
+                self.Laptimes.append(int(lap_time))
+                self.LapDeltas.append((self.__overall_best - int(lap_time)) / 1000)
+
+            @property
+            def LapCount(self):
+                return len(self.Laptimes)
+
+            def filterSigma(self):
+                if len(self.Laptimes) < 2:
+                    return
+
+                # get statistical data
+                allowed_lap_deviation = FILTER_MAX_SIGMA * statistics.stdev(self.Laptimes)
+                best_laptime = min(self.Laptimes)
+
+                # pop bad laps until remaining laps are all good
+                lap_popped = True
+                while lap_popped:
+                    lap_popped = False
+
+                    for i in range(len(self.Laptimes)):
+                        laptime = self.Laptimes[i]
+                        laptime_relaitve_to_user_best = laptime - best_laptime
+
+                        # remove best lap from list
+                        if laptime_relaitve_to_user_best > allowed_lap_deviation:
+                            self.Laptimes.pop(i)
+                            self.LapNumbers.pop(i)
+                            self.LapDeltas.pop(i)
+                            lap_popped = True
+                            break
+
+
+
+
+        # ---------------------------------------------------------------------
+        #                            Processing
+        # ---------------------------------------------------------------------
+
+        # list all drivers
+        user_login_dict = {}
+        user_id_list = []
+        for row_user in self.__db.fetch("Users", ['Id', 'Steam64GUID', 'Login'], {}):
+            if row_user['Steam64GUID'] != "":
+                user_id = int(row_user['Id'])
+                user_login = row_user['Login']
+                user_login_dict[user_id] = user_login
+                user_id_list.append(user_id)
+
+        # for all sessions
+        for row_session in self.__db.fetch("Sessions", ['Id'], {}):
+            session_id = row_session['Id']
+
+            ## DEBUG
+            #if session_id != 204:
+                #continue
+
+            # list of LapData objects that shall be put into the chart
+            lap_data_list = []
+
+
+            # find best laptime and first lap
+            best_laptime = None
+            first_lap_id = None
+            for row_laps in self.__db.fetch("Laps", ['Id', 'Laptime', 'Cuts'], {'Session': session_id}):
+                lap_id = int(row_laps['Id'])
+                lap_time = int(row_laps['Laptime'])
+                lap_cuts = int(row_laps['Cuts'])
+                if lap_cuts == 0:
+                    if best_laptime is None or lap_time < best_laptime:
+                        best_laptime = lap_time
+                    if first_lap_id is None or lap_id < first_lap_id:
+                        first_lap_id = lap_id
+
+            # ignore empty sessions
+            if first_lap_id is None:
+                continue
+
+
+            # for each driver
+            for user_id in user_id_list:
+
+                # find all valid laps
+                ld = LapData(user_id, user_login_dict[user_id], first_lap_id, best_laptime)
+                for row_laps in self.__db.fetch("Laps", ['Id', 'User', 'Laptime', 'Cuts'], {'Session': session_id, 'User':user_id}):
+                    if int(row_laps['Cuts']) == 0:
+                        ld.addLap(row_laps['Id'], row_laps['Laptime'])
+
+                # filter minimum lap count
+                ld.filterSigma()
+                if ld.LapCount < FILTER_MIN_LAPS:
+                    continue
+
+                lap_data_list.append(ld)
+
+            # do not plot when no data is available
+            if len (lap_data_list) == 0:
+                continue
+
+
+            # generate plot
+            fig, ax = matplotlib.pyplot.subplots()
+            fig.set_size_inches(9, 3)
+            fig.set_tight_layout(True)
+
+            for ld in lap_data_list:
+                ax.plot(ld.LapNumbers, ld.LapDeltas, label=ld.UserLogin)
+
+            ax.set(xlabel='Lap Number', ylabel='Delta to best Lap [s]')
+            ax.legend()
+            ax.grid()
+
+            path_fig = os.path.join(path_dir, "session_%s.svg" % session_id)
+            fig.savefig(path_fig)
+            matplotlib.pyplot.close(fig)
