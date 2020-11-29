@@ -651,4 +651,5 @@ class CommandCalcStats(Command):
 
             fig.savefig(path_fig)
             matplotlib.pyplot.close(fig)
+            self.change_group(path_fig)
             self.Verbosity2.print(path_fig)
