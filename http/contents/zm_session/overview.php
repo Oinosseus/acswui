@@ -119,6 +119,14 @@ class overview extends cContentPage {
         }
         usort($laps, "compare_laptime");
 
+        // get best laptime
+        $laptime_best = NULL;
+        foreach ($laps as $lap) {
+            if ($laptime_best === NULL || $lap->laptime() < $laptime_best)
+                $laptime_best = $lap->laptime();
+        }
+
+
 
 
         // --------------------------------------------------------------------
@@ -187,7 +195,7 @@ class overview extends cContentPage {
 
 
         $html .= '<table>';
-        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th>';
+        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Delta") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th>';
 
         $listed_user_ids = array();
         foreach ($laps as $lap) {
@@ -198,6 +206,7 @@ class overview extends cContentPage {
             $html .= '<tr>';
             $html .= "<td>$lap_number</td>";
             $html .= "<td>" . HumanValue::format($lap->laptime(), "LAPTIME") . "</td>";
+            $html .= "<td>" . HumanValue::format($lap->laptime() - $laptime_best, "ms") . "</td>";
             $html .= "<td>" . $lap->user()->login() . "</td>";
             $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
             $html .= "<td>" . HumanValue::format($lap->ballast(), "kg") . "</td>";

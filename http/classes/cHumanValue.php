@@ -13,10 +13,16 @@ class HumanValue {
 
         if ($unit === "LAPTIME") {
             $this->formatLaptime($value, $unit);
+
         } else if ($unit === "s") {
             $this->formatSeconds($value, $unit);
+
+        } else if ($unit === "ms") {
+            $this->formatSeconds($value / 1000, "s");
+
         } else if ($unit === "%") {
             $this->formatPercent($value, $unit);
+
         } else {
             $this->formatArbitrary($value, $unit);
         }
@@ -44,7 +50,7 @@ class HumanValue {
         $this->UnitPrefix = "";
     }
 
-    private function formatSeconds(int $value, $unit) {
+    private function formatSeconds(float $value, $unit) {
         if ($value >= 3153600e2) {
             $this->Value = sprintf("%d", $value / 3153600e2);
             $this->Unit = "y";
@@ -82,6 +88,21 @@ class HumanValue {
             $minutes = ($value - $seconds) / 60;
             $this->Value = sprintf("%d:%02d", $minutes, $seconds);
             $this->Unit = "min";
+
+        } else if ($value >= 10) {
+            $seconds = $value;
+            $this->Value = sprintf("%0.1f", $seconds);
+            $this->Unit = "s";
+
+        } else if ($value >= 1) {
+            $seconds = $value;
+            $this->Value = sprintf("%0.2f", $seconds);
+            $this->Unit = "s";
+
+        } else if ($value >= 1e-3) {
+            $mseconds = $value * 1e3;
+            $this->Value = sprintf("%d", $mseconds);
+            $this->Unit = "s";
 
         } else {
             $this->Value = $value;
