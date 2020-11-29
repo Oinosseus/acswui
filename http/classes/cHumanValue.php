@@ -102,7 +102,7 @@ class HumanValue {
         } else if ($value >= 1e-3) {
             $mseconds = $value * 1e3;
             $this->Value = sprintf("%d", $mseconds);
-            $this->Unit = "s";
+            $this->Unit = "ms";
 
         } else {
             $this->Value = $value;

@@ -51,15 +51,19 @@ class records_track extends cContentPage {
                 $html .= "<h1>" . $carclass->name() . "</h1>";
 
                 $html .= '<table>';
-                $html .= '<tr><th>' . _("Laptime") . '</th><th colspan="2">' . _("Car") . '</th><th>' . _("Driver") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th><th>' . _("Date") . '</th><th>' . _("Lap Id") . '</th>';
+                $html .= '<tr><th>' . _("Laptime") . '</th><th>' . _("Delta") . '</th><th>' . _("Driver") . '</th><th colspan="2">' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th><th>' . _("Date") . '</th><th>' . _("Lap Id") . '</th>';
 
+                $best_laptime = NULL;
                 foreach ($lap_ids as $lap_id) {
                     $lap = new Lap($lap_id);
+                    if ($best_laptime === NULL) $best_laptime = $lap->laptime();
+
                     $html .= '<tr>';
                     $html .= '<td>' . HumanValue::format($lap->laptime(), "LAPTIME") . '</td>';
+                    $html .= '<td>' . HumanValue::format($lap->laptime() - $best_laptime, "ms") . '</td>';
+                    $html .= '<td>' . $lap->user()->login() . '</td>';
                     $html .= '<td>' . $lap->carSkin()->htmlImg("", 50) . '</td>';
                     $html .= '<td>' . $lap->carSkin()->car()->name() . '</td>';
-                    $html .= '<td>' . $lap->user()->login() . '</td>';
                     $html .= '<td>' . HumanValue::format($lap->ballast(), "kg") . '</td>';
                     $html .= '<td>' . HumanValue::format($lap->restrictor(), "%") . '</td>';
                     $html .= '<td>' . HumanValue::format($lap->grip() * 100, "%") . '</td>';
