@@ -26,6 +26,7 @@ class CommandCalcStats(Command):
         self.add_argument('--db-user', help="Database username (not needed when global config is given)")
         self.add_argument('--db-password', help="Database password (not needed when global config is given)")
         self.add_argument('--http-guid', help="Name of webserver group on the server (needed to chmod access rights)")
+        self.add_argument('--fast', action="store_true", help="If not set a full update is done")
 
         # http settings
         self.add_argument('--http-path-acs-content', help="Path that stores AC data for http access (eg. track car preview images)")
@@ -484,7 +485,7 @@ class CommandCalcStats(Command):
         self.Verbosity.print("session lap diagrams")
 
         # configuration
-        FILTER_MIN_LAPS = 5
+        FILTER_MIN_LAPS = 3
         FILTER_MAX_SIGMA = 0.1
 
         # diagram output path
@@ -561,10 +562,12 @@ class CommandCalcStats(Command):
         # for all sessions
         for row_session in self.__db.fetch("Sessions", ['Id'], {}):
             session_id = row_session['Id']
+            path_fig = os.path.join(path_dir, "session_%s.svg" % session_id)
 
-            ## DEBUG
-            #if session_id != 204:
-                #continue
+            # check for quick processing
+            if self.getArg("fast") == True:
+                if os.path.isfile(path_fig):
+                    continue
 
             # list of LapData objects that shall be put into the chart
             lap_data_list = []
@@ -610,6 +613,7 @@ class CommandCalcStats(Command):
 
 
             # generate plot
+            matplotlib.pyplot.xkcd()
             fig, ax = matplotlib.pyplot.subplots()
             fig.set_size_inches(9, 3)
             fig.set_tight_layout(True)
@@ -617,10 +621,10 @@ class CommandCalcStats(Command):
             for ld in lap_data_list:
                 ax.plot(ld.LapNumbers, ld.LapDeltas, label=ld.UserLogin)
 
-            ax.set(xlabel='Lap Number', ylabel='Delta to best Lap [s]')
+            ax.set(xlabel='Lap Number', ylabel='Delta to best Lap [s]', title="Best Laps")
             ax.legend()
             ax.grid()
 
-            path_fig = os.path.join(path_dir, "session_%s.svg" % session_id)
             fig.savefig(path_fig)
             matplotlib.pyplot.close(fig)
+            self.Verbosity2.print(path_fig)

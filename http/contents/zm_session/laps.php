@@ -112,9 +112,25 @@ class laps extends cContentPage {
         }
 
 
-        // html dump
+        // driver summary
         $html .= '<table>';
-        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Cuts") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th>';
+        $html .= '<tr><th>' . _("Driver") . '</th><th colspan="3">' . _("Driven") . '</th></tr>';
+        foreach ($session->drivers() as $user) {
+            $lap_count = 0;
+            foreach ($laps as $lap) {
+                if ($lap->user()->id() == $user->id()) ++$lap_count;
+            }
+            $html .= '<tr>';
+            $html .= '<td>' . $user->login() . '</th>';
+            $html .= '<td>' . HumanValue::format($lap_count, "laps") . '</td>';
+            $html .= '<td>' . HumanValue::format($lap_count * $session->track()->length(), "m") . '</td>';
+            $html .= '</tr>';
+        }
+        $html .= '</table>';
+
+        // all laps
+        $html .= '<table>';
+        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Cuts") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th><th>' . _("Lap Id") . '</th>';
         foreach ($laps as $lap) {
             $class = "class=\"";
             $class .= ($lap->cuts() > 0) ? " lap_invalid" : "";
@@ -131,6 +147,7 @@ class laps extends cContentPage {
             $html .= "<td>" . HumanValue::format($lap->ballast(), "kg") . "</td>";
             $html .= "<td>" . HumanValue::format($lap->restrictor(), "%") . "</td>";
             $html .= "<td>" . HumanValue::format(100 * $lap->grip(), "%") . "</td>";
+            $html .= "<td>" . $lap->id() . "</td>";
             $html .= '</tr>';
         }
         $html .= '</table>';

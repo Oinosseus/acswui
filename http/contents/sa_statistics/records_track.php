@@ -51,7 +51,7 @@ class records_track extends cContentPage {
                 $html .= "<h1>" . $carclass->name() . "</h1>";
 
                 $html .= '<table>';
-                $html .= '<tr><th>' . _("Laptime") . '</th><th>' . _("Delta") . '</th><th>' . _("Driver") . '</th><th colspan="2">' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th><th>' . _("Date") . '</th><th>' . _("Lap Id") . '</th>';
+                $html .= '<tr><th>' . _("Laptime") . '</th><th>' . _("Delta") . '</th><th>' . _("Driver") . '</th><th colspan="2">' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th><th>' . _("Date") . '</th><th>' . _("Session / Lap") . '</th>';
 
                 $best_laptime = NULL;
                 foreach ($lap_ids as $lap_id) {
@@ -68,7 +68,11 @@ class records_track extends cContentPage {
                     $html .= '<td>' . HumanValue::format($lap->restrictor(), "%") . '</td>';
                     $html .= '<td>' . HumanValue::format($lap->grip() * 100, "%") . '</td>';
                     $html .= '<td>' . $lap->timestamp()->format("c") . '</td>';
-                    $html .= '<td>' . $lap->id() . '</td>';
+
+                    $link_url = "?CONTENT=/zm_session//laps&SESSION_ID=" . $lap->session()->id();
+                    $link_name = $lap->session()->id() . " / " . $lap->id();
+                    $html .= "<td><a href=\"$link_url\">$link_name</a></td>";
+
                     $html .= '</tr>';
                 }
 
