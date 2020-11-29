@@ -518,6 +518,10 @@ class CommandCalcStats(Command):
                 self.Laptimes = []
                 self.LapDeltas = []
 
+                self.LaptimesFiltered = []
+                self.NewLapNumbersFiltered = []
+                self.NewLapDeltasFiltered = []
+
             def addLap(self, lap_id, lap_time):
                 self.LapNumbers.append(int(lap_id) - self.__first_id + 1)
                 self.Laptimes.append(int(lap_time))
@@ -527,7 +531,11 @@ class CommandCalcStats(Command):
             def LapCount(self):
                 return len(self.Laptimes)
 
-            def filterSigma(self):
+            @property
+            def LapCountFiltered(self):
+                return len(self.LaptimesFiltered)
+
+            def filter(self):
                 if len(self.Laptimes) < 2:
                     return
 
@@ -535,22 +543,18 @@ class CommandCalcStats(Command):
                 allowed_lap_deviation = FILTER_MAX_SIGMA * statistics.stdev(self.Laptimes)
                 best_laptime = min(self.Laptimes)
 
-                # pop bad laps until remaining laps are all good
-                lap_popped = True
-                while lap_popped:
-                    lap_popped = False
+                # filter laps
+                for i in range(len(self.Laptimes)):
+                    laptime = self.Laptimes[i]
+                    laptime_relaitve_to_user_best = laptime - best_laptime
 
-                    for i in range(len(self.Laptimes)):
-                        laptime = self.Laptimes[i]
-                        laptime_relaitve_to_user_best = laptime - best_laptime
+                    # remove best lap from list
+                    if laptime_relaitve_to_user_best <= allowed_lap_deviation:
+                        self.LaptimesFiltered.append(self.Laptimes[i])
+                        self.NewLapNumbersFiltered.append(self.LapNumbers[i])
+                        self.NewLapDeltasFiltered.append(self.LapDeltas[i])
 
-                        # remove best lap from list
-                        if laptime_relaitve_to_user_best > allowed_lap_deviation:
-                            self.Laptimes.pop(i)
-                            self.LapNumbers.pop(i)
-                            self.LapDeltas.pop(i)
-                            lap_popped = True
-                            break
+
 
 
 
@@ -580,7 +584,8 @@ class CommandCalcStats(Command):
                     continue
 
             # list of LapData objects that shall be put into the chart
-            lap_data_list = []
+            lap_data_list_raw = []
+            lap_data_list_filtered = []
 
 
             # find best laptime and first lap
@@ -611,15 +616,11 @@ class CommandCalcStats(Command):
                         ld.addLap(row_laps['Id'], row_laps['Laptime'])
 
                 # filter minimum lap count
-                ld.filterSigma()
-                if ld.LapCount < FILTER_MIN_LAPS:
-                    continue
-
-                lap_data_list.append(ld)
-
-            # do not plot when no data is available
-            if len (lap_data_list) == 0:
-                continue
+                ld.filter()
+                if ld.LapCountFiltered >= FILTER_MIN_LAPS:
+                    lap_data_list_filtered.append(ld)
+                if ld.LapCount >= FILTER_MIN_LAPS:
+                    lap_data_list_raw.append(ld)
 
 
             # generate plot
@@ -628,10 +629,18 @@ class CommandCalcStats(Command):
             fig.set_size_inches(9, 3)
             fig.set_tight_layout(True)
 
-            for ld in lap_data_list:
-                ax.plot(ld.LapNumbers, ld.LapDeltas, label=ld.UserLogin)
+            if len (lap_data_list_filtered) == 0:
+                # use raw data when no filtered data is available
+                for ld in lap_data_list_raw:
+                    ax.plot(ld.LapNumbers, ld.LapDeltas, label=ld.UserLogin)
+                ax.set(xlabel='Lap Number', ylabel='Delta to best Lap [s]', title="Valid Laps")
 
-            ax.set(xlabel='Lap Number', ylabel='Delta to best Lap [s]', title="Best Laps")
+            else:
+                # use filtered data
+                for ld in lap_data_list_filtered:
+                    ax.plot(ld.NewLapNumbersFiltered, ld.NewLapDeltasFiltered, label=ld.UserLogin)
+                ax.set(xlabel='Lap Number', ylabel='Delta to best Lap [s]', title="Best Laps")
+
             ax.legend()
             ax.grid()
 

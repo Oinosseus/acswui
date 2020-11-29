@@ -24,7 +24,11 @@ class tracks_popular extends cContentPage {
         foreach ($popular_tracks as $pt) {
             $html .= '<tr>';
             $html .= '<td>' . HumanValue::format($pt['Popularity'] * 100, "%") . '</td>';
-            $html .= '<td>' . $pt['Name'] . '</td>';
+
+            $link_url = "?CONTENT=/sa_statistics//records_track&TRACK_ID=" . $pt['Id'];
+            $link_name = $pt['Name'];
+            $html .= "<td><a href=\"$link_url\">$link_name</a></td>";
+
             $html .= '<td>' . $pt['Pitboxes'] . '</td>';
             $html .= '<td>' . HumanValue::format($pt['Length'], "m") . '</td>';
             $html .= '<td>' . count($pt['DriversList']) . '</td>';

@@ -26,7 +26,11 @@ class carclasses_popular extends cContentPage {
         foreach ($stats as $s) {
             $html .= '<tr>';
             $html .= '<td>' . HumanValue::format($s['Popularity'] * 100, "%") . '</td>';
-            $html .= '<td>' . $s['Name'] . '</td>';
+
+            $link_url = "?CONTENT=/sa_statistics//records_car&CARCLASS_ID=" . $s['Id'];
+            $link_name = $s['Name'];
+            $html .= "<td><a href=\"$link_url\">$link_name</a></td>";
+
             $html .= '<td>' . count($s['DriversList']) . '</td>';
             $html .= '<td>' . HumanValue::format($s['DrivenLaps'], "L") . '</td>';
             $html .= '<td>' . HumanValue::format($s['DrivenSeconds'], "s") . '</td>';

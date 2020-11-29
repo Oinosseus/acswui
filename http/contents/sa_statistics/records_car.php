@@ -15,8 +15,8 @@ class records_car extends cContentPage {
     public function getHtml() {
         global $acswuiConfig;
 
-        if (isset($_POST['CARCLASS_ID'])) {
-            $this->CurrentCarClass = new CarClass((int) $_POST['CARCLASS_ID']);
+        if (isset($_REQUEST['CARCLASS_ID'])) {
+            $this->CurrentCarClass = new CarClass((int) $_REQUEST['CARCLASS_ID']);
             $_SESSION['CARCLASS_ID'] = $this->CurrentCarClass->id();
         } else if (isset($_SESSION['CARCLASS_ID'])) {
             $this->CurrentCarClass = new CarClass((int) $_SESSION['CARCLASS_ID']);

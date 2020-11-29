@@ -17,8 +17,8 @@ class records_track extends cContentPage {
     public function getHtml() {
         global $acswuiConfig;
 
-        if (isset($_POST['TRACK_ID'])) {
-            $this->CurrentTrack = new Track((int) $_POST['TRACK_ID']);
+        if (isset($_REQUEST['TRACK_ID'])) {
+            $this->CurrentTrack = new Track((int) $_REQUEST['TRACK_ID']);
             $_SESSION['TRACK_ID'] = $this->CurrentTrack->id();
         } else if (isset($_SESSION['TRACK_ID'])) {
             $this->CurrentTrack = new Track((int) $_SESSION['TRACK_ID']);
