@@ -20,7 +20,7 @@ class tracks_popular extends cContentPage {
         $html = "";
 
         $html .= '<table>';
-        $html .= '<tr><th>Popularity</th><th>Track</th><th>Pitboxes</th><th>Length</th><th>Drivers</th><th colspan="2">Driven</th></tr>';
+        $html .= '<tr><th>Popularity</th><th>Track</th><th>Pitboxes</th><th>Length</th><th>Drivers</th><th colspan="3">Driven</th></tr>';
         foreach ($popular_tracks as $pt) {
             $html .= '<tr>';
             $html .= '<td>' . HumanValue::format($pt['Popularity'] * 100, "%") . '</td>';
@@ -29,6 +29,7 @@ class tracks_popular extends cContentPage {
             $html .= '<td>' . HumanValue::format($pt['Length'], "m") . '</td>';
             $html .= '<td>' . count($pt['DriversList']) . '</td>';
             $html .= '<td>' . HumanValue::format($pt['DrivenLaps'], "L") . '</td>';
+            $html .= '<td>' . HumanValue::format($pt['DrivenSeconds'], "s") . '</td>';
             $html .= '<td>' . HumanValue::format($pt['DrivenMeters'], "m") . '</td>';
             $html .= '</tr>';
         }

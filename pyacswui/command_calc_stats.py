@@ -150,11 +150,12 @@ class CommandCalcStats(Command):
             row['DriversList'] = []
             row['DrivenLaps'] = 0
             row['DrivenMeters'] = 0
+            row['DrivenSeconds'] = 0
             row['Popularity'] = 0.0
             tracks_dict.update({row['Id']: row})
 
         # count laps and drivers
-        query = "SELECT Sessions.Track, Users.Id FROM Laps"
+        query = "SELECT Sessions.Track, Users.Id, Laps.Laptime FROM Laps"
         query += " INNER JOIN Sessions On Sessions.Id=Laps.Session"
         query += " INNER JOIN Users On Users.Id=Laps.User"
         cursor = pymysql.cursors.SSDictCursor(self.__db.Handle)
@@ -162,10 +163,19 @@ class CommandCalcStats(Command):
         for row in cursor:
             track_id = row['Track']
             user_id = row['Id']
+            laptime = int(row['Laptime'])
             tracks_dict[track_id]['DrivenLaps'] += 1
             tracks_dict[track_id]['DrivenMeters'] += tracks_dict[track_id]['Length']
+            tracks_dict[track_id]['DrivenSeconds'] += laptime
             if user_id not in tracks_dict[track_id]['DriversList']:
                 tracks_dict[track_id]['DriversList'].append(user_id)
+
+        # normalize values
+        for track_id in tracks_dict.keys():
+            mseconds = tracks_dict[track_id]['DrivenSeconds']
+            seconds = int(mseconds / 1000)
+            tracks_dict[track_id]['DrivenSeconds'] = seconds
+
 
         # calculate popularity
         # according to diriven length rated by drivers
