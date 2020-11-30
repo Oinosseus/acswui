@@ -4,6 +4,7 @@ import shutil
 import os
 import json
 import re
+import pymysql
 from .command import Command, ArgumentException
 from .database import Database
 from .verbosity import Verbosity
@@ -127,12 +128,14 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnString("Cars", "Name", 80)
         self.__db.appendColumnInt("Cars", "Parent")
         self.__db.appendColumnString("Cars", "Brand", 80)
+        self.__db.appendColumnTinyInt("Cars", "Deprecated")
 
         # check table CarSkins
         Verbosity(self.Verbosity).print("check database table `CarSkins`")
         self.__db.appendTable("CarSkins")
         self.__db.appendColumnInt("CarSkins", "Car")
         self.__db.appendColumnString("CarSkins", "Skin", 50)
+        self.__db.appendColumnTinyInt("CarSkins", "Deprecated")
 
         # check table Tracks
         Verbosity(self.Verbosity).print("check database table `Tracks`")
@@ -142,6 +145,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnString("Tracks", "Name", 80)
         self.__db.appendColumnUInt("Tracks", "Length")
         self.__db.appendColumnInt("Tracks", "Pitboxes")
+        self.__db.appendColumnTinyInt("Tracks", "Deprecated")
 
         # check table Sessions
         Verbosity(self.Verbosity).print("check database table `Sessions`")
@@ -353,6 +357,10 @@ class CommandInstallHttp(Command):
     def __work_scan_cars(self):
         self.Verbosity.print("scanning for cars")
 
+        # set all current cars and skins to 'deprecated'
+        self.__db.rawQuery("UPDATE Cars SET Deprecated=1 WHERE Deprecated=0")
+        self.__db.rawQuery("UPDATE CarSkins SET Deprecated=1 WHERE Deprecated=0")
+
         for car in sorted(os.listdir(self.getArg('http-path-acs-content') + "/content/cars")):
             car_path   = self.getArg('http-path-acs-content') + "/content/cars/" + car
             car_name   = self.__parse_json(car_path + "/ui/ui_car.json", "name", car)
@@ -373,27 +381,32 @@ class CommandInstallHttp(Command):
 
             # insert car if not existent
             if len(existing_car_ids) == 0:
-                self.__db.insertRow("Cars", {"Car": car, "Name": car_name, "Parent": 0, "Brand": car_brand})
+                self.__db.insertRow("Cars", {"Car": car, "Name": car_name, "Parent": 0, "Brand": car_brand, "Deprecated":0})
                 existing_car_ids = self.__db.findIds("Cars", {"Car": car})
                 Verbosity(self.Verbosity).print("Found new car '" + car + "'")
 
             # update all existing cars
             for eci in existing_car_ids:
-                self.__db.updateRow("Cars", eci, {"Car": car, "Name": car_name, "Parent": 0, "Brand": car_brand})
+                self.__db.updateRow("Cars", eci, {"Car": car, "Name": car_name, "Parent": 0, "Brand": car_brand, "Deprecated":0})
 
                 # insert not existing skins
                 added_skins = 0
                 for skin in car_skins:
                     existing_car_skins = self.__db.findIds("CarSkins", {"Car": eci, "Skin": skin})
                     if len(existing_car_skins) == 0:
-                        self.__db.insertRow("CarSkins", {"Car": eci, "Skin": skin})
+                        self.__db.insertRow("CarSkins", {"Car": eci, "Skin": skin, "Deprecated":0})
                         added_skins += 1
+                    else:
+                        for skin_id in existing_car_skins:
+                            self.__db.updateRow("CarSkins", skin_id, {"Deprecated":0})
 
 
 
     def __work_scan_tracks(self):
         self.Verbosity.print("Scanning for tracks")
 
+        # set all current trakcs to 'deprecated'
+        self.__db.rawQuery("UPDATE Tracks SET Deprecated=1 WHERE Deprecated=0")
 
         REGEX_COMP_TRACKLENGTH = re.compile("([0-9]*[,\.]?[0-9]*)\s*(m|km)?(.*)")
         def interpret_length(length):
@@ -449,10 +462,10 @@ class CommandInstallHttp(Command):
 
                 existing_track_ids = self.__db.findIds("Tracks", {"Track": track})
                 if len(existing_track_ids) == 0:
-                    self.__db.insertRow("Tracks", {"Track": track, "Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs})
+                    self.__db.insertRow("Tracks", {"Track": track, "Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs, "Deprecated":0})
                     Verbosity(self.Verbosity).print("Found new track '" + track + "'")
                 else:
-                    self.__db.updateRow("Tracks", existing_track_ids[0], {"Track": track, "Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs})
+                    self.__db.updateRow("Tracks", existing_track_ids[0], {"Track": track, "Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs, "Deprecated":0})
 
             # update track configs
             if os.path.isdir(track_path + "/ui"):
@@ -466,9 +479,9 @@ class CommandInstallHttp(Command):
 
                             existing_track_ids = self.__db.findIds("Tracks", {"Track": track, "Config": track_config})
                             if len(existing_track_ids) == 0:
-                                self.__db.insertRow("Tracks", {"Track": track, "Config": track_config, "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs})
+                                self.__db.insertRow("Tracks", {"Track": track, "Config": track_config, "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs, "Deprecated":0})
                             else:
-                                self.__db.updateRow("Tracks", existing_track_ids[0], {"Track": track, "Config": track_config, "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs})
+                                self.__db.updateRow("Tracks", existing_track_ids[0], {"Track": track, "Config": track_config, "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs, "Deprecated":0})
 
 
 

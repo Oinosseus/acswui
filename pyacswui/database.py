@@ -227,8 +227,29 @@ class Database(object):
 
         # user info
         self.__verbosity.print("  found IDs:", ret)
+        self.__db_handle.commit()
 
         return ret
+
+
+    def rawQuery(self, query):
+        # execute query
+        self.__verbosity.print("  " + query)
+        cursor = self.__db_handle.cursor()
+        try:
+            cursor.execute(query)
+        except BaseException as e:
+            print("QUERY:", query)
+            raise e
+        for res in cursor.fetchall():
+            ret_dict = {}
+            for col in columns_array:
+                ret_dict[col] = res[columns_array.index(col)]
+            ret.append(ret_dict)
+
+        cursor.close()
+        self.__db_handle.commit()
+
 
 
     def fetch(self, tblname, columns_array, where_dict, sort_by_cloumn=None, order_asc=False):
@@ -274,6 +295,7 @@ class Database(object):
             ret.append(ret_dict)
 
         cursor.close()
+        self.__db_handle.commit()
 
         return ret
 
