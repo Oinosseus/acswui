@@ -135,7 +135,11 @@ class CommandInstallFiles(Command):
             path_ac_car_skins = os.path.join(path_ac_cars, car, "skins")
             if os.path.isdir(path_ac_car_skins):
                 for skin in os.listdir(path_ac_car_skins):
-                    #print("HERE", car, skin)
+                    path_skin = os.path.join(path_ac_car_skins, skin)
+
+                    # skins are in subdirectories
+                    if not os.path.isdir(path_skin):
+                        continue
 
                     if self.__copy2http(path_ac_car, "skins", skin, "preview.jpg"):
                         pass
