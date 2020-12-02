@@ -29,6 +29,11 @@ class UdpPluginSession(object):
         return self.__db_id
 
 
+    @property
+    def IsActive(self):
+        return False if self.__db_id is None else True
+
+
 
     def update(self, packet):
 

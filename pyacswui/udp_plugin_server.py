@@ -26,7 +26,6 @@ class UdpPluginServer(object):
         self.__session = None
         self.__entries = []
         self.__database = database
-        self.__driver_connections = []
         self.__realtime_json_path = realtime_json_path
 
         self.__port_plugin = int(port_plugin)
@@ -69,7 +68,8 @@ class UdpPluginServer(object):
         except socket.timeout:
             pass
 
-        self.dump_realtime_json()
+        if self.__session is not None and self.__session.IsActive:
+            self.dump_realtime_json()
 
 
 
