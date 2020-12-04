@@ -195,7 +195,7 @@ class overview extends cContentPage {
 
 
         $html .= '<table>';
-        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Delta") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th>';
+        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Delta") . '</th><th>' . _("Cuts") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th>';
 
         $listed_user_ids = array();
         foreach ($laps as $lap) {
@@ -203,10 +203,15 @@ class overview extends cContentPage {
 
             $lap_number = $lap->id() - $session->firstDrivenLap()->id() + 1;
 
-            $html .= '<tr>';
+            $class = "class=\"";
+            $class .= ($lap->cuts() > 0) ? " lap_invalid" : "";
+            $class .= "\"";
+
+            $html .= "<tr $class>";
             $html .= "<td>$lap_number</td>";
             $html .= "<td>" . HumanValue::format($lap->laptime(), "LAPTIME") . "</td>";
             $html .= "<td>" . HumanValue::format($lap->laptime() - $laptime_best, "ms") . "</td>";
+            $html .= "<td>" . $lap->cuts() . "</td>";
             $html .= "<td>" . $lap->user()->login() . "</td>";
             $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
             $html .= "<td>" . HumanValue::format($lap->ballast(), "kg") . "</td>";
