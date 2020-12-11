@@ -270,6 +270,7 @@ class ServerPreset {
      * This is a workaround for not having friend classes.
      */
     public function accessServerCfg() {
+        if ($this->ServerCfgJson === NULL) $this->updateData();
         return $this->ServerCfgJson;
     }
 
@@ -317,7 +318,7 @@ class ServerPreset {
                     }
 
                     // value from fixed setup
-                    else if (in_array($column, $acswuiConfig->FixedServerConfig)) {
+                    else if (array_key_exists($column, $acswuiConfig->FixedServerConfig)) {
                         $new_value = $acswuiConfig->FixedServerConfig[$column];
                     }
 
