@@ -495,8 +495,7 @@ class CommandCalcStats(Command):
         self.Verbosity.print("session lap diagrams")
 
         # configuration
-        FILTER_MIN_LAPS = 5
-        FILTER_MAX_SIGMA = 0.1
+        FILTER_BAD_LAPS_DEVIATION = 4000 # [ms]
 
         # diagram output path
         path_dir = os.path.join(self.getArg('http-path-acs-content'), "session_lap_diagrams")
@@ -535,27 +534,17 @@ class CommandCalcStats(Command):
             def LapCountFiltered(self):
                 return len(self.LaptimesFiltered)
 
-            def filter(self):
-                if len(self.Laptimes) < 2:
-                    return
+            def getData(self):
+                data_x = []
+                data_y = []
 
-                # get statistical data
-                allowed_lap_deviation = FILTER_MAX_SIGMA * statistics.stdev(self.Laptimes)
                 best_laptime = min(self.Laptimes)
-
-                # filter laps
                 for i in range(len(self.Laptimes)):
-                    laptime = self.Laptimes[i]
-                    laptime_relaitve_to_user_best = laptime - best_laptime
+                    if (self.Laptimes[i] - best_laptime) < FILTER_BAD_LAPS_DEVIATION:
+                        data_x.append(self.LapNumbers[i])
+                        data_y.append(self.LapDeltas[i])
 
-                    # remove best lap from list
-                    if laptime_relaitve_to_user_best <= allowed_lap_deviation:
-                        self.LaptimesFiltered.append(self.Laptimes[i])
-                        self.NewLapNumbersFiltered.append(self.LapNumbers[i])
-                        self.NewLapDeltasFiltered.append(self.LapDeltas[i])
-
-
-
+                return data_x, data_y
 
 
 
@@ -584,8 +573,7 @@ class CommandCalcStats(Command):
                     continue
 
             # list of LapData objects that shall be put into the chart
-            lap_data_list_raw = []
-            lap_data_list_filtered = []
+            lap_data_list = []
 
 
             # find best laptime and first lap
@@ -614,40 +602,31 @@ class CommandCalcStats(Command):
                 for row_laps in self.__db.fetch("Laps", ['Id', 'User', 'Laptime', 'Cuts'], {'Session': session_id, 'User':user_id}):
                     if int(row_laps['Cuts']) == 0:
                         ld.addLap(row_laps['Id'], row_laps['Laptime'])
-
-                # filter minimum lap count
-                ld.filter()
-                if ld.LapCountFiltered >= FILTER_MIN_LAPS:
-                    lap_data_list_filtered.append(ld)
-                if ld.LapCount >= FILTER_MIN_LAPS:
-                    lap_data_list_raw.append(ld)
-
-
-            # skip empty diagrams
-            if len(lap_data_list_filtered) < 2 and len(lap_data_list_raw) < 2:
-                continue
+                if ld.LapCount > 0:
+                    lap_data_list.append(ld)
 
 
             # generate plot
             matplotlib.pyplot.xkcd()
             fig, ax = matplotlib.pyplot.subplots()
-            fig.set_size_inches(9, 3)
-            fig.set_tight_layout(True)
+            fig.set_size_inches(12, 3)
+            #fig.set_tight_layout(True)
 
-            if len (lap_data_list_filtered) == 0:
-                # use raw data when no filtered data is available
-                for ld in lap_data_list_raw:
-                    ax.plot(ld.LapNumbers, ld.LapDeltas, label=ld.UserLogin)
-                ax.set(xlabel='Lap Number', ylabel='Delta to best Lap [s]', title="Valid Laps")
+            #if len (lap_data_list_filtered) == 0:
+            line_objcets = []
+            driver_labels = []
+            for ld in lap_data_list:
+                data_x, data_y = ld.getData()
+                lo = ax.plot(data_x, data_y, label=ld.UserLogin)
+                line_objcets.append(lo[0])
+                driver_labels.append(ld.UserLogin)
+            ax.set(xlabel='Lap Number', ylabel='Delta to best Lap [s]', title="Best Laps")
 
-            else:
-                # use filtered data
-                for ld in lap_data_list_filtered:
-                    ax.plot(ld.NewLapNumbersFiltered, ld.NewLapDeltasFiltered, label=ld.UserLogin)
-                ax.set(xlabel='Lap Number', ylabel='Delta to best Lap [s]', title="Best Laps")
-
-            ax.legend()
             ax.grid()
+            #ax.set_ylim(top=0, bottom=(-0.001*FILTER_BAD_LAPS_DEVIATION))
+            fig.legend(line_objcets, labels=driver_labels, loc="center right", borderaxespad=0.1, title="Drivers")
+            matplotlib.pyplot.subplots_adjust(right=0.75)
+            #fig.set_size_inches(9, 3)
 
             fig.savefig(path_fig)
             matplotlib.pyplot.close(fig)
