@@ -550,7 +550,10 @@ class CommandInstallHttp(Command):
         cmd = ["chmod", "-R", "g+r", self.getArg("path-acs-target")]
         verb2.print(" ".join(cmd))
         subprocess.run(cmd)
-        cmd = ["chmod", "-R", "g+w", os.path.join(self.getArg("path-acs-target"), "cfg")]
+        cmd = ["chmod", "g+w", os.path.join(self.getArg("path-acs-target"))]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
+        cmd = ["chmod", "g+w", os.path.join(self.getArg("path-acs-target"), "cfg")]
         verb2.print(" ".join(cmd))
         subprocess.run(cmd)
 
@@ -592,6 +595,20 @@ class CommandInstallHttp(Command):
         subprocess.run(cmd)
 
         # change access to acs-content target directory
+        cmd = ["chmod", "g+rw", self.getArg("http-path-acs-content")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
         cmd = ["chmod", "-R", "g+r", self.getArg("http-path-acs-content")]
         verb2.print(" ".join(cmd))
         subprocess.run(cmd)
+
+
+        ########################
+        # acswuy python scripts
+
+        dirpath = os.path.dirname(__file__)
+        for scriptpath in os.listdir(dirpath):
+            if scriptpath[-3:] == ".py":
+                cmd = ["chgrp", self.getArg("http-guid"), os.path.join(dirpath, scriptpath)]
+                verb2.print(" ".join(cmd))
+                subprocess.run(cmd)
