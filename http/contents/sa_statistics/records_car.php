@@ -41,7 +41,7 @@ class records_car extends cContentPage {
         $html .= '</select>';
         $html .= '</form>';
 
-        if ($this->CurrentCarClass !== NULL) {
+        if ($this->CurrentCarClass !== NULL && array_key_exists($this->CurrentCarClass->id(), $class_records)) {
 
             foreach ($class_records[$this->CurrentCarClass->id()] as $track_id => $lap_ids) {
 
