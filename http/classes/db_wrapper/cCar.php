@@ -37,15 +37,23 @@ class Car {
         return $this->Id;
     }
 
-    //! @return An array of all available Car objects, ordered by name
-    public static function listCars() {
+    /**
+     * @param $inculde_deprecated If set to TRUE, also deprectaed items are listed (Default: False)
+     * @return An array of all available Car objects, ordered by name
+     */
+    public static function listCars($inculde_deprecated=FALSE) {
         global $acswuiDatabase;
 
         if (Car::$AllCarsList !== NULL) return Car::$AllCarsList;
 
         Car::$AllCarsList = array();
 
-        foreach ($acswuiDatabase->fetch_2d_array("Cars", ['Id'], [], 'Name') as $row) {
+        $where = array();
+        if ($inculde_deprecated !== TRUE) {
+            $where['Deprecated'] = 0;
+        }
+
+        foreach ($acswuiDatabase->fetch_2d_array("Cars", ['Id'], $where, 'Name') as $row) {
             Car::$AllCarsList[] = new Car($row['Id']);
         }
 
@@ -65,17 +73,24 @@ class Car {
     }
 
     /**
+     * @param $inculde_deprecated If set to TRUE, also deprectaed skins are listed (Default: False)
      * @return A List of according CarSkin objects
      */
-    public function skins() {
+    public function skins($inculde_deprecated=FALSE) {
         global $acswuiDatabase;
 
         // return cache
         if ($this->Skins !== NULL) return $this->Skins;
 
+        $where = array();
+        $where['Car'] = $this->Id;
+        if ($inculde_deprecated !== TRUE) {
+            $where['Deprecated'] = 0;
+        }
+
         // create cache
         $this->Skins = array();
-        foreach ($acswuiDatabase->fetch_2d_array("CarSkins", ['Id'], ['Car'=>$this->Id]) as $row) {
+        foreach ($acswuiDatabase->fetch_2d_array("CarSkins", ['Id'], $where) as $row) {
             $this->Skins[] = new CarSkin($row['Id']);
         }
 

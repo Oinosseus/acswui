@@ -111,13 +111,21 @@ class Track {
         return $this->Length;
     }
 
-    //! @return An array of all available Track objects in alphabetical order
-    public static function listTracks() {
+    /**
+     * @param $inculde_deprecated If set to TRUE, also deprectaed items are listed (Default: False)
+     * @return An array of all available Track objects in alphabetical order
+     */
+    public static function listTracks($inculde_deprecated=FALSE) {
         global $acswuiDatabase;
 
         $list = array();
 
-        foreach ($acswuiDatabase->fetch_2d_array("Tracks", ['Id'], [], 'Name') as $row) {
+        $where = array();
+        if ($inculde_deprecated !== TRUE) {
+            $where['Deprecated'] = 0;
+        }
+
+        foreach ($acswuiDatabase->fetch_2d_array("Tracks", ['Id'], $where, 'Name') as $row) {
             $list[] = new Track($row['Id']);
         }
 
