@@ -77,10 +77,22 @@ class ServerSlot {
      * @return True if server is online
      */
     public function online() {
-        $id = $this->Id;
-        exec("pgrep acServer$id", $cmd_str, $cmd_ret);
+        $pid = $this->pid();
+        if ($pid === NULL) return FALSE;
+        exec("ps $pid > /dev/null", $cmd_str, $cmd_ret);
         if ($cmd_ret === 0) return TRUE;
         return FALSE;
+    }
+
+
+    //! @return The process ID of the server or NULL
+    private function pid() {
+        global $acswuiConfig;
+        $id = $this->Id;
+        $pidfile = $acswuiConfig->AcServerPath . "/acServer$id.pid";
+        if (!file_exists($pidfile)) return NULL;
+        $pid = (int) file_get_contents($pidfile);
+        return $pid;
     }
 
 
@@ -88,15 +100,9 @@ class ServerSlot {
      * Stop the server
      */
     public function stop() {
-        $id = $this->Id;
-        $cmd_str = array();
-        $cmd_ret = 0;
-        $cmd = "pgrep acServer$id";
-        exec($cmd, $cmd_str, $cmd_ret);
-        if ($cmd_ret == 0) {
-            $cmd = "kill " . $cmd_str[0];
-            exec($cmd, $cmd_str, $cmd_ret);
-        }
+        $pid = $this->pid();
+        if ($pid === NULL) return FALSE;
+        exec("kill $pid");
         sleep(2);
     }
 

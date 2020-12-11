@@ -84,6 +84,10 @@ class CommandSrvrun(Command):
         acs_proc = Popen(acs_cmd, cwd=self.getArg("path_acs_target"), stdout=stdout, stderr=stdout)
         #acs_proc = Popen(acs_cmd, stdout=stdout, stderr=stdout)
 
+        # export PID
+        with open(os.path.join(self.getArg("path_acs_target"), self.getArg("name_acs") + ".pid"), "w") as pidfile:
+            pidfile.write(str(acs_proc.pid))
+
         # run server
         self.Verbosity.print("Processing ...")
         while True:
