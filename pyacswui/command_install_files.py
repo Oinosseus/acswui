@@ -178,6 +178,7 @@ class CommandInstallFiles(Command):
             verb3.print(track)
 
             # copy files
+            self.__copy2http(path_track, "map.png")
             self.__copy2acs(path_track, "data", "surfaces.ini")
             self.__copy2http(path_track, "ui", "outline.png")
             self.__copy2http(path_track, "ui", "preview.png")
@@ -186,6 +187,7 @@ class CommandInstallFiles(Command):
             # scan subdirectories for track configurations
             for configtrack in os.listdir(os.path.join(path_ac_tracks, track)):
                 self.__copy2acs(path_track, configtrack, "data", "surfaces.ini")
+                self.__copy2http(path_track, configtrack, "map.png")
                 self.__copy2http(path_track, "ui", configtrack, "ui_track.json")
                 self.__copy2http(path_track, "ui", configtrack, "outline.png")
                 self.__copy2http(path_track, "ui", configtrack, "preview.png")
