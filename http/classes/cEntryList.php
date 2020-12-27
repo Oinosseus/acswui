@@ -205,6 +205,9 @@ class EntryList {
             $this->EntryItemsList[] = new EntryListItem($skin);
         }
 
+        // randomize entries to have random pit assignment
+        shuffle($this->EntryItemsList);
+
         // write entries
         $fd = fopen($filepath, 'w');
         if ($fd === False) {
