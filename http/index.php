@@ -70,6 +70,7 @@ include("classes/db_wrapper/cServerPreset.php");
 include("classes/db_wrapper/cCarClassOccupation.php");
 include("classes/db_wrapper/cRacePollCarClass.php");
 include("classes/db_wrapper/cRacePollTrack.php");
+include("classes/db_wrapper/cRacePollDate.php");
 
 // functions
 include("functions/getMenuArrayFromContentDir.php");

@@ -255,6 +255,18 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnUInt("RacePollTracks", 'Track')
         self.__db.appendColumnUInt("RacePollTracks", 'Score')
 
+        # check table RacePollDates
+        Verbosity(self.Verbosity).print("check database table `RacePollDates`")
+        self.__db.appendTable("RacePollDates")
+        self.__db.appendColumnDateTime("RacePollDates", 'Date')
+        self.__db.appendColumnUInt("RacePollDates", 'User')
+
+        # check table RacePollDateMap
+        Verbosity(self.Verbosity).print("check database table `RacePollDateMap`")
+        self.__db.appendTable("RacePollDateMap")
+        self.__db.appendColumnUInt("RacePollDateMap", 'User')
+        self.__db.appendColumnUInt("RacePollDateMap", 'Date')
+
 
 
     def __work_cconfig(self):

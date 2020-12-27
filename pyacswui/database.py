@@ -192,6 +192,9 @@ class Database(object):
     def appendColumnText(self, tblname, colname):
         self.__appendColumn(tblname, colname, "text")
 
+    def appendColumnDateTime(self, tblname, colname):
+        self.__appendColumn(tblname, colname, "DATETIME")
+
     def appendColumnCurrentTimestamp(self, tblname, colname):
         self.__appendColumn(tblname, colname, "timestamp", "CURRENT_TIMESTAMP")
 

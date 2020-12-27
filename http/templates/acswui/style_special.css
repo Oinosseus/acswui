@@ -141,3 +141,24 @@ table tr.lap_invalid {
     padding: 10px;
 }
 
+
+
+/******************************************************************************
+ *                #contents__aa_user__racepoll
+ ******************************************************************************/
+
+#contents__aa_user__racepoll td.availability.available {
+    background-color: green;
+}
+
+#contents__aa_user__racepoll td.availability.unavailable {
+    background-color: #bd0000;
+}
+
+#contents__aa_user__racepoll td.availability input[type="checkbox"] {
+/*     background-color: red; */
+}
+
+#contents__aa_user__racepoll td.availability input[type="checkbox"]:checked {
+/*     background-color: green; */
+}

@@ -32,7 +32,7 @@
 
     // retuzrns an 1D array with all column names of the table
     public function fetch_column_names($table) {
-
+        global $acswuiLog;
         global $acswuiConfig;
         $ret = array();
 
