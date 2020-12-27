@@ -68,6 +68,8 @@ include("classes/db_wrapper/cSession.php");
 include("classes/db_wrapper/cLap.php");
 include("classes/db_wrapper/cServerPreset.php");
 include("classes/db_wrapper/cCarClassOccupation.php");
+include("classes/db_wrapper/cRacePollCarClass.php");
+include("classes/db_wrapper/cRacePollTrack.php");
 
 // functions
 include("functions/getMenuArrayFromContentDir.php");

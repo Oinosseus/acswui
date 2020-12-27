@@ -118,8 +118,8 @@ class CommandInstallHttp(Command):
         # check table UserGroupMap
         Verbosity(self.Verbosity).print("check database table `UserGroupMap`")
         self.__db.appendTable("UserGroupMap")
-        self.__db.appendColumnInt("UserGroupMap", "User")
-        self.__db.appendColumnInt("UserGroupMap", "Group")
+        self.__db.appendColumnUInt("UserGroupMap", "User")
+        self.__db.appendColumnUInt("UserGroupMap", "Group")
 
         # check table Cars
         Verbosity(self.Verbosity).print("check database table `Cars`")
@@ -133,7 +133,7 @@ class CommandInstallHttp(Command):
         # check table CarSkins
         Verbosity(self.Verbosity).print("check database table `CarSkins`")
         self.__db.appendTable("CarSkins")
-        self.__db.appendColumnInt("CarSkins", "Car")
+        self.__db.appendColumnUInt("CarSkins", "Car")
         self.__db.appendColumnString("CarSkins", "Skin", 50)
         self.__db.appendColumnTinyInt("CarSkins", "Deprecated")
 
@@ -155,7 +155,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnInt("Sessions", "CurrentSessionIndex")
         self.__db.appendColumnInt("Sessions", "SessionCount")
         self.__db.appendColumnString("Sessions", 'ServerName', 50)
-        self.__db.appendColumnInt("Sessions", "Track")
+        self.__db.appendColumnUInt("Sessions", "Track")
         self.__db.appendColumnString("Sessions", 'Name', 50)
         self.__db.appendColumnInt("Sessions", "Type")
         self.__db.appendColumnInt("Sessions", "Time")
@@ -170,9 +170,9 @@ class CommandInstallHttp(Command):
         # check table Laps
         Verbosity(self.Verbosity).print("check database table `Laps`")
         self.__db.appendTable("Laps")
-        self.__db.appendColumnInt("Laps", "Session")
-        self.__db.appendColumnInt("Laps", "CarSkin")
-        self.__db.appendColumnInt("Laps", "User")
+        self.__db.appendColumnUInt("Laps", "Session")
+        self.__db.appendColumnUInt("Laps", "CarSkin")
+        self.__db.appendColumnUInt("Laps", "User")
         self.__db.appendColumnUInt("Laps", "Laptime")
         self.__db.appendColumnInt("Laps", "Cuts")
         self.__db.appendColumnFloat("Laps", "Grip")
@@ -183,21 +183,21 @@ class CommandInstallHttp(Command):
         # check table CollisionEnv
         Verbosity(self.Verbosity).print("check database table `CollisionEnv`")
         self.__db.appendTable("CollisionEnv")
-        self.__db.appendColumnInt("CollisionEnv", "Session")
-        self.__db.appendColumnInt("CollisionEnv", "CarSkin")
-        self.__db.appendColumnInt("CollisionEnv", "User")
+        self.__db.appendColumnUInt("CollisionEnv", "Session")
+        self.__db.appendColumnUInt("CollisionEnv", "CarSkin")
+        self.__db.appendColumnUInt("CollisionEnv", "User")
         self.__db.appendColumnFloat("CollisionEnv", "Speed")
         self.__db.appendColumnCurrentTimestamp("CollisionEnv", "Timestamp")
 
         # check table CollisionCar
         Verbosity(self.Verbosity).print("check database table `CollisionCar`")
         self.__db.appendTable("CollisionCar")
-        self.__db.appendColumnInt("CollisionCar", "Session")
-        self.__db.appendColumnInt("CollisionCar", "CarSkin")
-        self.__db.appendColumnInt("CollisionCar", "User")
+        self.__db.appendColumnUInt("CollisionCar", "Session")
+        self.__db.appendColumnUInt("CollisionCar", "CarSkin")
+        self.__db.appendColumnUInt("CollisionCar", "User")
         self.__db.appendColumnFloat("CollisionCar", "Speed")
-        self.__db.appendColumnInt("CollisionCar", "OtherUser")
-        self.__db.appendColumnInt("CollisionCar", "OtherCarSkin")
+        self.__db.appendColumnUInt("CollisionCar", "OtherUser")
+        self.__db.appendColumnUInt("CollisionCar", "OtherCarSkin")
         self.__db.appendColumnCurrentTimestamp("CollisionCar", "Timestamp")
 
         # check table ServerPresets
@@ -229,8 +229,8 @@ class CommandInstallHttp(Command):
         # check table CarClassesMap
         Verbosity(self.Verbosity).print("check database table `CarClassesMap`")
         self.__db.appendTable("CarClassesMap")
-        self.__db.appendColumnInt("CarClassesMap", 'CarClass')
-        self.__db.appendColumnInt("CarClassesMap", 'Car')
+        self.__db.appendColumnUInt("CarClassesMap", 'CarClass')
+        self.__db.appendColumnUInt("CarClassesMap", 'Car')
         self.__db.appendColumnSmallInt("CarClassesMap", 'Ballast')
         self.__db.appendColumnSmallInt("CarClassesMap", 'Restrictor')
 
@@ -241,16 +241,19 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnUInt("CarClassOccupationMap", 'User')
         self.__db.appendColumnUInt("CarClassOccupationMap", 'CarSkin')
 
-        # check table RaceSeries
-        Verbosity(self.Verbosity).print("check database table `RaceSeries`")
-        self.__db.appendTable("RaceSeries")
-        self.__db.appendColumnString("RaceSeries", 'Name', 50)
+        # check table RacePollCarClasses
+        Verbosity(self.Verbosity).print("check database table `RacePollCarClasses`")
+        self.__db.appendTable("RacePollCarClasses")
+        self.__db.appendColumnUInt("RacePollCarClasses", 'User')
+        self.__db.appendColumnUInt("RacePollCarClasses", 'CarClass')
+        self.__db.appendColumnUInt("RacePollCarClasses", 'Score')
 
-        # check table RaceSeriesMap
-        Verbosity(self.Verbosity).print("check database table `RaceSeriesMap`")
-        self.__db.appendTable("RaceSeriesMap")
-        self.__db.appendColumnInt("RaceSeriesMap", 'RaceSeries')
-        self.__db.appendColumnInt("RaceSeriesMap", 'CarClass')
+        # check table RacePollTracks
+        Verbosity(self.Verbosity).print("check database table `RacePollTracks`")
+        self.__db.appendTable("RacePollTracks")
+        self.__db.appendColumnUInt("RacePollTracks", 'CarClassPoll')
+        self.__db.appendColumnUInt("RacePollTracks", 'Track')
+        self.__db.appendColumnUInt("RacePollTracks", 'Score')
 
 
 

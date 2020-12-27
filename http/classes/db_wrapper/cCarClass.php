@@ -39,6 +39,8 @@ class CarClass {
      */
     public function addCar(Car $car) {
         global $acswuiDatabase;
+        global $acswuiLog;
+        
         $res = $acswuiDatabase->fetch_2d_array("CarClassesMap", ['Id'], ['Car'=>$car->id(), 'CarClass'=>$this->Id]);
         if (count($res) !== 0) {
             $acswuiLog->logWarning("Ignoring adding existing car map Car::Id=" . $car->id() . ", CarClass::Id=" . $this->Id);

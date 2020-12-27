@@ -113,7 +113,7 @@ class HumanValue {
     }
 
     private function formatPercent(float $value, $unit) {
-        if ($value >= 100) {
+        if ($value >= 100 || $value == 0) {
             $this->Value = sprintf("%d", $value);
             $this->UnitPrefix = "";
             $this->Unit = "&percnt;";
