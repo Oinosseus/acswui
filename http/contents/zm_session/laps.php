@@ -121,7 +121,6 @@ class laps extends cContentPage {
 
 
 
-
         // --------------------------------------------------------------------
         //                               Session Info
         // --------------------------------------------------------------------
@@ -155,23 +154,7 @@ class laps extends cContentPage {
 
         $html .= '</table>';
 
-
-
-        // --------------------------------------------------------------------
-        //                          Session Diagram
-        // --------------------------------------------------------------------
-
-        $svg_path = $acswuiConfig->AcsContent . "/session_lap_diagrams/session_" . $this->Session->id() . ".svg";
-        if (file_exists($svg_path)) {
-            $html .= "<img src=\"$svg_path\" class=\"session_lap_diagram\">";
-        }
-
-
-
-        // --------------------------------------------------------------------
-        //                             Driver Summary
-        // --------------------------------------------------------------------
-
+        // Driver Summary
         $html .= '<table>';
 
         $html .= '<tr>';
@@ -197,12 +180,35 @@ class laps extends cContentPage {
 
 
 
+
+
+        // --------------------------------------------------------------------
+        //                               Race Standings
+        // --------------------------------------------------------------------
+
+        if ($this->Session->type() == 3) {
+            $html .= "<h1>" . _("Race Standings") . "</h1>";
+
+            # race position diagram
+            $svg_path = $acswuiConfig->AcsContent . "/session_standing_diagrams/session_" . $this->Session->id() . ".svg";
+            if (file_exists($svg_path)) {
+                $html .= "<img src=\"$svg_path\" class=\"session_lap_diagram\">";
+            }
+        }
+
+
+
         // --------------------------------------------------------------------
         //                               Fastest Laps
         // --------------------------------------------------------------------
 
         $html .= "<h1>" . _("Fastest Laps") . "</h1>";
 
+        # diagram
+        $svg_path = $acswuiConfig->AcsContent . "/session_lap_diagrams/session_" . $this->Session->id() . ".svg";
+        if (file_exists($svg_path)) {
+            $html .= "<img src=\"$svg_path\" class=\"session_lap_diagram\">";
+        }
 
         $html .= '<table>';
         $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Delta") . '</th><th>' . _("Cuts") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th>';
