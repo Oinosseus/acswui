@@ -87,9 +87,11 @@ class racepoll extends cContentPage {
                 if ($rpd->isAvailable($user)) {
                     $checked = 'checked="checked"';
                     $class .= " available";
-                } else {
+                } else if ($rpd->isUnAvailable($user)) {
                     $checked = "";
                     $class .= " unavailable";
+                } else {
+                    $checked = "";
                 }
 
                 if ($user->id() == $acswuiUser->Id) {

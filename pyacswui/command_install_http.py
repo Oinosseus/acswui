@@ -266,6 +266,7 @@ class CommandInstallHttp(Command):
         self.__db.appendTable("RacePollDateMap")
         self.__db.appendColumnUInt("RacePollDateMap", 'User')
         self.__db.appendColumnUInt("RacePollDateMap", 'Date')
+        self.__db.appendColumnInt("RacePollDateMap", 'Availability')
 
 
 

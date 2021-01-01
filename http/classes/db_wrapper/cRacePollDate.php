@@ -8,6 +8,7 @@ class RacePollDate {
     private $Id = NULL;
     private $Date = NULL;
     private $AvailableUsers = NULL;
+    private $UnAvailableUsers = NULL;
 
     public function __construct(int $id) {
         $this->Id = (int) $id;
@@ -41,13 +42,27 @@ class RacePollDate {
     }
 
     /**
-     * Test if a certain user is available for this date
+     * Test if a certain user is available for this date.
+     * Check isUnAvailable() to determine if user has voted.
+     * Users that have not voted are neither available, nor unavailable
      * @param $user The requested User object
      * @return True if the user is available on this date (else false)
      */
     public function isAvailable(User $user) {
         if ($this->AvailableUsers === NULL) $this->updateAvailabilities();
         return (in_array($user->id(), $this->AvailableUsers)) ? TRUE : FALSE;
+    }
+
+    /**
+     * Test if a certain user is unavailable for this date.
+     * Check isAvailable() to determine if user has voted.
+     * Users that have not voted are neither available, nor unavailable
+     * @param $user The requested User object
+     * @return True if the user is unavailable on this date (else false)
+     */
+    public function isUnAvailable(User $user) {
+        if ($this->UnAvailableUsers === NULL) $this->updateAvailabilities();
+        return (in_array($user->id(), $this->UnAvailableUsers)) ? TRUE : FALSE;
     }
 
     /**
@@ -88,29 +103,35 @@ class RacePollDate {
         global $acswuiDatabase;
         global $acswuiUser;
 
-        $existing_maps = $acswuiDatabase->fetch_2d_array("RacePollDateMap", ['Id'], ['Date'=>$this->Id, 'User'=>$acswuiUser->Id]);
-
-        // available
-        if ($avail === TRUE) {
-            if (count($existing_maps) == 0) {
-                $acswuiDatabase->insert_row("RacePollDateMap", ['Date'=>$this->Id, 'User'=>$acswuiUser->Id]);
-            }
-
-        // unavailable
-        } else {
-            foreach ($existing_maps as $row) {
-                $acswuiDatabase->delete_row("RacePollDateMap", $row['Id']);
-            }
+        // ensure db entry exist
+        $map_id = NULL;
+        $fields = array();
+        $fields['Date'] = $this->Id;
+        $fields['User'] = $acswuiUser->Id;
+        $existing_maps = $acswuiDatabase->fetch_2d_array("RacePollDateMap", ['Id'], $fields);
+        if (count($existing_maps) == 0) {
+            $map_id = $acswuiDatabase->insert_row("RacePollDateMap", $fields);
+        } else if (count($existing_maps) > 0) {
+            $map_id = $existing_maps[0]['Id'];
         }
+
+        // update availability
+        $fields['Availability'] = ($avail === TRUE) ? 1 : -1;
+        $acswuiDatabase->update_row("RacePollDateMap", $map_id, $fields);
     }
 
     private function updateAvailabilities() {
         global $acswuiDatabase;
 
         $this->AvailableUsers = array();
-        $res = $acswuiDatabase->fetch_2d_array("RacePollDateMap", ['User'], ['Date'=>$this->Id]);
+        $this->UnAvailableUsers = array();
+        $res = $acswuiDatabase->fetch_2d_array("RacePollDateMap", ['User', 'Availability'], ['Date'=>$this->Id]);
         foreach ($res as $row) {
-            $this->AvailableUsers[] = $row['User'];
+            if ($row['Availability'] > 0) {
+                $this->AvailableUsers[] = $row['User'];
+            } else if ($row['Availability'] < 0) {
+                $this->UnAvailableUsers[] = $row['User'];
+            }
         }
     }
 }
