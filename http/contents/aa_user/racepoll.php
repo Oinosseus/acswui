@@ -3,6 +3,7 @@
 class racepoll extends cContentPage {
 
     private $CanAddDate = FALSE;
+    private $CanDeleteDate = FALSE;
 
     public function __construct() {
         $this->MenuName    = _("Race Poll");
@@ -18,6 +19,7 @@ class racepoll extends cContentPage {
 
         // check rights
         if ($acswuiUser->hasPermission("RacePoll_AddDates")) $this->CanAddDate = TRUE;
+        if ($acswuiUser->hasPermission("RacePoll_DeleteDates")) $this->CanDeleteDate = TRUE;
 
         // prepare html output
         $html = "";
@@ -26,13 +28,18 @@ class racepoll extends cContentPage {
 
 
         // -------------------------------------------------------------------------------
-        //                                  Save Poll
+        //                                  Process Resquests
         // -------------------------------------------------------------------------------
+
+        if ($this->CanDeleteDate && isset($_POST['DELETE_DATE'])) {
+            $id = $_POST['DELETE_DATE'];
+            RacePollDate::delete($id);
+        }
 
         if (isset($_POST['ACTION'])) {
 
             // add new date
-            if ($_POST['ACTION'] == "NEW_DATE") {
+            if ($this->CanAddDate && $_POST['ACTION'] == "NEW_DATE") {
                 $date = $_POST['NEW_DATE'];
                 $time = $_POST['NEW_TIME'];
                 $rpd = RacePollDate::newDate("$date $time");
@@ -64,11 +71,25 @@ class racepoll extends cContentPage {
 
         $html .= "<h1>" . _("Vote Race Date") . "</h1>";
 
-        // table head
         $html .= "<table>";
+        $rpds = RacePollDate::listDates();
+
+        // delete button
+        if ($this->CanDeleteDate === TRUE) {
+        $html .= "<tr>";
+        $html .= "<td></td>";
+        foreach ($rpds as $rpd) {
+            $html .= "<td>";
+            $id = $rpd->id();
+            $html .= "<button type=\"submit\" name=\"DELETE_DATE\" value=\"$id\">" . _("Delete") . "</button>";
+            $html .= "</td>";
+        }
+        $html .= "</tr>";
+        }
+
+        // table head
         $html .= "<tr>";
         $html .= "<th>" . _("Driver") . "</th>";
-        $rpds = RacePollDate::listDates();
         foreach ($rpds as $rpd) {
             $html .= "<th>";
             $html .= $rpd->date()->format("Y-m-d") . "<br>";

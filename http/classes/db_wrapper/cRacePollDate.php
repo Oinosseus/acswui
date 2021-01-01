@@ -42,6 +42,23 @@ class RacePollDate {
     }
 
     /**
+     * Delete a poll date
+     * @param $id The DB id of the RacePollDate to be deleted
+     */
+    public static function delete(int $id) {
+        global $acswuiDatabase;
+
+        // delete votes
+        $res = $acswuiDatabase->fetch_2d_array("RacePollDateMap", ['Id'], ['Date'=>$id]);
+        foreach ($res as $row) {
+            $acswuiDatabase->delete_row("RacePollDateMap", $row['Id']);
+        }
+
+        // delete poll
+        $acswuiDatabase->delete_row("RacePollDates", $id);
+    }
+
+    /**
      * Test if a certain user is available for this date.
      * Check isUnAvailable() to determine if user has voted.
      * Users that have not voted are neither available, nor unavailable
