@@ -1,10 +1,11 @@
 from .verbosity import Verbosity
 from .database import Database
 from .udp_packet import UdpPacket
+import json
 
 class UdpPluginSession(object):
 
-    def __init__(self, database, packet, verbosity=0):
+    def __init__(self, database, packet, predecessor=None, verbosity=0):
 
         # sanity check
         if not isinstance(database, Database):
@@ -14,7 +15,10 @@ class UdpPluginSession(object):
 
         self.__db = database
         self.__db_field_cache = {}
-        self.__db_id = None
+        self._db_id = None
+        self.__db_id_predecessor = 0
+        if predecessor is not None and predecessor._db_id is not None:
+            self.__db_id_predecessor = predecessor._db_id
         self.__verbosity = Verbosity(verbosity)
 
         # calling this update creates a new session
@@ -24,14 +28,14 @@ class UdpPluginSession(object):
 
     @property
     def Id(self):
-        if self.__db_id is None:
+        if self._db_id is None:
             self.__save_cache()
-        return self.__db_id
+        return self._db_id
 
 
     @property
     def IsActive(self):
-        return False if self.__db_id is None else True
+        return False if self._db_id is None else True
 
 
 
@@ -89,6 +93,7 @@ class UdpPluginSession(object):
 
         # setup database fields
         self.__db_field_cache = {}
+        self.__db_field_cache['Predecessor'] = self.__db_id_predecessor
         self.__db_field_cache['ProtocolVersion'] = protocol_version
         self.__db_field_cache['SessionIndex'] = session_index
         self.__db_field_cache['CurrentSessionIndex'] = current_session_index
@@ -110,14 +115,13 @@ class UdpPluginSession(object):
         if not is_new_session:
             self.__save_cache()
         else:
-            self.__db_id = None
-            self.__verbosity.print("New Session: Id =", self.__db_id, ", name =", session_name)
+            self._db_id = None
+            self.__verbosity.print("New Session: Id =", self._db_id, ", name =", session_name)
 
 
 
     def __save_cache(self):
-        if self.__db_id is None:
-            self.__db_id = self.__db.insertRow("Sessions", self.__db_field_cache)
-
+        if self._db_id is None:
+            self._db_id = self.__db.insertRow("Sessions", self.__db_field_cache)
         else:
-            self.__database.updateRow("Sessions", self.__db_id, self.__db_field_cache)
+            self.__database.updateRow("Sessions", self._db_id, self.__db_field_cache)

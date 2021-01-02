@@ -1,10 +1,15 @@
 import socket
 from configparser import ConfigParser
 import json
+import os.path
 from .verbosity import Verbosity
 from .udp_packet import UdpPacket
 from .udp_plugin_session import UdpPluginSession
 from .udp_plugin_car_entry import UdpPluginCarEntry
+
+
+class NoCarEntryError(BaseException):
+    pass
 
 
 
@@ -14,6 +19,7 @@ class UdpPluginServer(object):
                  port_server, port_plugin,
                  database,
                  entry_list_path,
+                 ac_server_path,
                  realtime_json_path = None,
                  verbosity=0):
 
@@ -26,6 +32,7 @@ class UdpPluginServer(object):
         self.__session = None
         self.__entries = []
         self.__database = database
+        self.__ac_server_path = ac_server_path
         self.__realtime_json_path = realtime_json_path
 
         self.__port_plugin = int(port_plugin)
@@ -82,7 +89,7 @@ class UdpPluginServer(object):
         if prot == 50:
 
             # set new session object
-            self.__session = UdpPluginSession(self.__database, pkt, self.__verbosity)
+            self.__session = UdpPluginSession(self.__database, pkt, self.__session, self.__verbosity)
 
             # enable realtime update
             self.enable_realtime_report()
@@ -90,7 +97,7 @@ class UdpPluginServer(object):
         # ACSP_SESSION_INFO
         elif prot == 59:
             if self.__session is None:
-                self.__session = UdpPluginSession(self.__database, pkt, self.__verbosity)
+                self.__session = UdpPluginSession(self.__database, pkt, self.__session, self.__verbosity)
             else:
                 self.__session.update(pkt)
 
@@ -138,6 +145,53 @@ class UdpPluginServer(object):
         # ACSP_END_SESSION
         elif prot == 55:
             self.__verbosity.print("ACSP_END_SESSION")
+
+            json_file_relpath = pkt.readStringW()
+            json_file_abspath = os.path.join(self.__ac_server_path, json_file_relpath)
+
+            # read result json
+            with open(json_file_abspath, "r") as f:
+                json_string = f.read()
+            json_dict = json.loads(json_string)
+
+            # store all results
+            if "Result" in json_dict:
+                position = 0
+                for rslt in json_dict['Result']:
+                    position += 1
+
+                    # only care for ordinariy drivers
+                    if rslt['DriverGuid'] == "":
+                        continue
+
+                    # get car entry object
+                    try:
+                        car_entry = self.get_car_entry(rslt['CarId'], rslt['CarModel'])
+                    except NoCarEntryError:
+                        continue
+
+                    # ignore unoccupied cars
+                    if car_entry.DriverGuid is None:
+                        continue
+
+                    # check GUID (not expected to be necessary)
+                    if rslt['DriverGuid'] != car_entry.DriverGuid:
+                        msg = "GUID mismatch on entry CarId " + str(rslt['CarId']) + "!"
+                        msg += " Session result gfives Steam64GUID " + rslt['DriverGuid']
+                        msg += " but entry list gives " + str(car_entry.DriverGuid)
+                        raise NotImplementedError(msg)
+
+                    # save result to DB
+                    field_values = {}
+                    field_values['Position'] = position
+                    field_values['Session'] = self.__session.Id
+                    field_values['User'] = car_entry.DriverId
+                    field_values['CarSkin'] = car_entry.SkinId
+                    field_values['BestLap'] = rslt['BestLap']
+                    field_values['TotalTime'] = rslt['TotalTime']
+                    field_values['Ballast'] = rslt['BallastKG']
+                    field_values['Restrictor'] = rslt['Restrictor']
+                    self.__database.insertRow("SessionResults", field_values)
 
 
         # ACSP_LAP_COMPLETED
@@ -241,7 +295,7 @@ class UdpPluginServer(object):
 
         # sanity check
         if entry is None:
-            raise ValueError("Cannot understand driver connection of requested CarId %i!" %car_id)
+            raise NoCarEntryError("Cannot understand driver connection of requested CarId %i!" %car_id)
 
         return entry
 

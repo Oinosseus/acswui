@@ -150,6 +150,7 @@ class CommandInstallHttp(Command):
         # check table Sessions
         Verbosity(self.Verbosity).print("check database table `Sessions`")
         self.__db.appendTable("Sessions")
+        self.__db.appendColumnUInt("Sessions", "Predecessor")
         self.__db.appendColumnInt("Sessions", "ProtocolVersion")
         self.__db.appendColumnInt("Sessions", "SessionIndex")
         self.__db.appendColumnInt("Sessions", "CurrentSessionIndex")
@@ -166,6 +167,18 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnString("Sessions", 'WheatherGraphics', 50)
         self.__db.appendColumnInt("Sessions", "Elapsed")
         self.__db.appendColumnCurrentTimestamp("Sessions", "Timestamp")
+
+        # check table SessionResults
+        Verbosity(self.Verbosity).print("check database table `SessionResults`")
+        self.__db.appendTable("SessionResults")
+        self.__db.appendColumnSmallInt("SessionResults", "Position")
+        self.__db.appendColumnUInt("SessionResults", "Session")
+        self.__db.appendColumnUInt("SessionResults", "User")
+        self.__db.appendColumnUInt("SessionResults", "CarSkin")
+        self.__db.appendColumnUInt("SessionResults", "BestLap")
+        self.__db.appendColumnUInt("SessionResults", "TotalTime")
+        self.__db.appendColumnSmallInt("SessionResults", "Ballast")
+        self.__db.appendColumnTinyInt("SessionResults", "Restrictor")
 
         # check table Laps
         Verbosity(self.Verbosity).print("check database table `Laps`")
@@ -570,6 +583,9 @@ class CommandInstallHttp(Command):
         verb2.print(" ".join(cmd))
         subprocess.run(cmd)
         cmd = ["chmod", "g+w", os.path.join(self.getArg("path-acs-target"), "cfg")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
+        cmd = ["chmod", "g+w", os.path.join(self.getArg("path-acs-target"), "results")]
         verb2.print(" ".join(cmd))
         subprocess.run(cmd)
 

@@ -71,6 +71,8 @@ class UdpPluginCarEntry(object):
 
     @property
     def Id(self):
+        """! CarId of assetto corsa server entry list
+        """
         return self.__id
 
 
@@ -89,7 +91,15 @@ class UdpPluginCarEntry(object):
 
     @property
     def DriverId(self):
+        """! Database User table Id
+        """
         return self.__driver_id
+
+    @property
+    def DriverGuid(self):
+        """! Steam64GUID
+        """
+        return self.__driver_guid
 
     @property
     def RealtimeJsonDict(self):

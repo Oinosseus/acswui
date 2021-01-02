@@ -283,6 +283,10 @@ class CommandInstallFiles(Command):
         verb3.print(path_acs_target_system_data)
         self.mkdirs(path_acs_target_system_data)
 
+        path_acs_target_system_results = os.path.join(path_acs_target_system, "results")
+        verb3.print(path_acs_target_system_results)
+        self.mkdirs(path_acs_target_system_results)
+
 
         # ---------------------------------------------------------------------
         # 3. Copy required AC server files

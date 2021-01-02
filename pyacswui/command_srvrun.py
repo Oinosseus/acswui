@@ -63,6 +63,7 @@ class CommandSrvrun(Command):
             realtime_json_path = None
         udpp = UdpPluginServer(udpp_port_server, udpp_port_plugin, db,
                                self.getArg("path-entry-list"),
+                               self.getArg("path-acs-target"),
                                realtime_json_path,
                                verbosity=self.Verbosity)
         udpp.process() # run once just to ensure that it does not crash immediately
