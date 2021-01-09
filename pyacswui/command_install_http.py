@@ -55,6 +55,7 @@ class CommandInstallHttp(Command):
                              )
 
         # install work
+        self.__work_copy_files()
         self.__work_db_tables()
         self.__work_cconfig()
         self.__work_scan_cars()
@@ -106,6 +107,23 @@ class CommandInstallHttp(Command):
                         if ret[-1:] == '"':
                             ret = ret[:-1]
         return ret
+
+
+
+    def __work_copy_files(self):
+
+        self.Verbosity.print("Create http target directory")
+        verb2 = Verbosity(self.Verbosity)
+        verb3 = Verbosity(verb2)
+
+        path_http = os.path.abspath(self.getArg("http-path"))
+        if not os.path.isdir(path_http):
+            verb2.print("create http target directory: " + path_http)
+            self.mkdirs(path_http)
+
+        verb2.print("copy http directory: " + path_http)
+        http_src = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "http")
+        self.copytree(http_src, self.getArg("http-path"))
 
 
 

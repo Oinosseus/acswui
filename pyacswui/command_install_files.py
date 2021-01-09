@@ -196,31 +196,9 @@ class CommandInstallFiles(Command):
 
 
     def __create_dirs_http(self):
-        """
-            1. Delete current HTTP target directory
-            2. Copy files from http/ to target directory
-            3. Create acs_content directory
-        """
-        self.Verbosity.print("Create http target directory")
-        verb2 = Verbosity(self.Verbosity)
-        verb3 = Verbosity(verb2)
-
-        path_http = os.path.abspath(self.getArg("http-path"))
-        if not os.path.isdir(path_http):
-            verb2.print("create http target directory: " + path_http)
-            self.mkdirs(path_http)
-
-        verb2.print("create new directory: " + path_http)
-        http_src = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "http")
-        self.copytree(http_src, self.getArg("http-path"))
-
-        path_acs_content = self.getArg("http-path-acs-content")
-        if os.path.isdir(path_acs_content):
-            verb2.print("delete current directory: " + path_acs_content)
-            shutil.rmtree(path_acs_content)
-
-        verb2.print("create acs_content directory: " + path_acs_content)
-        self.mkdirs(path_acs_content)
+        if not os.path.isdir(path_acs_content):
+            verb2.print("create acs_content directory: " + path_acs_content)
+            self.mkdirs(path_acs_content)
 
 
 
