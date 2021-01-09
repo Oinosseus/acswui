@@ -71,6 +71,7 @@ include("classes/db_wrapper/cCarClassOccupation.php");
 include("classes/db_wrapper/cRacePollCarClass.php");
 include("classes/db_wrapper/cRacePollTrack.php");
 include("classes/db_wrapper/cRacePollDate.php");
+include("classes/db_wrapper/cCollision.php");
 
 // functions
 include("functions/getMenuArrayFromContentDir.php");

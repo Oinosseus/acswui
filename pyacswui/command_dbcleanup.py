@@ -58,8 +58,13 @@ class CommandDbCleanup(Command):
         empty_session_ids = []
         for row in self.__db.fetch("Sessions", ['Id'], {}):
             session_id = row['Id']
+
             laps = self.__db.fetch("Laps", ['Id'], {"Session":session_id})
-            if len(laps) == 0:
+            cole = self.__db.fetch("CollisionEnv", ['Id'], {"Session":session_id})
+            colc = self.__db.fetch("CollisionCar", ['Id'], {"Session":session_id})
+            rslt = self.__db.fetch("SessionResults", ['Id'], {"Session":session_id})
+
+            if len(laps)==0 and len(cole)==0 and len(colc)==0 and len(rlts)==0:
                 empty_session_ids.append(session_id)
 
         verb2.print("%i empty sessions found" % len(empty_session_ids))

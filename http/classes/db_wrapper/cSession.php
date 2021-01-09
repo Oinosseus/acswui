@@ -25,6 +25,7 @@ class Session {
     private $DrivenLaps = NULL;
     private $FirstDrivenLap = NULL;
     private $Drivers = NULL;
+    private $Collisions = NULL;
 
     /**
      * @param $id Database table id
@@ -142,6 +143,32 @@ class Session {
     public function drivenLaps() {
         if ($this->DrivenLaps === NULL) $this->updateDrivenLaps();
          return $this->DrivenLaps;
+    }
+
+    //! @return A list of CollisionEnv and CollisionCar objects from this session
+    public function collisions() {
+        global $acswuiDatabase;
+
+        // update cache
+        if ($this->Collisions === NULL) {
+            $this->Collisions = array();
+
+            // ENV collisions
+            $res = $acswuiDatabase->fetch_2d_array("CollisionEnv", ["Id"], ["Session"=>$this->Id]);
+            foreach ($res as $row) {
+                $cll = new CollisionEnv($row['Id'], $this);
+                $this->Collisions[] = $cll;
+            }
+
+            // Car collisions
+            $res = $acswuiDatabase->fetch_2d_array("CollisionCar", ["Id"], ["Session"=>$this->Id]);
+            foreach ($res as $row) {
+                $cll = new CollisionCar($row['Id'], $this);
+                $this->Collisions[] = $cll;
+            }
+        }
+
+        return $this->Collisions;
     }
 
     /**

@@ -70,6 +70,26 @@ class CommandInstallHttp(Command):
         self.__set_chmod()
 
 
+    def dict2php(self, d):
+
+        list_php_elements= []
+
+        for key in d.keys():
+            value = d[key]
+
+            if type(value) == type({}):
+                value = self.dict2php(value)
+            elif type(value) == type([]):
+                raise NotImplementedError("please implement list2php()")
+            else:
+                value = str(value)
+
+            list_php_elements.append("\"" + str(key) + "\"=>" + value)
+
+        return "array(" + (",".join(list_php_elements)) + ")"
+
+
+
     def __parse_json(self, json_file, key_name, default_value):
         ret = default_value
         key_name = '"' + key_name + '":'
@@ -347,6 +367,12 @@ class CommandInstallHttp(Command):
                         fixed_server_settings.append("\"%s\"=>\"%s\"" % (db_col_name, val))
         fixed_server_settings = ",".join(fixed_server_settings)
 
+        # driver ranking
+        with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "basic_data_driver_ranking.json"), "r") as f:
+            json_string = f.read()
+        driver_ranking_json = json.loads(json_string)
+
+
         with open(self.getArg('http_path') + "/classes/cConfig.php", "w") as f:
             f.write("<?php\n")
             f.write("  class cConfig {\n")
@@ -373,6 +399,9 @@ class CommandInstallHttp(Command):
             f.write("    private $AcsContentAbsolute = \"%s\";\n" % path_acscontent_absolute)
             f.write("    private $FixedServerConfig = array(%s);\n" % fixed_server_settings)
             f.write("    private $ServerSlots = array(%s);\n" % server_slots)
+            f.write("\n")
+            f.write("    // misc\n")
+            f.write("    private $DriverRanking = %s;\n" % self.dict2php(driver_ranking_json))
             f.write("\n")
             f.write("    // this allows read-only access to private properties\n")
             f.write("    public function __get($name) {\n")
