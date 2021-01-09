@@ -9,7 +9,10 @@ class DrvRnk {
     public $CollisionsEnvL = 0;
     public $CollisionsCarH = 0;
     public $CollisionsCarL = 0;
+    public $RaceAheadPositions = 0;
+    public $QualifyingAheadPositions = 0;
     public $BestTimesAheadPositions = 0;
+    public $BestRaceTime = 0;
     public $Cuts = 0;
     public $Score = 0;
 
@@ -56,15 +59,15 @@ class DrvRnk {
 
             if ($value == "R") {
                 $result = $acswuiConfig->DriverRanking['SX']['R'];
-                $result *= 0;
+                $result *= $this->RaceAheadPositions;
 
             } else if ($value == "Q") {
                 $result = $acswuiConfig->DriverRanking['SX']['Q'];
-                $result *= 0;
+                $result *= $this->QualifyingAheadPositions;
 
             } else if ($value == "RT") {
                 $result = $acswuiConfig->DriverRanking['SX']['RT'];
-                $result *= 0;
+                $result *= $this->BestRaceTime;
 
             } else if ($value == "BT") {
                 $result = $acswuiConfig->DriverRanking['SX']['BT'];
@@ -109,6 +112,40 @@ class DrvRnk {
         $score = $this->getScore($group, $value);
         return sprintf("%0.0f", $score);
     }
+
+    public function getScoreHtml($group=NULL) {
+        if ($group == NULL) {
+            $html = sprintf("<span title=\"%0.1f\">", $this->getScore());
+            $html .= sprintf("%0.0f</span>", $this->getScore());
+
+        } else if ($group == "XP") {
+            $val_r = $this->getScore($group, "R");
+            $val_q = $this->getScore($group, "Q");
+            $val_p = $this->getScore($group, "P");
+            $html = sprintf("<span title=\"R = %0.1f\nQ = %0.1f\nP = %0.1f\">", $val_r, $val_q, $val_p);
+            $html .= sprintf("%0.0f</span>", $val_r + $val_q + $val_p);
+
+        } else if ($group == "SX") {
+            $val_r = $this->getScore($group, "R");
+            $val_q = $this->getScore($group, "Q");
+            $val_rt = $this->getScore($group, "RT");
+            $val_bt = $this->getScore($group, "BT");
+            $html = sprintf("<span title=\"R = %0.1f\nQ = %0.1f\nRT = %0.1f\nBT = %0.1f\">", $val_r, $val_q, $val_rt, $val_bt);
+            $html .= sprintf("%0.0f</span>", $val_r + $val_q + $val_rt + $val_bt);
+
+        } else if ($group == "SF") {
+            $val_cut = $this->getScore($group, "CUT");
+            $val_ceh = $this->getScore($group, "CEH");
+            $val_cel = $this->getScore($group, "CEL");
+            $val_cch = $this->getScore($group, "CCH");
+            $val_ccl = $this->getScore($group, "CCL");
+            $html = sprintf("<span title=\"CUT = %0.1f\nCEH = %0.1f\nCEL = %0.1f\nCCH = %0.1f\nCCL = %0.1f\">", $val_cut, $val_ceh, $val_cel, $val_cch, $val_ccl);
+            $html .= sprintf("%0.0f</span>", $val_cut + $val_ceh + $val_cel + $val_cch + $val_ccl);
+
+        }
+
+        return $html;
+    }
 }
 
 
@@ -150,6 +187,7 @@ class driver_ranking extends cContentPage {
         foreach ($acswuiDatabase->fetch_raw_select($query) as $row) {
             $session = new Session($row['Id']);
 
+
             // collisions
             foreach ($session->collisions() as $cll) {
 
@@ -184,7 +222,8 @@ class driver_ranking extends cContentPage {
                 $driver_rank_dict[$user->Id()] = $drv_rnk;
             }
 
-            // laps
+
+            // laps (driven length)
             foreach ($session->drivenLaps() as $lap) {
 
                 $user = $lap->user();
@@ -210,7 +249,61 @@ class driver_ranking extends cContentPage {
                 // save driver ranking object
                 $driver_rank_dict[$user->Id()] = $drv_rnk;
             }
+
+
+            // results (race/qualifying position)
+            foreach ($session->results() as $rslt) {
+
+                // get driver ranking object
+                $user = $rslt->user();
+                if (!array_key_exists($user->Id(), $driver_rank_dict)) {
+                    $driver_rank_dict[$user->Id()] = new DrvRnk($user);
+                }
+                $drv_rnk = $driver_rank_dict[$user->Id()];
+
+                // ahead position
+                $ahead_position = count($session->results()) - $rslt->position();
+                if ($session->type() == 3)
+                    $drv_rnk->RaceAheadPositions += $ahead_position;
+                else if ($session->type() == 2)
+                    $drv_rnk->QualifyingAheadPositions += $ahead_position;
+
+                // save driver ranking object
+                $driver_rank_dict[$user->Id()] = $drv_rnk;
+            }
+
+
+            // best race time position
+            if ($session->type() == 3) {
+
+                $results = $session->results();
+                if (count($results) > 0) {
+
+                    // sort by laptime
+                    function compare_result_laptime($r1, $r2) {
+                        return ($r1->bestlap() < $r2->bestlap()) ? -1 : 1;
+                    }
+                    usort($results, "compare_result_laptime");
+
+                    // get driver ranking object
+                    $rslt = $results[0];
+                    $user = $rslt->user();
+                    if (!array_key_exists($user->Id(), $driver_rank_dict)) {
+                        $driver_rank_dict[$user->Id()] = new DrvRnk($user);
+                    }
+                    $drv_rnk = $driver_rank_dict[$user->Id()];
+
+                    // add best race time
+                    $drv_rnk->BestRaceTime += 1;
+
+                    // save driver ranking object
+                    $driver_rank_dict[$user->Id()] = $drv_rnk;
+                }
+
+            }
+
         }
+
 
         // scan car class records
         $file_path = $acswuiConfig->AcsContent . "/stats_carclass_records.json";
@@ -245,6 +338,13 @@ class driver_ranking extends cContentPage {
             $driver_rank_list[] = $drv_rnk;
         }
 
+        // sort driver rankings
+        function compare_rankings($r1, $r2) {
+            return ($r1->getScore() < $r2->getScore()) ? 1 : -1;
+        }
+        usort($driver_rank_list, "compare_rankings");
+
+
 
         // --------------------------------------------------------------------
         //                             Ranking Table
@@ -253,45 +353,21 @@ class driver_ranking extends cContentPage {
         // table head
         $html .= "<table>";
         $html .= "<tr>";
-        $html .= "<th rowspan=\"2\">" . _("Driver") . "</th>";
-        $html .= "<th colspan=\"3\">XP</th>";
-        $html .= "<th colspan=\"4\">SX</th>";
-        $html .= "<th colspan=\"5\">SF</th>";
-        $html .= "<th rowspan=\"2\">" . _("Score") . "</th>";
-        $html .= "</tr>";
-
-        $html .= "<tr>";
-        $html .= "<th>R</th>";
-        $html .= "<th>Q</th>";
-        $html .= "<th>P</th>";
-        $html .= "<th>R</th>";
-        $html .= "<th>Q</th>";
-        $html .= "<th>RT</th>";
-        $html .= "<th>BT</th>";
-        $html .= "<th>CUT</th>";
-        $html .= "<th>CEH</th>";
-        $html .= "<th>CEL</th>";
-        $html .= "<th>CCH</th>";
-        $html .= "<th>CCL</th>";
+        $html .= "<th>" . _("Driver") . "</th>";
+        $html .= "<th>XP</th>";
+        $html .= "<th>SX</th>";
+        $html .= "<th>SF</th>";
+        $html .= "<th>" . _("Score") . "</th>";
         $html .= "</tr>";
 
         foreach ($driver_rank_list as $drv_rnk) {
 
             $html .= "<tr>";
             $html .= "<td>" . $drv_rnk->User->login() . "</td>";
-            $html .= "<td>" . $drv_rnk->getScoreStr("XP", "R") . "</td>";
-            $html .= "<td>" . $drv_rnk->getScoreStr("XP", "Q") . "</td>";
-            $html .= "<td>" . $drv_rnk->getScoreStr("XP", "P") . "</td>";
-            $html .= "<td>" . $drv_rnk->getScoreStr("SX", "R") . "</td>";
-            $html .= "<td>" . $drv_rnk->getScoreStr("SX", "Q") . "</td>";
-            $html .= "<td>" . $drv_rnk->getScoreStr("SX", "RT") . "</td>";
-            $html .= "<td>" . $drv_rnk->getScoreStr("SX", "BT") . "</td>";
-            $html .= "<td>" . $drv_rnk->getScoreStr("SF", "CUT") . "</td>";
-            $html .= "<td>" . $drv_rnk->getScoreStr("SF", "CEH") . "</td>";
-            $html .= "<td>" . $drv_rnk->getScoreStr("SF", "CEL") . "</td>";
-            $html .= "<td>" . $drv_rnk->getScoreStr("SF", "CCH") . "</td>";
-            $html .= "<td>" . $drv_rnk->getScoreStr("SF", "CCL") . "</td>";
-            $html .= "<td><strong>" . $drv_rnk->getScoreStr() . "</strong></td>";
+            $html .= "<td>" . $drv_rnk->getScoreHtml("XP") . "</td>";
+            $html .= "<td>" . $drv_rnk->getScoreHtml("SX", "RT") . "</td>";
+            $html .= "<td>" . $drv_rnk->getScoreHtml("SF", "CUT") . "</td>";
+            $html .= "<td>" . $drv_rnk->getScoreHtml() . "</td>";
             $html .= "</tr>";
         }
 
@@ -356,7 +432,7 @@ class driver_ranking extends cContentPage {
         $html .= "<tr>";
         $html .= "<td>BT</td>";
         $html .= "<td>" . sprintf("%+0.2f/Position", $acswuiConfig->DriverRanking['SX']['BT']) . "</td>";
-        $html .= "<td>" . _("Success points for having better track time for a certain car class (leading ahead another driver). This is independent of the lease time.") . "<br><small>Success Best Time</small></td>";
+        $html .= "<td>" . _("Success points for overall track time per car class (leading ahead another driver). This is independent of the lease time.") . "<br><small>Success Best Time</small></td>";
         $html .= "</tr>";
 
 
