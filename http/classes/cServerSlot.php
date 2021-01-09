@@ -142,7 +142,8 @@ class ServerSlot {
         $cmd .= " --path-entry-list \"$entry_list_path\"";
         $cmd .= " --path-realtime-json \"$realtime_json_path\"";
 //         $cmd .= " </dev/null >" . $acswuiConfig->LogPath . "/acswui_srvrun.log 2>&1 &";
-        $cmd .= " >/dev/null 2>&1 &";
+//         $cmd .= " >/dev/null 2>&1 &";
+        $cmd .= " >" . $acswuiConfig->LogPath . "/acswui_srvrun_$id.log 2>&1 &";
         exec($cmd, $cmd_str, $cmd_ret);
         foreach ($cmd_str as $line) echo "$line<br>";
 //         echo "Server started: $cmd_ret<br>";
