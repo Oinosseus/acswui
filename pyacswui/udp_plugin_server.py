@@ -54,11 +54,11 @@ class UdpPluginServer(object):
         self.__sock.settimeout(self.__PROCESS_TIME)
 
         # parse car entries
-        entry_list = ConfigParser()
-        entry_list.read(entry_list_path)
-        for entry_section in entry_list.sections():
+        self.__entry_list = ConfigParser()
+        self.__entry_list.read(entry_list_path)
+        for entry_section in self.__entry_list.sections():
             upce = UdpPluginCarEntry(self.__database,
-                                     entry_section, entry_list[entry_section],
+                                     entry_section, self.__entry_list[entry_section],
                                      self.__verbosity)
             self.__entries.append(upce)
 
@@ -164,22 +164,13 @@ class UdpPluginServer(object):
                     if rslt['DriverGuid'] == "":
                         continue
 
-                    # get car entry object
-                    try:
-                        car_entry = self.get_car_entry(rslt['CarId'], rslt['CarModel'])
-                    except NoCarEntryError:
-                        continue
-
-                    # ignore unoccupied cars
-                    if car_entry.DriverGuid is None:
-                        continue
-
-                    # check GUID (not expected to be necessary)
-                    if rslt['DriverGuid'] != car_entry.DriverGuid:
-                        msg = "GUID mismatch on entry CarId " + str(rslt['CarId']) + "!"
-                        msg += " Session result gfives Steam64GUID " + rslt['DriverGuid']
-                        msg += " but entry list gives " + str(car_entry.DriverGuid)
-                        raise NotImplementedError(msg)
+                    # get car entry object and occupy it
+                    entrylist_section = "CAR_%i" % rslt['CarId']
+                    car_entry = UdpPluginCarEntry(self.__database,
+                                                  entrylist_section,
+                                                  self.__entry_list[entrylist_section],
+                                                  verbosity=self.__verbosity)
+                    car_entry.occupy(rslt['DriverName'], rslt['DriverGuid'])
 
                     # save result to DB
                     field_values = {}
