@@ -41,7 +41,12 @@ class DrvRnk {
 
         } else if ($group == "XP") {
 
-            if ($value == "R") {
+            if ($value == NULL) {
+                $result  = $this->getScore($group, 'R');
+                $result += $this->getScore($group, 'Q');
+                $result += $this->getScore($group, 'P');
+
+            } else if ($value == "R") {
                 $result = $acswuiConfig->DriverRanking['XP']['R'];
                 $result *= $this->DrivenRaceLength * 1e-6;
 
@@ -57,7 +62,13 @@ class DrvRnk {
 
         } else if ($group == "SX") {
 
-            if ($value == "R") {
+            if ($value == NULL) {
+                $result  = $this->getScore($group, 'R');
+                $result += $this->getScore($group, 'Q');
+                $result += $this->getScore($group, 'RT');
+                $result += $this->getScore($group, 'BT');
+
+            } else if ($value == "R") {
                 $result = $acswuiConfig->DriverRanking['SX']['R'];
                 $result *= $this->RaceAheadPositions;
 
@@ -77,7 +88,14 @@ class DrvRnk {
 
         } else if ($group == "SF") {
 
-            if ($value == "CUT") {
+            if ($value == NULL) {
+                $result  = $this->getScore($group, 'CUT');
+                $result += $this->getScore($group, 'CEH');
+                $result += $this->getScore($group, 'CEL');
+                $result += $this->getScore($group, 'CCH');
+                $result += $this->getScore($group, 'CCL');
+
+            } else if ($value == "CUT") {
                 $result = $acswuiConfig->DriverRanking['SF']['CUT'];
                 $result *= $this->Cuts;
                 $result /= 1e-6 * $driven;
@@ -360,7 +378,14 @@ class driver_ranking extends cContentPage {
         $html .= "<th>" . _("Score") . "</th>";
         $html .= "</tr>";
 
+        $mean_score_xp = array();
+        $mean_score_sx = array();
+        $mean_score_sf = array();
         foreach ($driver_rank_list as $drv_rnk) {
+
+            $mean_score_xp[] = $drv_rnk->getScore("XP");
+            $mean_score_sx[] = $drv_rnk->getScore("SX");
+            $mean_score_sf[] = $drv_rnk->getScore("SF");
 
             $html .= "<tr>";
             $html .= "<td>" . $drv_rnk->User->login() . "</td>";
@@ -370,6 +395,17 @@ class driver_ranking extends cContentPage {
             $html .= "<td>" . $drv_rnk->getScoreHtml() . "</td>";
             $html .= "</tr>";
         }
+
+        $mean_score_xp = array_sum($mean_score_xp) / count($mean_score_xp);
+        $mean_score_sx = array_sum($mean_score_sx) / count($mean_score_sx);
+        $mean_score_sf = array_sum($mean_score_sf) / count($mean_score_sf);
+
+        $html .= "<tr>";
+        $html .= "<td><small><i>" . _("Mean Value") . "</i></small></td>";
+        $html .= "<td><small><i>" . sprintf("%0.0f", $mean_score_xp) . "</i></small></td>";
+        $html .= "<td><small><i>" . sprintf("%0.0f", $mean_score_sx) . "</i></small></td>";
+        $html .= "<td><small><i>" . sprintf("%0.0f", $mean_score_sf) . "</i></small></td>";
+        $html .= "</tr>";
 
         $html .= "</table>";
 
