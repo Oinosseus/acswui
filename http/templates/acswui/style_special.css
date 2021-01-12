@@ -162,3 +162,24 @@ table tr.lap_invalid {
 #contents__aa_user__racepoll td.availability input[type="checkbox"]:checked {
 /*     background-color: green; */
 }
+
+
+#contents__aa_user__racepoll div.trackbox {
+    margin: 5px;
+    display: inline-block;
+    background-color: rgba(0,0,0,0.75);
+    text-align: center;
+    padding: 5px;
+}
+
+#contents__aa_user__racepoll div.trackbox label,
+#contents__aa_user__racepoll div.trackbox img {
+    display: block;
+    width: 100%;
+}
+
+#contents__aa_user__racepoll div.trackbox input {
+    display: block;
+    width: 95%;
+}
+

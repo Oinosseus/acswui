@@ -131,6 +131,10 @@ class CommandInstallHttp(Command):
 
         self.Verbosity.print("Create database tables")
 
+        # ---------------------------------------------------------------------
+        #                           Grey Tables
+        # ---------------------------------------------------------------------
+
         # check table installer
         Verbosity(self.Verbosity).print("check database table `installer`")
         self.__db.appendTable("installer")
@@ -141,49 +145,33 @@ class CommandInstallHttp(Command):
         # insert installer info
         self.__db.insertRow("installer", {"version": "0.0", "info": ""})
 
-        # check table users
-        Verbosity(self.Verbosity).print("check database table `Users`")
-        self.__db.appendTable("Users")
-        self.__db.appendColumnString("Users", "Login", 50)
-        self.__db.appendColumnString("Users", "Password", 100)
-        self.__db.appendColumnString("Users", "Steam64GUID", 50)
 
-        # check table Groups
-        Verbosity(self.Verbosity).print("check database table `Groups`")
-        self.__db.appendTable("Groups")
-        self.__db.appendColumnString("Groups", "Name", 50)
+        # check table ServerPresets
+        Verbosity(self.Verbosity).print("check database table `ServerPresets`")
+        self.__db.appendTable("ServerPresets")
+        self.__db.appendColumnString("ServerPresets", "Name", 60)
 
-        # check table UserGroupMap
-        Verbosity(self.Verbosity).print("check database table `UserGroupMap`")
-        self.__db.appendTable("UserGroupMap")
-        self.__db.appendColumnUInt("UserGroupMap", "User")
-        self.__db.appendColumnUInt("UserGroupMap", "Group")
+        for section in self.__server_cfg_json:
+            for fieldset in self.__server_cfg_json[section]:
+                for tag in self.__server_cfg_json[section][fieldset]:
+                    tag_dict = self.__server_cfg_json[section][fieldset][tag]
+                    db_col_name = tag_dict['DB_COLUMN_NAME']
 
-        # check table Cars
-        Verbosity(self.Verbosity).print("check database table `Cars`")
-        self.__db.appendTable("Cars")
-        self.__db.appendColumnString("Cars", "Car", 80)
-        self.__db.appendColumnString("Cars", "Name", 80)
-        self.__db.appendColumnInt("Cars", "Parent")
-        self.__db.appendColumnString("Cars", "Brand", 80)
-        self.__db.appendColumnTinyInt("Cars", "Deprecated")
+                    if tag_dict['TYPE'] == "string":
+                        self.__db.appendColumnString("ServerPresets", db_col_name, tag_dict['SIZE'])
+                    elif tag_dict['TYPE'] in ["int", "enum"]:
+                        self.__db.appendColumnInt("ServerPresets", db_col_name)
+                    elif tag_dict['TYPE'] == "text":
+                        self.__db.appendColumnText("ServerPresets", db_col_name)
+                    else:
+                        print("db_col_name =", db_col_name)
+                        raise NotImplementedError("Unknown field TYPE '%s'" % tag_dict['TYPE'])
 
-        # check table CarSkins
-        Verbosity(self.Verbosity).print("check database table `CarSkins`")
-        self.__db.appendTable("CarSkins")
-        self.__db.appendColumnUInt("CarSkins", "Car")
-        self.__db.appendColumnString("CarSkins", "Skin", 50)
-        self.__db.appendColumnTinyInt("CarSkins", "Deprecated")
 
-        # check table Tracks
-        Verbosity(self.Verbosity).print("check database table `Tracks`")
-        self.__db.appendTable("Tracks")
-        self.__db.appendColumnString("Tracks", "Track", 80)
-        self.__db.appendColumnString("Tracks", "Config", 80)
-        self.__db.appendColumnString("Tracks", "Name", 80)
-        self.__db.appendColumnUInt("Tracks", "Length")
-        self.__db.appendColumnInt("Tracks", "Pitboxes")
-        self.__db.appendColumnTinyInt("Tracks", "Deprecated")
+
+        # ---------------------------------------------------------------------
+        #                           Mustard Tables
+        # ---------------------------------------------------------------------
 
         # check table Sessions
         Verbosity(self.Verbosity).print("check database table `Sessions`")
@@ -251,26 +239,67 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnUInt("CollisionCar", "OtherCarSkin")
         self.__db.appendColumnCurrentTimestamp("CollisionCar", "Timestamp")
 
-        # check table ServerPresets
-        Verbosity(self.Verbosity).print("check database table `ServerPresets`")
-        self.__db.appendTable("ServerPresets")
-        self.__db.appendColumnString("ServerPresets", "Name", 60)
 
-        for section in self.__server_cfg_json:
-            for fieldset in self.__server_cfg_json[section]:
-                for tag in self.__server_cfg_json[section][fieldset]:
-                    tag_dict = self.__server_cfg_json[section][fieldset][tag]
-                    db_col_name = tag_dict['DB_COLUMN_NAME']
 
-                    if tag_dict['TYPE'] == "string":
-                        self.__db.appendColumnString("ServerPresets", db_col_name, tag_dict['SIZE'])
-                    elif tag_dict['TYPE'] in ["int", "enum"]:
-                        self.__db.appendColumnInt("ServerPresets", db_col_name)
-                    elif tag_dict['TYPE'] == "text":
-                        self.__db.appendColumnText("ServerPresets", db_col_name)
-                    else:
-                        print("db_col_name =", db_col_name)
-                        raise NotImplementedError("Unknown field TYPE '%s'" % tag_dict['TYPE'])
+        # ---------------------------------------------------------------------
+        #                           Blue Tables
+        # ---------------------------------------------------------------------
+
+        # check table Tracks
+        Verbosity(self.Verbosity).print("check database table `Tracks`")
+        self.__db.appendTable("Tracks")
+        self.__db.appendColumnString("Tracks", "Track", 80)
+        self.__db.appendColumnString("Tracks", "Config", 80)
+        self.__db.appendColumnString("Tracks", "Name", 80)
+        self.__db.appendColumnUInt("Tracks", "Length")
+        self.__db.appendColumnInt("Tracks", "Pitboxes")
+        self.__db.appendColumnTinyInt("Tracks", "Deprecated")
+
+        # check table Cars
+        Verbosity(self.Verbosity).print("check database table `Cars`")
+        self.__db.appendTable("Cars")
+        self.__db.appendColumnString("Cars", "Car", 80)
+        self.__db.appendColumnString("Cars", "Name", 80)
+        self.__db.appendColumnInt("Cars", "Parent")
+        self.__db.appendColumnString("Cars", "Brand", 80)
+        self.__db.appendColumnTinyInt("Cars", "Deprecated")
+
+        # check table CarSkins
+        Verbosity(self.Verbosity).print("check database table `CarSkins`")
+        self.__db.appendTable("CarSkins")
+        self.__db.appendColumnUInt("CarSkins", "Car")
+        self.__db.appendColumnString("CarSkins", "Skin", 50)
+        self.__db.appendColumnTinyInt("CarSkins", "Deprecated")
+
+
+
+        # ---------------------------------------------------------------------
+        #                           Red Tables
+        # ---------------------------------------------------------------------
+
+        # check table users
+        Verbosity(self.Verbosity).print("check database table `Users`")
+        self.__db.appendTable("Users")
+        self.__db.appendColumnString("Users", "Login", 50)
+        self.__db.appendColumnString("Users", "Password", 100)
+        self.__db.appendColumnString("Users", "Steam64GUID", 50)
+
+        # check table Groups
+        Verbosity(self.Verbosity).print("check database table `Groups`")
+        self.__db.appendTable("Groups")
+        self.__db.appendColumnString("Groups", "Name", 50)
+
+        # check table UserGroupMap
+        Verbosity(self.Verbosity).print("check database table `UserGroupMap`")
+        self.__db.appendTable("UserGroupMap")
+        self.__db.appendColumnUInt("UserGroupMap", "User")
+        self.__db.appendColumnUInt("UserGroupMap", "Group")
+
+
+
+        # ---------------------------------------------------------------------
+        #                           Purple Tables
+        # ---------------------------------------------------------------------
 
         # check table CarClasses
         Verbosity(self.Verbosity).print("check database table `CarClasses`")
@@ -292,19 +321,11 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnUInt("CarClassOccupationMap", 'User')
         self.__db.appendColumnUInt("CarClassOccupationMap", 'CarSkin')
 
-        # check table RacePollCarClasses
-        Verbosity(self.Verbosity).print("check database table `RacePollCarClasses`")
-        self.__db.appendTable("RacePollCarClasses")
-        self.__db.appendColumnUInt("RacePollCarClasses", 'User')
-        self.__db.appendColumnUInt("RacePollCarClasses", 'CarClass')
-        self.__db.appendColumnUInt("RacePollCarClasses", 'Score')
 
-        # check table RacePollTracks
-        Verbosity(self.Verbosity).print("check database table `RacePollTracks`")
-        self.__db.appendTable("RacePollTracks")
-        self.__db.appendColumnUInt("RacePollTracks", 'CarClassPoll')
-        self.__db.appendColumnUInt("RacePollTracks", 'Track')
-        self.__db.appendColumnUInt("RacePollTracks", 'Score')
+
+        # ---------------------------------------------------------------------
+        #                           Brown Tables
+        # ---------------------------------------------------------------------
 
         # check table RacePollDates
         Verbosity(self.Verbosity).print("check database table `RacePollDates`")
@@ -318,6 +339,26 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnUInt("RacePollDateMap", 'User')
         self.__db.appendColumnUInt("RacePollDateMap", 'Date')
         self.__db.appendColumnInt("RacePollDateMap", 'Availability')
+
+        # check table RacePollCarClasses
+        Verbosity(self.Verbosity).print("check database table `RacePollCarClasses`")
+        self.__db.appendTable("RacePollCarClasses")
+        self.__db.appendColumnUInt("RacePollCarClasses", 'User')
+        self.__db.appendColumnUInt("RacePollCarClasses", 'CarClass')
+        self.__db.appendColumnUInt("RacePollCarClasses", 'Score')
+
+        # check table RacePollTracks
+        Verbosity(self.Verbosity).print("check database table `RacePollTracks`")
+        self.__db.appendTable("RacePollTracks")
+        self.__db.appendColumnUInt("RacePollTracks", 'Track')
+        self.__db.appendColumnUInt("RacePollTracks", 'CarClass')
+
+        # check table RacePollTrackMap
+        Verbosity(self.Verbosity).print("check database table `RacePollTrackMap`")
+        self.__db.appendTable("RacePollTrackMap")
+        self.__db.appendColumnUInt("RacePollTrackMap", 'User')
+        self.__db.appendColumnUInt("RacePollTrackMap", 'Track')
+        self.__db.appendColumnUInt("RacePollTrackMap", 'Score')
 
 
 

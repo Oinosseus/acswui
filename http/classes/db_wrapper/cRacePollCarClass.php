@@ -9,6 +9,7 @@ class RacePollCarClass {
     private $CarClass = NULL;
     private $Score = NULL;
     private $ScoreOverall = NULL;
+    private $TrackPolls = NULL;
 
     public function __construct(int $id) {
         $this->Id = (int) $id;
@@ -34,6 +35,34 @@ class RacePollCarClass {
 
         return $this->CarClass;
     }
+
+
+    /**
+     * Constructing a RacePollCarClass object for the currently logged user and a given car class.
+     * When no current user is not logged, NULL is returned.
+     * When no database entry for the current user/carclass exists, it is created.
+     * @param $carclass The requested car class
+     */
+    public static function fromCarClass(CarClass $carclass) {
+        global $acswuiUser;
+        global $acswuiDatabase;
+
+        // check User
+        if (!$acswuiUser->IsLogged) return NULL;
+
+        // request entry from db
+        $where = array();
+        $where['User'] = $acswuiUser->Id;
+        $where['CarClass'] = $carclass->id();
+        $res = $acswuiDatabase->fetch_2d_array("RacePollCarClasses", ['Id'], $where);
+        if (count($res) > 0) return new RacePollCarClass($res[0]['Id']);
+
+        // create new entry
+        $where['Score'] = 0;
+        $id = $acswuiDatabase->insert_row("RacePollCarClasses", $where);
+        return new RacePollCarClass($id);
+    }
+
 
     //! @return The current score value
     public function score() {
@@ -94,32 +123,23 @@ class RacePollCarClass {
         $this->Score = $new_score;
     }
 
-    /**
-     * Constructing a RacePollCarClass object for the currently logged user and a given car class.
-     * When no current user is not logged, NULL is returned.
-     * When no database entry for the current user/carclass exists, it is created.
-     * @param $carclass The requested car class
-     */
-    public static function fromCarClass(CarClass $carclass) {
-        global $acswuiUser;
+
+    //! @return An array of RacePollTrack objects that are linked to this
+    public function trackPolls() {
         global $acswuiDatabase;
 
-        // check User
-        if (!$acswuiUser->IsLogged) return NULL;
+        // update cache
+        if ($this->TrackPolls === NULL) {
+            $this->TrackPolls = array();
 
-        // request entry from db
-        $where = array();
-        $where['User'] = $acswuiUser->Id;
-        $where['CarClass'] = $carclass->id();
-        $res = $acswuiDatabase->fetch_2d_array("RacePollCarClasses", ['Id'], $where);
-        if (count($res) > 0) return new RacePollCarClass($res[0]['Id']);
+            $res = $acswuiDatabase->fetch_2d_array("RacePollTracks", ['Id'], ['CarClassPoll'=>$this->Id]);
+            foreach ($res as $row) {
+                $this->TrackPolls[] = new RacePollTrack($row['Id']);
+            }
+        }
 
-        // create new entry
-        $where['Score'] = 0;
-        $id = $acswuiDatabase->insert_row("RacePollCarClasses", $where);
-        return new RacePollCarClass($id);
+        return $this->TrackPolls;
     }
-
 }
 
 ?>

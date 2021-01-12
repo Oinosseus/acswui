@@ -4,6 +4,9 @@ class racepoll extends cContentPage {
 
     private $CanAddDate = FALSE;
     private $CanDeleteDate = FALSE;
+    private $CanVoteTrack = FALSE;
+    private $CanDeleteTrack = FALSE;
+    private $CanAddTrack = FALSE;
 
     public function __construct() {
         $this->MenuName    = _("Race Poll");
@@ -20,10 +23,13 @@ class racepoll extends cContentPage {
         // check rights
         if ($acswuiUser->hasPermission("RacePoll_AddDates")) $this->CanAddDate = TRUE;
         if ($acswuiUser->hasPermission("RacePoll_DeleteDates")) $this->CanDeleteDate = TRUE;
+        if ($acswuiUser->hasPermission("RacePoll_VoteTracks")) $this->CanVoteTrack = TRUE;
+        if ($acswuiUser->hasPermission("RacePoll_AddTracks")) $this->CanAddTrack = TRUE;
+        if ($acswuiUser->hasPermission("RacePoll_DeleteTracks")) $this->CanDeleteTrack = TRUE;
 
         // prepare html output
         $html = "";
-        $html .= "<form action=\"\" method=\"post\">";
+        $html .= "<form action=\"\" method=\"post\" id=\"mainpoll\">";
         $html .= '<button type="submit" name="ACTION" value="SAVE">' . _("Save Poll") . '</button>';
 
 
@@ -31,11 +37,19 @@ class racepoll extends cContentPage {
         //                                  Process Resquests
         // -------------------------------------------------------------------------------
 
+        // delete date
         if ($this->CanDeleteDate && isset($_POST['DELETE_DATE'])) {
             $id = $_POST['DELETE_DATE'];
             RacePollDate::delete($id);
         }
 
+        // delete track
+        if ($this->CanDeleteTrack && isset($_POST['DELETE_TRACK'])) {
+            $id = $_POST['DELETE_TRACK'];
+            RacePollTrack::delete($id);
+        }
+
+        // save
         if (isset($_POST['ACTION'])) {
 
             // add new date
@@ -43,6 +57,13 @@ class racepoll extends cContentPage {
                 $date = $_POST['NEW_DATE'];
                 $time = $_POST['NEW_TIME'];
                 $rpd = RacePollDate::newDate("$date $time");
+            }
+
+            // add new track
+            if ($this->CanAddTrack && $_POST['ACTION'] == "NEW_TRACK") {
+                $cc = new CarClass($_POST['CAR_CLASS']);
+                $t = new Track($_POST['TRACK']);
+                RacePollTrack::newTrack($cc, $t);
             }
 
             // save poll
@@ -61,6 +82,16 @@ class racepoll extends cContentPage {
                     $score = (int) $_POST[$name];
                     $rpcc->setScore($score);
                 }
+
+                // tracks
+                foreach (CarClass::listClasses() as $carclass) {
+                    foreach (RacePollTrack::listTracks($carclass) as $rpt) {
+                        $rpt_id = $rpt->id();
+                        $new_score = $_POST["RPT_ID_$rpt_id"];
+                        $rpt->setScoreUser($new_score);
+                    }
+                }
+
             }
         }
 
@@ -120,7 +151,7 @@ class racepoll extends cContentPage {
                     $name = "AVAILABLE_DATE_ID" . $rpd->id();
                     $value = "TRUE";
                     $class .= " user";
-                    $html .= "<td class=\"$class\"><input type=\"checkbox\" name=\"$name\" value=\"$value\" $checked $disabled></td>";
+                    $html .= "<td class=\"$class\"><input type=\"checkbox\" name=\"$name\" value=\"$value\" $checked $disabled form=\"mainpoll\"></td>";
                 } else {
                     $disabled = 'disabled="disabled"';
                     $name = "";
@@ -161,6 +192,17 @@ class racepoll extends cContentPage {
 
         $html .= "<h1>" . _("Vote Race Classes") . "</h1>";
 
+        // create list of polls
+        $rpcc_list = array();
+        foreach (CarClass::listClasses() as $carclass) {
+            $rpcc_list[] = RacePollCarClass::fromCarClass($carclass);
+        }
+        function compare_rpcc($left, $right) {
+            return ($left->scoreOverall() < $right->scoreOverall()) ? 1 : -1;
+        }
+        usort($rpcc_list, "compare_rpcc");
+
+
         // table head
         $html .= "<table>";
         $html .= "<tr>";
@@ -170,15 +212,17 @@ class racepoll extends cContentPage {
         $html .= "</tr>";
 
         // table rows
-        foreach (CarClass::listClasses() as $carclass) {
+        foreach ($rpcc_list as $rpcc) {
             $html .= "<tr>";
-            $html .= "<td>" . $carclass->name() . "</td>";
 
-            $rpcc = RacePollCarClass::fromCarClass($carclass);
+            $cc_name = $rpcc->carClass()->name();
+            $cc_id = $rpcc->carClass()->id();
+            $html .= "<td><a href=\"#CARCLASS_$cc_id\">$cc_name</a></td>";
+
             $score = $rpcc->score();
             $name = "RPCC_ID_" . $rpcc->id();
 
-            $html .= "<td><input name=\"$name\" type=\"range\" min=\"0\" max=\"100\" step=\"20\" value=\"$score\"></td>";
+            $html .= "<td><input name=\"$name\" type=\"range\" min=\"0\" max=\"100\" step=\"20\" value=\"$score\" form=\"mainpoll\"></td>";
 
             $html .= "<td>" . HumanValue::format($rpcc->scoreOverall(), "%"). "</td>";
 
@@ -188,6 +232,61 @@ class racepoll extends cContentPage {
         // table end
         $html .= "</table>";
 
+
+
+        // -------------------------------------------------------------------------------
+        //                                  Vote Tracks
+        // -------------------------------------------------------------------------------
+
+        if ($this->CanVoteTrack) {
+            $html .= "<h1>" . _("Vote Tracks") . "</h1>";
+
+            $tracklist = Track::listTracks();
+
+            foreach (CarClass::listClasses() as $carclass) {
+                $cc_name = $carclass->name();
+                $cc_id = $carclass->id();
+                $html .= "<h2 id=\"CARCLASS_$cc_id\">$cc_name</h2>";
+
+                # list tracks
+                foreach (RacePollTrack::listTracks($carclass) as $rpt) {
+                    $t = $rpt->track();
+                    $rpt_id = $rpt->id();
+                    $score_user = $rpt->getScoreUser();
+                    $score_overall = $rpt->getScoreOverall();
+                    $html .= "<div class=\"trackbox\">";
+                    $html .= "<label>" . $t->name() . " (" . HumanValue::format($score_overall, "%") . ")</label>";
+                    $html .= $t->htmlImg("", 100);
+                    $html .= "<input name=\"RPT_ID_$rpt_id\" type=\"range\" min=\"0\" max=\"100\" step=\"20\" value=\"$score_user\" form=\"mainpoll\">";
+
+                    if ($this->CanDeleteTrack) {
+                        $form_id = "TrackPollDelete$rpt_id";
+                        $html .= "<form id=\"$form_id\" action=\"\" method=\"post\">";
+                        $html .= "<button type=\"submit\" name=\"DELETE_TRACK\" value=\"$rpt_id\" form=\"$form_id\">" . _("Delete") . "</button>";
+                        $html .= "</form>";
+                    }
+
+                    $html .= "</div>";
+                }
+
+                // add new track
+                if ($this->CanAddTrack === TRUE) {
+                    $form_id = "TrackPollAddTrackToCarClass$cc_id";
+                    $html .= "<form id=\"$form_id\" action=\"\" method=\"post\">";
+                    $html .= "<input type=\"hidden\" name=\"CAR_CLASS\" value=\"$cc_id\" form=\"$form_id\">";
+                    $html .= "<select name=\"TRACK\" form=\"$form_id\">";
+                    foreach ($tracklist as $t) {
+                        $name_str = $t->name();
+                        $name_str .= " (" . sprintf("%0.1f", $t->length()/1000) . "km";
+                        $name_str .= ", " . $t->pitboxes() . "pits)";
+                        $html .= "<option value=\"" . $t->id() . "\">" . $name_str . "</option>";
+                    }
+                    $html .= '</select>';
+                    $html .= " <button type=\"submit\" name=\"ACTION\" value=\"NEW_TRACK\" form=\"$form_id\">" . _("Add Track") . "</button>";
+                    $html .= "</form>";
+                }
+            }
+        }
 
 
         $html .= "</form>";

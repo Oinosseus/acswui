@@ -100,6 +100,28 @@ class Track {
 //         return $this->Drivers;
 //     }
 
+
+    //! @return Html img tag containing preview image
+    public function htmlImg($img_id="", $max_height=NULL) {
+        global $acswuiConfig;
+
+        $track = $this->track();
+        $config = $this->config();
+        $name = $this->name();
+        $img_id = ($img_id == "") ? "":"id=\"$img_id\"";
+        $max_height = ($max_height === NULL) ? "" : "height=\"$max_height\"";
+
+        // get path
+        if ($config !="") {
+            $basepath = $acswuiConfig->AcsContent . "/content/tracks/$track/ui/$config";
+        } else {
+            $basepath = $acswuiConfig->AcsContent . "/content/tracks/$track/ui";
+        }
+
+        return "<img src=\"$basepath/preview.png\" $img_id alt=\"$name\" title=\"$name\" $max_height>";
+    }
+
+
     //! @return The unique database row ID of the Track
     public function id() {
         return $this->Id;
