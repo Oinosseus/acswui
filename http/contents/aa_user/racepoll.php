@@ -238,6 +238,10 @@ class racepoll extends cContentPage {
         //                                  Vote Tracks
         // -------------------------------------------------------------------------------
 
+        function compare_racepolltrack_overallscore($left, $right) {
+            return ($left->getScoreOverall() < $right->getScoreOverall()) ? 1 : -1;
+        }
+
         if ($this->CanVoteTrack) {
             $html .= "<h1>" . _("Vote Tracks") . "</h1>";
 
@@ -248,8 +252,13 @@ class racepoll extends cContentPage {
                 $cc_id = $carclass->id();
                 $html .= "<h2 id=\"CARCLASS_$cc_id\">$cc_name</h2>";
 
+                # get track polls ordered by overall score
+                $rpt_list = RacePollTrack::listTracks($carclass);
+                usort($rpt_list, "compare_racepolltrack_overallscore");
+
+
                 # list tracks
-                foreach (RacePollTrack::listTracks($carclass) as $rpt) {
+                foreach ($rpt_list as $rpt) {
                     $t = $rpt->track();
                     $rpt_id = $rpt->id();
                     $score_user = $rpt->getScoreUser();
