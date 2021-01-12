@@ -427,9 +427,12 @@ class CommandInstallHttp(Command):
         fixed_server_settings = ",".join(fixed_server_settings)
 
         # driver ranking
-        with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "basic_data_driver_ranking.json"), "r") as f:
-            json_string = f.read()
-        driver_ranking_json = json.loads(json_string)
+        driver_ranking = {"XP":{}, "SX":{}, "SF":{}, "DEF":{}}
+        driver_ranking_from_ini = self.getIniSection("DRIVER_RANKING")
+        for drfi_key in driver_ranking_from_ini.keys():
+            value = driver_ranking_from_ini[drfi_key]
+            group, key = drfi_key.upper().split("_")
+            driver_ranking[group][key] = value
 
 
         with open(self.getArg('http_path') + "/classes/cConfig.php", "w") as f:
@@ -460,7 +463,7 @@ class CommandInstallHttp(Command):
             f.write("    private $ServerSlots = array(%s);\n" % server_slots)
             f.write("\n")
             f.write("    // misc\n")
-            f.write("    private $DriverRanking = %s;\n" % self.dict2php(driver_ranking_json))
+            f.write("    private $DriverRanking = %s;\n" % self.dict2php(driver_ranking))
             f.write("\n")
             f.write("    // this allows read-only access to private properties\n")
             f.write("    public function __get($name) {\n")
