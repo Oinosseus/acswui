@@ -141,6 +141,11 @@ table tr.lap_invalid {
     padding: 10px;
 }
 
+tr.secondary_collision {
+    color: #555;
+/*     font-size: 0.9em; */
+    font-style: italic;
+}
 
 
 /******************************************************************************

@@ -158,21 +158,47 @@ class laps extends cContentPage {
         $html .= '<table>';
 
         $html .= '<tr>';
-        $html .= '<th>' . _("Driver") . '</th>';
-        $html .= '<th colspan="3">' . _("Driven") . '</th>';
+        $html .= '<th rowspan="2">' . _("Driver") . '</th>';
+        $html .= '<th rowspan="2" colspan="2">' . _("Driven") . '</th>';
+        $html .= '<th rowspan="2">' . _("Cuts") . '</th>';
+        $html .= '<th rowspan="1" colspan="2">' . _("Collisions") . '</th>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+        $html .= '<th>' . _("Environment") . '</th>';
+        $html .= '<th>' . _("Other Car") . '</th>';
         $html .= '</tr>';
 
         foreach ($this->Session->drivers() as $user) {
 
+            // count laps
             $lap_count = 0;
+            $cuts = 0;
             foreach ($laps as $lap) {
-                if ($lap->user()->id() == $user->id()) ++$lap_count;
+                if ($lap->user()->id() != $user->id()) continue;
+
+                ++$lap_count;
+                $cuts += $lap->cuts();
+            }
+
+            // count collisions
+            $cll_env = 0;
+            $cll_car = 0;
+            foreach ($this->Session->collisions() as $cll) {
+                if ($cll->user()->id() != $user->id()) continue;
+                if ($cll->secondary()) continue;
+
+                if ($cll->type() == CollisionType::Env) $cll_env += 1;
+                else $cll_car += 1;
             }
 
             $html .= '<tr>';
             $html .= '<td>' . $user->login() . '</th>';
             $html .= '<td>' . HumanValue::format($lap_count, "laps") . '</td>';
             $html .= '<td>' . HumanValue::format($lap_count * $this->Session->track()->length(), "m") . '</td>';
+            $html .= "<td>$cuts</td>";
+            $html .= "<td>$cll_env</td>";
+            $html .= "<td>$cll_car</td>";
             $html .= '</tr>';
         }
 
@@ -196,6 +222,41 @@ class laps extends cContentPage {
             }
         }
 
+
+
+        // --------------------------------------------------------------------
+        //                               Collisions
+        // --------------------------------------------------------------------
+
+        $html .= "<h1>" . _("Collisions") . "</h1>";
+
+        $html .= "<table>";
+        $html .= "<tr>";
+        $html .= "<th>" . _("Driver") . "</th>";
+        $html .= "<th>" . _("Other Driver") . "</th>";
+        $html .= "<th>" . _("Speed") . "</th>";
+        $html .= "<th>" . _("Timestamp") . "</th>";
+        $html .= "</tr>";
+
+        foreach ($this->Session->collisions() as $cll) {
+
+            $other = "";
+            if ($cll->otherUser() != NULL) $other = $cll->otherUser()->login();
+
+            $class = "class=\"";
+            $class .= ($cll->secondary()) ? " secondary_collision" : "";
+            $class .= "\"";
+
+            $html .= "<tr $class>";
+            $html .= "<td>" . $cll->user()->login() . "</td>";
+            $html .= "<td>$other</td>";
+            $html .= "<td>" . sprintf("%0.0f", $cll->speed()) . "</td>";
+            $html .= "<td>" . $cll->timestamp()->format("Y-m-d H:i:s") . "</td>";
+            $html .= "<td>" . $cll->id() . "</td>";
+            $html .= "</tr>";
+        }
+
+        $html .= "</table>";
 
 
         // --------------------------------------------------------------------

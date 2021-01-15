@@ -20,7 +20,10 @@ abstract class Collision {
     private $OtherUser = NULL;
     private $OtherCarSkin = NULL;
     private $Timestamp = NULL;
+    private $SecondaryCollision = NULL;
 
+    // maximum time interval between primary and secondary collision [s]
+    const SecondaryDelta = 1;
 
     /**
      * @param $id database table row Id
@@ -41,9 +44,15 @@ abstract class Collision {
     }
 
 
+    //! @return Database row Id
+    public function id() {
+        return $this->Id;
+    }
+
+
     //! @return The CarSkin object of the collided user (NULL for CollisionEnv)
     public function otherCarSkin() {
-        if ($this->Type !== CollisionType::Car) return NULL;
+        if ($this->Type != CollisionType::Car) return NULL;
         if ($this->OtherCarSkin === NULL) $this->updateDb();
         return $this->OtherCarSkin;
     }
@@ -51,9 +60,16 @@ abstract class Collision {
 
     //! @return The User object of the collided user (NULL for CollisionEnv)
     public function otherUser() {
-        if ($this->Type !== CollisionType::Car) return NULL;
+        if ($this->Type != CollisionType::Car) return NULL;
         if ($this->OtherUser === NULL) $this->updateDb();
         return $this->OtherUser;
+    }
+
+
+    //! @return True if this is a secondary collision
+    public function secondary() {
+        if ($this->SecondaryCollision === NULL) $this->updateDb();
+        return $this->SecondaryCollision;
     }
 
 
@@ -68,6 +84,13 @@ abstract class Collision {
     public function speed() {
         if ($this->Speed === NULL) $this->updateDb();
         return $this->Speed;
+    }
+
+
+    //! @return Timestamp of the collision as DateTime object
+    public function timestamp() {
+        if ($this->Timestamp === NULL) $this->updateDb();
+        return $this->Timestamp;
     }
 
 
@@ -108,6 +131,7 @@ abstract class Collision {
             $this->Timestamp = new DateTime($res[0]['Timestamp']);
 
 
+
         // CollisionCar
         } else if ($this->Type == CollisionType::Car) {
             $cols = ['Id', 'Session', 'CarSkin', 'User', 'Speed', 'OtherUser', 'OtherCarSkin', 'Timestamp'];
@@ -133,6 +157,22 @@ abstract class Collision {
             $this->OtherUser = new User($res[0]['OtherUser']);
             $this->OtherCarSkin = new CarSkin($res[0]['OtherCarSkin']);
             $this->Timestamp = new DateTime($res[0]['Timestamp']);
+
+
+            // check if this collision is a secondary accident
+            $this->SecondaryCollision = FALSE;
+            $cols = ['Id', 'Session', 'User', 'OtherUser', 'Timestamp'];
+            $sres = $acswuiDatabase->fetch_2d_array("CollisionCar", $cols, ['Id'=>($this->Id-1)]);
+            if (count($sres) == 1) {
+                if ($sres[0]['User'] == $this->OtherUser->id() && $sres[0]['OtherUser'] == $this->User->id()) {
+
+                    $sectime = new DateTime($sres[0]['Timestamp']);
+                    $sectime->add(new DateInterval("PT" . Collision::SecondaryDelta . "S"));
+
+                    if ($this->Timestamp <= $sectime)
+                        $this->SecondaryCollision = TRUE;
+                }
+            }
 
 
         // unknown collision type
@@ -161,8 +201,8 @@ class CollisionEnv extends Collision {
      * @param $id database table row Id
      * @param $session The according Session object (if already known)
      */
-    public function __construct(int $id) {
-        parent::__construct($id, CollisionType::Env);
+    public function __construct(int $id, Session $session=NULL) {
+        parent::__construct($id, CollisionType::Env, $session);
     }
 }
 

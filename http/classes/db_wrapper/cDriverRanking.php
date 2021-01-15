@@ -109,6 +109,8 @@ class DriverRanking {
             // collisions
             foreach ($session->collisions() as $cll) {
 
+                if ($cll->secondary()) continue;
+
                 // normalize speed to 100km/h
                 $norm_speed = $cll->speed() / DriverRanking::CollisionNormSpeed;
 

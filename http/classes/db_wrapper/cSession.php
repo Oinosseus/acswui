@@ -214,7 +214,7 @@ class Session {
 
 
     private function updateFromDb() {
-        global $acswuiDatabase;
+        global $acswuiDatabase, $acswuiLog;
 
         // request from db
         $columns = array();
