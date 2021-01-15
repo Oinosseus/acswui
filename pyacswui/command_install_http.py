@@ -146,6 +146,20 @@ class CommandInstallHttp(Command):
         self.__db.insertRow("installer", {"version": "0.0", "info": ""})
 
 
+        # check table CronJobs
+        Verbosity(self.Verbosity).print("check database table `CronJobs`")
+        self.__db.appendTable("CronJobs")
+        self.__db.appendColumnString("CronJobs", "Name", 60)
+
+        # check table CronExecutions
+        Verbosity(self.Verbosity).print("check database table `CronExecutions`")
+        self.__db.appendTable("CronExecutions")
+        self.__db.appendColumnUInt("CronExecutions", "CronJob")
+        self.__db.appendColumnCurrentTimestamp("CronExecutions", "Start")
+        self.__db.appendColumnUInt("CronExecutions", "Duration")
+        self.__db.appendColumnText("CronExecutions", "Log")
+
+
         # check table ServerPresets
         Verbosity(self.Verbosity).print("check database table `ServerPresets`")
         self.__db.appendTable("ServerPresets")
@@ -359,6 +373,28 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnUInt("RacePollTrackMap", 'User')
         self.__db.appendColumnUInt("RacePollTrackMap", 'Track')
         self.__db.appendColumnUInt("RacePollTrackMap", 'Score')
+
+
+
+        # ---------------------------------------------------------------------
+        #                           Cyan Tables
+        # ---------------------------------------------------------------------
+
+        # check table DriverRanking
+        Verbosity(self.Verbosity).print("check database table `DriverRanking`")
+        self.__db.appendTable("DriverRanking")
+        self.__db.appendColumnUInt("DriverRanking", 'User')
+        self.__db.appendColumnCurrentTimestamp("DriverRanking", "Timestamp")
+        self.__db.appendColumnFloat("DriverRanking", 'XP_R')
+        self.__db.appendColumnFloat("DriverRanking", 'XP_Q')
+        self.__db.appendColumnFloat("DriverRanking", 'XP_P')
+        self.__db.appendColumnFloat("DriverRanking", 'SX_R')
+        self.__db.appendColumnFloat("DriverRanking", 'SX_Q')
+        self.__db.appendColumnFloat("DriverRanking", 'SX_RT')
+        self.__db.appendColumnFloat("DriverRanking", 'SX_BT')
+        self.__db.appendColumnFloat("DriverRanking", 'SF_CT')
+        self.__db.appendColumnFloat("DriverRanking", 'SF_CE')
+        self.__db.appendColumnFloat("DriverRanking", 'SF_CC')
 
 
 
