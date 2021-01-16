@@ -154,73 +154,68 @@ class laps extends cContentPage {
 
         $html .= '</table>';
 
-        // Driver Summary
-        $html .= '<table>';
-
-        $html .= '<tr>';
-        $html .= '<th rowspan="2">' . _("Driver") . '</th>';
-        $html .= '<th rowspan="2" colspan="2">' . _("Driven") . '</th>';
-        $html .= '<th rowspan="2">' . _("Cuts") . '</th>';
-        $html .= '<th rowspan="1" colspan="2">' . _("Collisions") . '</th>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-        $html .= '<th>' . _("Environment") . '</th>';
-        $html .= '<th>' . _("Other Car") . '</th>';
-        $html .= '</tr>';
-
-        foreach ($this->Session->drivers() as $user) {
-
-            // count laps
-            $lap_count = 0;
-            $cuts = 0;
-            foreach ($laps as $lap) {
-                if ($lap->user()->id() != $user->id()) continue;
-
-                ++$lap_count;
-                $cuts += $lap->cuts();
-            }
-
-            // count collisions
-            $cll_env = 0;
-            $cll_car = 0;
-            foreach ($this->Session->collisions() as $cll) {
-                if ($cll->user()->id() != $user->id()) continue;
-                if ($cll->secondary()) continue;
-
-                if ($cll->type() == CollisionType::Env) $cll_env += 1;
-                else $cll_car += 1;
-            }
-
-            $html .= '<tr>';
-            $html .= '<td>' . $user->login() . '</th>';
-            $html .= '<td>' . HumanValue::format($lap_count, "laps") . '</td>';
-            $html .= '<td>' . HumanValue::format($lap_count * $this->Session->track()->length(), "m") . '</td>';
-            $html .= "<td>$cuts</td>";
-            $html .= "<td>$cll_env</td>";
-            $html .= "<td>$cll_car</td>";
-            $html .= '</tr>';
-        }
-
-        $html .= '</table>';
-
-
-
 
 
         // --------------------------------------------------------------------
-        //                               Race Standings
+        //                               Session Results
         // --------------------------------------------------------------------
 
+        $html .= "<h1>" . _("Session Results") . "</h1>";
+
+
+        // race position diagram
         if ($this->Session->type() == 3) {
-            $html .= "<h1>" . _("Race Standings") . "</h1>";
-
-            # race position diagram
             $svg_path = $acswuiConfig->AcsContent . "/session_standing_diagrams/session_" . $this->Session->id() . ".svg";
             if (file_exists($svg_path)) {
                 $html .= "<img src=\"$svg_path\" class=\"session_lap_diagram\">";
             }
         }
+
+
+        // Driver Summary
+        $html .= '<table>';
+
+        $html .= '<tr>';
+        $html .= '<th rowspan="2">' . _("Position") . '</th>';
+        $html .= '<th rowspan="2">' . _("Driver") . '</th>';
+        $html .= '<th rowspan="2">' . _("Car") . '</th>';
+        $html .= '<th rowspan="2">' . _("Best Lap") . '</th>';
+        $html .= '<th rowspan="2">' . _("Total Time") . '</th>';
+        $html .= '<th rowspan="2">' . _("Ballast") . '</th>';
+        $html .= '<th rowspan="2">' . _("Restrictor") . '</th>';
+        $html .= '<th rowspan="1" colspan="2">' . _("Driven") . '</th>';
+        $html .= '<th rowspan="2">' . _("Cuts") . '</th>';
+        $html .= '<th rowspan="1" colspan="2">' . _("Collisions") . '</th>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+        $html .= '<th>' . _("Laps") . '</th>';
+        $html .= '<th>' . _("Distance") . '</th>';
+        $html .= '<th>' . _("Environment") . '</th>';
+        $html .= '<th>' . _("Other Car") . '</th>';
+        $html .= '</tr>';
+
+        foreach ($this->Session->results() as $rslt) {
+
+            $distance = $rslt->amountLaps() * $rslt->session()->track()->length();
+
+            $html .= '<tr>';
+            $html .= '<td>' . $rslt->position() . '</th>';
+            $html .= '<td>' . $rslt->user()->login() . '</th>';
+            $html .= '<td>' . $rslt->carSkin()->htmlImg("", 50) . '</th>';
+            $html .= '<td>' . HumanValue::format($rslt->bestlap(), "LAPTIME") . '</td>';
+            $html .= '<td>' . HumanValue::format($rslt->totaltime(), "ms") . '</td>';
+            $html .= '<td>' . HumanValue::format($rslt->ballast(), "kg") . '</td>';
+            $html .= '<td>' . HumanValue::format($rslt->restrictor(), "%") . '</td>';
+            $html .= '<td>' . $rslt->amountLaps() . '</th>';
+            $html .= '<td>' . HumanValue::format($distance, "m") . '</td>';
+            $html .= '<td>' . $rslt->amountCuts() . '</th>';
+            $html .= '<td>' . $rslt->amountCollisionEnv() . '</th>';
+            $html .= '<td>' . $rslt->amountCollisionCar() . '</th>';
+            $html .= '</tr>';
+        }
+
+        $html .= '</table>';
 
 
 
@@ -257,6 +252,7 @@ class laps extends cContentPage {
         }
 
         $html .= "</table>";
+
 
 
         // --------------------------------------------------------------------

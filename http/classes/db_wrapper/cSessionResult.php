@@ -14,6 +14,11 @@ class SessionResult {
     private $Ballast = NULL;
     private $Restrictor = NULL;
 
+    private $AmountLaps = NULL;
+    private $AmountCuts = NULL;
+    private $AmountCollisionEnv = NULL;
+    private $AmountCollisionCar = NULL;
+
     /**
      * @param $id Database table id
      * @param $session The according Session object (saves DB request if given)
@@ -21,6 +26,65 @@ class SessionResult {
     public function __construct($id, $session=NULL) {
         $this->Id = $id;
         $this->Session = $session;
+    }
+
+
+    //! @return The number of collisions with other cars
+    public function amountCollisionCar() {
+        if ($this->AmountCollisionCar === NULL) {
+
+            $this->AmountCollisionCar = 0;
+            foreach ($this->session()->collisions() as $cll) {
+                if ($cll->type() != CollisionType::Car) continue;
+                if ($cll->secondary()) continue;
+                if ($cll->user()->id() == $this->user()->id()) $this->AmountCollisionCar += 1;
+            }
+        }
+
+        return $this->AmountCollisionCar;
+    }
+
+
+    //! @return The number of collisions with environment
+    public function amountCollisionEnv() {
+        if ($this->AmountCollisionEnv === NULL) {
+
+            $this->AmountCollisionEnv = 0;
+            foreach ($this->session()->collisions() as $cll) {
+                if ($cll->type() != CollisionType::Env) continue;
+                if ($cll->user()->id() == $this->user()->id()) $this->AmountCollisionEnv += 1;
+            }
+        }
+
+        return $this->AmountCollisionEnv;
+    }
+
+
+    //! @return The number of cuts in this session
+    public function amountCuts() {
+        if ($this->AmountCuts === NULL) {
+
+            $this->AmountCuts = 0;
+            foreach ($this->session()->drivenLaps() as $lap) {
+                if ($lap->user()->id() == $this->user()->id()) $this->AmountCuts += $lap->cuts();
+            }
+        }
+
+        return $this->AmountCuts;
+    }
+
+
+    //! @return The number of laps driven in this session
+    public function amountLaps() {
+        if ($this->AmountLaps === NULL) {
+
+            $this->AmountLaps = 0;
+            foreach ($this->session()->drivenLaps() as $lap) {
+                if ($lap->user()->id() == $this->user()->id()) $this->AmountLaps += 1;
+            }
+        }
+
+        return $this->AmountLaps;
     }
 
 
