@@ -659,7 +659,7 @@ class CommandCalcStats(Command):
                 user_id_list.append(user_id)
 
         # for all sessions
-        for row_session in self.__db.fetch("Sessions", ['Id', 'Type'], {"Type":3}):
+        for row_session in self.__db.fetch("Sessions", ['Id', 'Type', 'Predecessor'], {"Type":3}):
 
             session_id = row_session['Id']
             path_fig = os.path.join(path_dir, "session_%s.svg" % session_id)
@@ -672,11 +672,21 @@ class CommandCalcStats(Command):
             # stores amount of laps of each driver
             driver_laps_dict = {}
 
+
             # List of drivers for each completed lap
             # [lap][driver1, driver2]
             # first lap starts with 1
             lap_standings = []
 
+
+            # get standings from previous qualifying session
+            qualify_standings = []
+            res = self.__db.fetch("SessionResults", ['User'], {'Session': row_session['Predecessor']}, 'Position', True)
+            for rslt in res:
+                qualify_standings.append(rslt['User']);
+
+
+            # get race positions
             for row_laps in self.__db.fetch("Laps", ['User'], {'Session': session_id}):
                 driver_id = int(row_laps['User'])
 
@@ -708,6 +718,13 @@ class CommandCalcStats(Command):
                 # get plot data
                 lap_numbers = []
                 lap_positions = []
+
+                # qualify position
+                if driver_id in qualify_standings:
+                    lap_numbers.append(0)
+                    lap_positions.append(qualify_standings.index(driver_id))
+
+                # race positions
                 for lap_nr in range(1, driver_laps_dict[driver_id] + 1):
                     standings = lap_standings[lap_nr]
                     if driver_id in standings:
