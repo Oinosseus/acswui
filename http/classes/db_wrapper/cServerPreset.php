@@ -278,6 +278,7 @@ class ServerPreset {
     private function updateData() {
         global $acswuiConfig;
         global $acswuiDatabase;
+        global $acswuiLog;
 
         // read json template
         $json_string = file_get_contents($acswuiConfig->AcsContent . "/server_cfg.json");
