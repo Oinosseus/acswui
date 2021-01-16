@@ -13,8 +13,9 @@ class presets extends cContentPage {
         $this->RequirePermissions = ["View_ServerContent"];
 
         // class variables used for html processing
-        $this->CanEdit = false;
-        $this->CanViewFixed = false;
+        $this->CanEdit = FALSE;
+        $this->CanViewFixed = FALSE;
+        $this->CanDelete = FALSE;
         $this->CurrentPreset = NULL;
 
     }
@@ -30,11 +31,12 @@ class presets extends cContentPage {
         // check permissions
         if ($acswuiUser->hasPermission('Server_Presets_Edit')) $this->CanEdit = true;
         if ($acswuiUser->hasPermission('Server_Presets_ViewFixed')) $this->CanViewFixed = true;
+        if ($acswuiUser->hasPermission('Server_Presets_Delete')) $this->CanDelete = true;
 
         // determine PresetId
         if (isset($_REQUEST['PRESET_ID'])) {
             $this->CurrentPreset = new ServerPreset((int) $_REQUEST['PRESET_ID']);
-        } elseif (isset($_SESSION['PRESET_ID'])) {
+        } elseif (isset($_SESSION['PRESET_ID']) && $_SESSION['PRESET_ID'] !== NULL) {
             $this->CurrentPreset = new ServerPreset((int) $_SESSION['PRESET_ID']);
         } else {
             $this->CurrentPreset = NULL;
@@ -45,12 +47,26 @@ class presets extends cContentPage {
         }
 
         // check for actions
-        if (isset($_POST['SAVE'])) {
+        if (isset($_POST['SAVE']) && $this->CanEdit) {
             if ($_POST['SAVE'] == "CURRENT") {
                 $this->savePreset(FALSE);
             } else if ($_POST['SAVE'] == "NEW") {
                 $this->savePreset(TRUE);
             }
+        } else if (isset($_POST['DELETE']) && $this->CanDelete) {
+            $this->CurrentPreset->delete();
+            $this->CurrentPreset = NULL;
+            $_SESSION['PRESET_ID'] = NULL;
+            if (count(ServerPreset::listPresets()) > 0) {
+                $this->CurrentPreset = ServerPreset::listPresets()[0];
+                $_SESSION['PRESET_ID'] = $this->CurrentPreset->id();
+            }
+        }
+
+        // ensure to have at least one preset
+        if (count(ServerPreset::listPresets()) == 0) {
+            $this->CurrentPreset = ServerPreset::new();
+            $_SESSION['PRESET_ID'] = $this->CurrentPreset->id();
         }
 
 
@@ -104,6 +120,10 @@ class presets extends cContentPage {
                 $html .= "<button type=\"submit\" name=\"SAVE\" value=\"CURRENT\">" . _("Save Preset") . "</button>";
                 $html .= " ";
                 $html .= "<button type=\"submit\" name=\"SAVE\" value=\"NEW\">" . _("Save As New Preset") . "</button>";
+            }
+            if ($this->CanDelete) {
+                $html .= " ";
+                $html .= "<button type=\"submit\" name=\"DELETE\" value=\"" . $this->CurrentPreset->id() . "\">" . _("Delete this preset") . "</button>";
             }
 
             # generate form for server preset options

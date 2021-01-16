@@ -212,6 +212,16 @@ class ServerPreset {
     }
 
 
+    //! Delete the current preset from the database
+    public function delete() {
+        global $acswuiDatabase;
+        $acswuiDatabase->delete_row("ServerPresets", $this->Id);
+        $this->Id = NULL;
+        $this->Name = NULL;
+        $this->ServerCfgJson = NULL;
+    }
+
+
     //! @return A list of all available ServerPreset objects
     public static function listPresets() {
         global $acswuiDatabase;
@@ -234,6 +244,19 @@ class ServerPreset {
     //! @return The name of the preset
     public function name() {
         return $this->Name;
+    }
+
+
+    //! @return The ServerPreset object of the newly created preset
+    public static function new() {
+        global $acswuiDatabase;
+
+        $cols = array();
+        $cols['Name'] = "NEW";
+        $cols['SERVER_WELCOME_MESSAGE'] = "";
+
+        $id = $acswuiDatabase->insert_row("ServerPresets", $cols);
+        return new ServerPreset($id);
     }
 
 
