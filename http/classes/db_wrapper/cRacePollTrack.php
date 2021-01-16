@@ -131,7 +131,6 @@ class RacePollTrack {
         global $acswuiUser;
 
         // clipping
-        if ($new_score == $this->getScoreUser()) return;
         if ($new_score < 0) $new_score = 0;
         if ($new_score > 100) $new_score = 100;
 

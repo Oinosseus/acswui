@@ -87,6 +87,7 @@ class racepoll extends cContentPage {
                 foreach (CarClass::listClasses() as $carclass) {
                     foreach (RacePollTrack::listTracks($carclass) as $rpt) {
                         $rpt_id = $rpt->id();
+                        if (!array_key_exists("RPT_ID_$rpt_id", $_POST)) continue;
                         $new_score = $_POST["RPT_ID_$rpt_id"];
                         $rpt->setScoreUser($new_score);
                     }
