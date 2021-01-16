@@ -128,10 +128,10 @@ table tr.lap_invalid {
 
 
 /******************************************************************************
- *                #contents__zm_session__laps
+ *                #contents__zm_session__history
  ******************************************************************************/
 
-#contents__zm_session__laps img.session_lap_diagram {
+#contents__zm_session__history img.session_lap_diagram {
     margin-left: auto;
     margin-right: auto;
     margin-top: 20px;
@@ -141,7 +141,7 @@ table tr.lap_invalid {
     padding: 10px;
 }
 
-tr.secondary_collision {
+#contents__zm_session__history tr.secondary_collision {
     color: #555;
 /*     font-size: 0.9em; */
     font-style: italic;

@@ -1,15 +1,18 @@
 <?php
 
-class laps extends cContentPage {
+class history extends cContentPage {
+    private $Session = NULL;
+    private $FilterRace = TRUE;
+    private $FilterQual = TRUE;
+    private $FilterPrtc = TRUE;
+    private $FilterTrck = NULL;
+
 
     public function __construct() {
-        $this->MenuName   = _("Laps");
-        $this->PageTitle  = "Session Laps";
+        $this->MenuName   = _("History");
+        $this->PageTitle  = "Session History";
         $this->TextDomain = "acswui";
         $this->RequirePermissions = ["Session_View"];
-
-        // class local vars
-        $this->Session = Null;
     }
 
     private function getCarName($carskin_id) {
@@ -47,11 +50,41 @@ class laps extends cContentPage {
         //                        Process Post Data
         // --------------------------------------------------------------------
 
-        if (isset($_GET['SESSION_ID'])) {
-            $this->Session = new Session((int) $_GET['SESSION_ID']);
-            $_SESSION['SESSION_ID'] = $this->Session->id();
-        } else if (isset($_SESSION['SESSION_ID'])) {
+        if (array_key_exists("SESSION_SELECT", $_REQUEST)) {
+
+            if (isset($_REQUEST['SESSION_ID'])) {
+                $this->Session = new Session((int) $_REQUEST['SESSION_ID']);
+                $_SESSION['SESSION_ID'] = $this->Session->id();
+            }
+
+            $_SESSION['SESSION_FILTER_RACE'] = array_key_exists("SESSION_FILTER_RACE", $_REQUEST);
+            $_SESSION['SESSION_FILTER_QUAL'] = array_key_exists("SESSION_FILTER_QUAL", $_REQUEST);
+            $_SESSION['SESSION_FILTER_PRTC'] = array_key_exists("SESSION_FILTER_PRTC", $_REQUEST);
+            $_SESSION['SESSION_FILTER_TRCK'] = $_REQUEST["SESSION_FILTER_TRCK"];
+        }
+
+        if (isset($_SESSION['SESSION_ID'])) {
             $this->Session = new Session((int) $_SESSION['SESSION_ID']);
+        }
+
+        if (isset($_SESSION['SESSION_FILTER_RACE'])) {
+            $this->FilterRace = $_SESSION['SESSION_FILTER_RACE'];
+        }
+
+        if (isset($_SESSION['SESSION_FILTER_QUAL'])) {
+            $this->FilterQual = $_SESSION['SESSION_FILTER_QUAL'];
+        }
+
+        if (isset($_SESSION['SESSION_FILTER_PRTC'])) {
+            $this->FilterPrtc = $_SESSION['SESSION_FILTER_PRTC'];
+        }
+
+        if (isset($_SESSION['SESSION_FILTER_TRCK'])) {
+            if ($_SESSION['SESSION_FILTER_TRCK'] > 0) {
+                $this->FilterTrck = $_SESSION['SESSION_FILTER_TRCK'];
+            } else {
+                $this->FilterTrck = NULL;
+            }
         }
 
 
@@ -65,11 +98,17 @@ class laps extends cContentPage {
         //                            Session Select
         // --------------------------------------------------------------------
 
-            // preset
-        $html .= '<form action="" method="get">';
+        $html .= '<form action="" method="post">';
+        $html .= "<input type=\"hidden\" name=\"SESSION_SELECT\" value=\"\">";
         $html .= _("Session Select");
         $html .= ' <select name="SESSION_ID" onchange="this.form.submit()">';
-        foreach ($acswuiDatabase->fetch_2d_array("Sessions", ['Id', 'Timestamp', 'Name', 'Track'], [], "Id", FALSE) as $row) {
+        foreach ($acswuiDatabase->fetch_2d_array("Sessions", ['Id', 'Timestamp', 'Name', 'Track', 'Type'], [], "Id", FALSE) as $row) {
+
+            // filter
+            if ($row['Type'] == 1 && $this->FilterPrtc == FALSE) continue;
+            if ($row['Type'] == 2 && $this->FilterQual == FALSE) continue;
+            if ($row['Type'] == 3 && $this->FilterRace == FALSE) continue;
+            if ($this->FilterTrck !== NULL && $this->FilterTrck != $row['Track']) continue;
 
             // take first session if none is selected yet
             if ($this->Session === Null) {
@@ -90,6 +129,31 @@ class laps extends cContentPage {
         }
         $html .= '</select>';
         $html .= '<br>';
+
+        // filter race
+        $checked = ($this->FilterRace) ? "checked=\"yes\"" : "";
+        $html .= "Filter Races: <input type=\"checkbox\" name=\"SESSION_FILTER_RACE\" value=\"TRUE\" $checked onchange=\"this.form.submit()\"><br>";
+
+        // filter qualifying
+        $checked = ($this->FilterQual) ? "checked=\"yes\"" : "";
+        $html .= "Filter Qualifying: <input type=\"checkbox\" name=\"SESSION_FILTER_QUAL\" value=\"TRUE\" $checked onchange=\"this.form.submit()\"><br>";
+
+        // filter practice
+        $checked = ($this->FilterPrtc) ? "checked=\"yes\"" : "";
+        $html .= "Filter Practice: <input type=\"checkbox\" name=\"SESSION_FILTER_PRTC\" value=\"TRUE\" $checked onchange=\"this.form.submit()\"><br>";
+
+        // filter track
+        $html .= "Filter Track: <select name=\"SESSION_FILTER_TRCK\" onchange=\"this.form.submit()\">";
+        $selected = ($this->FilterTrck === NULL) ? "selected" : "";
+        $html .= "<option value=\"0\"  $selected>&lt;" . _("any Track") . "&gt;</option>";
+        foreach (Track::listTracks() as $t) {
+            $id = $t->id();
+            $name = $t->name();
+            $selected = ($this->FilterTrck == $t->id()) ? "selected" : "";
+            $html .= "<option value=\"$id\"  $selected>$name</option>";
+        }
+        $html .= "</select>";
+
         $html .= '</form>';
 
 

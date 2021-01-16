@@ -69,7 +69,7 @@ class records_track extends cContentPage {
                     $html .= '<td>' . HumanValue::format($lap->grip() * 100, "%") . '</td>';
                     $html .= '<td>' . $lap->timestamp()->format("c") . '</td>';
 
-                    $link_url = "?CONTENT=/zm_session//laps&SESSION_ID=" . $lap->session()->id();
+                    $link_url = "?CONTENT=/zm_session//history&SESSION_ID=" . $lap->session()->id();
                     $link_name = $lap->session()->id() . " / " . $lap->id();
                     $html .= "<td><a href=\"$link_url\">$link_name</a></td>";
 
