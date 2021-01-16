@@ -722,7 +722,7 @@ class CommandCalcStats(Command):
                 # qualify position
                 if driver_id in qualify_standings:
                     lap_numbers.append(0)
-                    lap_positions.append(qualify_standings.index(driver_id))
+                    lap_positions.append(1 + qualify_standings.index(driver_id))
 
                 # race positions
                 for lap_nr in range(1, driver_laps_dict[driver_id] + 1):
