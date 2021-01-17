@@ -8,6 +8,10 @@ class Championship {
     private $Name = NULL;
     private $ServerPreset = NULL;
     private $CarClasses = NULL;
+    private $QualifyPositionPoints = NULL;
+    private $RacePositionPoints = NULL;
+    private $RaceTimePoints = NULL;
+
 
     /**
      * @param $id Database table id
@@ -76,6 +80,42 @@ class Championship {
     }
 
 
+    /**
+     * The points for qualifying positions.
+     * First array element are the points for first place,
+     * second element for second palce and so on.
+     * @return Array of integers
+     */
+    public function qualifyPositionPoints() {
+        if ($this->QualifyPositionPoints === NULL) $this->updateFromDb();
+        return $this->QualifyPositionPoints;
+    }
+
+
+    /**
+     * The points for race positions.
+     * First array element are the points for first place,
+     * second element for second palce and so on.
+     * @return Array of integers
+     */
+    public function racePositionPoints() {
+        if ($this->RacePositionPoints === NULL) $this->updateFromDb();
+        return $this->RacePositionPoints;
+    }
+
+
+    /**
+     * The points for race times.
+     * First array element are the points for best time,
+     * second element for second time and so on.
+     * @return Array of integers
+     */
+    public function raceTimePoints() {
+        if ($this->RaceTimePoints === NULL) $this->updateFromDb();
+        return $this->RaceTimePoints;
+    }
+
+
     //! @return The according ServerPreset object
     public function serverPreset() {
         if ($this->ServerPreset === NULL) $this->updateFromDb();
@@ -113,6 +153,66 @@ class Championship {
     }
 
 
+    //! @param $points A list of integers representing points for qualifying positions -> see qualifyPositionPoints()
+    public function setQualifyPositionPoints($points) {
+        global $acswuiDatabase;
+
+        // ensure to have integers
+        $points_list = array();
+        foreach ($points as $p) {
+            $points_list[] = (int) $p;
+        }
+
+        // update DB
+        $columns = array();
+        $columns['QualifyPositionPoints'] = implode(",", $points_list);
+        $acswuiDatabase->update_row("Championships", $this->Id, $columns);
+
+        // invalidate cache
+        $this->QualifyPositionPoints = $points_list;
+    }
+
+
+    //! @param $points A list of integers representing points for race positions -> see racePositionPoints()
+    public function setRacePositionPoints($points) {
+        global $acswuiDatabase;
+
+        // ensure to have integers
+        $points_list = array();
+        foreach ($points as $p) {
+            $points_list[] = (int) $p;
+        }
+
+        // update DB
+        $columns = array();
+        $columns['RacePositionPoints'] = implode(",", $points_list);
+        $acswuiDatabase->update_row("Championships", $this->Id, $columns);
+
+        // invalidate cache
+        $this->RacePositionPoints = $points_list;
+    }
+
+
+    //! @param $points A list of integers representing points for best race times -> see raceTimePoints()
+    public function setRaceTimePoints($points) {
+        global $acswuiDatabase;
+
+        // ensure to have integers
+        $points_list = array();
+        foreach ($points as $p) {
+            $points_list[] = (int) $p;
+        }
+
+        // update DB
+        $columns = array();
+        $columns['RaceTimePoints'] = implode(",", $points_list);
+        $acswuiDatabase->update_row("Championships", $this->Id, $columns);
+
+        // invalidate cache
+        $this->RaceTimePoints = $points_list;
+    }
+
+
     //! Internal function to load data from the DB
     private function updateFromDb() {
         global $acswuiDatabase;
@@ -124,6 +224,9 @@ class Championship {
         $columns[] = 'Name';
         $columns[] = 'ServerPreset';
         $columns[] = 'CarClasses';
+        $columns[] = 'QualifyPositionPoints';
+        $columns[] = 'RacePositionPoints';
+        $columns[] = 'RaceTimePoints';
 
         $res = $acswuiDatabase->fetch_2d_array("Championships", $columns, ['Id'=>$this->Id]);
         if (count($res) !== 1) {
@@ -139,6 +242,24 @@ class Championship {
         foreach (explode(",", $res[0]['CarClasses']) as $cc_id) {
             if ($cc_id == "") continue;
             $this->CarClasses[] = new CarClass((int) $cc_id);
+        }
+
+        $this->QualifyPositionPoints = array();
+        foreach (explode(",", $res[0]['QualifyPositionPoints']) as $p) {
+            if ($p == "") continue;
+            $this->QualifyPositionPoints[] = (int) $p;
+        }
+
+        $this->RacePositionPoints = array();
+        foreach (explode(",", $res[0]['RacePositionPoints']) as $p) {
+            if ($p == "") continue;
+            $this->RacePositionPoints[] = (int) $p;
+        }
+
+        $this->RaceTimePoints = array();
+        foreach (explode(",", $res[0]['RaceTimePoints']) as $p) {
+            if ($p == "") continue;
+            $this->RaceTimePoints[] = (int) $p;
         }
     }
 }

@@ -72,6 +72,33 @@ class champ_mange extends cContentPage {
                     $car_classes[] = new CarClass($_REQUEST['ADD_CARCLASS_ID']);
                 }
                 $this->Championship->setCarClasses($car_classes);
+
+                // qualifying position points
+                $position_points = array();
+                for ($pos=0; TRUE; ++$pos) {
+                    if (!array_key_exists("CHMP_QUALPOS_$pos", $_REQUEST)) break;
+                    if ($_REQUEST["CHMP_QUALPOS_$pos"] == 0) break;
+                    $position_points[] = $_REQUEST["CHMP_QUALPOS_$pos"];
+                }
+                $this->Championship->setQualifyPositionPoints($position_points);
+
+                // race position points
+                $position_points = array();
+                for ($pos=0; TRUE; ++$pos) {
+                    if (!array_key_exists("CHMP_RACEPOS_$pos", $_REQUEST)) break;
+                    if ($_REQUEST["CHMP_RACEPOS_$pos"] == 0) break;
+                    $position_points[] = $_REQUEST["CHMP_RACEPOS_$pos"];
+                }
+                $this->Championship->setRacePositionPoints($position_points);
+
+                // race time points
+                $position_points = array();
+                for ($pos=0; TRUE; ++$pos) {
+                    if (!array_key_exists("CHMP_RACETIME_$pos", $_REQUEST)) break;
+                    if ($_REQUEST["CHMP_RACETIME_$pos"] == 0) break;
+                    $position_points[] = $_REQUEST["CHMP_RACETIME_$pos"];
+                }
+                $this->Championship->setRaceTimePoints($position_points);
             }
         }
 
@@ -110,9 +137,11 @@ class champ_mange extends cContentPage {
             $html .= "<input type=\"hidden\" name=\"CHMP_ID\" value=\"" . $this->Championship->id() . "\">";
             $html .= "<input type=\"hidden\" name=\"ACTION\" value=\"SAVE\">";
 
+            // name
             $html .= "<label>Name</label>";
             $html .= "<input type=\"text\" name=\"CHMP_NAME\" value=\"" . $this->Championship->name() . "\" /> ";
 
+            // server preset
             $html .= "<label>Server Prest</label>";
             $html .= "<select name=\"PRESET_ID\">";
             foreach (ServerPreset::listPresets() as $prst) {
@@ -121,6 +150,7 @@ class champ_mange extends cContentPage {
             }
             $html .= "</select>";
 
+            // car classes
             $html .= "<label>Car Classes</label>";
             $html .= "<ul>";
             foreach ($this->Championship->carClasses() as $cc) {
@@ -137,8 +167,40 @@ class champ_mange extends cContentPage {
             $html .= "</select></li>";
             $html .= "</ul>";
 
+            // qualifying position points
+            $html .= "<label>Qualifing Position Points</label>";
+            $html .= "<ol>";
+            $position = 0;
+            foreach ($this->Championship->qualifyPositionPoints() as $p) {
+                $html .= "<li><input name=\"CHMP_QUALPOS_$position\" type=\"number\" min=\"0\" max=\"1000\" step=\"1\" value=\"$p\" title=\"Set to zero to remove\"></li>";
+                $position += 1;
+            }
+            $html .= "<li><input name=\"CHMP_QUALPOS_$position\" type=\"number\" min=\"0\" max=\"1000\" step=\"1\" value=\"0\"></li>";
+            $html .= "</ol>";
 
+            // race position points
+            $html .= "<label>Race Position Points</label>";
+            $html .= "<ol>";
+            $position = 0;
+            foreach ($this->Championship->racePositionPoints() as $p) {
+                $html .= "<li><input name=\"CHMP_RACEPOS_$position\" type=\"number\" min=\"0\" max=\"1000\" step=\"1\" value=\"$p\" title=\"Set to zero to remove\"></li>";
+                $position += 1;
+            }
+            $html .= "<li><input name=\"CHMP_RACEPOS_$position\" type=\"number\" min=\"0\" max=\"1000\" step=\"1\" value=\"0\"></li>";
+            $html .= "</ol>";
 
+            // race time points
+            $html .= "<label>Race Time Points</label>";
+            $html .= "<ol>";
+            $position = 0;
+            foreach ($this->Championship->raceTimePoints() as $p) {
+                $html .= "<li><input name=\"CHMP_RACETIME_$position\" type=\"number\" min=\"0\" max=\"1000\" step=\"1\" value=\"$p\" title=\"Set to zero to remove\"></li>";
+                $position += 1;
+            }
+            $html .= "<li><input name=\"CHMP_RACETIME_$position\" type=\"number\" min=\"0\" max=\"1000\" step=\"1\" value=\"0\"></li>";
+            $html .= "</ol>";
+
+            // save button
             $html .= " <button type=\"submit\">" . _("Save Championship") . "</button>";
 
             $html .= "</form>";
