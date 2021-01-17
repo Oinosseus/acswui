@@ -32,6 +32,7 @@ include("classes/db_wrapper/cRacePollTrack.php");
 include("classes/db_wrapper/cRacePollDate.php");
 include("classes/db_wrapper/cCollision.php");
 include("classes/db_wrapper/cDriverRanking.php");
+include("classes/db_wrapper/cChampionship.php");
 
 // functions
 include("functions/getMenuArrayFromContentDir.php");

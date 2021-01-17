@@ -377,6 +377,22 @@ class CommandInstallHttp(Command):
 
 
         # ---------------------------------------------------------------------
+        #                           Green Tables
+        # ---------------------------------------------------------------------
+
+        # check table Championships
+        Verbosity(self.Verbosity).print("check database table `Championships`")
+        self.__db.appendTable("Championships")
+        self.__db.appendColumnUInt("Championships", 'ServerPreset')
+        self.__db.appendColumnString("Championships", "Name", 100)
+        self.__db.appendColumnString("Championships", "CarClasses", 100)
+        self.__db.appendColumnString("Championships", "PositionPoints", 100)
+        self.__db.appendColumnString("Championships", "BalanceBallast", 100)
+        self.__db.appendColumnString("Championships", "BallanceRestrictor", 100)
+
+
+
+        # ---------------------------------------------------------------------
         #                           Cyan Tables
         # ---------------------------------------------------------------------
 

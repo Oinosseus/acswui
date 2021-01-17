@@ -188,3 +188,22 @@ table tr.lap_invalid {
     width: 95%;
 }
 
+
+/******************************************************************************
+ *                        #contents__zz_admin__groups
+ ******************************************************************************/
+
+#contents__zz_admin__groups tr:hover {
+    background-color: #bd0000;
+}
+
+
+
+/******************************************************************************
+ *                   #contents__dd_championship__champ_mange
+ ******************************************************************************/
+
+#contents__dd_championship__champ_mange #general_setup {
+    display: grid;
+    grid-template-columns: max-content max-content;
+}
