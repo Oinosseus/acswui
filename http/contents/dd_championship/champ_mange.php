@@ -100,6 +100,33 @@ class champ_mange extends cContentPage {
                 }
                 $this->Championship->setRaceTimePoints($position_points);
 
+                // race lead lap points
+                $position_points = array();
+                for ($pos=0; TRUE; ++$pos) {
+                    if (!array_key_exists("CHMP_RACELEADLAP_$pos", $_REQUEST)) break;
+                    if ($_REQUEST["CHMP_RACELEADLAP_$pos"] == 0) break;
+                    $position_points[] = $_REQUEST["CHMP_RACELEADLAP_$pos"];
+                }
+                $this->Championship->setRaceLeadLapPoints($position_points);
+
+                // ballance ballast
+                $position_points = array();
+                for ($pos=0; TRUE; ++$pos) {
+                    if (!array_key_exists("CHMP_BALLAST_$pos", $_REQUEST)) break;
+                    if ($_REQUEST["CHMP_BALLAST_$pos"] == 0) break;
+                    $position_points[] = $_REQUEST["CHMP_BALLAST_$pos"];
+                }
+                $this->Championship->setBallanceBallast($position_points);
+
+                // ballance restrictor
+                $position_points = array();
+                for ($pos=0; TRUE; ++$pos) {
+                    if (!array_key_exists("CHMP_RESTRICTOR_$pos", $_REQUEST)) break;
+                    if ($_REQUEST["CHMP_RESTRICTOR_$pos"] == 0) break;
+                    $position_points[] = $_REQUEST["CHMP_RESTRICTOR_$pos"];
+                }
+                $this->Championship->setBallanceRestrictor($position_points);
+
                 // add/remove tracks
                 $tracks = array();
                 foreach ($this->Championship->tracks() as $t) {
@@ -210,6 +237,39 @@ class champ_mange extends cContentPage {
                 $position += 1;
             }
             $html .= "<li><input name=\"CHMP_RACETIME_$position\" type=\"number\" min=\"0\" max=\"1000\" step=\"1\" value=\"0\"></li>";
+            $html .= "</ol>";
+
+            // race lead laps points
+            $html .= "<label>Race Lead Lap Points</label>";
+            $html .= "<ol>";
+            $position = 0;
+            foreach ($this->Championship->raceLeadLapPoints() as $p) {
+                $html .= "<li><input name=\"CHMP_RACELEADLAP_$position\" type=\"number\" min=\"0\" max=\"1000\" step=\"1\" value=\"$p\" title=\"Set to zero to remove\"></li>";
+                $position += 1;
+            }
+            $html .= "<li><input name=\"CHMP_RACELEADLAP_$position\" type=\"number\" min=\"0\" max=\"1000\" step=\"1\" value=\"0\"></li>";
+            $html .= "</ol>";
+
+            // ballance ballast
+            $html .= "<label>Ballance Ballast</label>";
+            $html .= "<ol>";
+            $position = 0;
+            foreach ($this->Championship->ballanceBallast() as $p) {
+                $html .= "<li><input name=\"CHMP_BALLAST_$position\" type=\"number\" min=\"0\" max=\"1000\" step=\"1\" value=\"$p\" title=\"Set to zero to remove\"></li>";
+                $position += 1;
+            }
+            $html .= "<li><input name=\"CHMP_BALLAST_$position\" type=\"number\" min=\"0\" max=\"1000\" step=\"1\" value=\"0\"></li>";
+            $html .= "</ol>";
+
+            // ballance restrcitor
+            $html .= "<label>Ballance Restrictor</label>";
+            $html .= "<ol>";
+            $position = 0;
+            foreach ($this->Championship->ballanceRestrictor() as $p) {
+                $html .= "<li><input name=\"CHMP_RESTRICTOR_$position\" type=\"number\" min=\"0\" max=\"100\" step=\"1\" value=\"$p\" title=\"Set to zero to remove\"></li>";
+                $position += 1;
+            }
+            $html .= "<li><input name=\"CHMP_RESTRICTOR_$position\" type=\"number\" min=\"0\" max=\"100\" step=\"1\" value=\"0\"></li>";
             $html .= "</ol>";
 
             // tracks
