@@ -196,6 +196,7 @@ class CommandInstallFiles(Command):
 
 
     def __create_dirs_http(self):
+        path_acs_content = self.getArg("http-path-acs-content")
         if not os.path.isdir(path_acs_content):
             verb2.print("create acs_content directory: " + path_acs_content)
             self.mkdirs(path_acs_content)
