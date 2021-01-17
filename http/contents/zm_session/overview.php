@@ -6,7 +6,7 @@ class overview extends cContentPage {
         $this->MenuName   = _("Overview");
         $this->PageTitle  = "Session Overview";
         $this->TextDomain = "acswui";
-        $this->RequirePermissions = ["Session_View"];
+        $this->RequirePermissions = ["Session", "Session_Overview"];
 
         // class local vars
         $this->SessionId = Null;

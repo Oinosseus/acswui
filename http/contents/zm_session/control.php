@@ -7,7 +7,7 @@ class control extends cContentPage {
         $this->MenuName   = _("Control");
         $this->PageTitle  = "Session Control";
         $this->TextDomain = "acswui";
-        $this->RequirePermissions = ["Session_Control"];
+        $this->RequirePermissions = ["Session", "Session_Control"];
 
         // class local vars
         $this->CurrentServerSlot = Null;

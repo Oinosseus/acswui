@@ -12,7 +12,7 @@ class history extends cContentPage {
         $this->MenuName   = _("History");
         $this->PageTitle  = "Session History";
         $this->TextDomain = "acswui";
-        $this->RequirePermissions = ["Session_View"];
+        $this->RequirePermissions = ["Session", "Session_History"];
     }
 
     private function getCarName($carskin_id) {
