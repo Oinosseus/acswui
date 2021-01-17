@@ -11,6 +11,7 @@ class Championship {
     private $QualifyPositionPoints = NULL;
     private $RacePositionPoints = NULL;
     private $RaceTimePoints = NULL;
+    private $Tracks = NULL;
 
 
     /**
@@ -213,6 +214,31 @@ class Championship {
     }
 
 
+    //! @param $tracks A list of Track objects
+    public function setTracks($tracks) {
+        global $acswuiDatabase;
+
+        $t_ids = array();
+        foreach ($tracks as $t) {
+            if (!in_array($t->id(), $t_ids))
+                $t_ids[] = $t->id();
+        }
+
+        $cols = array();
+        $cols['Tracks'] = implode(",", $t_ids);
+        $acswuiDatabase->update_row("Championships", $this->Id, $cols);
+
+        $this->Tracks = NULL;
+    }
+
+
+    //! @return A list of Track objects which are planned to race
+    public function tracks() {
+        if ($this->Tracks === NULL) $this->updateFromDb();
+        return $this->Tracks;
+    }
+
+
     //! Internal function to load data from the DB
     private function updateFromDb() {
         global $acswuiDatabase;
@@ -227,6 +253,7 @@ class Championship {
         $columns[] = 'QualifyPositionPoints';
         $columns[] = 'RacePositionPoints';
         $columns[] = 'RaceTimePoints';
+        $columns[] = 'Tracks';
 
         $res = $acswuiDatabase->fetch_2d_array("Championships", $columns, ['Id'=>$this->Id]);
         if (count($res) !== 1) {
@@ -260,6 +287,12 @@ class Championship {
         foreach (explode(",", $res[0]['RaceTimePoints']) as $p) {
             if ($p == "") continue;
             $this->RaceTimePoints[] = (int) $p;
+        }
+
+        $this->Tracks = array();
+        foreach (explode(",", $res[0]['Tracks']) as $t_id) {
+            if ($t_id == "") continue;
+            $this->Tracks[] = new Track((int) $t_id);
         }
     }
 }

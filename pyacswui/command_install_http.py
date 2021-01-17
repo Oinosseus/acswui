@@ -391,6 +391,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnString("Championships", "RaceTimePoints", 100)
         self.__db.appendColumnString("Championships", "BalanceBallast", 100)
         self.__db.appendColumnString("Championships", "BallanceRestrictor", 100)
+        self.__db.appendColumnString("Championships", "Tracks", 100)
 
 
 

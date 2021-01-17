@@ -99,6 +99,18 @@ class champ_mange extends cContentPage {
                     $position_points[] = $_REQUEST["CHMP_RACETIME_$pos"];
                 }
                 $this->Championship->setRaceTimePoints($position_points);
+
+                // add/remove tracks
+                $tracks = array();
+                foreach ($this->Championship->tracks() as $t) {
+                    $t_id = $t->id();
+                    if (array_key_exists("TRACK_ID_$t_id", $_REQUEST))
+                        $tracks[] = new Track($t_id);
+                }
+                if ($_REQUEST['ADD_TRACK_ID'] != "") {
+                    $tracks[] = new Track($_REQUEST['ADD_TRACK_ID']);
+                }
+                $this->Championship->setTracks($tracks);
             }
         }
 
@@ -199,6 +211,25 @@ class champ_mange extends cContentPage {
             }
             $html .= "<li><input name=\"CHMP_RACETIME_$position\" type=\"number\" min=\"0\" max=\"1000\" step=\"1\" value=\"0\"></li>";
             $html .= "</ol>";
+
+            // tracks
+            $html .= "<label>Tracks</label>";
+            $html .= "<ul>";
+            foreach ($this->Championship->tracks() as $t) {
+                $name = $t->name() . " (" . HumanValue::format($t->length(), "m") . ", " . $t->pitboxes() . "Pits)";
+                $html .= "<li>";
+                $html .= "<input type=\"checkbox\" name=\"TRACK_ID_" . $t->id() . "\" value=\"TRUE\" checked=\"yes\"> ";
+                $html .= $name;
+                $html .= "</li>";
+            }
+            $html .= "<li><select name=\"ADD_TRACK_ID\" onchange=\"this.form.submit()\">";
+            $html .= "<option value=\"\" selected> </option>";
+            foreach (Track::listTracks() as $t) {
+                $name = $t->name() . " (" . HumanValue::format($t->length(), "m") . ", " . $t->pitboxes() . "Pits)";
+                $html .= "<option value=\"" . $t->id() . "\">$name</option>";
+            }
+            $html .= "</select></li>";
+            $html .= "</ul>";
 
             // save button
             $html .= " <button type=\"submit\">" . _("Save Championship") . "</button>";
