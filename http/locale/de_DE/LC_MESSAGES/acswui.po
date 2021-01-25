@@ -129,7 +129,7 @@ msgstr "Datum"
 #: contents/sa_statistics/records_track.php:54
 #: contents/sa_statistics/records_car.php:52
 msgid "Session / Lap"
-msgstr "Fahrten / Runden"
+msgstr "Session / Runden"
 
 #: contents/sa_statistics/records_car.php:8
 msgid "Car Records"
@@ -271,11 +271,11 @@ msgstr "Strecke Hinzuf&uuml;gen"
 
 #: contents/zm_session/history.php:12
 msgid "History"
-msgstr "Vergangenheit"
+msgstr "Sessions"
 
 #: contents/zm_session/history.php:103
 msgid "Session Select"
-msgstr "Fahrt Ausw&auml;hlen"
+msgstr "Session Ausw&auml;hlen"
 
 #: contents/zm_session/history.php:148
 msgid "any Track"
@@ -283,11 +283,11 @@ msgstr "jede Strecke"
 
 #: contents/zm_session/history.php:192 contents/zm_session/overview.php:54
 msgid "Session Info"
-msgstr "Fahrtinformation"
+msgstr "Session Information"
 
 #: contents/zm_session/history.php:198 contents/zm_session/overview.php:60
 msgid "Server/Session Name"
-msgstr "Server/Fahrt Name"
+msgstr "Server/Session Name"
 
 #: contents/zm_session/history.php:199 contents/zm_session/overview.php:61
 msgid "Track"
@@ -308,7 +308,7 @@ msgstr "Temp. Umgebung / Strecke"
 
 #: contents/zm_session/history.php:227
 msgid "Session Results"
-msgstr "Ergebnisse der Fahrt"
+msgstr "Session Ergebnisse"
 
 #: contents/zm_session/history.php:243
 msgid "Position"
@@ -482,7 +482,7 @@ msgstr "Server"
 
 #: contents/zm_session.php:6
 msgid "Session"
-msgstr "Fahrten"
+msgstr "Session"
 
 #: contents/sa_statistics.php:6
 msgid "Statistics"
