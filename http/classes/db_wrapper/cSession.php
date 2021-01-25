@@ -131,8 +131,9 @@ class Session {
         if ($this->Results === NULL) {
             $this->Results = array();
 
-            $res = $acswuiDatabase->fetch_2d_array("SessionResults", ["Id"], ["Session"=>$this->Id]);
+            $res = $acswuiDatabase->fetch_2d_array("SessionResults", ["Id", "TotalTime"], ["Session"=>$this->Id]);
             foreach ($res as $row) {
+                if ($row['TotalTime'] == 0) continue;
                 $cll = new SessionResult($row['Id'], $this);
                 $this->Results[] = $cll;
             }
