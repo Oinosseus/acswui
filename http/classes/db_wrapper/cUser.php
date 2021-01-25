@@ -9,6 +9,7 @@ class User {
     private $Login = NULL;
     private $Password = NULL;
     private $Steam64GUID = NULL;
+    private $Color = NULL;
 
     private static $UserList = NULL;
     private static $DriverList = NULL;
@@ -20,6 +21,13 @@ class User {
 
     public function __toString() {
         return "User(Id=" . $this->Id . ")";
+    }
+
+
+    //! @return The color code for this user as string (eg #12ab9f)
+    public function color() {
+        if ($this->Color === NULL) $this->updateFromDb();
+        return $this->Color;
     }
 
     //! @return The database table id
@@ -56,7 +64,7 @@ class User {
         global $acswuiDatabase;
         global $acswuiLog;
 
-        $res = $acswuiDatabase->fetch_2d_array("Users", ['Login', 'Password', 'Steam64GUID'], ['Id'=>$this->Id]);
+        $res = $acswuiDatabase->fetch_2d_array("Users", ['Login', 'Password', 'Steam64GUID', 'Color'], ['Id'=>$this->Id]);
         if (count($res) !== 1) {
             $acswuiLog->logError("Cannot find User.Id=" . $this->Id);
             return;
@@ -65,6 +73,7 @@ class User {
         $this->Login = $res[0]['Login'];
         $this->Password = $res[0]['Password'];
         $this->Steam64GUID = $res[0]['Steam64GUID'];
+        $this->Color = $res[0]['Color'];
     }
 
     //! @return A list of all users

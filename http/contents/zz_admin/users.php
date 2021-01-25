@@ -47,6 +47,7 @@ class users extends cContentPage {
             $html .= "<th><input type=\"text\" name=\"USER_" . $u["Id"] . "_LOGIN\" value=\"" . $u['Login'] . "\"></th>";
             $html .= "<th><input type=\"password\" name=\"USER_" . $u["Id"] . "_PASSWD\" value=\"\"></th>";
             $html .= "<th><input type=\"text\" name=\"USER_" . $u["Id"] . "_GUID\" value=\"" . $u['Steam64GUID'] . "\"></th>";
+            $html .= "<th><input type=\"color\" name=\"USER_" . $u["Id"] . "_COLOR\" value=\"" . $u['Color'] . "\"></th>";
             $usergroups = $this->get_group_ids_of_user($u["Id"]);
             foreach ($groups as $g) {
                 if (in_array($g['Id'], $usergroups)) {
@@ -105,6 +106,9 @@ class users extends cContentPage {
             }
             if (isset($_POST["USER_" . $u["Id"] . "_GUID"])) {
                 $user_update_fields['Steam64GUID'] = $_POST["USER_" . $u["Id"] . "_GUID"];
+            }
+            if (isset($_POST["USER_" . $u["Id"] . "_COLOR"])) {
+                $user_update_fields['Color'] = $_POST["USER_" . $u["Id"] . "_COLOR"];
             }
             $acswuiDatabase->update_row("Users", $u['Id'], $user_update_fields);
 

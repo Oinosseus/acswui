@@ -297,6 +297,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnString("Users", "Login", 50)
         self.__db.appendColumnString("Users", "Password", 100)
         self.__db.appendColumnString("Users", "Steam64GUID", 50)
+        self.__db.appendColumnString("Users", "Color", 10)
 
         # check table Groups
         Verbosity(self.Verbosity).print("check database table `Groups`")

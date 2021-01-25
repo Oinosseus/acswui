@@ -35,7 +35,7 @@ class DriverRanking {
         } else {
             $this->IsNewItem = TRUE;
             $this->Timestamp = new DateTimeImmutable();
-            $this->initCharacteristics();
+            $this->Characteristics = $this->initCharacteristics();
             $this->User = $u;
         }
     }
@@ -69,7 +69,7 @@ class DriverRanking {
      * The returned objects are sorted by DriverRanking->getScore()
      * @return An array of DriverRanking objects
      */
-    static public function calculateRanks() {
+    public static function calculateRanks() {
         global $acswuiDatabase;
         global $acswuiConfig;
         global $__DriverRankingArray__;
@@ -194,11 +194,21 @@ class DriverRanking {
         foreach ($__DriverRankingArray__ as $user_id=>$drvrnk) {
             $retlist[] = $drvrnk;
         }
-        function compare_rankings($r1, $r2) {
-            return ($r1->getScore() < $r2->getScore()) ? 1 : -1;
-        }
-        usort($retlist, "compare_rankings");
+        usort($retlist, "DriverRanking::compareScore");
         return $retlist;
+    }
+
+    /**
+     * Compare two DriverRanking objects according to their score.
+     * This can be used with array sort functions: usort($driver_ranking_list, DriverRanking::compareScore)
+     * @param $dr1 A DriverRanking object
+     * @param $dr2 A DriverRanking object
+     * @return 1 if score of $dr1 is less than $dr2, 0 if the score is equal and -1 if score of $dr2 is less than $dr1
+     */
+    public static function compareScore($dr1, $dr2) {
+        if ($dr1->getScore() < $dr2->getScore()) return 1;
+        else if ($dr1->getScore() > $dr2->getScore()) return -1;
+        else return 0;
     }
 
 
@@ -206,6 +216,7 @@ class DriverRanking {
         global $acswuiConfig;
 
         //$Characteristics
+        if ($this->Characteristics === NULL) $this->updateFromDb();
         $driven = $this->Characteristics['XP']['R'] + $this->Characteristics['XP']['Q'] + $this->Characteristics['XP']['P'];
 
         if ($group == NULL) {
@@ -302,11 +313,38 @@ class DriverRanking {
     }
 
 
-    //! Initialize characteristic values with 0
-    private function initCharacteristics() {
-        $this->Characteristics = array( "XP"=>["R"=>0, "Q"=>0, "P"=>0],
-                                        "SX"=>["R"=>0, "Q"=>0, "RT"=>0, "BT"=>0],
-                                        "SF"=>["CT"=>0, "CE"=>0, "CC"=>0]);
+    /**
+     * Generate an array initialized with characteristic values with 0
+     * @return An array with keys that represent characteristics
+     */
+    public static function initCharacteristics() {
+        return array( "XP"=>["R"=>0, "Q"=>0, "P"=>0],
+                      "SX"=>["R"=>0, "Q"=>0, "RT"=>0, "BT"=>0],
+                      "SF"=>["CT"=>0, "CE"=>0, "CC"=>0]);
+    }
+
+
+    //! @return A List of the latest DriverRanking objects for each driver (ordered by score)
+    public static function listLatest() {
+        global $acswuiDatabase, $acswuiUser;
+
+        $retlist = array();
+
+        // get latest ranking for each driver
+        foreach (User::listDrivers() as $u) {
+            $user_id = $u->id();
+            $query = "SELECT Id FROM DriverRanking WHERE User = '$user_id' ORDER BY Id DESC LIMIT 1";
+            $res = $acswuiDatabase->fetch_raw_select($query);
+            if (count($res) != 0) {
+                $dr = new DriverRanking($res[0]['Id']);
+                $retlist[] = $dr;
+            }
+        }
+
+        // order by score
+        usort($retlist, "DriverRanking::compareScore");
+
+        return $retlist;
     }
 
 
@@ -336,6 +374,12 @@ class DriverRanking {
     }
 
 
+    public function timestamp() {
+        if ($this->Timestamp === NULL) $this->updateFromDb();
+        return $this->Timestamp;
+    }
+
+
     public function user() {
         if ($this->User === NULL) $this->updateFromDb();
         return $this->User;
@@ -348,7 +392,7 @@ class DriverRanking {
         global $acswuiLog;
 
         // prepare target values
-        $this->initCharacteristics();
+        $this->Characteristics = $this->initCharacteristics();
 
         // db columns
         $columns = array();
