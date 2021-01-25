@@ -108,7 +108,7 @@ class driver_ranking extends cContentPage {
         for ($d=1; $d <= ($svg_xax_min / $svg_x_zoom); ++$d) {
             $len = (($d % 70) == 0) ? 5 : 3;
             if (($d % 7) == 0) {
-                $x = $d * $svg_x_zoom;
+                $x = sprintf("%d", $d * $svg_x_zoom);
                 $html .= "<polyline points=\"-$x,0 -$x,$len\"/>";
             }
         }
@@ -126,8 +126,8 @@ class driver_ranking extends cContentPage {
             foreach ($acswuiDatabase->fetch_raw_select($query) as $row) {
                 $dr = new DriverRanking($row['Id']);
                 $interval = $now->diff($dr->Timestamp());
-                $x = -1 * $interval->days * $svg_x_zoom;
-                $y = -1 * $dr->getScore();
+                $x = sprintf("%d", -1 * $interval->days * $svg_x_zoom);
+                $y = sprintf("%d", -1 * $dr->getScore());
                 $polyline_points .= "$x,$y ";
             }
             $user_color = $drv_rnk->user()->color();

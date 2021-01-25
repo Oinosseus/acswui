@@ -35,7 +35,7 @@ class DriverRanking {
         } else {
             $this->IsNewItem = TRUE;
             $this->Timestamp = new DateTimeImmutable();
-            $this->Characteristics = $this->initCharacteristics();
+            $this->Characteristics = DriverRanking::initCharacteristics();
             $this->User = $u;
         }
     }
@@ -392,7 +392,7 @@ class DriverRanking {
         global $acswuiLog;
 
         // prepare target values
-        $this->Characteristics = $this->initCharacteristics();
+        $this->Characteristics = DriverRanking::initCharacteristics();
 
         // db columns
         $columns = array();
