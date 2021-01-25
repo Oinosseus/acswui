@@ -1,0 +1,529 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-01-25 19:38+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: contents/zz_admin/users.php:6
+msgid "Users"
+msgstr "Benutzer"
+
+#: contents/zz_admin/users.php:7
+msgid "Users Management"
+msgstr "Benutzerverwaltung"
+
+#: contents/zz_admin/users.php:36 contents/aa_user.php:27
+#: contents/aa_user.php:40 contents/aa_user.php:49
+msgid "Login"
+msgstr "Login"
+
+#: contents/zz_admin/users.php:37 contents/aa_user/chpwd.php:6
+#: contents/aa_user.php:44
+msgid "Password"
+msgstr "Passwort"
+
+#: contents/zz_admin/users.php:39
+msgid "Color"
+msgstr "Farbe"
+
+#: contents/zz_admin/users.php:77 contents/zz_admin/groups.php:72
+msgid "save all"
+msgstr "alle speichern"
+
+#: contents/zz_admin/groups.php:6
+msgid "Groups"
+msgstr "Gruppen"
+
+#: contents/zz_admin/groups.php:7
+msgid "Groups Management"
+msgstr "Gruppenverwaltung"
+
+#: contents/zz_admin/groups.php:46
+msgid "Group"
+msgstr "Gruppe"
+
+#: contents/zz_admin/groups.php:70 contents/bm_car_classes.php:194
+msgid "delete"
+msgstr "l&ouml;schen"
+
+#: contents/sa_statistics/tracks_popular.php:6
+msgid "Popular Tracks"
+msgstr "Beliebte Strecken"
+
+#: contents/sa_statistics/records_track.php:9
+msgid "Track Records"
+msgstr "Streckenrekorde"
+
+#: contents/sa_statistics/records_track.php:54
+#: contents/sa_statistics/records_car.php:52
+#: contents/zm_session/history.php:335 contents/zm_session/history.php:373
+#: contents/zm_session/overview.php:117
+msgid "Laptime"
+msgstr "Rundenzeit"
+
+#: contents/sa_statistics/records_track.php:54
+#: contents/sa_statistics/records_car.php:52
+#: contents/zm_session/history.php:335 contents/zm_session/overview.php:117
+msgid "Delta"
+msgstr "Differenz"
+
+#: contents/sa_statistics/records_track.php:54
+#: contents/sa_statistics/records_car.php:52
+#: contents/aa_user/driver_ranking.php:152 contents/aa_user/racepoll.php:124
+#: contents/zm_session/history.php:244 contents/zm_session/history.php:294
+#: contents/zm_session/history.php:335 contents/zm_session/history.php:373
+#: contents/zm_session/overview.php:87 contents/zm_session/overview.php:117
+msgid "Driver"
+msgstr "Fahrer"
+
+#: contents/sa_statistics/records_track.php:54
+#: contents/sa_statistics/records_car.php:52
+#: contents/zm_session/history.php:245 contents/zm_session/history.php:335
+#: contents/zm_session/history.php:373 contents/zm_session/overview.php:117
+#: contents/bm_car_classes.php:176
+msgid "Car"
+msgstr "Auto"
+
+#: contents/sa_statistics/records_track.php:54
+#: contents/sa_statistics/records_car.php:52
+#: contents/zm_session/history.php:248 contents/zm_session/history.php:335
+#: contents/zm_session/history.php:373 contents/zm_session/overview.php:117
+#: contents/bm_car_classes.php:177
+msgid "Ballast"
+msgstr "Zusatzgewicht"
+
+#: contents/sa_statistics/records_track.php:54
+#: contents/sa_statistics/records_car.php:52
+#: contents/zm_session/history.php:249 contents/zm_session/history.php:335
+#: contents/zm_session/history.php:373 contents/zm_session/overview.php:117
+#: contents/bm_car_classes.php:178
+msgid "Restrictor"
+msgstr "Begrenzer"
+
+#: contents/sa_statistics/records_track.php:54
+#: contents/sa_statistics/records_car.php:52
+#: contents/zm_session/history.php:202 contents/zm_session/history.php:335
+#: contents/zm_session/history.php:373 contents/zm_session/overview.php:64
+#: contents/zm_session/overview.php:117
+msgid "Grip"
+msgstr "Traktion"
+
+#: contents/sa_statistics/records_track.php:54
+#: contents/sa_statistics/records_car.php:52
+msgid "Date"
+msgstr "Datum"
+
+#: contents/sa_statistics/records_track.php:54
+#: contents/sa_statistics/records_car.php:52
+msgid "Session / Lap"
+msgstr "Fahrten / Runden"
+
+#: contents/sa_statistics/records_car.php:8
+msgid "Car Records"
+msgstr "Fahrzeugrekorde"
+
+#: contents/sa_statistics/carclasses_popular.php:6
+msgid "Popular Car Classes"
+msgstr "Beliebte Fahrzeugklassen"
+
+#: contents/aa_user/driver_ranking.php:9 contents/aa_user/aa_profile.php:48
+msgid "Driver Ranking"
+msgstr "Fahrerwertung"
+
+#: contents/aa_user/driver_ranking.php:46 contents/aa_user/aa_profile.php:57
+msgid "Weeks"
+msgstr "Wochen"
+
+#: contents/aa_user/driver_ranking.php:107 contents/aa_user/aa_profile.php:118
+msgid "weeks"
+msgstr "Wochen"
+
+#: contents/aa_user/driver_ranking.php:156
+#: contents/aa_user/driver_ranking.php:216
+msgid "Score"
+msgstr "Punkte"
+
+#: contents/aa_user/driver_ranking.php:157
+msgid "Show"
+msgstr "Anzeigen"
+
+#: contents/aa_user/driver_ranking.php:192
+msgid "Mean Value"
+msgstr "Mittelwert"
+
+#: contents/aa_user/driver_ranking.php:210
+#: contents/aa_user/driver_ranking.php:217
+msgid "Description"
+msgstr "Beschreibung"
+
+#: contents/aa_user/driver_ranking.php:215
+msgid "Symbol"
+msgstr "Symbol"
+
+#: contents/aa_user/driver_ranking.php:225
+msgid "Experience from driven race length"
+msgstr "Erfahrung von gefahrener Renndistanz"
+
+#: contents/aa_user/driver_ranking.php:231
+msgid "Experience from driven qualifying length"
+msgstr "Erfahrung von gefahrener Qualifikationsdistanz"
+
+#: contents/aa_user/driver_ranking.php:237
+msgid "Experience from driven practice length"
+msgstr "Erfahrung von gefahrener &Uuml;bungsdistanz"
+
+#: contents/aa_user/driver_ranking.php:246
+msgid "Success points for race positions (leading ahead another driver)."
+msgstr "Erfolgspunkte f&uuml;r F&uuml;hrungspositionen im Rennen (F&uuml;hrend vor einem anderen Fahrer)."
+
+#: contents/aa_user/driver_ranking.php:252
+msgid "Success points for qualifying positions (leading ahead another driver)."
+msgstr "Erfolgspunkte f&uuml;r F&uuml;hrungspositionen in der Qualifikation (F&uuml;hrend vor einem anderen Fahrer)."
+
+#: contents/aa_user/driver_ranking.php:258
+msgid "Success points for best time in a race session."
+msgstr "Erfolgspunkte f&uuml;r Bestzeit im Rennen."
+
+#: contents/aa_user/driver_ranking.php:264
+msgid "Success points for overall best time per track per car class (leading ahead another driver)."
+msgstr "Erfogspunkte f&uuml;r absolute Bestzeiten pro Strecke, pro Fahrzeugklasse (F&uuml;hrend vor einem anderen Fahrer)."
+
+#: contents/aa_user/driver_ranking.php:273
+msgid "Safety deduction points for cuts."
+msgstr "Sicherheitspunktabzug f&uuml;r Streckeverlassen."
+
+#: contents/aa_user/driver_ranking.php:279
+msgid "Safety deduction points for crashing with the environment"
+msgstr "Sicherheitspunktabzug f&uuml;r Unf&auml;lle mit Umgebungsobjekten."
+
+#: contents/aa_user/driver_ranking.php:285
+msgid "Safety deduction points for crashing with another car"
+msgstr "Sicherheitspunktabzug f&uuml;r Unf&auml;lle mit anderen Autos."
+
+#: contents/aa_user/chpwd.php:7
+msgid "Change Password"
+msgstr "Passwort &Auml;ndern"
+
+#: contents/aa_user/aa_profile.php:9
+msgid "Profile"
+msgstr "Profil"
+
+#: contents/aa_user/racepoll.php:12 contents/aa_user/racepoll.php:13
+msgid "Race Poll"
+msgstr "Rennumfrage"
+
+#: contents/aa_user/racepoll.php:33
+msgid "Save Poll"
+msgstr "Umfrage Speichern"
+
+#: contents/aa_user/racepoll.php:104
+msgid "Vote Race Date"
+msgstr "Renndatum Abstimmen"
+
+#: contents/aa_user/racepoll.php:116 contents/aa_user/racepoll.php:275
+msgid "Delete"
+msgstr "L&ouml;schen"
+
+#: contents/aa_user/racepoll.php:182
+msgid "New Date:"
+msgstr "Neues Datum:"
+
+#: contents/aa_user/racepoll.php:185
+msgid "Add Date"
+msgstr "Datum Hinzuf&uuml;gen"
+
+#: contents/aa_user/racepoll.php:194
+msgid "Vote Race Classes"
+msgstr "Fahrzeugklasse Abstimmen"
+
+#: contents/aa_user/racepoll.php:210
+msgid "Car Class"
+msgstr "Fahrzeugklasse"
+
+#: contents/aa_user/racepoll.php:211
+msgid "My Score"
+msgstr "Meine Punkte"
+
+#: contents/aa_user/racepoll.php:212
+msgid "Overall Score"
+msgstr "Gesamtpunkzahl"
+
+#: contents/aa_user/racepoll.php:247
+msgid "Vote Tracks"
+msgstr "Strecke Abstimmen"
+
+#: contents/aa_user/racepoll.php:295
+msgid "Add Track"
+msgstr "Strecke Hinzuf&uuml;gen"
+
+#: contents/zm_session/history.php:12
+msgid "History"
+msgstr "Vergangenheit"
+
+#: contents/zm_session/history.php:103
+msgid "Session Select"
+msgstr "Fahrt Ausw&auml;hlen"
+
+#: contents/zm_session/history.php:148
+msgid "any Track"
+msgstr "jede Strecke"
+
+#: contents/zm_session/history.php:192 contents/zm_session/overview.php:54
+msgid "Session Info"
+msgstr "Fahrtinformation"
+
+#: contents/zm_session/history.php:198 contents/zm_session/overview.php:60
+msgid "Server/Session Name"
+msgstr "Server/Fahrt Name"
+
+#: contents/zm_session/history.php:199 contents/zm_session/overview.php:61
+msgid "Track"
+msgstr "Strecke"
+
+#: contents/zm_session/history.php:200 contents/zm_session/overview.php:62
+msgid "Time"
+msgstr "Zeit"
+
+#: contents/zm_session/history.php:200 contents/zm_session/history.php:256
+#: contents/zm_session/overview.php:62
+msgid "Laps"
+msgstr "Runden"
+
+#: contents/zm_session/history.php:201 contents/zm_session/overview.php:63
+msgid "Temp Amb / Road"
+msgstr "Temp. Umgebung / Strecke"
+
+#: contents/zm_session/history.php:227
+msgid "Session Results"
+msgstr "Ergebnisse der Fahrt"
+
+#: contents/zm_session/history.php:243
+msgid "Position"
+msgstr "Position"
+
+#: contents/zm_session/history.php:246
+msgid "Best Lap"
+msgstr "Beste Runde"
+
+#: contents/zm_session/history.php:247
+msgid "Total Time"
+msgstr "Gesamtzeit"
+
+#: contents/zm_session/history.php:250 contents/zm_session/overview.php:88
+msgid "Driven"
+msgstr "Gefahren"
+
+#: contents/zm_session/history.php:251 contents/zm_session/history.php:335
+#: contents/zm_session/history.php:373 contents/zm_session/overview.php:117
+msgid "Cuts"
+msgstr "Schnitte"
+
+#: contents/zm_session/history.php:252 contents/zm_session/history.php:290
+msgid "Collisions"
+msgstr "Kollisionen"
+
+#: contents/zm_session/history.php:257
+msgid "Distance"
+msgstr "Entfernung"
+
+#: contents/zm_session/history.php:258
+msgid "Environment"
+msgstr "Umgebung"
+
+#: contents/zm_session/history.php:259
+msgid "Other Car"
+msgstr "Anderes Auto"
+
+#: contents/zm_session/history.php:295
+msgid "Other Driver"
+msgstr "Anderer Fahrer"
+
+#: contents/zm_session/history.php:296
+msgid "Speed"
+msgstr "Geschwindigkeit"
+
+#: contents/zm_session/history.php:297
+msgid "Timestamp"
+msgstr "Zeitstempel"
+
+#: contents/zm_session/history.php:326
+msgid "Fastest Laps"
+msgstr "Schnellste Runde"
+
+#: contents/zm_session/history.php:335 contents/zm_session/history.php:373
+#: contents/zm_session/overview.php:117
+msgid "Lap"
+msgstr "Runde"
+
+#: contents/zm_session/history.php:370
+msgid "All Laps"
+msgstr "Alle Runden"
+
+#: contents/zm_session/history.php:373
+msgid "Lap Id"
+msgstr "Runden-ID"
+
+#: contents/zm_session/control.php:7
+msgid "Control"
+msgstr "Kontrolle"
+
+#: contents/zm_session/control.php:150
+msgid "Stop Server"
+msgstr "Server Anhalten"
+
+#: contents/zm_session/control.php:200
+msgid "Start Server"
+msgstr "Server Starten"
+
+#: contents/zm_session/overview.php:9
+msgid "Overview"
+msgstr "&Uuml;bersicht"
+
+#: contents/zm_session/overview.php:113
+msgid "Leaderboard"
+msgstr "F&uuml;hrungsliste"
+
+#: contents/za_server/cars.php:6
+msgid "Cars"
+msgstr "Fahrzeuge"
+
+#: contents/za_server/tracks.php:6
+msgid "Tracks"
+msgstr "Strecken"
+
+#: contents/za_server/presets.php:10
+msgid "Presets"
+msgstr "Voreinstellungen"
+
+#: contents/za_server/presets.php:120
+msgid "Save Preset"
+msgstr "Voreinstellung Speichern"
+
+#: contents/za_server/presets.php:122
+msgid "Save As New Preset"
+msgstr "Als neue Voreinstellung speichern"
+
+#: contents/za_server/presets.php:126
+msgid "Delete this preset"
+msgstr "Diese Voreinstellung l&ouml;schen"
+
+#: contents/za_server/test.php:6
+msgid "Test"
+msgstr "Test"
+
+#: contents/bm_car_classes.php:6 contents/bm_car_classes.php:8
+msgid "Car Classes"
+msgstr "Fahrzeugklassen"
+
+#: contents/bm_car_classes.php:56
+msgid "New Car Class Name"
+msgstr "Name der neuen Fahrzeugklasse"
+
+#: contents/bm_car_classes.php:125
+msgid "Delete Car Class"
+msgstr "Fahrzeugklasse L&ouml;schen"
+
+#: contents/bm_car_classes.php:130
+msgid "Add New Car Class"
+msgstr "Neue Fahrzeugklasse Hinzuf&uuml;gen"
+
+#: contents/bm_car_classes.php:149
+msgid "General Car Class Setup"
+msgstr "Generelle Fahrzeugklassen Einstellungen"
+
+#: contents/bm_car_classes.php:155
+msgid "Save Car Class"
+msgstr "Fahrzeugklasse Speichern"
+
+#: contents/bm_car_classes.php:171
+msgid "Cars In This Class"
+msgstr "Fahrzeuge dieser Klasse"
+
+#: contents/bm_car_classes.php:211
+msgid "Add New Cars"
+msgstr "Neues Fahrzeug Hinzuf&uuml;gen"
+
+#: contents/bm_car_classes.php:212
+msgid "Select below all cars that shall be added to the car class."
+msgstr "W&auml;hle nachfolgend alle Fahrzeuge aus, die zu der Fahrzeugklasse hinzugef&uuml;gt werden sollen."
+
+#: contents/aa_user.php:6
+msgid "User"
+msgstr "Benutzer"
+
+#: contents/aa_user.php:32
+msgid "logout"
+msgstr "logout"
+
+#: contents/dd_championship.php:6
+msgid "Championship"
+msgstr "Meisterschaft"
+
+#: contents/zz_admin.php:6
+msgid "Admin"
+msgstr "Administrator"
+
+#: contents/za_server.php:6
+msgid "Server"
+msgstr "Server"
+
+#: contents/zm_session.php:6
+msgid "Session"
+msgstr "Fahrten"
+
+#: contents/sa_statistics.php:6
+msgid "Statistics"
+msgstr "Statistik"
+
+#: contents/dd_championship/champ_mange.php:11
+msgid "Manage"
+msgstr "Verwalten"
+
+#: contents/dd_championship/champ_mange.php:161
+msgid "Delete This Championship"
+msgstr "Diese Meisterschaft L&ouml;schen"
+
+#: contents/dd_championship/champ_mange.php:163
+msgid "Create New Championship"
+msgstr "Neue Meisterschaft Erzeugen"
+
+#: contents/dd_championship/champ_mange.php:173
+msgid "General Setup"
+msgstr "Generelle Einstellungen"
+
+#: contents/dd_championship/champ_mange.php:295
+msgid "Save Championship"
+msgstr "Meisterschaft Speichern"
+
+#: contents/bm_car_classes/occupation.php:10
+msgid "Seat Occupation"
+msgstr "Sitzbelegung"
+
+#: contents/bm_car_classes/occupation.php:67
+msgid "Current Occupations"
+msgstr "Aktuelle Belegung"
+
+#: contents/bm_car_classes/occupation.php:87
+msgid "Occupy Seat"
+msgstr "Sitz Belegen"
+
+#: contents/bm_car_classes/occupation.php:90
+msgid "DELETE Seat Occupation"
+msgstr "Sitzbelegung L&ouml;schen"
+
+#: contents/bm_car_classes/occupation.php:91
+msgid "Save Seat Occupation"
+msgstr "Sitzbelegung Speichern"

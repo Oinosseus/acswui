@@ -52,10 +52,18 @@ include("includes.php");
 // =========================
 
 $acswuiConfig   = new cConfig();
-$acswuiLog      = new cLog();
+$acswuiLog      = new cLog("http");
 $acswuiLog->LogNotice("Execution start at " . $acswui_execution_start_date);
 $acswuiDatabase = new cDatabase();
 $acswuiUser     = new cUser();
+
+// l10n
+$lang = getPreferredClientLanguage();
+if ($lang == "") $acswuiLog->LogWarning("Preferred localization could not be determined!");
+putenv("LC_ALL=$lang");
+setlocale(LC_ALL, $lang);
+bindtextdomain("acswui", "./locale");
+textdomain("acswui");
 
 
 
@@ -179,16 +187,6 @@ if (isset($_REQUEST['NONCONTENT'])) {
 
     // load content
     if (!is_null($acswuiContentPage)) {
-        // determine localization
-        $lang = getPreferredClientLanguage();
-        if ($lang == "") $acswuiLog->LogWarning("Preferred localization could not be determined!");
-        $acswuiLog->LogNotice("Localization '$lang' selected");
-        // load translation
-        setlocale(LC_ALL, $lang);
-        bindtextdomain($acswuiContentPage->TextDomain, "locale");
-        bind_textdomain_codeset($acswuiContentPage->TextDomain, 'UTF-8');
-        textdomain($acswuiContentPage->TextDomain);
-        // put html from content to template
         $acswuiTemplate->ContentPage = $acswuiContentPage;
     }
 }
