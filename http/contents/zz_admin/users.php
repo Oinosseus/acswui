@@ -36,6 +36,7 @@ class users extends cContentPage {
         $html .= "<th>" . _("Login") . "</th>";
         $html .= "<th>" . _("Password") . "</th>";
         $html .= "<th>Steam64GUID</th>";
+        $html .= "<th>" . _("Color") . "</th>";
         foreach ($groups as $g) {
             $html .= "<th>" . $g['Name'] . "</th>";
         }
@@ -44,10 +45,10 @@ class users extends cContentPage {
         // settings
         foreach ($users as $u) {
             $html .= "<tr>";
-            $html .= "<th><input type=\"text\" name=\"USER_" . $u["Id"] . "_LOGIN\" value=\"" . $u['Login'] . "\"></th>";
-            $html .= "<th><input type=\"password\" name=\"USER_" . $u["Id"] . "_PASSWD\" value=\"\"></th>";
-            $html .= "<th><input type=\"text\" name=\"USER_" . $u["Id"] . "_GUID\" value=\"" . $u['Steam64GUID'] . "\"></th>";
-            $html .= "<th><input type=\"color\" name=\"USER_" . $u["Id"] . "_COLOR\" value=\"" . $u['Color'] . "\"></th>";
+            $html .= "<td><input type=\"text\" name=\"USER_" . $u["Id"] . "_LOGIN\" value=\"" . $u['Login'] . "\"></td>";
+            $html .= "<td><input type=\"password\" name=\"USER_" . $u["Id"] . "_PASSWD\" value=\"\"></td>";
+            $html .= "<td><input type=\"text\" name=\"USER_" . $u["Id"] . "_GUID\" value=\"" . $u['Steam64GUID'] . "\"></td>";
+            $html .= "<td><input type=\"color\" name=\"USER_" . $u["Id"] . "_COLOR\" value=\"" . $u['Color'] . "\"></td>";
             $usergroups = $this->get_group_ids_of_user($u["Id"]);
             foreach ($groups as $g) {
                 if (in_array($g['Id'], $usergroups)) {
@@ -55,18 +56,19 @@ class users extends cContentPage {
                 } else {
                     $checked ="";
                 }
-                $html .= "<th><input type=\"checkbox\" name=\"USER_" . $u["Id"] . "_GROUP_" . $g['Id'] . "\" value=\"TRUE\" $checked></th>";
+                $html .= "<td><input type=\"checkbox\" name=\"USER_" . $u["Id"] . "_GROUP_" . $g['Id'] . "\" value=\"TRUE\" $checked></td>";
             }
             $html .= "</tr>";
         }
 
         // new user
         $html .= "<tr>";
-        $html .= "<th><input type=\"text\" name=\"NEWUSER_LOGIN\" value=\"\"></th>";
-        $html .= "<th><input type=\"password\" name=\"NEWUSER_PASSWD\" value=\"\"></th>";
-        $html .= "<th><input type=\"text\" name=\"NEWUSER_GUID\" value=\"\"></th>";
+        $html .= "<td><input type=\"text\" name=\"NEWUSER_LOGIN\" value=\"\"></td>";
+        $html .= "<td><input type=\"password\" name=\"NEWUSER_PASSWD\" value=\"\"></td>";
+        $html .= "<td><input type=\"text\" name=\"NEWUSER_GUID\" value=\"\"></td>";
+        $html .= "<td></td>";
         foreach ($groups as $g) {
-            $html .= "<th><input type=\"checkbox\" name=\"NEWUSER_GROUP_" . $g['Id'] . "\" value=\"TRUE\"></th>";
+            $html .= "<td><input type=\"checkbox\" name=\"NEWUSER_GROUP_" . $g['Id'] . "\" value=\"TRUE\"></td>";
         }
         $html .= "</tr>";
 
