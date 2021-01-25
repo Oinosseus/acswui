@@ -8,6 +8,7 @@ class CarClass {
     private $Id = NULL;
     private $Name = NULL;
     private $Cars = NULL;
+    private $Description = NULL;
 
 //     private $Drivers = NULL;
 //     private $DrivenLaps = NULL;
@@ -127,6 +128,23 @@ class CarClass {
 
         // delete car class
         $acswuiDatabase->delete_row("CarClasses", $this->Id);
+    }
+
+
+    //! @return Description of the CarClass
+    public function description() {
+        global $acswuiDatabase;
+
+        if ($this->Description === NULL) {
+            $res = $acswuiDatabase->fetch_2d_array("CarClasses", ['Description'], ['Id'=>$this->Id]);
+            if (count($res) !== 1) {
+                $acswuiLog->logError("Cannot find CarClasses.Id=" . $this->Id);
+                return;
+            }
+            $this->Description = $res[0]['Description'];
+        }
+
+        return $this->Description;
     }
 
 //     //! @return The amount of driven laps with this car class
@@ -411,6 +429,21 @@ class CarClass {
         $map_id = $this->getCarMapId($car);
         $acswuiDatabase->update_row("CarClassesMap", $map_id, ['Restrictor'=>$restrictor]);
     }
+
+    /**
+     * Set A new description for the CarClass
+     * @param $description The new description
+     */
+    public function setDescription(string $description) {
+        global $acswuiDatabase;
+
+        $fields = array();
+        $fields['Description'] = $description;
+        $acswuiDatabase->update_row("CarClasses", $this->Id, $fields);
+
+        $this->Description = $description;
+    }
+
 
 //     //! Update the caches for DrivenMeters and DrivenSeconds
 //     private function updateDriven() {

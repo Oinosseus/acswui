@@ -320,6 +320,7 @@ class CommandInstallHttp(Command):
         Verbosity(self.Verbosity).print("check database table `CarClasses`")
         self.__db.appendTable("CarClasses")
         self.__db.appendColumnString("CarClasses", 'Name', 50)
+        self.__db.appendColumnText("CarClasses", "Description")
 
         # check table CarClassesMap
         Verbosity(self.Verbosity).print("check database table `CarClassesMap`")

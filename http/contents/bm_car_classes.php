@@ -70,6 +70,7 @@ class bm_car_classes extends cContentPage {
 
             // save name
             $this->CurrentCarClass->rename($_POST['CARCLASS_NAME']);
+            $this->CurrentCarClass->setDescription($_POST['CARCLASS_DESCRIPTION']);
 
             // save ballast/restrictor
             foreach ($this->CurrentCarClass->cars() as $car) {
@@ -120,10 +121,14 @@ class bm_car_classes extends cContentPage {
         if ($this->CurrentCarClass !== NULL) {
             $id = $this->CurrentCarClass->id();
             $html .= "<input type=\"hidden\" name=\"CARCLASS_ID\" value=\"$id\">";
-            $html .= "<button type=\"submit\" name=\"ACTION\" value=\"DELETE\">" . _("Delete Car Class") . "</button>";
+            if ($this->CanEdit) {
+                $html .= "<button type=\"submit\" name=\"ACTION\" value=\"DELETE\">" . _("Delete Car Class") . "</button>";
+            }
         }
-        $html .= " ";
-        $html .= "<button type=\"submit\" name=\"ACTION\" value=\"NEW\">" . _("Add New Car Class") . "</button>";
+        if ($this->CanEdit) {
+            $html .= " ";
+            $html .= "<button type=\"submit\" name=\"ACTION\" value=\"NEW\">" . _("Add New Car Class") . "</button>";
+        }
         $html .= "</form>";
 
 
@@ -137,17 +142,20 @@ class bm_car_classes extends cContentPage {
         if ($this->CurrentCarClass !== NULL) {
             $id = $this->CurrentCarClass->id();
             $name = $this->CurrentCarClass->name();
+            $description = $this->CurrentCarClass->description();
 
             $html .= "<input type=\"hidden\" name=\"CARCLASS_ID\" value=\"$id\">";
 
             $html .= "<h1>" . _("General Car Class Setup") . "</h1>";
 
-            # class name
+            # class name, description
             if ($this->CanEdit) {
-                $html .= "Name: <input type=\"text\" name=\"CARCLASS_NAME\" value=\"$name\" /> ";
+                $html .= "Name: <input type=\"text\" name=\"CARCLASS_NAME\" value=\"$name\" /><br>";
+                $html .= "<textarea name=\"CARCLASS_DESCRIPTION\">$description</textarea><br>";
                 $html .= "<button type=\"submit\" name=\"ACTION\" value=\"SAVE\">" . _("Save Car Class") . "</button> ";
             } else {
-                $html .= "Name: <span class=\"disabled_input\">$name</span>";
+                $html .= "Name: <span class=\"disabled_input\">$name</span><br>";
+                $html .= "<p>$description</p>";
             }
 
         }
@@ -160,7 +168,7 @@ class bm_car_classes extends cContentPage {
 
         if ($this->CurrentCarClass !== NULL) {
 
-            $html .= "<h1>" . _("Cars Assinged To Class") . "</h1>";
+            $html .= "<h1>" . _("Cars In This Class") . "</h1>";
 
             // race class cars
             $html .= "<table id=\"available_cars\">";
