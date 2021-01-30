@@ -8,7 +8,7 @@ $__DriverRankingArray__ = array();
 /**
  * Cached wrapper to database DriverRanking table element
  */
-class DriverRanking {
+class DriverRanking implements JsonSerializable {
     private $IsNewItem = FALSE;
     private $Id = NULL;
     private $User = NULL;
@@ -27,9 +27,18 @@ class DriverRanking {
      * When the $id parameter is 0, it is assumed that a new object wants to be created.
      * @param $id The Id of the database table row (or 0 for a new object)
      * @param $u The according User object (only relevant when $id=0 / new object)
+     * @param $json_data When not NULL, this constructs a DriverRanking object from json structed object data (other parameters will be ignored)
      */
-    public function __construct(int $id, User $u=NULL) {
-        if ($id !== 0) {
+    public function __construct(int $id, User $u=NULL, $json_data=NULL) {
+
+        if ($json_data !== NULL) {
+            $this->IsNewItem = $json_data['IsNewItem'];
+            $this->Id = $json_data['Id'];
+            $this->User = new User(0, $json_data['User']);
+            $this->Timestamp = new DateTimeImmutable($json_data['Timestamp']);
+            $this->Characteristics = $json_data['Characteristics'];
+
+        } else if ($id !== 0) {
             $this->Id = $id;
 
         } else {
@@ -67,6 +76,7 @@ class DriverRanking {
      * This function does take create DriverRanking obecjts from the DriverRanking database table.
      * This function creates new objects based on current drive data.
      * The returned objects are sorted by DriverRanking->getScore()
+     * The calculated data is stored in http_cache directory as json file
      * @return An array of DriverRanking objects
      */
     public static function calculateRanks() {
@@ -186,12 +196,19 @@ class DriverRanking {
         }
 
 
-        // return list
+        // sort list
         $retlist = array();
         foreach ($__DriverRankingArray__ as $user_id=>$drvrnk) {
             $retlist[] = $drvrnk;
         }
         usort($retlist, "DriverRanking::compareScore");
+
+        // save latest json
+        $json_path = $acswuiConfig->AcServerPath. "/http_cache/driver_ranking.json";
+        $f = fopen($json_path, 'w');
+        fwrite($f, json_encode($retlist));
+        fclose($f);
+
         return $retlist;
     }
 
@@ -323,25 +340,35 @@ class DriverRanking {
 
     //! @return A List of the latest DriverRanking objects for each driver (ordered by score)
     public static function listLatest() {
-        global $acswuiDatabase, $acswuiUser;
+        global $acswuiConfig;
 
         $retlist = array();
 
         // get latest ranking for each driver
-        foreach (User::listDrivers() as $u) {
-            $user_id = $u->id();
-            $query = "SELECT Id FROM DriverRanking WHERE User = '$user_id' ORDER BY Id DESC LIMIT 1";
-            $res = $acswuiDatabase->fetch_raw_select($query);
-            if (count($res) != 0) {
-                $dr = new DriverRanking($res[0]['Id']);
-                $retlist[] = $dr;
-            }
+        $json_path = $acswuiConfig->AcServerPath. "/http_cache/driver_ranking.json";
+        $json_data = json_decode(file_get_contents($json_path), TRUE);
+        foreach ($json_data as $json_dr) {
+            $retlist[] = new DriverRanking(0, NULL, $json_dr);
         }
 
         // order by score
         usort($retlist, "DriverRanking::compareScore");
 
         return $retlist;
+    }
+
+
+    //! Implement JsonSerializable interface
+    public function jsonSerialize() {
+        $json = array();
+
+        $json['IsNewItem'] = $this->IsNewItem;
+        $json['Id'] = $this->Id;
+        $json['User'] = $this->User;
+        $json['Timestamp'] = $this->Timestamp->format("c");
+        $json['Characteristics'] = $this->Characteristics;
+
+        return $json;
     }
 
 

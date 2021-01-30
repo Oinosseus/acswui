@@ -121,6 +121,11 @@ class CommandInstallHttp(Command):
             verb2.print("create http target directory: " + path_http)
             self.mkdirs(path_http)
 
+        path_http_cache = os.path.join(os.path.abspath(self.getArg("path-acs-target")), "http_cache")
+        if not os.path.isdir(path_http_cache):
+            verb2.print("create http storage directory: " + path_http_cache)
+            self.mkdirs(path_http_cache)
+
         verb2.print("copy http directory: " + path_http)
         http_src = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "http")
         self.copytree(http_src, self.getArg("http-path"))
@@ -156,6 +161,7 @@ class CommandInstallHttp(Command):
         self.__db.appendTable("CronExecutions")
         self.__db.appendColumnUInt("CronExecutions", "CronJob")
         self.__db.appendColumnCurrentTimestamp("CronExecutions", "Start")
+        self.__db.appendColumnCurrentTimestamp("CronExecutions", "Finish")
         self.__db.appendColumnUInt("CronExecutions", "Duration")
         self.__db.appendColumnText("CronExecutions", "Log")
 
@@ -735,6 +741,9 @@ class CommandInstallHttp(Command):
         verb2.print(" ".join(cmd))
         subprocess.run(cmd)
         cmd = ["chmod", "g+w", os.path.join(self.getArg("path-acs-target"), "results")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
+        cmd = ["chmod", "g+rw", os.path.join(self.getArg("path-acs-target"), "http_cache")]
         verb2.print(" ".join(cmd))
         subprocess.run(cmd)
 

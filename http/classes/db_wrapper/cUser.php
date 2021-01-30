@@ -3,7 +3,7 @@
 /**
  * Cached wrapper to car databse Tracks table element
  */
-class User {
+class User implements JsonSerializable {
 
     private $Id = NULL;
     private $Login = NULL;
@@ -14,9 +14,16 @@ class User {
     private static $UserList = NULL;
     private static $DriverList = NULL;
 
-    //! @param $id Database table id
-    public function __construct($id) {
-        $this->Id = $id;
+    /**
+     * @param $id Database table id
+     * @param $json_data When not NULL, this constructs a DriverRanking object from json structed object data (other parameters will be ignored)
+     */
+    public function __construct($id, $json_data=NULL) {
+        if ($json_data !== NULL) {
+            $this->Id = $json_data['Id'];
+        } else {
+            $this->Id = $id;
+        }
     }
 
     public function __toString() {
@@ -34,6 +41,14 @@ class User {
     public function id() {
         return $this->Id;
     }
+
+    //! Implement JsonSerializable interface
+    public function jsonSerialize() {
+        $json = array();
+        $json['Id'] = $this->Id;
+        return $json;
+    }
+
 
     //! @return The login name of the user
     public function login() {

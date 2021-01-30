@@ -122,6 +122,8 @@ class driver_ranking extends cContentPage {
         foreach (array_reverse(DriverRanking::listLatest()) as $drv_rnk) {
             $polyline_points = "";
             $user_id = $drv_rnk->user()->id();
+
+            // append data from db
             $query = "SELECT Id FROM DriverRanking WHERE User = '$user_id' AND Timestamp >= '$timestamp' ORDER BY Id DESC";
             foreach ($acswuiDatabase->fetch_raw_select($query) as $row) {
                 $dr = new DriverRanking($row['Id']);
@@ -130,6 +132,14 @@ class driver_ranking extends cContentPage {
                 $y = sprintf("%d", -1 * $dr->getScore());
                 $polyline_points .= "$x,$y ";
             }
+
+            // append latest data
+            $interval = $now->diff($drv_rnk->Timestamp());
+            $x = sprintf("%d", -1 * $interval->days * $svg_x_zoom);
+            $y = sprintf("%d", -1 * $drv_rnk->getScore());
+            $polyline_points = "$x,$y " . $polyline_points;
+
+            // plot line
             $user_color = $drv_rnk->user()->color();
             $visibility = ($user_id == $acswuiUser->Id) ? "visible" : "hidden";
             $html .= "<polyline id=\"plot_user_$user_id\" points=\"$polyline_points\" stroke=\"$user_color\" style=\"visibility:$visibility;\"/>";
