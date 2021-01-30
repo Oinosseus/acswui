@@ -38,7 +38,7 @@ class driver_ranking extends cContentPage {
         // --------------------------------------------------------------------
 
         // scale option
-        $svg_weeks = 12;
+        $svg_weeks = 4;
         if (array_key_exists("ChartWeeks", $_REQUEST)) {
             $svg_weeks = $_REQUEST['ChartWeeks'];
         }
