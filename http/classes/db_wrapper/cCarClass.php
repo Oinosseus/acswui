@@ -133,7 +133,7 @@ class CarClass {
 
     //! @return Description of the CarClass
     public function description() {
-        global $acswuiDatabase;
+        global $acswuiDatabase, $acswuiLog;
 
         if ($this->Description === NULL) {
             $res = $acswuiDatabase->fetch_2d_array("CarClasses", ['Description'], ['Id'=>$this->Id]);
