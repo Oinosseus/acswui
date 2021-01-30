@@ -468,8 +468,15 @@ class history extends cContentPage {
         }
 
         // svg configuration data
-        $lap_dx = 40; // units per lap
+        $lap_dx = (int) (1000 / count($positions)); // units per lap
         $pos_dy = 20; // units per position
+
+        //
+        $axis_x_text_distance = 100;
+        if ($lap_dx >= 50) $axis_x_text_distance = 1;
+        else if ($lap_dx >= 25) $axis_x_text_distance = 2;
+        else if ($lap_dx >= 10) $axis_x_text_distance = 5;
+        else if ($lap_dx >= 5) $axis_x_text_distance = 10;
 
         // svg tag
         $svg_viewbox_x0 = -10;
@@ -488,13 +495,20 @@ class history extends cContentPage {
         $html .= "<polyline id=\"axis_x\" points=\"0,$axe_y $x,$axe_y\"/>";
         for ($lap_nr = 0; $lap_nr < (count($positions)-1); ++$lap_nr) {
             $x = $lap_nr * $lap_dx;
-            $y0 = $axe_y - 5;
-            $y1 = $axe_y + 5;
-            $html .= "<polyline points=\"$x,$y0 $x,$y1\"/>";
-            $y2 = $y1 + 3;
-            if (($lap_nr % 5) == 0) {
+
+            if (($lap_nr % $axis_x_text_distance) == 0) {
+                $y0 = $axe_y - 8;
+                $y1 = $axe_y + 8;
+                $y2 = $y1 + 2;
                 $html .= "<text x=\"$x\" y=\"$y2\" dy=\"1.0em\" dx=\"-0.3em\">$lap_nr</text>";
+            } else {
+                $y0 = $axe_y - 4;
+                $y1 = $axe_y + 4;
+                $y2 = $y1 + 4;
             }
+
+            $html .= "<polyline points=\"$x,$y0 $x,$y1\"/>";
+
         }
         $html .= "</g>";
 
