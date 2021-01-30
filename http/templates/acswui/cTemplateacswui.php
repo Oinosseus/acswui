@@ -14,16 +14,16 @@ class cTemplateacswui extends cTemplate {
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_special.css\">\n";
         $html .= "  </head>\n";
         $html .= "  <body>\n";
-        $html .= "    <div class=\"Header\">\n";
+        $html .= "    <header>\n";
         $html .= "      Assetto Corsa Server Web User Interface\n";
-        $html .= "    </div>\n";
+        $html .= "    </header>\n";
         if ($this->ContentPage)
             $html .= "    <div class=\"Subtitle\">&nbsp;" . $this->ContentPage->PageTitle . "</div>\n";
         else
             $html .= "    <div class=\"Subtitle\">&nbsp;</div>\n";
 
         // main/sub navigation
-        $html .= "    <ul class=\"MainMenu\">\n";
+        $html .= "    <nav><ul class=\"MainMenu\">\n";
         foreach ($this->Menus as $mainMenuEntry) {
             $html .= "      <li>\n";
 
@@ -43,10 +43,10 @@ class cTemplateacswui extends cTemplate {
             $html .= "        <a href=\"" . $mainMenuEntry->Url . "\" " . (($mainMenuEntry->Active === True) ? "class=\"active\"" : "") . ">" . $mainMenuEntry->Name . "</a>\n";
             $html .= "      </li>\n";
         }
-        $html .= "    </ul>\n";
+        $html .= "    </ul></nav>\n";
 
         // content
-        $html .= "    <div class=\"MainBody\">\n";
+        $html .= "    <main>\n";
         if ($this->ContentPage) {
             $div_id = $this->ContentPage->getRelPath() . "_" . get_class($this->ContentPage);
             $div_id = str_replace(" ", "_", $div_id);
@@ -57,7 +57,7 @@ class cTemplateacswui extends cTemplate {
             $html .= "      <div>\n";
         }
         $html .= "      </div>\n";
-        $html .= "    </div>\n";
+        $html .= "    </main>\n";
         $html .= "  </body>\n";
         $html .= "</html>\n";
 

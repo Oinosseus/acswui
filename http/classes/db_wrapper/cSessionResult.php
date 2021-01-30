@@ -125,6 +125,22 @@ class SessionResult {
     }
 
 
+    /**
+     * Function that compares two SessionResult objects.
+     * @param $resut1 SessionResult object
+     * @param $resut2 SessionResult object
+     * @return -1 if position() of $result1 is better, else 1 (if both are equal this returns 0)
+     */
+    public static function comparePosition($result1, $result2) {
+        if ($result1->position() == $result2->position())
+            return 0;
+        else if ($result1->position() < $result2->position())
+            return -1;
+        else
+            return 1;
+    }
+
+
     //! @return The position/place in the session results
     public function position() {
         if ($this->Position === NULL) $this->updateFromDb();

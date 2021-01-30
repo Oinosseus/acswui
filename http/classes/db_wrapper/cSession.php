@@ -21,6 +21,7 @@ class Session {
     private $WheatherGraphics = NULL;
     private $Elapsed = NULL;
     private $Timestamp = NULL;
+    private $Predecessor = NULL;
 
     private $DrivenLaps = NULL;
     private $FirstDrivenLap = NULL;
@@ -115,6 +116,14 @@ class Session {
         if ($this->Name === NULL) $this->updateFromDb();
         return $this->Name;
     }
+
+
+    //! @return The predecessing session
+    public function predecessor() {
+        if ($this->Predecessor === NULL) $this->updateFromDb();
+        return $this->Predecessor;
+    }
+
 
     //! @todo Write a description
     public function protocolVersion() {
@@ -235,6 +244,7 @@ class Session {
         $columns[] = 'WheatherGraphics';
         $columns[] = 'Elapsed';
         $columns[] = 'Timestamp';
+        $columns[] = 'Predecessor';
 
         $res = $acswuiDatabase->fetch_2d_array("Sessions", $columns, ['Id'=>$this->Id]);
         if (count($res) !== 1) {
@@ -258,6 +268,7 @@ class Session {
         $this->WheatherGraphics = $res[0]['WheatherGraphics'];
         $this->Elapsed = $res[0]['Elapsed'];
         $this->Timestamp = new DateTime($res[0]['Timestamp']);
+        $this->Predecessor = new Session($res[0]['Predecessor']);
     }
 
 

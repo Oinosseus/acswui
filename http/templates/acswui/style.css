@@ -26,7 +26,7 @@ body {
   color: var(--color-text);
 }
 
-div.Header {
+header {
   margin-top: 20px;
   width: 100%;
   line-height: 28px;
@@ -49,7 +49,7 @@ div.Subtitle {
   text-align: center;
 }
 
-div.MainBody {
+main {
   margin-left: 300px;
   padding: 0px 20px;
   padding-top: 50px;
@@ -321,6 +321,7 @@ svg.chart {
     padding: 20px 10px;
     background-color: var(--color-chart-bg);
 /*     box-shadow: var(--color-chart-bg) 0px 0px 10px; */
+    width: 80%;
 }
 
 svg.chart g#axes polyline {
@@ -345,7 +346,7 @@ svg.chart g#grid polyline {
 
 svg.chart g#plots polyline {
 /*     stroke: #0a0; */
-    stroke-width: 1;
+    stroke-width: 2;
     fill: none;
 }
 
