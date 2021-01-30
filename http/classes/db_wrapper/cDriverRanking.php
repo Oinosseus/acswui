@@ -340,15 +340,20 @@ class DriverRanking implements JsonSerializable {
 
     //! @return A List of the latest DriverRanking objects for each driver (ordered by score)
     public static function listLatest() {
-        global $acswuiConfig;
+        global $acswuiConfig, $acswuiLog;
 
         $retlist = array();
 
         // get latest ranking for each driver
         $json_path = $acswuiConfig->AcServerPath. "/http_cache/driver_ranking.json";
-        $json_data = json_decode(file_get_contents($json_path), TRUE);
-        foreach ($json_data as $json_dr) {
-            $retlist[] = new DriverRanking(0, NULL, $json_dr);
+        @ $json_string = file_get_contents($json_path);
+        if ($json_string === FALSE) {
+            $acswuiLog->logError("File not found (try run cronjobs): $json_path");
+        } else {
+            $json_data = json_decode($json_string, TRUE);
+            foreach ($json_data as $json_dr) {
+                $retlist[] = new DriverRanking(0, NULL, $json_dr);
+            }
         }
 
         // order by score
