@@ -161,7 +161,6 @@ class CommandInstallHttp(Command):
         self.__db.appendTable("CronExecutions")
         self.__db.appendColumnUInt("CronExecutions", "CronJob")
         self.__db.appendColumnCurrentTimestamp("CronExecutions", "Start")
-        self.__db.appendColumnCurrentTimestamp("CronExecutions", "Finish")
         self.__db.appendColumnUInt("CronExecutions", "Duration")
         self.__db.appendColumnText("CronExecutions", "Log")
 

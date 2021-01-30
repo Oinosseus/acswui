@@ -78,6 +78,14 @@ abstract class Cronjob {
 
             $LastExecution = $now;
 
+            // log execution in db
+            $cols = array();
+            $cols['CronJob'] = $this->CronJobId;
+            $cols['Start'] = $LastExecution->format("Y-m-d H:i:s");
+            $cols['Duration'] = 0;
+            $cols['Log'] = "not startet yet";
+            $db_id = $acswuiDatabase->insert_row("CronExecutions", $cols);
+
             // execute the job
             $execution_start_mtime = microtime(true);
             $this->execute();
@@ -86,11 +94,11 @@ abstract class Cronjob {
 
             // log execution in db
             $cols = array();
-            $cols['CronJob'] = $this->CronJobId;
-            $cols['Start'] = $LastExecution->format("Y-m-d H:i:s");
+//             $cols['CronJob'] = $this->CronJobId;
+//             $cols['Start'] = $LastExecution->format("Y-m-d H:i:s");
             $cols['Duration'] = 1e3 * $execution_duration;
             $cols['Log'] = $this->LogString;
-            $acswuiDatabase->insert_row("CronExecutions", $cols);
+            $acswuiDatabase->update_row("CronExecutions", $db_id, $cols);
         }
 
         return $executed;
@@ -116,11 +124,6 @@ abstract class Cronjob {
     public function log(string $message) {
         if (substr($message, -1, 1) != "\n") $message .= "\n";
         $this->LogString .= $message;
-    }
-
-
-    //! @return The name of the cron job (name of the derived class)
-    public function name() {
     }
 }
 
