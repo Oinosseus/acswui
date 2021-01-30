@@ -65,7 +65,6 @@ class CommandCalcStats(Command):
         self.__calc_track_records()
         self.__calc_carclass_records()
         self.__calc_session_lap_diagrams()
-        self.__calc_session_standings_diagram()
 
 
 
