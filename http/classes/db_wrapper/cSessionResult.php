@@ -109,6 +109,22 @@ class SessionResult {
     }
 
 
+    /**
+     * Function that compares two SessionResult objects.
+     * @param $resut1 SessionResult object
+     * @param $resut2 SessionResult object
+     * @return -1 if bestlap() of $result1 is faster, else 1 (if both are equal this returns 0)
+     */
+    public static function compareBestLap($result1, $result2) {
+        if ($result1->bestlap() == $result2->bestlap())
+            return 0;
+        else if ($result1->bestlap() < $result2->bestlap())
+            return -1;
+        else
+            return 1;
+    }
+
+
     //! @return The position/place in the session results
     public function position() {
         if ($this->Position === NULL) $this->updateFromDb();

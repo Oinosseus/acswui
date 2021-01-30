@@ -161,10 +161,7 @@ class DriverRanking {
                 if (count($results) > 0) {
 
                     // sort by laptime
-                    function compare_result_laptime($r1, $r2) {
-                        return ($r1->bestlap() < $r2->bestlap()) ? -1 : 1;
-                    }
-                    usort($results, "compare_result_laptime");
+                    usort($results, "SessionResult::compareBestLap");
 
                     // add best race time
                     ranklistAdd($results[0]->user(), "SX", "RT", 1);

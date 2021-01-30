@@ -4,7 +4,7 @@ class CronDbCleanup extends Cronjob {
 
 
     public function __construct() {
-        parent::__construct(new DateInterval("PT1H"));
+        parent::__construct(new DateInterval("P1D"));
     }
 
 
