@@ -38,12 +38,12 @@ class history extends cContentPage {
         global $acswuiDatabase;
         global $acswuiUser;
 
-        // get dictionary of drivers
-        $drivers = array();
-        foreach ($acswuiDatabase->fetch_2d_array('Users', ['Id', 'Login']) as $row) {
-            $id = $row['Id'];
-            $drivers[$id] = $row['Login'];
-        }
+//         // get dictionary of drivers
+//         $drivers = array();
+//         foreach ($acswuiDatabase->fetch_2d_array('Users', ['Id', 'Login']) as $row) {
+//             $id = $row['Id'];
+//             $drivers[$id] = $row['Login'];
+//         }
 
 
         // --------------------------------------------------------------------
@@ -91,7 +91,15 @@ class history extends cContentPage {
 
         // initialize the html output
         $html  = "";
+        $html .= "<script>";
+        $html .= "let SvgUserIds = new Array;\n";
+        foreach (User::listDrivers() as $d) {
+            $uid = $d->id();
+            $html .= "SvgUserIds.push($uid);\n";
+        }
+        $html .= "</script>";
 
+        $html .= '<script src="' . $this->getRelPath() . 'history.js"></script>';
 
 
         // --------------------------------------------------------------------
@@ -279,6 +287,51 @@ class history extends cContentPage {
 
 
         // --------------------------------------------------------------------
+        //                               Fastest Laps
+        // --------------------------------------------------------------------
+
+        $html .= "<h1>" . _("Fastest Laps") . "</h1>";
+
+        # diagram
+        $html .= $this->laptimeDistributionDiagram();
+
+        $html .= '<table>';
+        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Delta") . '</th><th>' . _("Cuts") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th><th>' . _("Car") . '</th><th>' . _("Show") . '</th>';
+
+        $listed_user_ids = array();
+        foreach ($best_laps as $lap) {
+            $uid = $lap->user()->id();
+            if (in_array($uid, $listed_user_ids)) continue;
+
+            $lap_number = $lap->id() - $this->Session->firstDrivenLap()->id() + 1;
+
+            $class = "class=\"";
+            $class .= ($lap->cuts() > 0) ? " lap_invalid" : "";
+            $class .= "\"";
+
+            $html .= "<tr $class id=\"table_row_user_$uid\">";
+            $html .= "<td>$lap_number</td>";
+            $html .= "<td>" . HumanValue::format($lap->laptime(), "LAPTIME") . "</td>";
+            $html .= "<td>" . HumanValue::format($lap->laptime() - $laptime_best, "ms") . "</td>";
+            $html .= "<td>" . $lap->cuts() . "</td>";
+            $html .= "<td>" . $lap->user()->login() . "</td>";
+            $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
+            $html .= "<td>" . HumanValue::format($lap->ballast(), "kg") . "</td>";
+            $html .= "<td>" . HumanValue::format($lap->restrictor(), "%") . "</td>";
+            $html .= "<td>" . HumanValue::format(100 * $lap->grip(), "%") . "</td>";
+            $html .= "<td>" . $lap->carSkin()->htmlImg("", 100) . "</td>";
+
+            $checked = ($uid == $acswuiUser->Id) ? "checked=\"true\"": "";
+            $html .= "<td><input type=\"checkbox\" id=\"show_$uid\" $checked/></td>";
+            $html .= '</tr>';
+
+            $listed_user_ids[] = $uid;
+        }
+        $html .= '</table>';
+
+
+
+        // --------------------------------------------------------------------
         //                               Collisions
         // --------------------------------------------------------------------
 
@@ -311,50 +364,6 @@ class history extends cContentPage {
         }
 
         $html .= "</table>";
-
-
-
-        // --------------------------------------------------------------------
-        //                               Fastest Laps
-        // --------------------------------------------------------------------
-
-        $html .= "<h1>" . _("Fastest Laps") . "</h1>";
-
-        # diagram
-        $svg_path = $acswuiConfig->AcsContent . "/session_lap_diagrams/session_" . $this->Session->id() . ".svg";
-        if (file_exists($svg_path)) {
-            $html .= "<img src=\"$svg_path\" class=\"session_lap_diagram\">";
-        }
-
-        $html .= '<table>';
-        $html .= '<tr><th>' . _("Lap") . '</th><th>' . _("Laptime") . '</th><th>' . _("Delta") . '</th><th>' . _("Cuts") . '</th><th>' . _("Driver") . '</th><th>' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th>';
-
-        $listed_user_ids = array();
-        foreach ($best_laps as $lap) {
-            if (in_array($lap->user()->id(), $listed_user_ids)) continue;
-
-            $lap_number = $lap->id() - $this->Session->firstDrivenLap()->id() + 1;
-
-            $class = "class=\"";
-            $class .= ($lap->cuts() > 0) ? " lap_invalid" : "";
-            $class .= "\"";
-
-            $html .= "<tr $class>";
-            $html .= "<td>$lap_number</td>";
-            $html .= "<td>" . HumanValue::format($lap->laptime(), "LAPTIME") . "</td>";
-            $html .= "<td>" . HumanValue::format($lap->laptime() - $laptime_best, "ms") . "</td>";
-            $html .= "<td>" . $lap->cuts() . "</td>";
-            $html .= "<td>" . $lap->user()->login() . "</td>";
-            $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
-            $html .= "<td>" . HumanValue::format($lap->ballast(), "kg") . "</td>";
-            $html .= "<td>" . HumanValue::format($lap->restrictor(), "%") . "</td>";
-            $html .= "<td>" . HumanValue::format(100 * $lap->grip(), "%") . "</td>";
-            $html .= "<td>" . $lap->carSkin()->htmlImg("", 100) . "</td>";
-            $html .= '</tr>';
-
-            $listed_user_ids[] = $lap->user()->id();
-        }
-        $html .= '</table>';
 
 
 
@@ -490,6 +499,142 @@ class history extends cContentPage {
             $y *= $pos_dy;
             $html .= "<text x=\"$x\" y=\"$y\" dy=\"0.5em\" stroke=\"none\" fill=\"$user_color\">$user_login</text>";
             $html .= "</g>";
+        }
+        $html .= "</g>";
+
+        $html .= "</svg>";
+
+        return $html;
+    }
+
+
+    private function laptimeDistributionDiagram() {
+        global $acswuiUser;
+        $html = "";
+
+        // sanity check
+        if ($this->Session === NULL || $this->Session->drivers() == 0)
+            return $html;
+
+        // configuration
+        $zoom_x = 300;
+        $resolutions = [    1,    2,    3,    4,    5,    6,    7,    8,    9,
+                           10,   20,   30,   40,   50,   60,   70,   80,   90,
+                          100,  200,  300]; // in 100ms steps
+
+        // initialize data
+        $driver_densities = array();
+        $driver_lap_counts = array();
+        foreach ($this->Session->drivers() as $u) {
+            $driver_densities[$u->id()] = array();
+            $driver_lap_counts[$u->id()] = 0;
+        }
+
+        // find best laptime and lap count
+        $best_laptime = NULL;
+        foreach ($this->Session->drivenLaps() as $lap) {
+            if ($lap->cuts() != 0) continue;
+            $driver_lap_counts[$lap->user()->id()] += 1;
+            if ($best_laptime === NULL || $lap->laptime() < $best_laptime)
+                $best_laptime = $lap->laptime();
+        }
+
+        // gather data
+        if ($best_laptime !== NULL) {
+            foreach ($this->Session->drivenLaps() as $lap) {
+                $uid = $lap->user()->id();
+                $delta = $lap->laptime() - $best_laptime;
+                $delta /= 100;
+
+                // find resolutuion group
+                $res_grp = NULL;
+                foreach ($resolutions as $res) {
+                    if ($delta < $res) {
+                        $res_grp = $res;
+                        break;
+                    }
+                }
+
+                // add plot data
+                if ($res_grp !== NULL) {
+                    $current_densities = $driver_densities[$uid];
+                    if (!array_key_exists($res_grp, $current_densities))
+                        $current_densities[$res_grp] = 0;
+                    $current_densities[$res_grp] += 1;
+                    $driver_densities[$uid] = $current_densities;
+                }
+            }
+        }
+
+        // normalize data
+        $normalized_densities = array();
+        foreach ($driver_densities as $uid=>$densities) {
+            $normdens = array();
+            foreach ($densities as $res=>$count) {
+                $d = (int) (-100 * $count / $driver_lap_counts[$uid]);
+                $normdens[$res] = $d;
+            }
+            $normalized_densities[$uid] = $normdens;
+        }
+
+        // svg tag
+        $svg_viewbox_x0 = -6;
+        $svg_viewbox_dx = ceil(log10($resolutions[count($resolutions) - 1]) * $zoom_x + 12);
+        $svg_viewbox_y0 = -106 - 20;
+        $svg_viewbox_dy = 100 + 12 + 20 + 20;
+        $html .= "<svg id=\"lap_distribution_chart\" class=\"chart\" viewBox=\"$svg_viewbox_x0 $svg_viewbox_y0 $svg_viewbox_dx $svg_viewbox_dy\">";
+        $html .= "<defs>";
+        $html .= "<marker id=\"axis_arrow\" markerWidth=\"6\" markerHeight=\"4\" refx=\"0\" refy=\"2\" orient=\"auto\">";
+        $html .= "<polyline points=\"0,0 6,2 0,4\"/>";
+        $html .= "</marker>";
+        $html .= "</defs>";
+
+        // box border check
+//         $html .= "<rect x=\"$svg_viewbox_x0\" width=\"$svg_viewbox_dx\" y=\"$svg_viewbox_y0\" height=\"$svg_viewbox_dy\" fill=\"none\" stroke=\"red\"/>";
+
+        // grid
+        $html .= "<g id=\"grid\">";
+        foreach ($resolutions as $r) {
+            $x = (int) (log10($r) * $zoom_x);
+            $html .= "<polyline points=\"$x,0 $x,-100\"/>";
+        }
+        $html .= "</g>";
+
+        // axes
+        $html .= "<g id=\"axes\">";
+        $x = 1 * $zoom_x;
+        $html .= "<text x=\"$x\" y=\"-110\" dy=\"0.0em\" dx=\"-0.5em\" stroke=\"none\">" . _("Laptime Distribution") . "</text>";
+        $x = ceil(log10($resolutions[count($resolutions) - 1]) * $zoom_x);
+        $html .= "<polyline id=\"axis_x\" points=\"-5,0 $x,0\" style=\"marker-end:url(#axis_arrow)\"/>";
+        $html .= "<polyline id=\"axis_y\" points=\"0,5 0,-100\" style=\"marker-end:url(#axis_arrow)\"/>";
+        $x = (int) (log10(1) * $zoom_x);
+        $html .= "<polyline points=\"$x,5 $x,-100\"/>";
+        $html .= "<text x=\"$x\" y=\"5\" dy=\"1.0em\" dx=\"-0.0em\" stroke=\"none\">100ms</text>";
+        $x = (int) (log10(10) * $zoom_x);
+        $html .= "<polyline points=\"$x,5 $x,-100\"/>";
+        $html .= "<text x=\"$x\" y=\"5\" dy=\"1.0em\" dx=\"-0.5em\" stroke=\"none\">1s</text>";
+        $x = (int) (log10(100) * $zoom_x);
+        $html .= "<polyline points=\"$x,5 $x,-100\"/>";
+        $html .= "<text x=\"$x\" y=\"5\" dy=\"1.0em\" dx=\"-1.0em\" stroke=\"none\">10s</text>";
+        $html .= "</g>";
+
+        // plots
+        $html .= "<g id=\"plots\">";
+        foreach ($this->Session->drivers() as $u) {
+            $uid = $u->id();
+            $ul = $u->login();
+            $uc = $u->color();
+            $polyline_points = "";
+
+            foreach ($resolutions as $r) {
+                if (array_key_exists($r, $normalized_densities[$uid])) {
+                    $x = (int) (log10($r) * $zoom_x);
+                    $y = $normalized_densities[$uid][$r];
+                    $polyline_points .= "$x,$y ";
+                }
+            }
+            $visibility = ($uid == $acswuiUser->Id) ? "visible" : "hidden";
+            $html .= "<polyline id=\"plot_distribution_user_$uid\" points=\"$polyline_points\" stroke=\"$uc\" style=\"visibility:$visibility;\"/>";
         }
         $html .= "</g>";
 

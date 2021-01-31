@@ -104,7 +104,7 @@ class driver_ranking extends cContentPage {
             $ny = -1 * $y;
             $html .= "<text x=\"8\" y=\"$ny\" dy=\"0.35em\" stroke=\"none\">$y</text>";
         }
-        $html .= "<text x=\"-$svg_xax_min\" y=\"0\" dy=\"1.0em\" stroke=\"none\">" . _("weeks") . "</text>";
+        $html .= "<text x=\"-$svg_xax_min\" y=\"0\" dy=\"1.0em\" stroke=\"none\">" . _("Weeks") . "</text>";
         for ($d=1; $d <= ($svg_xax_min / $svg_x_zoom); ++$d) {
             $len = (($d % 70) == 0) ? 5 : 3;
             if (($d % 7) == 0) {
