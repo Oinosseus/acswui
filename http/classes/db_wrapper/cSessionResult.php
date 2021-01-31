@@ -199,7 +199,7 @@ class SessionResult {
             $this->Session = new Session($res[0]['Session']);
         }
 
-        $this->Position = $res[0]['Position'];
+        $this->Position = (int) $res[0]['Position'];
         $this->User = new User($res[0]['User']);
         $this->CarSkin = new CarSkin($res[0]['CarSkin']);
         $this->BestLap = $res[0]['BestLap'];

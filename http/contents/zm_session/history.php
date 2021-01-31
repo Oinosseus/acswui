@@ -228,9 +228,7 @@ class history extends cContentPage {
 
 
         // race position diagram
-        if ($this->Session->type() == 3) {
-            $html .= $this->diagramRacePosition();
-        }
+        $html .= $this->positionDiagram();
 
 
         // Driver Summary
@@ -396,68 +394,18 @@ class history extends cContentPage {
     }
 
 
-    /**
-     * Calculate an array with position information of race laps.
-     * The first array elements represents the start position
-     * The second last element is the positions of the last race lap
-     * The last element contains the race results
-     * Each element contains a list of user IDs in order of their position.
-     */
-    private function calculateLapPositions() {
-        $lap_positions = array();
-
-        // only race sessions
-        if ($this->Session === NULL || $this->Session->type() != 3) return $lap_positions;
-
-        // get qualifying position
-        $qual = $this->Session->predecessor();
-        if ($qual->type() == 2) {
-            $lap_positions[0] = array();
-            $results = $qual->results();
-            usort($results, "SessionResult::comparePosition");
-            foreach ($results as $rslt) {
-                $lap_positions[0][] = $rslt->user()->id();
-            }
-        }
-
-        // race lap positions
-        $driver_laps_amount = array(); // stores the amount of driven laps for a certain user
-        foreach (array_reverse($this->Session->drivenLaps()) as $lap) {
-            $user_id = $lap->user()->id();
-
-            // find current lap number of user
-            if (!array_key_exists($user_id, $driver_laps_amount))
-                $driver_laps_amount[$user_id] = 0;
-            $driver_laps_amount[$user_id] += 1;
-            $user_lap_nr = $driver_laps_amount[$user_id];
-
-            // grow lap position information
-            while ($user_lap_nr >= count($lap_positions))
-                $lap_positions[] = array();
-
-            // put user into lap position array
-            $lap_positions[$user_lap_nr][] = $user_id;
-        }
-
-        // add race results
-        $final_positions = array();
-        $results = $this->Session->results();
-        usort($results, "SessionResult::comparePosition");
-        foreach ($results as $rslt) {
-            $final_positions[] = $rslt->user()->id();
-        }
-        $lap_positions[] = $final_positions;
-
-        return $lap_positions;
-    }
-
-
     //! @return Html string with svg diagram
-    private function diagramRacePosition() {
+    private function positionDiagram() {
         $html = "";
 
-        $positions = $this->calculateLapPositions();
+        // sanity check
+        if ($this->Session === NULL || $this->Session->drivers() == 0)
+            return $html;
+
+        // determine length of session
         $drivers = $this->Session->drivers();
+        $session_length = count($this->Session->dynamicPositions($drivers[0]));
+//         echo "session_length = $session_length<br>";
 
         // determine driver name langths
         $max_user_login_length = 0;
@@ -468,7 +416,7 @@ class history extends cContentPage {
         }
 
         // svg configuration data
-        $lap_dx = (int) (1000 / count($positions)); // units per lap
+        $lap_dx = (int) (1000 / $session_length); // units per lap
         $pos_dy = 20; // units per position
 
         //
@@ -480,9 +428,9 @@ class history extends cContentPage {
 
         // svg tag
         $svg_viewbox_x0 = -10;
-        $svg_viewbox_dx = (0 + count($positions)) * $lap_dx + 6 * $max_user_login_length;
+        $svg_viewbox_dx = (0 + $session_length) * $lap_dx + 6 * $max_user_login_length;
         $svg_viewbox_y0 = 0;
-        $svg_viewbox_dy = (2 + count($drivers)) * $pos_dy + 10;
+        $svg_viewbox_dy = (2.5 + count($drivers)) * $pos_dy + 10;
         $html .= "<svg id=\"race_position_chart\" class=\"chart\" viewBox=\"$svg_viewbox_x0 $svg_viewbox_y0 $svg_viewbox_dx $svg_viewbox_dy\">";
 
         // box border check
@@ -490,10 +438,10 @@ class history extends cContentPage {
 
         // axes
         $html .= "<g id=\"axes\">";
-        $axe_y = (1 + count($drivers)) * $pos_dy;
-        $x = (count($positions) - 2) * $lap_dx;
+        $axe_y = (1.5 + count($drivers)) * $pos_dy;
+        $x = ($session_length - 2) * $lap_dx;
         $html .= "<polyline id=\"axis_x\" points=\"0,$axe_y $x,$axe_y\"/>";
-        for ($lap_nr = 0; $lap_nr < (count($positions)-1); ++$lap_nr) {
+        for ($lap_nr = 0; $lap_nr < ($session_length-1); ++$lap_nr) {
             $x = $lap_nr * $lap_dx;
 
             if (($lap_nr % $axis_x_text_distance) == 0) {
@@ -510,6 +458,10 @@ class history extends cContentPage {
             $html .= "<polyline points=\"$x,$y0 $x,$y1\"/>";
 
         }
+        $label = ($this->Session->type() == 3) ? _("Laps") : _("Minutes");
+        $x = ($session_length - 2) * $lap_dx + 5;
+        $y = $axe_y;
+        $html .= "<text x=\"$x\" y=\"$y\" dy=\"0.5em\">$label</text>";
         $html .= "</g>";
 
         // plots
@@ -520,11 +472,12 @@ class history extends cContentPage {
             $user_color = $u->color();
             $polyline_points = "";
 
+            $positions = $this->Session->dynamicPositions($u);
             for ($lap = 0; $lap < (count($positions)-1); ++$lap) {
 
-                if (in_array($user_id, $positions[$lap])) {
+                if ($positions[$lap] != 0) {
                     $x = $lap_dx * $lap;
-                    $y = 1 + array_search($user_id, $positions[$lap]);
+                    $y = $positions[$lap];
                     $y *= $pos_dy;
                     $polyline_points .= "$x,$y ";
                 }
@@ -533,7 +486,7 @@ class history extends cContentPage {
             $html .= "<g id=\"plot_user_$user_id\">";
             $html .= "<polyline points=\"$polyline_points\" stroke=\"$user_color\" fill=\"None\"/>";
             $x = (count($positions) - 2) * $lap_dx + 5;
-            $y = 1 + array_search($user_id, $positions[count($positions) - 1]);
+            $y = $positions[count($positions) - 1];
             $y *= $pos_dy;
             $html .= "<text x=\"$x\" y=\"$y\" dy=\"0.5em\" stroke=\"none\" fill=\"$user_color\">$user_login</text>";
             $html .= "</g>";
