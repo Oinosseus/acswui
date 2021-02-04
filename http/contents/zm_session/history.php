@@ -87,6 +87,9 @@ class history extends cContentPage {
             }
         }
 
+        // sanity check
+        if ($this->Session->id() === NULL) $this->Session = NULL;
+
 
 
         // initialize the html output
@@ -408,7 +411,7 @@ class history extends cContentPage {
         $html = "";
 
         // sanity check
-        if ($this->Session === NULL || $this->Session->drivers() == 0)
+        if ($this->Session === NULL || count($this->Session->drivers()) == 0)
             return $html;
 
         // determine length of session

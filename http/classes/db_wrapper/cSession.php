@@ -18,6 +18,7 @@ class SessionBestTime {
  * Cached wrapper to databse Sessions table element
  */
 class Session {
+    private $RequestedId = NULL;
     private $Id = NULL;
     private $ProtocolVersion = NULL;
     private $SessionIndex = NULL;
@@ -48,15 +49,16 @@ class Session {
      * @param $id Database table id
      */
     public function __construct($id) {
-        $this->Id = $id;
+        $this->RequestedId = $id;
     }
 
     public function __toString() {
-        return "Session(Id=" . $this->Id . ")";
+        return "Session(Id=" . $this->RequestedId . ")";
     }
 
     //! @return The database table id
     public function id() {
+        if ($this->Id === NULL) $this->updateFromDb();
         return $this->Id;
     }
 
@@ -69,14 +71,14 @@ class Session {
             $this->Collisions = array();
 
             // ENV collisions
-            $res = $acswuiDatabase->fetch_2d_array("CollisionEnv", ["Id"], ["Session"=>$this->Id]);
+            $res = $acswuiDatabase->fetch_2d_array("CollisionEnv", ["Id"], ["Session"=>$this->RequestedId]);
             foreach ($res as $row) {
                 $cll = new CollisionEnv($row['Id'], $this);
                 $this->Collisions[] = $cll;
             }
 
             // Car collisions
-            $res = $acswuiDatabase->fetch_2d_array("CollisionCar", ["Id"], ["Session"=>$this->Id]);
+            $res = $acswuiDatabase->fetch_2d_array("CollisionCar", ["Id"], ["Session"=>$this->RequestedId]);
             foreach ($res as $row) {
                 $cll = new CollisionCar($row['Id'], $this);
                 $this->Collisions[] = $cll;
@@ -325,7 +327,7 @@ class Session {
         if ($this->Results === NULL) {
             $this->Results = array();
 
-            $res = $acswuiDatabase->fetch_2d_array("SessionResults", ["Id", "TotalTime"], ["Session"=>$this->Id]);
+            $res = $acswuiDatabase->fetch_2d_array("SessionResults", ["Id", "TotalTime"], ["Session"=>$this->id()]);
             foreach ($res as $row) {
                 if ($row['TotalTime'] == 0) continue;
                 $cll = new SessionResult($row['Id'], $this);
@@ -399,7 +401,7 @@ class Session {
         $this->DrivenLaps = array();
         $this->Drivers = array();
         $lap = NULL;
-        foreach ($acswuiDatabase->fetch_2d_array("Laps", ['Id'], ['Session'=>$this->Id], 'Id', FALSE) as $lap) {
+        foreach ($acswuiDatabase->fetch_2d_array("Laps", ['Id'], ['Session'=>$this->id()], 'Id', FALSE) as $lap) {
             $lap = new Lap($lap['Id']);
             $this->DrivenLaps[] = $lap;
 
@@ -422,6 +424,7 @@ class Session {
 
         // request from db
         $columns = array();
+        $columns[] = 'Id';
         $columns[] = 'ProtocolVersion';
         $columns[] = 'SessionIndex';
         $columns[] = 'CurrentSessionIndex';
@@ -440,12 +443,13 @@ class Session {
         $columns[] = 'Timestamp';
         $columns[] = 'Predecessor';
 
-        $res = $acswuiDatabase->fetch_2d_array("Sessions", $columns, ['Id'=>$this->Id]);
+        $res = $acswuiDatabase->fetch_2d_array("Sessions", $columns, ['Id'=>$this->RequestedId]);
         if (count($res) !== 1) {
-            $acswuiLog->logError("Cannot find Sessions.Id=" . $this->Id);
+            $acswuiLog->logError("Cannot find Sessions.Id=" . $this->RequestedId);
             return;
         }
 
+        $this->Id = (int) $res[0]['Id'];
         $this->ProtocolVersion = $res[0]['ProtocolVersion'];
         $this->SessionIndex = $res[0]['SessionIndex'];
         $this->CurrentSessionIndex = $res[0]['CurrentSessionIndex'];
