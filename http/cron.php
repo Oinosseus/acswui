@@ -65,6 +65,7 @@ foreach (scandir("cronjobs",SCANDIR_SORT_ASCENDING) as $entry) {
 
         if ($job_executed) {
             echo "<h2>$job_class_name</h2>";
+            echo "Duration: " . $job_object->executionDuration() . "ms<br>";
             echo $job_object->getLog();
 
         } else {

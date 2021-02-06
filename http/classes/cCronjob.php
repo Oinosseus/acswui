@@ -26,6 +26,9 @@ abstract class Cronjob {
     //! Cronjob execution log
     private $LogString = "";
 
+    //! Job execution duration [ms]
+    private $ExecutionDuration = 0;
+
 
     /**
      * This constructor must be called by derived classed.
@@ -70,7 +73,7 @@ abstract class Cronjob {
         global $acswuiDatabase;
 
         $executed = FALSE;
-        $execution_duration = 0;
+        $this->ExecutionDuration = 0;
 
         // check if jobs needs execution
         $now = new DateTimeImmutable();
@@ -89,14 +92,12 @@ abstract class Cronjob {
             // execute the job
             $execution_start_mtime = microtime(true);
             $this->execute();
-            $execution_duration = microtime(true) - $execution_start_mtime;
+            $this->ExecutionDuration = round(1e3 * (microtime(true) - $execution_start_mtime));
             $executed = TRUE;
 
             // log execution in db
             $cols = array();
-//             $cols['CronJob'] = $this->CronJobId;
-//             $cols['Start'] = $LastExecution->format("Y-m-d H:i:s");
-            $cols['Duration'] = 1e3 * $execution_duration;
+            $cols['Duration'] = $this->ExecutionDuration;
             $cols['Log'] = $this->LogString;
             $acswuiDatabase->update_row("CronExecutions", $db_id, $cols);
         }
@@ -109,6 +110,12 @@ abstract class Cronjob {
      * This is called to do the actual cronjob
      */
     abstract public function execute();
+
+
+    //! @return This contains the duration needed to execute this job [ms]
+    public function executionDuration() {
+        return $this->ExecutionDuration;
+    }
 
 
     //! @return The cronjob log messages in HTML format

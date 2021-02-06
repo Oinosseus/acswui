@@ -86,28 +86,6 @@ class DriverRanking implements JsonSerializable {
 
         $__DriverRankingArray__ = array();
 
-        /**
-        * Extend a characteristic value of a DriverRanking object
-        * @param $user The according user
-        * @param $group The groupname of the characteristics (XP, SX, SF)
-        * @param $characteristic The characteristic name (R, Q, P, CT, ...)
-        * @param $add_value The Value that shalöl be added to the characteristic
-        */
-        function ranklistAdd($user, string $group, string $characteristic, float $add_value) {
-            global $__DriverRankingArray__;
-
-            // append DriverRanking object for a User if not existent
-            if (!array_key_exists($user->id(), $__DriverRankingArray__)) {
-                $dr = new DriverRanking(0, $user);
-                $__DriverRankingArray__[$user->id()] = $dr;
-            }
-
-            // add characteristic value
-            $drvrnk = $__DriverRankingArray__[$user->id()];
-            $drvrnk->addValue($group, $characteristic, $add_value);
-            $__DriverRankingArray__[$user->id()] = $drvrnk;
-        }
-
         // scan laps of sessions
         $now = new DateTime();
         $then = $now->sub(new DateInterval("P" . DriverRanking::ScanDays . "D"));
@@ -126,9 +104,9 @@ class DriverRanking implements JsonSerializable {
 
                 // CollisionCar
                 if ($cll->type() == CollisionType::Car) {
-                    ranklistAdd($cll->user(), "SF", "CC", $norm_speed);
+                    DriverRanking::ranklistAdd($cll->user(), "SF", "CC", $norm_speed);
                 } else if ($cll->type() == CollisionType::Env) {
-                    ranklistAdd($cll->user(), "SF", "CE", $norm_speed);
+                    DriverRanking::ranklistAdd($cll->user(), "SF", "CE", $norm_speed);
                 } else {
                     $acswuiLog->logError("Unknown Collision type!");
                 }
@@ -140,15 +118,15 @@ class DriverRanking implements JsonSerializable {
 
                 // store driven length
                 if ($session->type() == 1) {
-                    ranklistAdd($lap->user(), "XP", "P", $session->track()->length());
+                    DriverRanking::ranklistAdd($lap->user(), "XP", "P", $session->track()->length());
                 } else if ($session->type() == 2) {
-                    ranklistAdd($lap->user(), "XP", "Q", $session->track()->length());
+                    DriverRanking::ranklistAdd($lap->user(), "XP", "Q", $session->track()->length());
                 } else if ($session->type() == 3) {
-                    ranklistAdd($lap->user(), "XP", "R", $session->track()->length());
+                    DriverRanking::ranklistAdd($lap->user(), "XP", "R", $session->track()->length());
                 }
 
                 // cuts
-                ranklistAdd($lap->user(), "SF", "CT", $lap->cuts());
+                DriverRanking::ranklistAdd($lap->user(), "SF", "CT", $lap->cuts());
             }
 
 
@@ -158,9 +136,9 @@ class DriverRanking implements JsonSerializable {
                 // ahead position
                 $ahead_position = count($session->results()) - $rslt->position();
                 if ($session->type() == 3)
-                    ranklistAdd($rslt->user(), "SX", "R", $ahead_position);
+                    DriverRanking::ranklistAdd($rslt->user(), "SX", "R", $ahead_position);
                 else if ($session->type() == 2)
-                    ranklistAdd($rslt->user(), "SX", "Q", $ahead_position);
+                    DriverRanking::ranklistAdd($rslt->user(), "SX", "Q", $ahead_position);
             }
 
 
@@ -174,7 +152,7 @@ class DriverRanking implements JsonSerializable {
                     usort($results, "SessionResult::compareBestLap");
 
                     // add best race time
-                    ranklistAdd($results[0]->user(), "SX", "RT", 1);
+                    DriverRanking::ranklistAdd($results[0]->user(), "SX", "RT", 1);
                 }
             }
         }
@@ -190,7 +168,7 @@ class DriverRanking implements JsonSerializable {
                     // calculate ahead positions
                     $lap = new Lap($best_lap_ids[$pos]);
                     $ahead_position = count($best_lap_ids) - $pos - 1;
-                    ranklistAdd($lap->user(), "SX", "BT", $ahead_position);
+                    DriverRanking::ranklistAdd($lap->user(), "SX", "BT", $ahead_position);
                 }
             }
         }
@@ -377,13 +355,37 @@ class DriverRanking implements JsonSerializable {
     }
 
 
+    /**
+    * Extend a characteristic value of a DriverRanking object
+    * Only used by calculateRanks() method
+    * @param $user The according user
+    * @param $group The groupname of the characteristics (XP, SX, SF)
+    * @param $characteristic The characteristic name (R, Q, P, CT, ...)
+    * @param $add_value The Value that shalöl be added to the characteristic
+    */
+    private static function ranklistAdd($user, string $group, string $characteristic, float $add_value) {
+        global $__DriverRankingArray__;
+
+        // append DriverRanking object for a User if not existent
+        if (!array_key_exists($user->id(), $__DriverRankingArray__)) {
+            $dr = new DriverRanking(0, $user);
+            $__DriverRankingArray__[$user->id()] = $dr;
+        }
+
+        // add characteristic value
+        $drvrnk = $__DriverRankingArray__[$user->id()];
+        $drvrnk->addValue($group, $characteristic, $add_value);
+        $__DriverRankingArray__[$user->id()] = $drvrnk;
+    }
+
+
     //! This function works only for new rankings (which are not already in database)
     public function save() {
         global $acswuiLog;
         global $acswuiDatabase;
 
         if ($this->IsNewItem !== TRUE) {
-            $acswuiLog->logError("Not allowed to set user on existing item!");
+            $acswuiLog->logError("Not allowed to save ranking!");
             return;
         }
 

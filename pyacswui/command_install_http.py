@@ -423,6 +423,23 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnFloat("DriverRanking", 'SF_CE')
         self.__db.appendColumnFloat("DriverRanking", 'SF_CC')
 
+        # check table StatsGeneral
+        Verbosity(self.Verbosity).print("check database table `StatsGeneral`")
+        self.__db.appendTable("StatsGeneral")
+        self.__db.appendColumnCurrentTimestamp("StatsGeneral", "Timestamp")
+        self.__db.appendColumnUInt("StatsGeneral", "LastScannedLap")
+        self.__db.appendColumnUInt("StatsGeneral", "LastScannedColCar")
+        self.__db.appendColumnUInt("StatsGeneral", "LastScannedColEnv")
+        self.__db.appendColumnUInt("StatsGeneral", "LapsValid")
+        self.__db.appendColumnUInt("StatsGeneral", "LapsInvalid")
+        self.__db.appendColumnUInt("StatsGeneral", "MetersValid")
+        self.__db.appendColumnUInt("StatsGeneral", "MetersInvalid")
+        self.__db.appendColumnUInt("StatsGeneral", "SecondsValid")
+        self.__db.appendColumnUInt("StatsGeneral", "SecondsInvalid")
+        self.__db.appendColumnUInt("StatsGeneral", "Cuts")
+        self.__db.appendColumnUInt("StatsGeneral", "CollisionsCar")
+        self.__db.appendColumnUInt("StatsGeneral", "CollisionsEnvironment")
+
 
 
     def __work_cconfig(self):
