@@ -88,7 +88,7 @@ class history extends cContentPage {
         }
 
         // sanity check
-        if ($this->Session->id() === NULL) $this->Session = NULL;
+        if ($this->Session !== NULL && $this->Session->id() === NULL) $this->Session = NULL;
 
 
 
