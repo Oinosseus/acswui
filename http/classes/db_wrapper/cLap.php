@@ -47,6 +47,21 @@ class Lap {
         return $this->Cuts;
     }
 
+
+    /**
+     * Compares to Lap objects for better laptime.
+     * This is intended for usort() of arrays with Lap obecjts
+     * @param $l1 Lap object
+     * @param $l2 Lap object
+     * @return -1 if $l1 is quicker, +1 when $l2 is quicker, 0 if both are equal
+     */
+    public static function compareLaptime(Lap $l1, Lap $l2) {
+        if ($l1->laptime() < $l2->laptime()) return -1;
+        if ($l1->laptime() > $l2->laptime()) return 1;
+        return 0;
+    }
+
+
     //! @return The level of grip in this lap
     public function grip() {
         if ($this->Grip === NULL) $this->updateFromDb();
@@ -137,11 +152,11 @@ class Lap {
 
         $this->CarSkin = new CarSkin($res[0]['CarSkin']);
         $this->User = new User($res[0]['User']);
-        $this->Laptime = $res[0]['Laptime'];
-        $this->Cuts = $res[0]['Cuts'];
-        $this->Grip = $res[0]['Grip'];
-        $this->Ballast = $res[0]['Ballast'];
-        $this->Restrictor = $res[0]['Restrictor'];
+        $this->Laptime = (int) $res[0]['Laptime'];
+        $this->Cuts = (int) $res[0]['Cuts'];
+        $this->Grip = (float) $res[0]['Grip'];
+        $this->Ballast = (int) $res[0]['Ballast'];
+        $this->Restrictor = (int) $res[0]['Restrictor'];
         $this->Timestamp = new DateTime($res[0]['Timestamp']);
     }
 

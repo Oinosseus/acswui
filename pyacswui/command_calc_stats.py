@@ -61,7 +61,6 @@ class CommandCalcStats(Command):
 
         self.__calc_track_popularity()
         self.__calc_carclass_popularity()
-        self.__calc_track_records()
         self.__calc_carclass_records()
 
 
@@ -255,98 +254,6 @@ class CommandCalcStats(Command):
 
         # dump
         self.__dump_json(carclass_popularity_list, os.path.join(self.getArg('http-path-acs-content'), "stats_carclass_popularity.json"))
-
-
-
-    def __calc_track_records(self):
-        """
-            Generated Json:
-            {
-                TrackId : {
-                    CarClassId: [LapId<1st>, LapId<2nd>, LapId<3rd>, ...],
-                    ...
-                },
-                ...
-            }
-
-            TODO: The execution time of this script may can significantly improved
-            when not iterating over the Laps table for each track and car-class.
-        """
-        self.Verbosity.print("track records")
-
-
-        track_records_dict = {}
-
-
-        # iterate over all tracks
-        for row_track in self.__db.fetch("Tracks", ['Id', 'Name'], {}):
-            track_id = int(row_track['Id'])
-            track_name = row_track['Name']
-
-
-            # iterate over car classes
-            for row_carclass in self.__db.fetch("CarClasses", ['Id', 'Name'], {}):
-                carclass_id = int(row_carclass['Id'])
-                carclass_name = row_carclass['Name']
-
-                # dictionary that holds the best lap of each user
-                # for this carclass on this track
-                # key=user-id, value=laptime
-                user_records = {}
-
-                # iterate over all laps
-                query = "SELECT Laps.Id, Laps.Laptime, Laps.User, Laps.Ballast, Laps.Restrictor, CarSkins.Car FROM `Laps`"
-                query += " INNER JOIN Sessions ON Sessions.Id=Laps.Session"
-                query += " INNER JOIN CarSkins ON CarSkins.Id=Laps.CarSkin"
-                query += " WHERE Laps.Cuts = 0 AND Sessions.Track = " + str(track_id)
-                cursor = pymysql.cursors.SSDictCursor(self.__db.Handle)
-                cursor.execute(query)
-                for row_lap in cursor:
-
-                    lap_id = int(row_lap['Id'])
-                    lap_time = int(row_lap['Laptime'])
-                    lap_user = int(row_lap['User'])
-                    lap_ballast = int(row_lap['Ballast'])
-                    lap_restrictor = int(row_lap['Restrictor'])
-                    lap_car = int(row_lap['Car'])
-
-                    # check for car class compliance
-                    if lap_car not in self.__allowed_carclass_cars[carclass_id]:
-                        continue
-                    if lap_ballast < self.__allowed_carclass_cars[carclass_id][lap_car]['Ballast']:
-                        continue
-                    if lap_restrictor < self.__allowed_carclass_cars[carclass_id][lap_car]['Restrictor']:
-                        continue
-
-                    # save laptime for user
-                    if lap_user not in user_records or lap_time < user_records[lap_user]['LapTime']:
-                        user_records[lap_user] = {}
-                        user_records[lap_user]['LapTime'] = lap_time
-                        user_records[lap_user]['LapId'] = lap_id
-
-
-                # sort laptimes
-                best_laps = []
-                for user_record in sorted(user_records.items(), key=lambda x: x[1]['LapTime']):
-                    best_laps.append(user_record[1]['LapId'])
-
-
-                # store records
-                if best_laps != []:
-                    if track_id not in track_records_dict:
-                        track_records_dict[track_id] = {}
-                    if carclass_id not in track_records_dict[track_id]:
-                        track_records_dict[track_id][carclass_id] = []
-                    track_records_dict[track_id][carclass_id] = best_laps
-
-
-                # report
-                if best_laps != []:
-                    self.Verbosity2.print("Found best laps on track '%s' with car class '%s'" % (track_name, carclass_name))
-
-
-        # dump
-        self.__dump_json(track_records_dict, os.path.join(self.getArg('http-path-acs-content'), "stats_track_records.json"))
 
 
 

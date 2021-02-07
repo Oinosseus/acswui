@@ -15,21 +15,6 @@ class history extends cContentPage {
         $this->RequirePermissions = ["Session", "Session_History"];
     }
 
-    private function getCarName($carskin_id) {
-        global $acswuiDatabase;
-
-        $carname = "";
-        $carskins = $acswuiDatabase->fetch_2d_array("CarSkins", ['Car'], ['Id'=>$carskin_id]);
-        if (count($carskins) == 1) {
-            $cars = $acswuiDatabase->fetch_2d_array("Cars", ['Name'], ['Id'=>$carskins[0]['Car']]);
-            if (count($cars) == 1) {
-                $carname = $cars[0]['Name'];
-            }
-        }
-
-        return $carname;
-    }
-
     public function getHtml() {
 
         // access global data

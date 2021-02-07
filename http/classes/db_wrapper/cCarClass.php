@@ -484,10 +484,25 @@ class CarClass {
 //         }
 //     }
 
-    //! @return True if the requested car object is part of this car class
-    public function validCar(Car $car) {
+    /**
+     * Check if a certain Car is contained in this CarClass
+     * @param $ballast If not NULL, this is checked against the minimum required ballast for the CarClass
+     * @param $restrictor If not NULL, this is checked against the minimum required restrictor for the CarClass
+     * @return True if the requested car object is part of this car class
+     */
+    public function validCar(Car $car, int $ballast=NULL, int $restrictor=NULL) {
         foreach ($this->cars() as $c) {
-            if ($c->id() === $car->id()) return TRUE;
+
+            // check car
+            if ($c->id() != $car->id()) continue;
+
+            // check ballast
+            if ($ballast !== NULL && $ballast < $this->ballast($c)) continue;
+
+            // check restrictor
+            if ($restrictor !== NULL && $restrictor < $this->restrictor($c)) continue;
+
+            return TRUE;
         }
         return FALSE;
     }
