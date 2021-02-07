@@ -440,6 +440,15 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnUInt("StatsGeneral", "CollisionsCar")
         self.__db.appendColumnUInt("StatsGeneral", "CollisionsEnvironment")
 
+        # check table StatsTrackPopularity
+        Verbosity(self.Verbosity).print("check database table `StatsTrackPopularity`")
+        self.__db.appendTable("StatsTrackPopularity")
+        self.__db.appendColumnCurrentTimestamp("StatsTrackPopularity", "Timestamp")
+        self.__db.appendColumnUInt("StatsTrackPopularity", "LastScannedLap")
+        self.__db.appendColumnUInt("StatsTrackPopularity", "Track")
+        self.__db.appendColumnUInt("StatsTrackPopularity", "LapCount")
+        self.__db.appendColumnFloat("StatsTrackPopularity", "Popularity")
+
 
 
     def __work_cconfig(self):

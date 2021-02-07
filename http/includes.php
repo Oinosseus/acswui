@@ -34,6 +34,7 @@ include("classes/db_wrapper/cCollision.php");
 include("classes/db_wrapper/cDriverRanking.php");
 include("classes/db_wrapper/cChampionship.php");
 include("classes/db_wrapper/cStatsGeneral.php");
+include("classes/db_wrapper/cStatsTrackPopularity.php");
 
 // functions
 include("functions/getMenuArrayFromContentDir.php");

@@ -13,28 +13,26 @@ class tracks_popular extends cContentPage {
     public function getHtml() {
         global $acswuiConfig;
 
-        // get statistics
-        $file_path = $acswuiConfig->AcsContent . "/stats_track_popularity.json";
-        $popular_tracks = json_decode(file_get_contents($file_path), TRUE);
-
         $html = "";
 
         $html .= '<table>';
-        $html .= '<tr><th>Popularity</th><th>Track</th><th>Pitboxes</th><th>Length</th><th>Drivers</th><th colspan="3">Driven</th></tr>';
-        foreach ($popular_tracks as $pt) {
-            $html .= '<tr>';
-            $html .= '<td>' . HumanValue::format($pt['Popularity'] * 100, "%") . '</td>';
+        $html .= '<tr><th>Popularity</th><th>Track</th><th>Pitboxes</th><th>Length</th><th colspan="2">Driven</th></tr>';
+        foreach (StatsTrackPopularity::listLatest() as $stp) {
+            if ($stp->popularity() == 0) continue;
 
-            $link_url = "?CONTENT=/sa_statistics//records_track&TRACK_ID=" . $pt['Id'];
-            $link_name = $pt['Name'];
+            $track = $stp->track();
+
+            $html .= '<tr>';
+            $html .= '<td>' . HumanValue::format($stp->popularity(), "%") . '</td>';
+
+            $link_url = "?CONTENT=/sa_statistics//records_track&TRACK_ID=" . $track->id();
+            $link_name = $track->name();
             $html .= "<td><a href=\"$link_url\">$link_name</a></td>";
 
-            $html .= '<td>' . $pt['Pitboxes'] . '</td>';
-            $html .= '<td>' . HumanValue::format($pt['Length'], "m") . '</td>';
-            $html .= '<td>' . count($pt['DriversList']) . '</td>';
-            $html .= '<td>' . HumanValue::format($pt['DrivenLaps'], "L") . '</td>';
-            $html .= '<td>' . HumanValue::format($pt['DrivenSeconds'], "s") . '</td>';
-            $html .= '<td>' . HumanValue::format($pt['DrivenMeters'], "m") . '</td>';
+            $html .= '<td>' . $track->pitboxes() . '</td>';
+            $html .= '<td>' . HumanValue::format($track->length(), "m") . '</td>';
+            $html .= '<td>' . HumanValue::format($stp->lapCount(), "L") . '</td>';
+            $html .= '<td>' . HumanValue::format($stp->lapCount() * $track->length(), "m") . '</td>';
             $html .= '</tr>';
         }
 

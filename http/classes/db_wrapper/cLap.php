@@ -50,7 +50,7 @@ class Lap {
 
     /**
      * Compares to Lap objects for better laptime.
-     * This is intended for usort() of arrays with Lap obecjts
+     * This is intended for usort() of arrays with Lap objects
      * @param $l1 Lap object
      * @param $l2 Lap object
      * @return -1 if $l1 is quicker, +1 when $l2 is quicker, 0 if both are equal

@@ -71,10 +71,12 @@ class CronTrackRecords extends Cronjob {
             // add new lap record for user
             if (!array_key_exists($cid, $records_data[$tid][$uid])) {
                 $records_data[$tid][$uid][$cid] = $lid;
+                $this->log("New record Lap.Id=$lid");
             } else {
                 $old_lap = new Lap($records_data[$tid][$uid][$cid]);
                 if ($lap->laptime() < $old_lap->laptime()) {
                     $records_data[$tid][$uid][$cid] = $lid;
+                    $this->log("Updated record Lap.Id=$lid");
                 }
             }
 
