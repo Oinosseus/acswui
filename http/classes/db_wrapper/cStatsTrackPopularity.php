@@ -12,6 +12,7 @@ class StatsTrackPopularity {
     private $Track = NULL;
     private $LapCount = NULL;
     private $Popularity = NULL;
+    private $LaptimeCumulative = NULL;
 
 
     /**
@@ -43,13 +44,14 @@ class StatsTrackPopularity {
             $track_cache[$tid]['Track'] = $track;
             $track_cache[$tid]['LapCount'] = 0;
             $track_cache[$tid]['Meters'] = 0;
-            $track_cache[$tid]['Popularity'] = 0;
             $track_cache[$tid]['LastScannedLap'] = 0;
+            $track_cache[$tid]['LaptimeCumulative'] = 0.0;
 
             $stp = StatsTrackPopularity::getLatest($track);
             if ($stp != NULL) {
                 $track_cache[$tid]['LastScannedLap'] = $stp->lastScannedLapId();
                 $track_cache[$tid]['LapCount'] = $stp->lapCount();
+                $track_cache[$tid]['LaptimeCumulative'] = $stp->laptime();
             }
 
             if ($min_last_scanned_lap === NULL || $track_cache[$tid]['LastScannedLap'] < $min_last_scanned_lap) {
@@ -57,8 +59,6 @@ class StatsTrackPopularity {
             }
         }
         $min_last_scanned_lap += 1;
-        echo "Tracks: " . count($track_cache) . "<br>";
-        echo "min_last_scanned_lap=$min_last_scanned_lap<br>";
 
         // scan new laps
         $most_driven_meters = 0;
@@ -80,9 +80,8 @@ class StatsTrackPopularity {
             // increment lapcount
             $track_cache[$tid]['LapCount'] += 1;
             $track_cache[$tid]['LastScannedLap'] = $lid;
+            $track_cache[$tid]['LaptimeCumulative'] += $lap->laptime() / 1e3;
         }
-        echo "last_scanned_lap=$last_scanned_lap<br>";
-
 
         // calculate new data
         foreach ($track_cache as $tid=>$data) {
@@ -99,8 +98,7 @@ class StatsTrackPopularity {
             // skipping tracks will break $min_last_scanned_lap calculation
             // if ($track_cache[$tid]['LapCount'] == 0) continue;
 
-
-            $track_cache[$tid]['Popularity'] = $data['Meters'] / $most_driven_meters;
+            $popularity = $data['Meters'] / $most_driven_meters;
 
             // save
             $stp = new StatsTrackPopularity(0);
@@ -108,7 +106,8 @@ class StatsTrackPopularity {
             $stp->LastScannedLap = $last_scanned_lap;
             $stp->Track = $track_cache[$tid]['Track'];
             $stp->LapCount = $track_cache[$tid]['LapCount'];
-            $stp->Popularity = $track_cache[$tid]['Popularity'];
+            $stp->Popularity = $popularity;
+            $stp->LaptimeCumulative = $track_cache[$tid]['LaptimeCumulative'];
             $stps[] = $stp;
         }
 
@@ -153,6 +152,13 @@ class StatsTrackPopularity {
     public function lapCount() {
         if ($this->LapCount === NULL) $this->updateFromDb();
         return $this->LapCount;
+    }
+
+
+    //! @return The cummulated laptime in [s]
+    public function laptime() {
+        if ($this->LaptimeCumulative === NULL) $this->updateFromDb();
+        return $this->LaptimeCumulative;
     }
 
 
@@ -207,6 +213,7 @@ class StatsTrackPopularity {
         $columns['Track'] = $this->Track->id();
         $columns['LapCount'] = $this->LapCount;
         $columns['Popularity'] = $this->Popularity;
+        $columns['LaptimeCumulative'] = $this->LaptimeCumulative;
 
         // save
         $this->Id = $acswuiDatabase->insert_row("StatsTrackPopularity", $columns);
@@ -233,6 +240,7 @@ class StatsTrackPopularity {
         $columns[] = 'Track';
         $columns[] = 'LapCount';
         $columns[] = 'Popularity';
+        $columns[] = 'LaptimeCumulative';
 
         // request from db
         $res = $acswuiDatabase->fetch_2d_array("StatsTrackPopularity", $columns, ['Id'=>$this->Id]);
@@ -246,6 +254,7 @@ class StatsTrackPopularity {
         $this->Track = new Track($res[0]['Track']);
         $this->LapCount = (int) $res[0]['LapCount'];
         $this->Popularity = (float) $res[0]['Popularity'];
+        $this->LaptimeCumulative = (float) $res[0]['LaptimeCumulative'];
     }
 }
 

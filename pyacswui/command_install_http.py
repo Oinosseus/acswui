@@ -448,6 +448,7 @@ class CommandInstallHttp(Command):
         self.__db.appendColumnUInt("StatsTrackPopularity", "Track")
         self.__db.appendColumnUInt("StatsTrackPopularity", "LapCount")
         self.__db.appendColumnFloat("StatsTrackPopularity", "Popularity")
+        self.__db.appendColumnFloat("StatsTrackPopularity", "LaptimeCumulative")
 
 
 

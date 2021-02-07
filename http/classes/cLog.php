@@ -89,7 +89,9 @@ class cLog {
 
                 // backtrace information
                 fwrite($this->FileHandleError, "  [Backtrace $i]");
-                fwrite($this->FileHandleError, " " . $bktrc[$i]['file'] . " : " . $bktrc[$i]['line'] . " : " . $class . $funct . "\n");
+                $file = (array_key_exists('file', $bktrc[$i])) ? $bktrc[$i]['file'] : "";
+                $line = (array_key_exists('line', $bktrc[$i])) ? $bktrc[$i]['line'] : "";
+                fwrite($this->FileHandleError, " $file : $line : " . $class . $funct . "\n");
             }
             fflush($this->FileHandleError);
         }

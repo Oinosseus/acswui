@@ -16,7 +16,7 @@ class tracks_popular extends cContentPage {
         $html = "";
 
         $html .= '<table>';
-        $html .= '<tr><th>Popularity</th><th>Track</th><th>Pitboxes</th><th>Length</th><th colspan="2">Driven</th></tr>';
+        $html .= '<tr><th>Popularity</th><th>Track</th><th>Pitboxes</th><th>Length</th><th colspan="3">Driven</th></tr>';
         foreach (StatsTrackPopularity::listLatest() as $stp) {
             if ($stp->popularity() == 0) continue;
 
@@ -31,6 +31,7 @@ class tracks_popular extends cContentPage {
 
             $html .= '<td>' . $track->pitboxes() . '</td>';
             $html .= '<td>' . HumanValue::format($track->length(), "m") . '</td>';
+            $html .= '<td>' . HumanValue::format($stp->laptime(), "s") . '</td>';
             $html .= '<td>' . HumanValue::format($stp->lapCount(), "L") . '</td>';
             $html .= '<td>' . HumanValue::format($stp->lapCount() * $track->length(), "m") . '</td>';
             $html .= '</tr>';
