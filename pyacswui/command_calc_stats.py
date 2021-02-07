@@ -59,7 +59,6 @@ class CommandCalcStats(Command):
                 self.__allowed_carclass_cars[carclass_id][car_id]['Ballast'] = ballast
                 self.__allowed_carclass_cars[carclass_id][car_id]['Restrictor'] = restrictor
 
-        self.__calc_general_stats()
         self.__calc_track_popularity()
         self.__calc_carclass_popularity()
         self.__calc_track_records()
@@ -85,52 +84,6 @@ class CommandCalcStats(Command):
         with open(filepath, "w") as f:
             json.dump(var, f, indent=4)
         self.change_group(filepath)
-
-
-
-    def __calc_general_stats(self):
-        self.Verbosity.print("general statistics")
-
-        stat_result_dict = {}
-        stat_result_dict['DrivenLapsValid'] = 0
-        stat_result_dict['DrivenMetersValid'] = 0
-        stat_result_dict['DrivenSecondsValid'] = 0
-        stat_result_dict['DrivenLapsInvalid'] = 0
-        stat_result_dict['DrivenMetersInValid'] = 0
-        stat_result_dict['DrivenSecondsInValid'] = 0
-
-        # get track info
-        track_length_dict = {}
-        for row in self.__db.fetch("Tracks", ['Id', 'Name', 'Track', 'Config', 'Length'], {}):
-            track_length_dict.update({row['Id']: row['Length']})
-
-        # iterate through laps
-        query = "SELECT Laps.Id, Sessions.Track, Laps.Cuts, Laps.Laptime FROM Laps"
-        query += " INNER JOIN Sessions On Sessions.Id=Laps.Session"
-        cursor = pymysql.cursors.SSDictCursor(self.__db.Handle)
-        cursor.execute(query)
-        for row in cursor:
-            if row['Cuts'] == 0:
-                stat_result_dict['DrivenLapsValid'] += 1
-                stat_result_dict['DrivenMetersValid'] += track_length_dict[row['Track']]
-                stat_result_dict['DrivenSecondsValid'] += row['Laptime']
-            else:
-                stat_result_dict['DrivenLapsInvalid'] += 1
-                stat_result_dict['DrivenMetersInValid'] += track_length_dict[row['Track']]
-                stat_result_dict['DrivenSecondsInValid'] += row['Laptime']
-
-        # normalize
-        stat_result_dict['DrivenSecondsValid'] = int(stat_result_dict['DrivenSecondsValid'] / 1000)
-        stat_result_dict['DrivenSecondsInValid'] = int(stat_result_dict['DrivenSecondsInValid'] / 1000)
-
-        # dump
-        self.__dump_json(stat_result_dict, os.path.join(self.getArg('http-path-acs-content'), "stats_general.json"))
-        self.Verbosity2.print("DrivenLapsValid:", stat_result_dict['DrivenLapsValid'])
-        self.Verbosity2.print("DrivenLapsInvalid:", stat_result_dict['DrivenLapsInvalid'])
-        self.Verbosity2.print("DrivenSecondsValid:", stat_result_dict['DrivenSecondsValid'])
-        self.Verbosity2.print("DrivenMetersValid:", stat_result_dict['DrivenMetersValid'])
-        self.Verbosity2.print("DrivenMetersInValid:", stat_result_dict['DrivenMetersInValid'])
-        self.Verbosity2.print("DrivenSecondsInValid:", stat_result_dict['DrivenSecondsInValid'])
 
 
 
