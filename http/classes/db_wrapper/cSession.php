@@ -321,20 +321,8 @@ class Session {
 
     //! @return A list of SessionResult objects from this session (If not available an empty list is returned)
     public function results() {
-        global $acswuiDatabase;
-
-        // update cache
-        if ($this->Results === NULL) {
-            $this->Results = array();
-
-            $res = $acswuiDatabase->fetch_2d_array("SessionResults", ["Id", "TotalTime"], ["Session"=>$this->id()]);
-            foreach ($res as $row) {
-                if ($row['TotalTime'] == 0) continue;
-                $cll = new SessionResult($row['Id'], $this);
-                $this->Results[] = $cll;
-            }
-        }
-
+        if ($this->Results === NULL)
+            $this->Results = SessionResult::listSessionResults($this);
         return $this->Results;
     }
 

@@ -110,6 +110,49 @@ class SessionResult {
 
 
     /**
+     * Function that compares two SessionResult objects by guessing their position.
+     * For races Higher position is guessed by most driven laps and least total time.
+     * For other session position is guessed by best laptime
+     * @param $resut1 SessionResult object
+     * @param $resut2 SessionResult object
+     * @return -1 if $result1 is better position, else 1 (if both are equal this returns 0)
+     */
+    public static function comparePositionGuess($result1, $result2) {
+        if ($result1->session()->type() == 3) {
+
+            if ($result1->amountLaps() == $result2->amountLaps()) {
+                return SessionResult::compareTotalTime($result1, $result2);
+
+            } else if ($result1->amountLaps() > $result2->amountLaps()) {
+                return -1;
+
+            } else {
+                return 1;
+            }
+
+        } else {
+            return SessionResult::compareBestLap($result1, $result2);
+        }
+    }
+
+
+    /**
+     * Function that compares two SessionResult objects.
+     * @param $resut1 SessionResult object
+     * @param $resut2 SessionResult object
+     * @return -1 if bestlap() of $result1 is faster, else 1 (if both are equal this returns 0)
+     */
+    public static function compareTotalTime($result1, $result2) {
+        if ($result1->totaltime() == $result2->totaltime())
+            return 0;
+        else if ($result1->totaltime() < $result2->totaltime())
+            return -1;
+        else
+            return 1;
+    }
+
+
+    /**
      * Function that compares two SessionResult objects.
      * @param $resut1 SessionResult object
      * @param $resut2 SessionResult object
@@ -138,6 +181,85 @@ class SessionResult {
             return -1;
         else
             return 1;
+    }
+
+
+    //! @return A List of SessionResult objects (If not existent in DB temporary SessionResult objects will be created)
+    public static function listSessionResults(Session $session) {
+        global $acswuiDatabase;
+
+        $session_results = array();
+
+        $res = array();
+        $res = $acswuiDatabase->fetch_2d_array("SessionResults", ["Id", "TotalTime"], ["Session"=>$session->id()]);
+        foreach ($res as $row) {
+            if ($row['TotalTime'] == 0) continue;
+            $cll = new SessionResult($row['Id'], $session);
+            $session_results[] = $cll;
+        }
+
+        // create temporary results
+        if (count($res) == NULL) {
+
+            // gather driven laps
+            $user_results = array();
+            foreach ($session->drivenLaps() as $lap) {
+                $uid = $lap->user()->id();
+
+                if (!array_key_exists($uid, $user_results)) {
+                    $user_results[$uid] = array();
+                    $user_results[$uid] = new SessionResult(0, $session);
+                    $user_results[$uid]->User = $lap->user();
+                    $user_results[$uid]->Position = 0;
+                    $user_results[$uid]->BestLap = $lap->laptime();
+                    $user_results[$uid]->TotalTime = 0;
+                    $user_results[$uid]->Ballast = $lap->ballast();
+                    $user_results[$uid]->Restrictor = $lap->restrictor();
+                    $user_results[$uid]->AmountLaps = 0;
+                    $user_results[$uid]->AmountCuts = 0;
+                    $user_results[$uid]->AmountCollisionEnv = 0;
+                    $user_results[$uid]->AmountCollisionCar = 0;
+                }
+
+                $user_results[$uid]->CarSkin = $lap->carSkin();
+                if ($lap->laptime() < $user_results[$uid]->BestLap) {
+                    $user_results[$uid]->BestLap = $lap->laptime();
+                    $user_results[$uid]->Ballast = $lap->ballast();
+                    $user_results[$uid]->Restrictor = $lap->restrictor();
+                }
+                $user_results[$uid]->TotalTime += $lap->laptime();
+                $user_results[$uid]->AmountLaps += 1;
+                $user_results[$uid]->AmountCuts += $lap->cuts();
+            }
+
+            // gahter collisions
+            foreach ($session->collisions() as $coll) {
+                $uid = $coll->user()->id();
+                if (!array_key_exists($uid, $user_results)) continue;
+                if ($coll->secondary()) continue;
+
+                if ($coll->type() == CollisionType::Env) {
+                    $user_results[$uid]->AmountCollisionEnv += 1;
+                } else if ($coll->type() == CollisionType::Car) {
+                    $user_results[$uid]->AmountCollisionCar += 1;
+                }
+            }
+
+            // restructure data
+            $session_results = array();
+            foreach ($user_results as $uid=>$rslt) {
+                $session_results[] = $rslt;
+            }
+
+            // assign positions
+            usort($session_results, "SessionResult::comparePositionGuess");
+            for ($i=0; $i<count($session_results); ++$i) {
+                $session_results[$i]->Position = $i + 1;
+            }
+
+        }
+
+        return $session_results;
     }
 
 
