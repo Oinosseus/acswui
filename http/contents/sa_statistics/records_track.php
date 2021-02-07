@@ -3,17 +3,13 @@
 class records_track extends cContentPage {
 
     private $CurrentTrack = NULL;
-    private $JsonPath = NULL;
 
 
     public function __construct() {
-        global $acswuiConfig;
-
         $this->MenuName   = _("Track Records");
         $this->PageTitle  = "Best Track Lap Times";
         $this->TextDomain = "acswui";
         $this->RequirePermissions = ["View_Statistics"];
-        $this->JsonPath = $acswuiConfig->AcServerPath. "/http_cache/stats_track_records.json";
     }
 
 
@@ -44,7 +40,7 @@ class records_track extends cContentPage {
         if ($this->CurrentTrack !== NULL) {
 
             foreach (CarClass::listClasses() as $carclass) {
-                $records = $this->listClassRecords($this->CurrentTrack, $carclass);
+                $records = $this->listRecordLaps($carclass, $this->CurrentTrack);
                 if (count($records) == 0) continue;
 
                 $html .= "<h1>" . $carclass->name() . "</h1>";
@@ -80,10 +76,13 @@ class records_track extends cContentPage {
 
 
     //! @return a list of Lap objects for the requested records
-    private function listClassRecords($track, $carclass) {
+    private function listRecordLaps($carclass, $track) {
+        global $acswuiConfig;
         $ret = array();
 
-        $records = json_decode(file_get_contents($this->JsonPath), TRUE);
+        $records_path = $acswuiConfig->AcServerPath. "/http_cache/stats_track_records.json";
+        $records = json_decode(file_get_contents($records_path), TRUE);
+        if (!array_key_exists($track->id(), $records['Data'])) return $ret;
         $track_records = $records['Data'][$track->id()];
 
         // scan carclass records for each user
@@ -116,9 +115,11 @@ class records_track extends cContentPage {
 
     //! @return A List of Track objects for which records are available
     private function listRecordTracks() {
+        global $acswuiConfig;
         $ret = array();
 
-        $records = json_decode(file_get_contents($this->JsonPath), TRUE);
+        $records_path = $acswuiConfig->AcServerPath. "/http_cache/stats_track_records.json";
+        $records = json_decode(file_get_contents($records_path), TRUE);
         $track_records = $records['Data'];
         foreach ($track_records as $tid=>$data) {
                 $ret[] = new Track($tid);
