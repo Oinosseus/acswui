@@ -506,6 +506,29 @@ class CarClass {
         }
         return FALSE;
     }
+
+
+    /**
+     * Check if a certain Lap is driven by a car valid for this CarClass
+     * @param $lap The requested Lap object
+     * @return True if the requested lap object is valid for this carclass
+     */
+    public function validLap(Lap $lap) {
+        foreach ($this->cars() as $c) {
+
+            // check car
+            if ($c->id() != $lap->carSkin()->car()->id()) continue;
+
+            // check ballast
+            if ($lap->ballast() < $this->ballast($c)) continue;
+
+            // check restrictor
+            if ($lap->restrictor() < $this->restrictor($c)) continue;
+
+            return TRUE;
+        }
+        return FALSE;
+    }
 }
 
 ?>

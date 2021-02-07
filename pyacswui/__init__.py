@@ -5,4 +5,3 @@ from .command_srvrun        import CommandSrvrun
 from .command_install_http  import CommandInstallHttp
 from .command_install_files import CommandInstallFiles
 from .command_dbcleanup     import CommandDbCleanup
-from .command_calc_stats    import CommandCalcStats

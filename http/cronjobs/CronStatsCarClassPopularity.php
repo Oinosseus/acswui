@@ -1,6 +1,6 @@
 <?php
 
-class CronStatsTrackPopularity extends Cronjob {
+class CronStatsCarClassPopularity extends Cronjob {
 
     public function __construct() {
         parent::__construct(new DateInterval("P1D"));
@@ -8,7 +8,7 @@ class CronStatsTrackPopularity extends Cronjob {
 
 
     public function execute() {
-        $stps = StatsTrackPopularity::calculatePopularities();
+        $stps = StatsCarClassPopularity::calculatePopularities();
 
         foreach ($stps as $stp) {
             $stp->save();

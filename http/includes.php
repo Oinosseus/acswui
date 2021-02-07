@@ -35,6 +35,7 @@ include("classes/db_wrapper/cDriverRanking.php");
 include("classes/db_wrapper/cChampionship.php");
 include("classes/db_wrapper/cStatsGeneral.php");
 include("classes/db_wrapper/cStatsTrackPopularity.php");
+include("classes/db_wrapper/cStatsCarClassPopularity.php");
 
 // functions
 include("functions/getMenuArrayFromContentDir.php");

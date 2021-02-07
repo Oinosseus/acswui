@@ -11,7 +11,7 @@ import sys
 import json
 import time
 #from pyacswui import CommandSrvctl, , ServerPackager
-from pyacswui import CommandInstallFiles, CommandInstallHttp, CommandSrvrun, CommandCalcStats, CommandDbCleanup
+from pyacswui import CommandInstallFiles, CommandInstallHttp, CommandSrvrun, CommandDbCleanup
 
 
 
@@ -34,7 +34,6 @@ CommandInstallFiles(argparsersubs)
 CommandInstallHttp(argparsersubs)
 CommandSrvrun(argparsersubs)
 CommandDbCleanup(argparsersubs)
-CommandCalcStats(argparsersubs)
 
 
 
