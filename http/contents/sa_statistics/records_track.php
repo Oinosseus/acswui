@@ -90,10 +90,9 @@ class records_track extends cContentPage {
         foreach ($track_records as $uid=>$user_data) {
             foreach ($user_data as $cid=>$lid) {
                 $lap = new Lap($lid);
-                $car = new Car($cid);
 
                 // check for valid car
-                if (!$carclass->validCar($car, $lap->ballast(), $lap->restrictor())) continue;
+                if (!$carclass->validLap($lap)) continue;
 
                 if (!array_key_exists($uid, $user_records)) {
                     $user_records[$uid] = $lap;
