@@ -230,7 +230,7 @@ fieldset table {
 select {
   border-radius: 0px;
   border-width: 0px;
-  background-color: var(--color-bg-elements);
+  background-color: #1b2a33;
   color: var(--color-text);
   font-weight: bold;
   padding: 5px 10px;
