@@ -167,15 +167,15 @@ class driver_ranking extends cContentPage {
         $html .= "<th>" . _("Show") . "</th>";
         $html .= "</tr>";
 
-        $mean_score_xp = array();
-        $mean_score_sx = array();
-        $mean_score_sf = array();
+        $mean = DriverRanking::initCharacteristics();
         foreach ($driver_rank_list as $drv_rnk) {
             $user_id = $drv_rnk->user()->id();
 
-            $mean_score_xp[] = $drv_rnk->getScore("XP");
-            $mean_score_sx[] = $drv_rnk->getScore("SX");
-            $mean_score_sf[] = $drv_rnk->getScore("SF");
+            foreach (array_keys($mean) as $group) {
+                foreach (array_keys($mean[$group]) as $value) {
+                    $mean[$group][$value] += $drv_rnk->getScore($group, $value);
+                }
+            }
 
             $html .= "<tr id=\"table_row_user_$user_id\">";
             $html .= "<td>" . $drv_rnk->user()->login() . "</td>";
@@ -188,21 +188,26 @@ class driver_ranking extends cContentPage {
             $html .= "<td><input type=\"checkbox\" id=\"show_$user_id\" $checked/></td>";
             $html .= "</tr>";
         }
-        if (count($driver_rank_list) > 0) {
-            $mean_score_xp = array_sum($mean_score_xp) / count($mean_score_xp);
-            $mean_score_sx = array_sum($mean_score_sx) / count($mean_score_sx);
-            $mean_score_sf = array_sum($mean_score_sf) / count($mean_score_sf);
-        } else {
-            $mean_score_xp = 0;
-            $mean_score_sx = 0;
-            $mean_score_sf = 0;
-        }
 
+        // mean value row
+        if (count($driver_rank_list) > 0) {
+            foreach (array_keys($mean) as $group) {
+                foreach (array_keys($mean[$group]) as $value) {
+                    $mean[$group][$value] /= count($driver_rank_list);
+                }
+            }
+        }
         $html .= "<tr>";
         $html .= "<td><small><i>" . _("Mean Value") . "</i></small></td>";
-        $html .= "<td><small><i>" . sprintf("%0.0f", $mean_score_xp) . "</i></small></td>";
-        $html .= "<td><small><i>" . sprintf("%0.0f", $mean_score_sx) . "</i></small></td>";
-        $html .= "<td><small><i>" . sprintf("%0.0f", $mean_score_sf) . "</i></small></td>";
+        foreach (['XP', 'SX', 'SF'] as $group) {
+            $title = "";
+            $mean_value = 0;
+            foreach (array_keys($mean[$group]) as $value) {
+                $title .= "$value=" . sprintf("%0.1f", $mean[$group][$value]) . "\n";
+                $mean_value += $mean[$group][$value];
+            }
+            $html .= "<td><span title=\"$title\"><small><i>" . sprintf("%0.0f", $mean_value) . "</i></small></span></td>";
+        }
         $html .= "</tr>";
 
         $html .= "</table>";
