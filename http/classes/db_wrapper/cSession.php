@@ -353,7 +353,7 @@ class Session {
 
         // update cache
         if ($this->Successor === NULL) {
-            $res = $acswuiDatabase->fetch_2d_array("Sessions", ['Predecessor'=>$this->id()]);
+            $res = $acswuiDatabase->fetch_2d_array("Sessions", ['Id'], ['Predecessor'=>$this->id()]);
             if (count($res) > 0) {
                 $this->Successor = new Session($res[0]['Id']);
             }
