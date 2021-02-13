@@ -44,6 +44,7 @@ class Session {
     private $Collisions = NULL;
     private $Results = NULL;
     private $DynamicPositions = NULL;
+    private $Successor = NULL;
 
     /**
      * @param $id Database table id
@@ -344,6 +345,23 @@ class Session {
         if ($this->ServerName=== NULL) $this->updateFromDb();
         return $this->ServerName;
     }
+
+
+    //! @return The Session object for the following session in a server run (can be NULL)
+    public function successor() {
+        global $acswuiDatabase;
+
+        // update cache
+        if ($this->Successor === NULL) {
+            $res = $acswuiDatabase->fetch_2d_array("Sessions", ['Predecessor'=>$this->id()]);
+            if (count($res) > 0) {
+                $this->Successor = new Session($res[0]['Id']);
+            }
+        }
+
+        return $this->Successor;
+    }
+
 
     //! @return A Track object
     public function track() {
