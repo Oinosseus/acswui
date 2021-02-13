@@ -224,6 +224,12 @@ class driver_ranking extends cContentPage {
 
         $html .= "<h1>" . _("Description") . "</h1>";
 
+        $html .= _("Driver ranking points are only cummulated for server runs with race sessions.
+                    That means for succeeding Practice->Qualifying->Race, Qualifying->Race or Race-only sessions.
+                    Pure practice or qualifying sessions without a race session are ignored.");
+        $html .= "<br>";
+        $html .= _("Of couse SX-BT is not effected from this");
+
         $html .= "<table>";
 
         $html .= "<tr>";

@@ -94,6 +94,27 @@ class DriverRanking implements JsonSerializable {
         foreach ($acswuiDatabase->fetch_raw_select($query) as $row) {
             $session = new Session($row['Id']);
 
+            // ignore training-only sessions
+            $is_training_only = TRUE;
+            if ($session->type() == 3) {  // race
+                $is_training_only = FALSE;
+            } else if ($session->type() == 2) { // qualifying
+                $successor = $session->successor();
+                if ($successor !== NULL && $successor->type() == 3) {
+                    $is_training_only = FALSE;
+                }
+            } else if ($session->type() == 1) { // practice
+                $successor = $session->successor();
+                if ($successor !== NULL) {
+                    $successor = $successor->successor();
+                    if ($successor !== NULL && $successor->type() == 3) {
+                        $is_training_only = FALSE;
+                    }
+                }
+            }
+            if ($is_training_only === TRUE) continue;
+
+
             // collisions
             foreach ($session->collisions() as $cll) {
 
