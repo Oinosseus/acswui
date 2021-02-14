@@ -23,7 +23,7 @@ abstract class Collision {
     private $SecondaryCollision = NULL;
 
     // maximum time interval between primary and secondary collision [s]
-    const SecondaryDelta = 1;
+    const SecondaryDelta = 3;
 
     /**
      * @param $id database table row Id
