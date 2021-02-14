@@ -147,7 +147,7 @@ class StatsCarClassPopularity {
         if ($_StatsCarClassPopularityCarClassHash === NULL) {
             $_StatsCarClassPopularityCarClassHash = array();
             foreach (StatsCarClassPopularity::listLatest() as $sccp) {
-                $_StatsCarClassPopularityCarClassHash[$stp->carClass()->id()] = $sccp;
+                $_StatsCarClassPopularityCarClassHash[$sccp->carClass()->id()] = $sccp;
             }
         }
 
