@@ -11,7 +11,7 @@ import sys
 import json
 import time
 #from pyacswui import CommandSrvctl, , ServerPackager
-from pyacswui import CommandInstallFiles, CommandInstallHttp, CommandSrvrun, CommandDbCleanup
+from pyacswui import CommandServerPackager, CommandInstallFiles, CommandInstallHttp, CommandSrvrun, CommandDbCleanup
 
 
 
@@ -30,6 +30,7 @@ argparser.add_argument('-j', '--json', help="read arguments from json string")
 argparser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
 argparsersubs     = argparser.add_subparsers(dest='command')
 
+CommandServerPackager(argparsersubs)
 CommandInstallFiles(argparsersubs)
 CommandInstallHttp(argparsersubs)
 CommandSrvrun(argparsersubs)
