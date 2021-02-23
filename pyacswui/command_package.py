@@ -219,5 +219,10 @@ class CommandPackage(Command):
 
         self.Verbosity.print("Scanning Server Files")
 
-        src_file = self._copy2acs("server", "acServer")
-        src_file = self._copy2acs("server", "system", "data", "surfaces.ini")
+        # acServer binary
+        src_file = self._pathAC(os.path.join("server", "acServer"))
+        dst_file = self._pathSrvPkg(os.path.join("acserver", "acServer"))
+        shutil.copy(src_file, dst_file)
+
+        # surfaces.ini
+        src_file = self._copy2acs("system", "data", "surfaces.ini")

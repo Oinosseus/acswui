@@ -55,11 +55,11 @@ class CommandInstall(Command):
                              )
 
         # install work
-        #self.__work_copy_files()
+        self.__work_copy_files()
         self.__work_db_tables()
         self.__work_cconfig()
-        #self.__work_scan_cars()
-        #self.__work_scan_tracks()
+        self.__work_scan_cars()
+        self.__work_scan_tracks()
         if self.getArg("install_base_data"):
             self.__work_install_basics()
         self.__set_chmod()
@@ -126,6 +126,29 @@ class CommandInstall(Command):
         self.copytree(path_htdocs_src, path_htdocs)
 
 
+        #######
+        # data
+
+        # cfg
+        path_data = os.path.abspath(self.getArg("path-data"))
+        path_data_acserver = os.path.join(path_data, "acserver")
+        path_data_acserver_cfg = os.path.join(path_data_acserver, "cfg")
+        if not os.path.isdir(path_data_acserver_cfg):
+            verb3.print("mkdirs " + path_data_acserver_cfg)
+            self.mkdirs(path_data_acserver_cfg)
+
+        # acserver binaries
+        slot_nr = 0
+        while True:
+            slot_dict = self.getIniSection("SERVER_SLOT_" + str(slot_nr))
+            if slot_dict is None:
+                break
+            path_data_acserver_bin = os.path.join(path_data_acserver, "acServer")
+            path_data_acserver_binslot = os.path.join(path_data_acserver, "acServer%i" % slot_nr)
+            shutil.copy(path_data_acserver_bin, path_data_acserver_binslot)
+            slot_nr += 1
+
+
         #########
         # htdata
 
@@ -136,7 +159,6 @@ class CommandInstall(Command):
             self.mkdirs(path_htdata)
 
         # copy data
-        path_data = os.path.abspath(self.getArg("path-data"))
         path_data_http = os.path.join(path_data, "htdata")
         verb2.print("copy " + path_data + " to " + path_htdocs)
         self.copytree(path_data_http, path_htdata)
@@ -153,7 +175,6 @@ class CommandInstall(Command):
         if not os.path.isdir(path_htcache):
             verb3.print("mkdirs " + path_htcache)
             self.mkdirs(path_htcache)
-
 
 
 
@@ -816,6 +837,7 @@ class CommandInstall(Command):
         paths = []
         paths.append(os.path.join(abspath_data, "logs_http"))
         paths.append(os.path.join(abspath_data, "htcache"))
+        paths.append(os.path.join(abspath_data, "acserver", "cfg"))
         for path in paths:
             cmd = ["chmod", "g+w", path]
             verb2.print(" ".join(cmd))
