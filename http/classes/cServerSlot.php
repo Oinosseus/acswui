@@ -129,7 +129,7 @@ class ServerSlot {
         // start server
         $cmd_str = array();
         $cmd_ret = 0;
-        $cmd = "nohup ". $acswuiConfig->AcswuiCmd . " -vvv srvrun";
+        $cmd = "nohup ". $acswuiConfig->AbsPathAcswui . "/acswui.py -vvv srvrun";
         $cmd .= " --name-acs \"acServer$id\"";
         $cmd .= " --db-host \"" . $acswuiConfig->DbHost . "\"";
         $cmd .= " --db-port \"" . $acswuiConfig->DbPort . "\"";
