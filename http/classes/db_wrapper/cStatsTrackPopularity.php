@@ -98,7 +98,10 @@ class StatsTrackPopularity {
             // skipping tracks will break $min_last_scanned_lap calculation
             // if ($track_cache[$tid]['LapCount'] == 0) continue;
 
-            $popularity = $data['Meters'] / $most_driven_meters;
+            if ($most_driven_meters == 0)
+                $popularity = 0;
+            else
+                $popularity = $data['Meters'] / $most_driven_meters;
 
             // save
             $stp = new StatsTrackPopularity(0);

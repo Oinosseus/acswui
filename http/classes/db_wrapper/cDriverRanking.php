@@ -76,7 +76,7 @@ class DriverRanking implements JsonSerializable {
      * This function does take create DriverRanking obecjts from the DriverRanking database table.
      * This function creates new objects based on current drive data.
      * The returned objects are sorted by DriverRanking->getScore()
-     * The calculated data is stored in http_cache directory as json file
+     * The calculated data is stored in htcache directory as json file
      * @return An array of DriverRanking objects
      */
     public static function calculateRanks() {
@@ -98,6 +98,7 @@ class DriverRanking implements JsonSerializable {
             $is_training_only = TRUE;
             if ($session->type() == 3) {  // race
                 $is_training_only = FALSE;
+
             } else if ($session->type() == 2) { // qualifying
                 $successor = $session->successor();
                 if ($successor !== NULL && $successor->type() == 3) {
@@ -180,7 +181,8 @@ class DriverRanking implements JsonSerializable {
 
 
         // scan car class records
-        $file_path = $acswuiConfig->AcsContent . "/stats_carclass_records.json";
+        $file_path = $acswuiConfig->AbsPathData . "/htcache/stats_carclass_records.json";
+        if (!file_exists($file_path)) return [];
         $class_records = json_decode(file_get_contents($file_path), TRUE);
         foreach ($class_records as $car_class_id=>$records) {
             foreach ($records as $track_id=>$best_lap_ids) {
@@ -203,7 +205,7 @@ class DriverRanking implements JsonSerializable {
         usort($retlist, "DriverRanking::compareScore");
 
         // save latest json
-        $json_path = $acswuiConfig->AcServerPath. "/http_cache/driver_ranking.json";
+        $json_path = $acswuiConfig->AbsPathData. "/htcache/driver_ranking.json";
         $f = fopen($json_path, 'w');
         fwrite($f, json_encode($retlist));
         fclose($f);
@@ -344,7 +346,7 @@ class DriverRanking implements JsonSerializable {
         $retlist = array();
 
         // get latest ranking for each driver
-        $json_path = $acswuiConfig->AcServerPath. "/http_cache/driver_ranking.json";
+        $json_path = $acswuiConfig->AbsPathData. "/htcache/driver_ranking.json";
         @ $json_string = file_get_contents($json_path);
         if ($json_string === FALSE) {
             $acswuiLog->logError("File not found (try run cronjobs): $json_path");

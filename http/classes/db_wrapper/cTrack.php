@@ -113,9 +113,9 @@ class Track {
 
         // get path
         if ($config !="") {
-            $basepath = $acswuiConfig->AcsContent . "/content/tracks/$track/ui/$config";
+            $basepath = $acswuiConfig->AbsPathHtdata . "/content/tracks/$track/ui/$config";
         } else {
-            $basepath = $acswuiConfig->AcsContent . "/content/tracks/$track/ui";
+            $basepath = $acswuiConfig->AbsPathHtdata . "/content/tracks/$track/ui";
         }
 
         return "<img src=\"$basepath/preview.png\" $img_id alt=\"$name\" title=\"$name\" $max_height>";

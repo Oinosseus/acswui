@@ -79,7 +79,7 @@ class records_car extends cContentPage {
         global $acswuiConfig;
         $ret = array();
 
-        $records_path = $acswuiConfig->AcServerPath. "/http_cache/stats_track_records.json";
+        $records_path = $acswuiConfig->AbsPathData. "/htcache/stats_track_records.json";
         $records = json_decode(file_get_contents($records_path), TRUE);
         if (!array_key_exists($track->id(), $records['Data'])) return $ret;
         $track_records = $records['Data'][$track->id()];

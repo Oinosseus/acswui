@@ -304,7 +304,7 @@ class ServerPreset {
         global $acswuiLog;
 
         // read json template
-        $json_string = file_get_contents($acswuiConfig->AcsContent . "/server_cfg.json");
+        $json_string = file_get_contents($acswuiConfig->AbsPathData . "/server_cfg.json");
         $this->ServerCfgJson = json_decode($json_string, true);
 
         // get database columns

@@ -29,7 +29,7 @@ class CronTrackRecords extends Cronjob {
     public function __construct() {
         global $acswuiConfig;
         parent::__construct(new DateInterval("PT1M"));
-        $this->JsonPath = $acswuiConfig->AcServerPath. "/http_cache/stats_track_records.json";
+        $this->JsonPath = $acswuiConfig->AbsPathData. "/htcache/stats_track_records.json";
     }
 
 

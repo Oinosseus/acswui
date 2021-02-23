@@ -28,7 +28,7 @@ include("includes.php");
 // =========================
 
 $acswuiConfig   = new cConfig();
-$acswuiLog      = new cLog("cron");
+$acswuiLog      = new cLog($acswuiConfig->AbsPathData . "/logs_cron/");
 $acswuiLog->LogNotice("Execution start at " . $acswui_execution_start_date);
 $acswuiDatabase = new cDatabase();
 // $acswuiUser     = new cUser();

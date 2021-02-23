@@ -52,7 +52,7 @@ include("includes.php");
 // =========================
 
 $acswuiConfig   = new cConfig();
-$acswuiLog      = new cLog("http");
+$acswuiLog      = new cLog($acswuiConfig->AbsPathData . "/logs_http/");
 $acswuiLog->LogNotice("Execution start at " . $acswui_execution_start_date);
 $acswuiDatabase = new cDatabase();
 $acswuiUser     = new cUser();

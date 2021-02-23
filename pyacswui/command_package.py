@@ -8,12 +8,12 @@ from .command import Command, ArgumentException
 from .verbosity import Verbosity
 
 
-class CommandServerPackager(Command):
+class CommandPackage(Command):
 
     def __init__(self, argparser):
-        Command.__init__(self, argparser, "srv-pkg", "Server-Packager - prepare assetto corsa file to be transferred to the linux server")
+        Command.__init__(self, argparser, "package", "Server-Packager - prepare assetto corsa file to be transferred to the linux server")
         self.add_argument('--path-ac', help="Path to AC installation directory")
-        self.add_argument('--path-srv-pkg', help="Path to existing target directory which can then be copied to the linux server")
+        self.add_argument('--path-srvpkg', help="Path to existing target directory which can then be copied to the linux server")
 
 
 
@@ -42,7 +42,7 @@ class CommandServerPackager(Command):
         """
 
         src_file = self._pathAC(*ac_file)
-        dst_file = self._pathSrvPkg("http", *ac_file)
+        dst_file = self._pathSrvPkg("htdata", *ac_file)
         if os.path.isfile(src_file):
             self.mkdirs(os.path.dirname(dst_file))
             shutil.copy(src_file, dst_file)
@@ -68,7 +68,7 @@ class CommandServerPackager(Command):
             @param path Server packager subdirectory
             @return The path to the server packager directory
         """
-        base_path = self.getArg("path-srv-pkg")
+        base_path = self.getArg("path-srvpkg")
         for p in path:
             base_path = os.path.join(base_path, p)
         return base_path
@@ -76,6 +76,13 @@ class CommandServerPackager(Command):
 
 
     def process(self):
+
+        # create srvpkg directory
+        path_srvpkg = os.path.abspath(self.getArg("path-srvpkg"))
+        if not os.path.isdir(path_srvpkg):
+            self.Verbosity.print("mkdirs " + path_srvpkg)
+            self.mkdirs(path_srvpkg)
+
         self.__create_server_cfg_json()
         self.__scan_cars()
         self.__scan_tracks()

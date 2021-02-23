@@ -13,17 +13,12 @@ class cLog {
     private $FileHandleNotice = 0;
     private $FileBufferNotice = "";
 
-    function __construct($prefix="") {
+    function __construct($logpath="") {
         global $acswuiConfig;
 
-        # ensure prefix ends with '_'
-        if (strlen($prefix) > 0 && substr($prefix, -1, 1) != "_") {
-            $prefix .= "_";
-        }
-
-        $this->FilePathError   = $acswuiConfig->LogPath . "/$prefix" . date("Y-m-d") . ".error.log";
-        $this->FilePathWarning = $acswuiConfig->LogPath . "/$prefix" . date("Y-m-d") . ".warning.log";
-        $this->FilePathNotice  = $acswuiConfig->LogPath . "/$prefix" . date("Y-m-d") . ".notice.log";
+        $this->FilePathError   = $logpath . "/" . date("Y-m-d") . ".error.log";
+        $this->FilePathWarning = $logpath . "/" . date("Y-m-d") . ".warning.log";
+        $this->FilePathNotice  = $logpath . "/" . date("Y-m-d") . ".notice.log";
     }
 
     // Buffered logfiles are written in the destructor.

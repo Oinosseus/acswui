@@ -48,7 +48,7 @@ class CarSkin {
         $img_id = ($img_id == "") ? "":"id=\"$img_id\"";
         $max_height = ($max_height === NULL) ? "" : "height=\"$max_height\"";
 
-        $path = $acswuiConfig->AcsContent . "/content/cars/$car_model/skins/$skin/preview.jpg";
+        $path = $acswuiConfig->RelPathHtdata . "/content/cars/$car_model/skins/$skin/preview.jpg";
 
         return "<img src=\"$path\" $img_id alt=\"$car_model $skin\" title=\"Brand: $car_brand\nCar: $car_name\nSkin: $skin\" $max_height>";
     }

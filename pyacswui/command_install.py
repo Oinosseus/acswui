@@ -9,13 +9,18 @@ from .command import Command, ArgumentException
 from .database import Database
 from .verbosity import Verbosity
 
-class CommandInstallHttp(Command):
+class CommandInstall(Command):
 
     def __init__(self, argparser):
-        Command.__init__(self, argparser, "install-http", "install database and files to http target directory")
+        Command.__init__(self, argparser, "install", "Server-Installer -  install http from server package")
 
         ##################
         # Basic Arguments
+
+        # paths
+        self.add_argument('--path-htdocs', help="Path to htdocs directory referecned by the HTTP server")
+        self.add_argument('--path-data', help="Path to a directory not accessible by the HTTP server")
+        self.add_argument('--path-htdata', help="Path to a directory that is accessible by the HTTP server")
 
         # database
         self.add_argument('--db-host', help="Database host (not needed when global config is given)")
@@ -25,23 +30,18 @@ class CommandInstallHttp(Command):
         self.add_argument('--db-password', help="Database password (not needed when global config is given)")
 
         # http settings
-        self.add_argument('--http-path', help="Target directory of http server")
-        self.add_argument('--http-log-path', help="Directory for http logfiles")
         self.add_argument('--http-root-password', help="Password for root user")
         self.add_argument('--http-guest-group', default="Visitor", help="Group name of visitors that are not logged in")
         self.add_argument('--http-default-tmplate', default="acswui", help="Default template for http")
         self.add_argument('--http-guid', help="Name of webserver group on the server (needed to chmod access rights)")
-
-        self.add_argument('--path-acs-target', help="path to AC server target directory")
         self.add_argument('--install-base-data', action="store_true", help="install basic http data (default groups, etc.)")
-        self.add_argument('--http-path-acs-content', help="Path that stores AC data for http access (eg. track car preview images)")
 
 
 
     def process(self):
 
         # read server_cfg json
-        with open(os.path.join(self.getArg("http-path-acs-content"), "server_cfg.json"), "r") as f:
+        with open(os.path.join(self.getArg("path_data"), "server_cfg.json"), "r") as f:
             json_string = f.read()
         self.__server_cfg_json = json.loads(json_string)
 
@@ -55,19 +55,13 @@ class CommandInstallHttp(Command):
                              )
 
         # install work
-        self.__work_copy_files()
+        #self.__work_copy_files()
         self.__work_db_tables()
         self.__work_cconfig()
-        self.__work_scan_cars()
-        self.__work_scan_tracks()
-
+        #self.__work_scan_cars()
+        #self.__work_scan_tracks()
         if self.getArg("install_base_data"):
             self.__work_install_basics()
-
-        # create log directory
-        if not os.path.isdir(self.getArg("http_log_path")):
-            os.mkdir(self.getArg("http_log_path"))
-
         self.__set_chmod()
 
 
@@ -112,23 +106,54 @@ class CommandInstallHttp(Command):
 
     def __work_copy_files(self):
 
-        self.Verbosity.print("Create http target directory")
+        self.Verbosity.print("copy files")
         verb2 = Verbosity(self.Verbosity)
         verb3 = Verbosity(verb2)
 
-        path_http = os.path.abspath(self.getArg("http-path"))
-        if not os.path.isdir(path_http):
-            verb2.print("create http target directory: " + path_http)
-            self.mkdirs(path_http)
 
-        path_http_cache = os.path.join(os.path.abspath(self.getArg("path-acs-target")), "http_cache")
-        if not os.path.isdir(path_http_cache):
-            verb2.print("create http storage directory: " + path_http_cache)
-            self.mkdirs(path_http_cache)
+        #########
+        # htdocs
 
-        verb2.print("copy http directory: " + path_http)
-        http_src = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "http")
-        self.copytree(http_src, self.getArg("http-path"))
+        # create dir
+        path_htdocs = os.path.abspath(self.getArg("path-htdocs"))
+        if not os.path.isdir(path_htdocs):
+            verb3.print("mkdirs " + path_htdocs)
+            self.mkdirs(path_htdocs)
+
+        # copy dir
+        verb2.print("copy ./http/ to " + path_htdocs)
+        path_htdocs_src = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "http")
+        self.copytree(path_htdocs_src, path_htdocs)
+
+
+        #########
+        # htdata
+
+        # create dir
+        path_htdata = os.path.abspath(self.getArg("path-htdata"))
+        if not os.path.isdir(path_htdata):
+            verb3.print("mkdirs " + path_htdata)
+            self.mkdirs(path_htdata)
+
+        # copy data
+        path_data = os.path.abspath(self.getArg("path-data"))
+        path_data_http = os.path.join(path_data, "htdata")
+        verb2.print("copy " + path_data + " to " + path_htdocs)
+        self.copytree(path_data_http, path_htdata)
+
+        # log dirs
+        for logdir in ['logs_acserver', 'logs_cron', 'logs_http']:
+            path_data_log = os.path.join(path_data, logdir)
+            if not os.path.isdir(path_data_log):
+                verb3.print("mkdirs " + path_data_log)
+                self.mkdirs(path_data_log)
+
+        # htcache
+        path_htcache = os.path.join(path_data, "htcache")
+        if not os.path.isdir(path_htcache):
+            verb3.print("mkdirs " + path_htcache)
+            self.mkdirs(path_htcache)
+
 
 
 
@@ -470,20 +495,23 @@ class CommandInstallHttp(Command):
         http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.getArg('http_root_password')])
         http_root_password = http_root_password.decode("utf-8")
 
+        # paths
+        abspath_acswui = os.path.abspath(os.curdir)
+        abspath_data = os.path.abspath(self.getArg('path-data'))
+        abspath_htdocs = os.path.abspath(self.getArg('path-htdocs'))
+        abspath_htdata = os.path.abspath(self.getArg('path-htdata'))
+        abspath_acswui_py = os.path.abspath(os.path.join(abspath_acswui, "acswui.py"))
+
         # determine reltive path from http to ac server
-        path_current = os.path.abspath(os.curdir)
-        path_acserverdir = os.path.abspath(os.path.join(path_current, self.getArg('path-acs-target')))
+        #relpath_http2acsrv = os.path.relpath(path_acscontent_absolute, path_http)
+        #path_acserverdir = os.path.abspath(os.path.join(abspath_acswui, self.getArg('path-acs-target')))
 
         # path to this command
-        path_http2cmd = os.path.abspath(os.path.join(path_current, "acswui.py"))
-
-        # path for logs
-        path_log = os.path.abspath(self.getArg('http_log_path'))
 
         # path for acs-content
-        path_http = os.path.abspath(self.getArg("http-path"))
-        path_acscontent_absolute = os.path.abspath(self.getArg("http-path-acs-content"))
-        path_acscontent_relative = os.path.relpath(path_acscontent_absolute, path_http)
+        #path_http = os.path.abspath(self.getArg("http-path"))
+        #path_acscontent_absolute = os.path.abspath(self.getArg("http-path-acs-content"))
+        #path_acscontent_relative = os.path.relpath(path_acscontent_absolute, path_http)
 
         # server slots
         server_slot_list = []
@@ -536,19 +564,22 @@ class CommandInstallHttp(Command):
             driver_ranking[group][key] = value
 
 
-        with open(self.getArg('http_path') + "/classes/cConfig.php", "w") as f:
+        with open(os.path.join(abspath_htdocs, "classes" , "cConfig.php"), "w") as f:
             f.write("<?php\n")
             f.write("  class cConfig {\n")
             f.write("\n")
+            f.write("    // paths\n")
+            f.write("    private $AbsPathData = \"%s\";\n" % abspath_data)
+            f.write("    private $RelPathData = \"%s\";\n" % os.path.relpath(abspath_data, abspath_htdocs))
+            f.write("    private $AbsPathHtdata = \"%s\";\n" % abspath_htdata)
+            f.write("    private $RelPathHtdata = \"%s\";\n" % os.path.relpath(abspath_htdata, abspath_htdocs))
+            f.write("    private $AbsPathAcswui = \"%s\";\n" % abspath_acswui)
+            f.write("\n")
             f.write("    // basic constants\n")
             f.write("    private $DefaultTemplate = \"%s\";\n" % self.getArg('http_default_tmplate'))
-            f.write("    private $LogPath = '%s';\n" % path_log)
             f.write("    private $LogDebug = \"false\";\n")
             f.write("    private $RootPassword = '%s';\n" % http_root_password)
             f.write("    private $GuestGroup = '%s';\n" % self.getArg('http_guest_group'))
-            f.write("    private $AcServerPath = \"%s\";\n" % path_acserverdir)
-            f.write("    private $AcswuiCmdDir = \"%s\";\n" % path_current)
-            f.write("    private $AcswuiCmd = \"%s\";\n" % path_http2cmd)
             f.write("\n")
             f.write("    // database constants\n")
             f.write("    private $DbHost = \"%s\";\n" % self.getArg('db_host'))
@@ -558,8 +589,8 @@ class CommandInstallHttp(Command):
             f.write("    private $DbPasswd = \"%s\";\n" % self.getArg('db_password'))
             f.write("\n")
             f.write("    // server_cfg\n")
-            f.write("    private $AcsContent = \"%s\";\n" % path_acscontent_relative)
-            f.write("    private $AcsContentAbsolute = \"%s\";\n" % path_acscontent_absolute)
+            #f.write("    private $AcsContent = \"%s\";\n" % path_acscontent_relative)
+            #f.write("    private $AcsContentAbsolute = \"%s\";\n" % path_acscontent_absolute)
             f.write("    private $FixedServerConfig = array(%s);\n" % fixed_server_settings)
             f.write("    private $ServerSlots = array(%s);\n" % server_slots)
             f.write("\n")
@@ -578,20 +609,25 @@ class CommandInstallHttp(Command):
     def __work_scan_cars(self):
         self.Verbosity.print("scanning for cars")
 
+        # paths
+        abspath_data = os.path.abspath(self.getArg('path-data'))
+
         # set all current cars and skins to 'deprecated'
         self.__db.rawQuery("UPDATE Cars SET Deprecated=1 WHERE Deprecated=0")
         self.__db.rawQuery("UPDATE CarSkins SET Deprecated=1 WHERE Deprecated=0")
 
-        for car in sorted(os.listdir(self.getArg('http-path-acs-content') + "/content/cars")):
-            car_path   = self.getArg('http-path-acs-content') + "/content/cars/" + car
+        path_cars = os.path.join(abspath_data, "htdata", "content", "cars")
+        for car in sorted(os.listdir(path_cars)):
+            car_path   = os.path.join(path_cars, car)
             car_name   = self.__parse_json(car_path + "/ui/ui_car.json", "name", car)
             car_parent = self.__parse_json(car_path + "/ui/ui_car.json", "parent", "")
             car_brand  = self.__parse_json(car_path + "/ui/ui_car.json", "brand", "")
 
             # get skins
             car_skins = []
-            if os.path.isdir(self.getArg('http-path-acs-content') + "/content/cars/" + car + "/skins"):
-                for skin in os.listdir(self.getArg('http-path-acs-content') + "/content/cars/" + car + "/skins"):
+            path_car_skins = os.path.join(car_path, "skins")
+            if os.path.isdir(path_car_skins):
+                for skin in os.listdir(path_car_skins):
                     if skin == "":
                         raise NotImplementedError("Unexpected empty skin name for car '%s'" % car)
                     car_skins.append(skin)
@@ -625,6 +661,9 @@ class CommandInstallHttp(Command):
 
     def __work_scan_tracks(self):
         self.Verbosity.print("Scanning for tracks")
+
+        # paths
+        abspath_data = os.path.abspath(self.getArg('path-data'))
 
         # set all current trakcs to 'deprecated'
         self.__db.rawQuery("UPDATE Tracks SET Deprecated=1 WHERE Deprecated=0")
@@ -670,8 +709,9 @@ class CommandInstallHttp(Command):
 
 
 
-        for track in sorted(os.listdir(self.getArg('http-path-acs-content') + "/content/tracks")):
-            track_path   = self.getArg('http-path-acs-content') + "/content/tracks/" + track
+        path_tracks = os.path.join(abspath_data, "htdata", "content", "tracks")
+        for track in sorted(os.listdir(path_tracks)):
+            track_path = os.path.join(path_tracks, track)
 
 
             # update track
@@ -684,7 +724,7 @@ class CommandInstallHttp(Command):
                 existing_track_ids = self.__db.findIds("Tracks", {"Track": track})
                 if len(existing_track_ids) == 0:
                     self.__db.insertRow("Tracks", {"Track": track, "Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs, "Deprecated":0})
-                    Verbosity(self.Verbosity).print("Found new track '" + track + "'")
+                    Verbosity(self.Verbosity).print("Found new track '" + track + "' " + track_length + "m")
                 else:
                     self.__db.updateRow("Tracks", existing_track_ids[0], {"Track": track, "Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs, "Deprecated":0})
 
@@ -759,83 +799,31 @@ class CommandInstallHttp(Command):
         self.Verbosity.print("Setting webserver access rights")
         verb2 = Verbosity(self.Verbosity)
 
-        #######################
-        # ACS Target Directory
+        # paths
+        abspath_acswui = os.path.abspath(os.curdir)
+        abspath_data = os.path.abspath(self.getArg('path-data'))
+        abspath_htdocs = os.path.abspath(self.getArg('path-htdocs'))
+        abspath_htdata = os.path.abspath(self.getArg('path-htdata'))
+        abspath_acswui_py = os.path.abspath(os.path.join(abspath_acswui, "acswui.py"))
 
-        # change group of acs target directory
-        cmd = ["chgrp", "-R", self.getArg("http-guid"), self.getArg("path-acs-target")]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
+        # directory paths
+        for path in [abspath_data, abspath_htdocs, abspath_htdata]:
+            cmd = ["chgrp", "-R", self.getArg('http-guid'), path]
+            verb2.print(" ".join(cmd))
+            subprocess.run(cmd)
 
-        # change access to acs target directory
-        cmd = ["chmod", "-R", "g+r", self.getArg("path-acs-target")]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
-        cmd = ["chmod", "g+w", os.path.join(self.getArg("path-acs-target"))]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
-        cmd = ["chmod", "g+w", os.path.join(self.getArg("path-acs-target"), "cfg")]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
-        cmd = ["chmod", "g+w", os.path.join(self.getArg("path-acs-target"), "results")]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
-        cmd = ["chmod", "g+rw", os.path.join(self.getArg("path-acs-target"), "http_cache")]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
+        # directories with write access
+        paths = []
+        paths.append(os.path.join(abspath_data, "logs_http"))
+        paths.append(os.path.join(abspath_data, "htcache"))
+        for path in paths:
+            cmd = ["chmod", "g+w", path]
+            verb2.print(" ".join(cmd))
+            subprocess.run(cmd)
 
-
-        ########################
-        # HTTP Target Directory
-
-        # change group of http target directory
-        cmd = ["chgrp", "-R", self.getArg("http-guid"), self.getArg("http-path")]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
-
-        # change access to http target directory
-        cmd = ["chmod", "-R", "g+r", self.getArg("http-path")]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
-
-
-        #####################
-        # HTTP Log Directory
-
-        # change group of http target directory
-        cmd = ["chgrp", "-R", self.getArg("http-guid"), self.getArg("http-log-path")]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
-
-        # change access to http target directory
-        cmd = ["chmod", "-R", "g+wr", self.getArg("http-log-path")]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
-
-
-        ########################
-        # ACS Content Directory
-
-        # change group of acs-content target directory
-        cmd = ["chgrp", "-R", self.getArg("http-guid"), self.getArg("http-path-acs-content")]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
-
-        # change access to acs-content target directory
-        cmd = ["chmod", "g+rw", self.getArg("http-path-acs-content")]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
-        cmd = ["chmod", "-R", "g+r", self.getArg("http-path-acs-content")]
-        verb2.print(" ".join(cmd))
-        subprocess.run(cmd)
-
-
-        ########################
         # acswuy python scripts
-
-        dirpath = os.path.dirname(__file__)
-        for scriptpath in os.listdir(dirpath):
+        for scriptpath in os.listdir(abspath_acswui):
             if scriptpath[-3:] == ".py":
-                cmd = ["chgrp", self.getArg("http-guid"), os.path.join(dirpath, scriptpath)]
+                cmd = ["chgrp", self.getArg("http-guid"), os.path.join(abspath_acswui, scriptpath)]
                 verb2.print(" ".join(cmd))
                 subprocess.run(cmd)

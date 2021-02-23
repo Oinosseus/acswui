@@ -89,7 +89,7 @@ class ServerSlot {
     private function pid() {
         global $acswuiConfig;
         $id = $this->Id;
-        $pidfile = $acswuiConfig->AcServerPath . "/acServer$id.pid";
+        $pidfile = $acswuiConfig->AbsPathData . "/acserver/acServer$id.pid";
         if (!file_exists($pidfile)) return NULL;
         $pid = (int) file_get_contents($pidfile);
         return $pid;
@@ -115,16 +115,16 @@ class ServerSlot {
         $id = $this->Id;
 
         // entry_list.ini
-        $entry_list_path = $acswuiConfig->AcServerPath . "/cfg/entry_list_$id.ini";
+        $entry_list_path = $acswuiConfig->AbsPathData . "/acserver/cfg/entry_list_$id.ini";
         $entry_list = new EntryList($carclass, $track);
         $entry_list->writeToFile($entry_list_path);
 
         // server_cfg.ini
-        $server_cfg_path = $acswuiConfig->AcServerPath . "/cfg/server_cfg_$id.ini";
+        $server_cfg_path = $acswuiConfig->AbsPathData . "/acserver/cfg/server_cfg_$id.ini";
         $this->writeServerCfg($server_cfg_path, $preset, $carclass, $track);
 
         // path for storing realtime data
-        $realtime_json_path = $acswuiConfig->AcsContentAbsolute . "/realtime_$id.json";
+        $realtime_json_path = $acswuiConfig->AbsPathData . "/htcache/realtime_$id.json";
 
         // start server
         $cmd_str = array();
@@ -136,14 +136,14 @@ class ServerSlot {
         $cmd .= " --db-database \"" . $acswuiConfig->DbDatabase . "\"";
         $cmd .= " --db-user \"" . $acswuiConfig->DbUser . "\"";
         $cmd .= " --db-password \"" . $acswuiConfig->DbPasswd . "\"";
-        $cmd .= " --path-acs-target \"" . $acswuiConfig->AcServerPath . "\"";
-        $cmd .= " --acs-log \"" . $acswuiConfig->LogPath . "/acserver_$id.log\"";
+        $cmd .= " --path-acs-target \"" . $acswuiConfig->AbsPathData . "/acserver/\"";
+        $cmd .= " --acs-log \"" . $acswuiConfig->AbsPathData . "/logs_acserver/slot_$id.log\"";
         $cmd .= " --path-server-cfg \"$server_cfg_path\"";
         $cmd .= " --path-entry-list \"$entry_list_path\"";
         $cmd .= " --path-realtime-json \"$realtime_json_path\"";
-//         $cmd .= " </dev/null >" . $acswuiConfig->LogPath . "/acswui_srvrun.log 2>&1 &";
+//         $cmd .= " </dev/null >" . $acswuiConfig->AbsPathData . "/log_acserver/slot_$id.log 2>&1 &";
 //         $cmd .= " >/dev/null 2>&1 &";
-        $cmd .= " >" . $acswuiConfig->LogPath . "/acswui_srvrun_$id.log 2>&1 &";
+        $cmd .= " >" . $acswuiConfig->AbsPathData . "/logs_acserver/slot_$id.log 2>&1 &";
         exec($cmd, $cmd_str, $cmd_ret);
         foreach ($cmd_str as $line) echo "$line<br>";
 //         echo "Server started: $cmd_ret<br>";

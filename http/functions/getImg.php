@@ -15,9 +15,9 @@ function getImgTrack($track_id) {
 
 
     if (strlen($res[0]['Config']) > 0) {
-        $path = $acswuiConfig->AcsContent . "/content/tracks/" . $res[0]['Track'] . "/ui/" . $res[0]['Config'] . "/preview.png";
+        $path = $acswuiConfig->RelPathHtdata . "/content/tracks/" . $res[0]['Track'] . "/ui/" . $res[0]['Config'] . "/preview.png";
     } else {
-        $path = $acswuiConfig->AcsContent . "/content/tracks/" . $res[0]['Track'] . "/ui/preview.png";
+        $path = $acswuiConfig->RelPathHtdata . "/content/tracks/" . $res[0]['Track'] . "/ui/preview.png";
     }
 
     $ret = "<img src=\"$path\">";
@@ -64,7 +64,7 @@ function getImgCarSkin($carskin_id, $img_id = "") {
     $car_name  = $res[0]['Name'];
     $car_brand = $res[0]['Brand'];
 
-    $path = $acswuiConfig->AcsContent . "/content/cars/$car/skins/$skin/preview.jpg";
+    $path = $acswuiConfig->RelPathHtdata . "/content/cars/$car/skins/$skin/preview.jpg";
 
 
     $ret = "<img src=\"$path\" $id alt=\"$car $skin\" title=\"Brand: $car_brand\nCar: $car_name ($car)\nSkin: $skin\">";
