@@ -51,10 +51,10 @@ class StatsCarClassPopularity {
 
             $sccp = StatsCarClassPopularity::getLatest($carclass);
             if ($sccp != NULL) {
-                $cache[$cid]['LastScannedLap'] = $stp->lastScannedLapId();
-                $cache[$cid]['LapCount'] = $stp->lapCount();
-                $cache[$cid]['TimeCount'] = $stp->timeCount();
-                $cache[$cid]['MeterCount'] = $stp->meterCount();
+                $cache[$cid]['LastScannedLap'] = $sccp->lastScannedLapId();
+                $cache[$cid]['LapCount'] = $sccp->lapCount();
+                $cache[$cid]['TimeCount'] = $sccp->timeCount();
+                $cache[$cid]['MeterCount'] = $sccp->meterCount();
             }
 
             if ($min_last_scanned_lap === NULL || $cache[$cid]['LastScannedLap'] < $min_last_scanned_lap) {
