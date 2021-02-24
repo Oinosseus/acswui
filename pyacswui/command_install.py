@@ -18,6 +18,7 @@ class CommandInstall(Command):
         # Basic Arguments
 
         # paths
+        self.add_argument('--path-srvpkg', help="Directy where the content from the server packager can be read from")
         self.add_argument('--path-htdocs', help="Path to htdocs directory referecned by the HTTP server")
         self.add_argument('--path-data', help="Path to a directory not accessible by the HTTP server")
         self.add_argument('--path-htdata', help="Path to a directory that is accessible by the HTTP server")
@@ -41,7 +42,7 @@ class CommandInstall(Command):
     def process(self):
 
         # read server_cfg json
-        with open(os.path.join(self.getArg("path_data"), "server_cfg.json"), "r") as f:
+        with open(os.path.join(self.getArg("path_srvpkg"), "server_cfg.json"), "r") as f:
             json_string = f.read()
         self.__server_cfg_json = json.loads(json_string)
 
@@ -138,14 +139,15 @@ class CommandInstall(Command):
             self.mkdirs(path_data_acserver_cfg)
 
         # acserver binaries
+        path_srvpkg_acserver = os.path.join(self.getArg("path-srvpkg"), "acserver")
         slot_nr = 0
         while True:
             slot_dict = self.getIniSection("SERVER_SLOT_" + str(slot_nr))
             if slot_dict is None:
                 break
-            path_data_acserver_bin = os.path.join(path_data_acserver, "acServer")
+            path_srvpkg_acserver_bin = os.path.join(path_srvpkg_acserver, "acServer")
             path_data_acserver_binslot = os.path.join(path_data_acserver, "acServer%i" % slot_nr)
-            shutil.copy(path_data_acserver_bin, path_data_acserver_binslot)
+            shutil.copy(path_srvpkg_acserver_bin, path_data_acserver_binslot)
             slot_nr += 1
 
 
@@ -159,9 +161,9 @@ class CommandInstall(Command):
             self.mkdirs(path_htdata)
 
         # copy data
-        path_data_http = os.path.join(path_data, "htdata")
-        verb2.print("copy " + path_data + " to " + path_htdocs)
-        self.copytree(path_data_http, path_htdata)
+        path_srvpkg_htdata = os.path.join(self.getArg("path-srvpkg"), "htdata")
+        verb2.print("copy " + path_srvpkg_htdata + " to " + path_htdata)
+        self.copytree(path_srvpkg_htdata, path_htdata)
 
         # log dirs
         for logdir in ['logs_acserver', 'logs_cron', 'logs_http']:
@@ -631,7 +633,7 @@ class CommandInstall(Command):
         self.Verbosity.print("scanning for cars")
 
         # paths
-        abspath_data = os.path.abspath(self.getArg('path-data'))
+        abspath_data = os.path.abspath(self.getArg('path-srvpkg'))
 
         # set all current cars and skins to 'deprecated'
         self.__db.rawQuery("UPDATE Cars SET Deprecated=1 WHERE Deprecated=0")
@@ -684,7 +686,7 @@ class CommandInstall(Command):
         self.Verbosity.print("Scanning for tracks")
 
         # paths
-        abspath_data = os.path.abspath(self.getArg('path-data'))
+        abspath_data = os.path.abspath(self.getArg('path-srvpkg'))
 
         # set all current trakcs to 'deprecated'
         self.__db.rawQuery("UPDATE Tracks SET Deprecated=1 WHERE Deprecated=0")

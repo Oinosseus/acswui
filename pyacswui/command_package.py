@@ -13,7 +13,7 @@ class CommandPackage(Command):
     def __init__(self, argparser):
         Command.__init__(self, argparser, "package", "Server-Packager - prepare assetto corsa file to be transferred to the linux server")
         self.add_argument('--path-ac', help="Path to AC installation directory")
-        self.add_argument('--path-srvpkg', help="Path to existing target directory which can then be copied to the linux server")
+        self.add_argument('--path-refpkg', help="Path to existing target directory which can then be copied to the linux server")
 
 
 
@@ -25,7 +25,7 @@ class CommandPackage(Command):
         """
 
         src_file = self._pathAC(*ac_file)
-        dst_file = self._pathSrvPkg("acserver", *ac_file)
+        dst_file = self._pathRefPkg("acserver", *ac_file)
         if os.path.isfile(src_file):
             self.mkdirs(os.path.dirname(dst_file))
             shutil.copy(src_file, dst_file)
@@ -42,7 +42,7 @@ class CommandPackage(Command):
         """
 
         src_file = self._pathAC(*ac_file)
-        dst_file = self._pathSrvPkg("htdata", *ac_file)
+        dst_file = self._pathRefPkg("htdata", *ac_file)
         if os.path.isfile(src_file):
             self.mkdirs(os.path.dirname(dst_file))
             shutil.copy(src_file, dst_file)
@@ -63,12 +63,12 @@ class CommandPackage(Command):
 
 
 
-    def _pathSrvPkg(self, *path):
+    def _pathRefPkg(self, *path):
         """!
             @param path Server packager subdirectory
             @return The path to the server packager directory
         """
-        base_path = self.getArg("path-srvpkg")
+        base_path = self.getArg("path-refpkg")
         for p in path:
             base_path = os.path.join(base_path, p)
         return base_path
@@ -77,11 +77,10 @@ class CommandPackage(Command):
 
     def process(self):
 
-        # create srvpkg directory
-        path_srvpkg = os.path.abspath(self.getArg("path-srvpkg"))
-        if not os.path.isdir(path_srvpkg):
-            self.Verbosity.print("mkdirs " + path_srvpkg)
-            self.mkdirs(path_srvpkg)
+        # check refpkg directory
+        path_refpkg = os.path.abspath(self.getArg("path-refpkg"))
+        if not os.path.isdir(path_refpkg):
+            raise NotImplementedError("Cannot find path-refpkg: " + path_refpkg)
 
         self.__create_server_cfg_json()
         self.__scan_cars()
@@ -117,7 +116,7 @@ class CommandPackage(Command):
                 weather_index += 1
 
         # dump to output directory
-        with open(self._pathSrvPkg("server_cfg.json"), "w") as f:
+        with open(self._pathRefPkg("server_cfg.json"), "w") as f:
             json.dump(server_cfg_json, f, indent=4)
 
 
@@ -221,7 +220,7 @@ class CommandPackage(Command):
 
         # acServer binary
         src_file = self._pathAC(os.path.join("server", "acServer"))
-        dst_file = self._pathSrvPkg(os.path.join("acserver", "acServer"))
+        dst_file = self._pathRefPkg(os.path.join("acserver", "acServer"))
         shutil.copy(src_file, dst_file)
 
         # surfaces.ini
