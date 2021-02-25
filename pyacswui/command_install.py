@@ -751,7 +751,7 @@ class CommandInstall(Command):
                 existing_track_ids = self.__db.findIds("Tracks", {"Track": track})
                 if len(existing_track_ids) == 0:
                     self.__db.insertRow("Tracks", {"Track": track, "Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs, "Deprecated":0})
-                    Verbosity(self.Verbosity).print("Found new track '" + track + "' " + track_length + "m")
+                    Verbosity(self.Verbosity).print("Found new track '" + track + "' " + str(track_length) + "m")
                 else:
                     self.__db.updateRow("Tracks", existing_track_ids[0], {"Track": track, "Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs, "Deprecated":0})
 
