@@ -12,8 +12,6 @@ class CommandPackage(Command):
 
     def __init__(self, argparser):
         Command.__init__(self, argparser, "package", "Server-Packager - prepare assetto corsa file to be transferred to the linux server")
-        self.add_argument('--path-ac', help="Path to AC installation directory")
-        self.add_argument('--path-refpkg', help="Path to existing target directory which can then be copied to the linux server")
 
 
 
@@ -56,7 +54,7 @@ class CommandPackage(Command):
             @param path assetto corsa subdirectory
             @return The path to the assettot corsa directory
         """
-        base_path = self.getArg("path-ac")
+        base_path = self.getGeneralArg("path-ac")
         for p in path:
             base_path = os.path.join(base_path, p)
         return base_path
@@ -68,7 +66,7 @@ class CommandPackage(Command):
             @param path Server packager subdirectory
             @return The path to the server packager directory
         """
-        base_path = self.getArg("path-refpkg")
+        base_path = self.getGeneralArg("path-refpkg")
         for p in path:
             base_path = os.path.join(base_path, p)
         return base_path
@@ -78,7 +76,7 @@ class CommandPackage(Command):
     def process(self):
 
         # check refpkg directory
-        path_refpkg = os.path.abspath(self.getArg("path-refpkg"))
+        path_refpkg = os.path.abspath(self.getGeneralArg("path-refpkg"))
         if not os.path.isdir(path_refpkg):
             raise NotImplementedError("Cannot find path-refpkg: " + path_refpkg)
 
@@ -108,7 +106,7 @@ class CommandPackage(Command):
 
         # scan for weather enums
         json_enum = server_cfg_json["WEATHER_0"]['Weather']["GRAPHICS"]['ENUMS']
-        weather_path = os.path.join(self.getArg('path-ac'), "content", "weather")
+        weather_path = os.path.join(self.getGeneralArg('path-ac'), "content", "weather")
         weather_index = 0
         for w in sorted(os.listdir(weather_path)):
             if w[:1] != "." and os.path.isdir(os.path.join(weather_path, w)):

@@ -14,42 +14,32 @@ class CommandSrvrun(Command):
 
     def __init__(self, argparser):
         Command.__init__(self, argparser, "srvrun", "run the ac server")
-
-        # logging
-        #self.add_argument('-l', '--log', help="if set, the acServer ouput will be logged to")
-
-        # database
-        self.add_argument('--db-host', help="Database host (not needed when global config is given)")
-        self.add_argument('--db-port', help="Database port (not needed when global config is given)")
-        self.add_argument('--db-database', help="Database name (not needed when global config is given)")
-        self.add_argument('--db-user', help="Database username (not needed when global config is given)")
-        self.add_argument('--db-password', help="Database password (not needed when global config is given)")
-
-        # server config
-        self.add_argument('--path-server-cfg', help="Path to server_cfg.ini file")
-        self.add_argument('--path-entry-list', help="Path to entry_list.ini file")
-        self.add_argument('--path-acs-target', help="Path to AC server directory")
-        self.add_argument('--path-realtime-json', help="Optional file that gets updated with realtime information")
-        self.add_argument('--name-acs', default="acServer", help="Name of AC server executable")
-        self.add_argument('--acs-log', help="Path to write AC server output to (optional)")
+        self.add_argument('--slot', help="Server slot number")
 
 
     def process(self):
 
         # setup database
         self.Verbosity.print("Setup Database")
-        db = Database(host=self.getArg("db_host"),
-                      port=self.getArg("db_port"),
-                      database=self.getArg("db_database"),
-                      user=self.getArg("db_user"),
-                      password=self.getArg("db_password"),
+        db = Database(host=self.getGeneralArg("db-host"),
+                      port=self.getGeneralArg("db-port"),
+                      database=self.getGeneralArg("db-database"),
+                      user=self.getGeneralArg("db-user"),
+                      password=self.getGeneralArg("db-password"),
                       verbosity=Verbosity(Verbosity(self.Verbosity))
                       )
+
+        # paths
+        path_data_acserver = os.path.join(self.getGeneralArg("path-data"), "acserver")
+        path_realtime_json = os.path.join(self.getGeneralArg("path-htdata"), "realtime", self.getArg("slot") + ".json")
+        path_entry_list = os.path.join(path_data_acserver, "cfg", "entry_list_" + self.getArg("slot") + ".ini")
+        path_server_cfg = os.path.join(path_data_acserver, "cfg", "server_cfg_" + self.getArg("slot") + ".ini")
+        path_log_acserver = os.path.join(self.getGeneralArg("path-data"), "logs_acserver", "srvrun_" + self.getArg("slot") + ".log")
 
         # read server config
         self.Verbosity.print("Read config files")
         server_cfg = ConfigParser()
-        server_cfg.read(self.getArg("path_server_cfg"))
+        server_cfg.read(path_server_cfg)
 
         # setup UDP Plugin
         self.Verbosity.print("Setup UDP plugin server")
@@ -57,36 +47,32 @@ class CommandSrvrun(Command):
         udpp_cfg = server_cfg['SERVER']['UDP_PLUGIN_ADDRESS'].split(":")
         udpp_addr = udpp_cfg[0]
         udpp_port_plugin = udpp_cfg[1]
-        try:
-            realtime_json_path = self.getArg("path-realtime-json")
-        except ArgumentException:
-            realtime_json_path = None
         udpp = UdpPluginServer(udpp_port_server, udpp_port_plugin, db,
-                               self.getArg("path-entry-list"),
-                               self.getArg("path-acs-target"),
-                               realtime_json_path,
+                               path_entry_list,
+                               path_data_acserver,
+                               path_realtime_json,
                                verbosity=self.Verbosity)
         udpp.process() # run once just to ensure that it does not crash immediately
 
         # start ac server as separate process
         self.Verbosity.print("Start AC server")
         acs_cmd = []
-        acs_cmd.append(os.path.join(self.getArg("path_acs_target"), self.getArg("name_acs")))
+        acs_cmd.append(os.path.join(path_data_acserver, "acServer" + self.getArg("slot")))
         acs_cmd.append("-c")
-        acs_cmd.append(self.getArg("path-server-cfg"))
+        acs_cmd.append(path_server_cfg)
         acs_cmd.append("-e")
-        acs_cmd.append(self.getArg("path-entry-list"))
+        acs_cmd.append(path_entry_list)
         acs_cmd.append(">")
         try:
-            stdout = open(self.getArg("acs_log"), "w")
+            stdout = open(path_log_acserver, "w")
         except ArgumentException as e:
             stdout = DEVNULL
         acs_cmd.append("&")
-        acs_proc = Popen(acs_cmd, cwd=self.getArg("path_acs_target"), stdout=stdout, stderr=stdout)
+        acs_proc = Popen(acs_cmd, cwd=path_data_acserver, stdout=stdout, stderr=stdout)
         #acs_proc = Popen(acs_cmd, stdout=stdout, stderr=stdout)
 
         # export PID
-        with open(os.path.join(self.getArg("path_acs_target"), self.getArg("name_acs") + ".pid"), "w") as pidfile:
+        with open(os.path.join(path_data_acserver, "acServer" + self.getArg("slot") + ".pid"), "w") as pidfile:
             pidfile.write(str(acs_proc.pid))
 
         # run server

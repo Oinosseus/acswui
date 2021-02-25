@@ -129,20 +129,9 @@ class ServerSlot {
         // start server
         $cmd_str = array();
         $cmd_ret = 0;
-        $cmd = "nohup ". $acswuiConfig->AbsPathAcswui . "/acswui.py -vvv srvrun";
-        $cmd .= " --name-acs \"acServer$id\"";
-        $cmd .= " --db-host \"" . $acswuiConfig->DbHost . "\"";
-        $cmd .= " --db-port \"" . $acswuiConfig->DbPort . "\"";
-        $cmd .= " --db-database \"" . $acswuiConfig->DbDatabase . "\"";
-        $cmd .= " --db-user \"" . $acswuiConfig->DbUser . "\"";
-        $cmd .= " --db-password \"" . $acswuiConfig->DbPasswd . "\"";
-        $cmd .= " --path-acs-target \"" . $acswuiConfig->AbsPathData . "/acserver/\"";
-        $cmd .= " --acs-log \"" . $acswuiConfig->AbsPathData . "/logs_acserver/slot_$id.log\"";
-        $cmd .= " --path-server-cfg \"$server_cfg_path\"";
-        $cmd .= " --path-entry-list \"$entry_list_path\"";
-        $cmd .= " --path-realtime-json \"$realtime_json_path\"";
-//         $cmd .= " </dev/null >" . $acswuiConfig->AbsPathData . "/log_acserver/slot_$id.log 2>&1 &";
-//         $cmd .= " >/dev/null 2>&1 &";
+        $cmd = "nohup ". $acswuiConfig->AbsPathAcswui . "/acswui.py -vvv srvrun ";
+        $cmd .= " \"" . $acswuiConfig->AbsPathData . "/acswui.ini\" ";
+        $cmd .= " --slot $id";
         $cmd .= " >" . $acswuiConfig->AbsPathData . "/logs_acserver/slot_$id.log 2>&1 &";
         exec($cmd, $cmd_str, $cmd_ret);
         foreach ($cmd_str as $line) echo "$line<br>";

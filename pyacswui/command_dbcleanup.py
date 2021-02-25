@@ -16,11 +16,11 @@ class CommandDbCleanup(Command):
         # Basic Arguments
 
         # database
-        self.add_argument('--db-host', help="Database host (not needed when global config is given)")
-        self.add_argument('--db-port', help="Database port (not needed when global config is given)")
-        self.add_argument('--db-database', help="Database name (not needed when global config is given)")
-        self.add_argument('--db-user', help="Database username (not needed when global config is given)")
-        self.add_argument('--db-password', help="Database password (not needed when global config is given)")
+        #self.add_argument('--db-host', help="Database host (not needed when global config is given)")
+        #self.add_argument('--db-port', help="Database port (not needed when global config is given)")
+        #self.add_argument('--db-database', help="Database name (not needed when global config is given)")
+        #self.add_argument('--db-user', help="Database username (not needed when global config is given)")
+        #self.add_argument('--db-password', help="Database password (not needed when global config is given)")
 
         ## http settings
         #self.add_argument('--http-path', help="Target directory of http server")

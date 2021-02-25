@@ -10,7 +10,6 @@ import os
 import sys
 import json
 import time
-#from pyacswui import CommandSrvctl, , ServerPackager
 from pyacswui import CommandPackage, CommandInstall, CommandSrvrun, CommandDbCleanup
 
 
@@ -20,15 +19,13 @@ from pyacswui import CommandPackage, CommandInstall, CommandSrvrun, CommandDbCle
 # ---------------------------------
 
 __helpstring  = "Examples for complete safe setup:\n"
-__helpstring += "./acswui -vvv --ini local.ini install-files\n"
-__helpstring += "./acswui -vv --ini remote.ini install-http --http-root-password my-secret\n"
+__helpstring += "./acswui -vv local.ini package\n"
+__helpstring += "./acswui -vv remote.ini install --install-base-data --root-pwd \"mypassword\"\n"
 
 # main arguments
 argparser = argparse.ArgumentParser(prog="acswui", description="Assetto Corsa Server Web User Interface", epilog=__helpstring, formatter_class=argparse.RawTextHelpFormatter)
-argparser.add_argument('-i', '--ini', help="read arguments from INI file")
-argparser.add_argument('-j', '--json', help="read arguments from json string")
 argparser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
-argparsersubs     = argparser.add_subparsers(dest='command')
+argparsersubs = argparser.add_subparsers(dest='command')
 
 CommandPackage(argparsersubs)
 CommandInstall(argparsersubs)
@@ -41,10 +38,9 @@ CommandDbCleanup(argparsersubs)
 #  - Execute Command -
 # ---------------------
 
-args = argparser.parse_args()
-args.CmdObject.readArgs(args)
-
 duration_start = time.monotonic()
+args = argparser.parse_args()
+args.CmdObject.parseArgs(args)
 args.CmdObject.process()
 duration_end = time.monotonic()
 

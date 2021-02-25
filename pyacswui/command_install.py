@@ -14,44 +14,26 @@ class CommandInstall(Command):
     def __init__(self, argparser):
         Command.__init__(self, argparser, "install", "Server-Installer -  install http from server package")
 
-        ##################
-        # Basic Arguments
-
-        # paths
-        self.add_argument('--path-srvpkg', help="Directy where the content from the server packager can be read from")
-        self.add_argument('--path-htdocs', help="Path to htdocs directory referecned by the HTTP server")
-        self.add_argument('--path-data', help="Path to a directory not accessible by the HTTP server")
-        self.add_argument('--path-htdata', help="Path to a directory that is accessible by the HTTP server")
-
-        # database
-        self.add_argument('--db-host', help="Database host (not needed when global config is given)")
-        self.add_argument('--db-port', help="Database port (not needed when global config is given)")
-        self.add_argument('--db-database', help="Database name (not needed when global config is given)")
-        self.add_argument('--db-user', help="Database username (not needed when global config is given)")
-        self.add_argument('--db-password', help="Database password (not needed when global config is given)")
-
-        # http settings
-        self.add_argument('--http-root-password', help="Password for root user")
-        self.add_argument('--http-guest-group', default="Visitor", help="Group name of visitors that are not logged in")
-        self.add_argument('--http-default-tmplate', default="acswui", help="Default template for http")
-        self.add_argument('--http-guid', help="Name of webserver group on the server (needed to chmod access rights)")
-        self.add_argument('--install-base-data', action="store_true", help="install basic http data (default groups, etc.)")
+        self.add_argument('--root-password', help="Password for root user")
+        self.add_argument('--guest-group', default="Visitor", help="Group name of visitors that are not logged in")
+        self.add_argument('--default-template', default="acswui", help="Default template for http")
+        self.add_argument('--base-data', action="store_true", help="install basic http data (default groups, etc.)")
 
 
 
     def process(self):
 
         # read server_cfg json
-        with open(os.path.join(self.getArg("path_srvpkg"), "server_cfg.json"), "r") as f:
+        with open(os.path.join(self.getGeneralArg("path-srvpkg"), "server_cfg.json"), "r") as f:
             json_string = f.read()
         self.__server_cfg_json = json.loads(json_string)
 
         # setup database
-        self.__db = Database(host=self.getArg("db_host"),
-                             port=self.getArg("db_port"),
-                             database=self.getArg("db_database"),
-                             user=self.getArg("db_user"),
-                             password=self.getArg("db_password"),
+        self.__db = Database(host=self.getGeneralArg("db-host"),
+                             port=self.getGeneralArg("db-port"),
+                             database=self.getGeneralArg("db-database"),
+                             user=self.getGeneralArg("db-user"),
+                             password=self.getGeneralArg("db-password"),
                              verbosity=Verbosity(Verbosity(self.Verbosity))
                              )
 
@@ -61,7 +43,7 @@ class CommandInstall(Command):
         self.__work_cconfig()
         self.__work_scan_cars()
         self.__work_scan_tracks()
-        if self.getArg("install_base_data"):
+        if self.getArg("base-data") is True:
             self.__work_install_basics()
         self.__set_chmod()
 
@@ -116,7 +98,7 @@ class CommandInstall(Command):
         # htdocs
 
         # create dir
-        path_htdocs = os.path.abspath(self.getArg("path-htdocs"))
+        path_htdocs = os.path.abspath(self.getGeneralArg("path-htdocs"))
         if not os.path.isdir(path_htdocs):
             verb3.print("mkdirs " + path_htdocs)
             self.mkdirs(path_htdocs)
@@ -131,39 +113,12 @@ class CommandInstall(Command):
         # data
 
         # cfg
-        path_data = os.path.abspath(self.getArg("path-data"))
+        path_data = os.path.abspath(self.getGeneralArg("path-data"))
         path_data_acserver = os.path.join(path_data, "acserver")
         path_data_acserver_cfg = os.path.join(path_data_acserver, "cfg")
         if not os.path.isdir(path_data_acserver_cfg):
             verb3.print("mkdirs " + path_data_acserver_cfg)
             self.mkdirs(path_data_acserver_cfg)
-
-        # acserver binaries
-        path_srvpkg_acserver = os.path.join(self.getArg("path-srvpkg"), "acserver")
-        slot_nr = 0
-        while True:
-            slot_dict = self.getIniSection("SERVER_SLOT_" + str(slot_nr))
-            if slot_dict is None:
-                break
-            path_srvpkg_acserver_bin = os.path.join(path_srvpkg_acserver, "acServer")
-            path_data_acserver_binslot = os.path.join(path_data_acserver, "acServer%i" % slot_nr)
-            shutil.copy(path_srvpkg_acserver_bin, path_data_acserver_binslot)
-            slot_nr += 1
-
-
-        #########
-        # htdata
-
-        # create dir
-        path_htdata = os.path.abspath(self.getArg("path-htdata"))
-        if not os.path.isdir(path_htdata):
-            verb3.print("mkdirs " + path_htdata)
-            self.mkdirs(path_htdata)
-
-        # copy data
-        path_srvpkg_htdata = os.path.join(self.getArg("path-srvpkg"), "htdata")
-        verb2.print("copy " + path_srvpkg_htdata + " to " + path_htdata)
-        self.copytree(path_srvpkg_htdata, path_htdata)
 
         # log dirs
         for logdir in ['logs_acserver', 'logs_cron', 'logs_http']:
@@ -178,6 +133,68 @@ class CommandInstall(Command):
             verb3.print("mkdirs " + path_htcache)
             self.mkdirs(path_htcache)
 
+        # acserver binaries
+        path_srvpkg_acserver = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver")
+        slot_nr = 0
+        while True:
+            slot_dict = self.getIniSection("SERVER_SLOT_" + str(slot_nr))
+            if slot_dict is None:
+                break
+            path_srvpkg_acserver_bin = os.path.join(path_srvpkg_acserver, "acServer")
+            path_data_acserver_binslot = os.path.join(path_data_acserver, "acServer%i" % slot_nr)
+            shutil.copy(path_srvpkg_acserver_bin, path_data_acserver_binslot)
+            slot_nr += 1
+
+        # server_cfg.json
+        path_srvpkg_servercfg = os.path.join(self.getGeneralArg("path-srvpkg"), "server_cfg.json")
+        path_data_servercfg = os.path.join(path_data, "server_cfg.json")
+        shutil.copy(path_srvpkg_servercfg, path_data_servercfg)
+
+
+        #############
+        # acswui.ini
+
+        path_acswui_ini = os.path.join(path_data, "acswui.ini")
+        verb2.print("create " + path_acswui_ini)
+
+        with open(path_acswui_ini, "w") as f:
+            f.write("[GENERAL]\n")
+
+            # database
+            keys = []
+            keys += ['db-host', 'db-database', 'db-port', 'db-user', 'db-password']
+            for key in keys:
+                value = self.getIniSection("GENERAL")[key]
+                f.write(key + " = " + value + "\n")
+
+            # paths
+            keys = []
+            keys += ['path-data', 'path-htdata']
+            for key in keys:
+                value = self.getIniSection("GENERAL")[key]
+                value = os.path.abspath(value)
+                f.write(key + " = " + value + "\n")
+
+
+        #########
+        # htdata
+
+        # create dir
+        path_htdata = os.path.abspath(self.getGeneralArg("path-htdata"))
+        if not os.path.isdir(path_htdata):
+            verb3.print("mkdirs " + path_htdata)
+            self.mkdirs(path_htdata)
+
+        # copy data
+        path_srvpkg_htdata = os.path.join(self.getGeneralArg("path-srvpkg"), "htdata")
+        verb2.print("copy " + path_srvpkg_htdata + " to " + path_htdata)
+        self.copytree(path_srvpkg_htdata, path_htdata)
+
+        # realtime
+        path_realtime = os.path.join(path_htdata, "realtime")
+        if not os.path.isdir(path_realtime):
+            verb3.print("mkdirs " + path_realtime)
+            self.mkdirs(path_realtime)
 
 
     def __work_db_tables(self):
@@ -515,26 +532,15 @@ class CommandInstall(Command):
         self.Verbosity.print("create cConfig.php")
 
         # encrypt root password
-        http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.getArg('http_root_password')])
+        http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.getArg('root-password')])
         http_root_password = http_root_password.decode("utf-8")
 
         # paths
         abspath_acswui = os.path.abspath(os.curdir)
-        abspath_data = os.path.abspath(self.getArg('path-data'))
-        abspath_htdocs = os.path.abspath(self.getArg('path-htdocs'))
-        abspath_htdata = os.path.abspath(self.getArg('path-htdata'))
+        abspath_data = os.path.abspath(self.getGeneralArg('path-data'))
+        abspath_htdocs = os.path.abspath(self.getGeneralArg('path-htdocs'))
+        abspath_htdata = os.path.abspath(self.getGeneralArg('path-htdata'))
         abspath_acswui_py = os.path.abspath(os.path.join(abspath_acswui, "acswui.py"))
-
-        # determine reltive path from http to ac server
-        #relpath_http2acsrv = os.path.relpath(path_acscontent_absolute, path_http)
-        #path_acserverdir = os.path.abspath(os.path.join(abspath_acswui, self.getArg('path-acs-target')))
-
-        # path to this command
-
-        # path for acs-content
-        #path_http = os.path.abspath(self.getArg("http-path"))
-        #path_acscontent_absolute = os.path.abspath(self.getArg("http-path-acs-content"))
-        #path_acscontent_relative = os.path.relpath(path_acscontent_absolute, path_http)
 
         # server slots
         server_slot_list = []
@@ -599,21 +605,19 @@ class CommandInstall(Command):
             f.write("    private $AbsPathAcswui = \"%s\";\n" % abspath_acswui)
             f.write("\n")
             f.write("    // basic constants\n")
-            f.write("    private $DefaultTemplate = \"%s\";\n" % self.getArg('http_default_tmplate'))
+            f.write("    private $DefaultTemplate = \"%s\";\n" % self.getArg('default-template'))
             f.write("    private $LogDebug = \"false\";\n")
             f.write("    private $RootPassword = '%s';\n" % http_root_password)
-            f.write("    private $GuestGroup = '%s';\n" % self.getArg('http_guest_group'))
+            f.write("    private $GuestGroup = '%s';\n" % self.getArg('guest-group'))
             f.write("\n")
             f.write("    // database constants\n")
-            f.write("    private $DbHost = \"%s\";\n" % self.getArg('db_host'))
-            f.write("    private $DbDatabase = \"%s\";\n" % self.getArg('db_database'))
-            f.write("    private $DbPort = \"%s\";\n" % self.getArg('db_port'))
-            f.write("    private $DbUser = \"%s\";\n" % self.getArg('db_user'))
-            f.write("    private $DbPasswd = \"%s\";\n" % self.getArg('db_password'))
+            f.write("    private $DbHost = \"%s\";\n" % self.getGeneralArg('db-host'))
+            f.write("    private $DbDatabase = \"%s\";\n" % self.getGeneralArg('db-database'))
+            f.write("    private $DbPort = \"%s\";\n" % self.getGeneralArg('db-port'))
+            f.write("    private $DbUser = \"%s\";\n" % self.getGeneralArg('db-user'))
+            f.write("    private $DbPasswd = \"%s\";\n" % self.getGeneralArg('db-password'))
             f.write("\n")
             f.write("    // server_cfg\n")
-            #f.write("    private $AcsContent = \"%s\";\n" % path_acscontent_relative)
-            #f.write("    private $AcsContentAbsolute = \"%s\";\n" % path_acscontent_absolute)
             f.write("    private $FixedServerConfig = array(%s);\n" % fixed_server_settings)
             f.write("    private $ServerSlots = array(%s);\n" % server_slots)
             f.write("\n")
@@ -633,7 +637,7 @@ class CommandInstall(Command):
         self.Verbosity.print("scanning for cars")
 
         # paths
-        abspath_data = os.path.abspath(self.getArg('path-srvpkg'))
+        abspath_data = os.path.abspath(self.getGeneralArg('path-srvpkg'))
 
         # set all current cars and skins to 'deprecated'
         self.__db.rawQuery("UPDATE Cars SET Deprecated=1 WHERE Deprecated=0")
@@ -686,7 +690,7 @@ class CommandInstall(Command):
         self.Verbosity.print("Scanning for tracks")
 
         # paths
-        abspath_data = os.path.abspath(self.getArg('path-srvpkg'))
+        abspath_data = os.path.abspath(self.getGeneralArg('path-srvpkg'))
 
         # set all current trakcs to 'deprecated'
         self.__db.rawQuery("UPDATE Tracks SET Deprecated=1 WHERE Deprecated=0")
@@ -774,7 +778,7 @@ class CommandInstall(Command):
 
         # add guest group
         try:
-            guest_group = self.getArg("http_guest_group")
+            guest_group = self.getArg("guest-group")
         except ArgumentException as e:
             guest_group = ""
 
@@ -824,21 +828,23 @@ class CommandInstall(Command):
 
         # paths
         abspath_acswui = os.path.abspath(os.curdir)
-        abspath_data = os.path.abspath(self.getArg('path-data'))
-        abspath_htdocs = os.path.abspath(self.getArg('path-htdocs'))
-        abspath_htdata = os.path.abspath(self.getArg('path-htdata'))
+        abspath_data = os.path.abspath(self.getGeneralArg('path-data'))
+        abspath_htdocs = os.path.abspath(self.getGeneralArg('path-htdocs'))
+        abspath_htdata = os.path.abspath(self.getGeneralArg('path-htdata'))
         abspath_acswui_py = os.path.abspath(os.path.join(abspath_acswui, "acswui.py"))
 
         # directory paths
         for path in [abspath_data, abspath_htdocs, abspath_htdata]:
-            cmd = ["chgrp", "-R", self.getArg('http-guid'), path]
+            cmd = ["chgrp", "-R", self.getGeneralArg('http-guid'), path]
             verb2.print(" ".join(cmd))
             subprocess.run(cmd)
 
         # directories with write access
         paths = []
         paths.append(os.path.join(abspath_data, "logs_http"))
+        paths.append(os.path.join(abspath_data, "logs_acserver"))
         paths.append(os.path.join(abspath_data, "htcache"))
+        paths.append(os.path.join(abspath_data, "acserver"))
         paths.append(os.path.join(abspath_data, "acserver", "cfg"))
         for path in paths:
             cmd = ["chmod", "g+w", path]
@@ -846,8 +852,11 @@ class CommandInstall(Command):
             subprocess.run(cmd)
 
         # acswuy python scripts
-        for scriptpath in os.listdir(abspath_acswui):
-            if scriptpath[-3:] == ".py":
-                cmd = ["chgrp", self.getArg("http-guid"), os.path.join(abspath_acswui, scriptpath)]
+        cmd = ["chgrp", self.getGeneralArg("http-guid"), os.path.join(abspath_acswui, "acswui.py")]
+        verb2.print(" ".join(cmd))
+        subprocess.run(cmd)
+        for script in os.listdir(os.path.join(abspath_acswui, "pyacswui")):
+            if script[-3:] == ".py":
+                cmd = ["chgrp", self.getGeneralArg("http-guid"), os.path.join(abspath_acswui, "pyacswui", script)]
                 verb2.print(" ".join(cmd))
                 subprocess.run(cmd)
