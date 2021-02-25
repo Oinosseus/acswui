@@ -62,8 +62,9 @@ ul.MainMenu {
   margin: 0px;
   margin-top: -20px;
   padding-top: 100px;
-  background-image: url("logo_small.png");
+  background-image: url("logo.svg");
   background-repeat: no-repeat;
+  background-size: 150px auto;
 }
 
 ul.MainMenu li {
