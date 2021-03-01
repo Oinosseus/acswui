@@ -214,7 +214,7 @@
 
         $query = "INSERT INTO `$table` ($insert_columns) VALUES ($insert_values);";
         if (!$this->db_handle->query($query)) {
-            $acswuiLog->logError($this->db_handle->error);
+            $acswuiLog->logError("Query '$query' failed: " . $this->db_handle->error);
         }
 
 
