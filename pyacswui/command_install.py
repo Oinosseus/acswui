@@ -623,6 +623,7 @@ class CommandInstall(Command):
             f.write("\n")
             f.write("    // misc\n")
             f.write("    private $DriverRanking = %s;\n" % self.dict2php(driver_ranking))
+            #f.write("    private $DriverRankingCummulateScanDays = %s;\n" % self.getIniSection("DRIVER_RANKING")['CummulateScanDays'])
             f.write("\n")
             f.write("    // this allows read-only access to private properties\n")
             f.write("    public function __get($name) {\n")

@@ -15,9 +15,6 @@ class DriverRanking implements JsonSerializable {
     private $Timestamp = NULL;
     private $Characteristics = NULL;
 
-    // Amount of days in the past where the ranking is determined
-    const ScanDays = 30;
-
     // The velocity to which collision speeds are normalized to
     const CollisionNormSpeed = 100;
 
@@ -89,7 +86,7 @@ class DriverRanking implements JsonSerializable {
 
         // scan laps of sessions
         $now = new DateTime();
-        $then = $now->sub(new DateInterval("P" . DriverRanking::ScanDays . "D"));
+        $then = $now->sub(new DateInterval("P" . $acswuiConfig->DriverRanking['DEF']['DAYS'] . "D"));
         $timestamp = $then->format("Y-m-d");
         $query = "SELECT Id FROM Sessions WHERE Timestamp >= '$timestamp'";
         foreach ($acswuiDatabase->fetch_raw_select($query) as $row) {

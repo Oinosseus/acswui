@@ -288,7 +288,7 @@ class driver_ranking extends cContentPage {
 
         // SF
         $html .= "<tr>";
-        $html .= "<td rowspan=\"5\">SF</td>";
+        $html .= "<td rowspan=\"3\">SF</td>";
         $html .= "<td>CT</td>";
         $html .= "<td>" . sprintf("%+0.2f/Cut/1Mm", $acswuiConfig->DriverRanking['SF']['CT']) . "</td>";
         $html .= "<td>" . _("Safety deduction points for cuts.") . "<br><small>Safety Cuts</small></td>";
@@ -305,6 +305,16 @@ class driver_ranking extends cContentPage {
         $html .= "<td>" . sprintf("%+0.2f/Collision/1Mm", $acswuiConfig->DriverRanking['SF']['CC']) . "</td>";
         $html .= "<td>" . _("Safety deduction points for crashing with another car") . "<br><small>Collision Car</small></td>";
         $html .= "</tr>";
+
+
+        // DEF
+        $html .= "<tr>";
+        $html .= "<td rowspan=\"1\">DEF</td>";
+        $html .= "<td>DAYS</td>";
+        $html .= "<td>" . $acswuiConfig->DriverRanking['DEF']['DAYS'] . "</td>";
+        $html .= "<td>" . _("Amount of days in the past where sessions are integrated in latest ranking calculation.") . "<br><small>Definition Days</small></td>";
+        $html .= "</tr>";
+
 
         $html .= "<table>";
 
