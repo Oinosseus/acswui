@@ -24,7 +24,7 @@ class CommandInstall(Command):
     def process(self):
 
         # read server_cfg json
-        with open(os.path.join(self.getGeneralArg("path-refpkg"), "server_cfg.json"), "r") as f:
+        with open(os.path.join(self.getGeneralArg("path-srvpkg"), "server_cfg.json"), "r") as f:
             json_string = f.read()
         self.__server_cfg_json = json.loads(json_string)
 
