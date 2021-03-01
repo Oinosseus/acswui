@@ -82,6 +82,7 @@ class DriverRanking implements JsonSerializable {
     public static function calculateRanks() {
         global $acswuiDatabase;
         global $acswuiConfig;
+        global $acswuiLog;
         global $__DriverRankingArray__;
 
         $__DriverRankingArray__ = array();
@@ -181,18 +182,38 @@ class DriverRanking implements JsonSerializable {
 
 
         // scan car class records
-        $file_path = $acswuiConfig->AbsPathData . "/htcache/stats_carclass_records.json";
-        if (!file_exists($file_path)) return [];
-        $class_records = json_decode(file_get_contents($file_path), TRUE);
-        foreach ($class_records as $car_class_id=>$records) {
-            foreach ($records as $track_id=>$best_lap_ids) {
-                for ($pos=0; $pos<count($best_lap_ids); ++$pos) {
+        $file_path = $acswuiConfig->AbsPathData . "/htcache/stats_track_records.json";
+        if (!file_exists($file_path)) {
+            $acswuiLog->logError("Cannot find file: $file_path");
+            return [];
+        }
+        $track_records = json_decode(file_get_contents($file_path), TRUE);
+        foreach (CarClass::listClasses() as $cc) {
+            foreach ($track_records['Data'] as $tid=>$record_data) {
 
-                    // calculate ahead positions
-                    $lap = new Lap($best_lap_ids[$pos]);
-                    $ahead_position = count($best_lap_ids) - $pos - 1;
-                    DriverRanking::ranklistAdd($lap->user(), "SX", "BT", $ahead_position);
+                // get best laps for each user
+                $user_records = array();
+                foreach ($record_data as $uid=>$user_data) {
+                    foreach ($user_data as $cid=>$lid) {
+
+                        // check for valid car
+                        $lap = new Lap($lid);
+                        if (!$cc->validLap($lap)) continue;
+
+                        $user_records[$lap->user()->id()] = $lap;
+                    }
                 }
+
+                // sort record laps
+                $record_laps = array_values($user_records);
+                usort($record_laps, "Lap::compareLaptime");
+                $record_laps = array_reverse($record_laps);
+                $ahead_position = 0;
+                foreach ($record_laps as $lap) {
+                    DriverRanking::ranklistAdd($lap->user(), "SX", "BT", $ahead_position);
+                    $ahead_position += 1;
+                }
+
             }
         }
 
