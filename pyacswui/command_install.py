@@ -24,7 +24,7 @@ class CommandInstall(Command):
     def process(self):
 
         # read server_cfg json
-        with open(os.path.join(self.getGeneralArg("path-srvpkg"), "server_cfg.json"), "r") as f:
+        with open(os.path.join(self.getGeneralArg("path-refpkg"), "server_cfg.json"), "r") as f:
             json_string = f.read()
         self.__server_cfg_json = json.loads(json_string)
 
@@ -842,6 +842,7 @@ class CommandInstall(Command):
         # directories with write access
         paths = []
         paths.append(os.path.join(abspath_data, "logs_http"))
+        paths.append(os.path.join(abspath_data, "logs_cron"))
         paths.append(os.path.join(abspath_data, "logs_acserver"))
         paths.append(os.path.join(abspath_data, "htcache"))
         paths.append(os.path.join(abspath_data, "acserver"))
