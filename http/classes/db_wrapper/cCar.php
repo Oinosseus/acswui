@@ -39,6 +39,26 @@ class Car {
 
     /**
      * @param $inculde_deprecated If set to TRUE, also deprectaed items are listed (Default: False)
+     * @return An array of all available car brands
+     */
+    public static function listBrands($inculde_deprecated=FALSE) {
+        global $acswuiDatabase;
+
+        $where = array();
+        if ($inculde_deprecated !== TRUE) {
+            $where['Deprecated'] = 0;
+        }
+
+        $brands = array();
+        foreach ($acswuiDatabase->fetch_2d_array("Cars", ["Brand"], $where, "Brand") as $b) {
+            if (!in_array($b['Brand'], $brands)) $brands[] = $b['Brand'];
+        }
+
+        return $brands;
+    }
+
+    /**
+     * @param $inculde_deprecated If set to TRUE, also deprectaed items are listed (Default: False)
      * @return An array of all available Car objects, ordered by name
      */
     public static function listCars($inculde_deprecated=FALSE) {
