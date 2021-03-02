@@ -40,18 +40,10 @@ abstract class Cronjob {
 
         // determine Id in CronJobs table
         $dbcols = ['Name'=>get_class($this)];
-        $res = $acswuiDatabase->fetch_2d_array("CronJobs", ['Id'], $dbcols);
-        if (count($res) == 0) {
-            $this->CronJobId = $acswuiDatabase->insert_row("CronJobs", $dbcols);
-        } else {
-            $this->CronJobId = $res[0]['Id'];
-        }
-
-        // determine last execution
-        $query = "SELECT Start FROM CronExecutions WHERE CronJob = " . $this->CronJobId . " ORDER BY Id DESC LIMIT 1;";
-        $res = $acswuiDatabase->fetch_raw_select($query);
+        $res = $acswuiDatabase->fetch_2d_array("CronJobs", ['Id', 'LastStart'], $dbcols);
         if (count($res) > 0) {
-            $this->LastExecution = new DateTimeImmutable($res[0]['Start']);
+            $this->CronJobId = $res[0]['Id'];
+            $this->LastExecution = new DateTimeImmutable($res[0]['LastStart']);
         }
 
         // determine next execution time
@@ -83,11 +75,15 @@ abstract class Cronjob {
 
             // log execution in db
             $cols = array();
-            $cols['CronJob'] = $this->CronJobId;
-            $cols['Start'] = $LastExecution->format("Y-m-d H:i:s");
-            $cols['Duration'] = 0;
-            $cols['Log'] = "not startet yet";
-            $db_id = $acswuiDatabase->insert_row("CronExecutions", $cols);
+            $cols['Name'] = get_class($this);
+            $cols['LastStart'] = $LastExecution->format("Y-m-d H:i:s");
+            $cols['LastDuration'] = 0;
+            $cols['Status'] = "starting";
+            if ($this->CronJobId === NULL) {
+                $this->CronJobId = $acswuiDatabase->insert_row("CronJobs", $cols);
+            } else {
+                $acswuiDatabase->update_row("CronJobs", $this->CronJobId, $cols);
+            }
 
             // execute the job
             $execution_start_mtime = microtime(true);
@@ -97,9 +93,9 @@ abstract class Cronjob {
 
             // log execution in db
             $cols = array();
-            $cols['Duration'] = $this->ExecutionDuration;
-            $cols['Log'] = $this->LogString;
-            $acswuiDatabase->update_row("CronExecutions", $db_id, $cols);
+            $cols['LastDuration'] = $this->ExecutionDuration;
+            $cols['Status'] = "finished";
+            $acswuiDatabase->update_row("CronJobs", $this->CronJobId, $cols);
         }
 
         return $executed;
@@ -126,9 +122,11 @@ abstract class Cronjob {
 
     /**
      * Write a message to the execution log of the cronjob.
-     * All messages are gathered together and stored in CronExecutions table
      */
     public function log(string $message) {
+        global $acswuiLog;
+        $acswuiLog->logNotice($message);
+
         if (substr($message, -1, 1) != "\n") $message .= "\n";
         $this->LogString .= $message;
     }

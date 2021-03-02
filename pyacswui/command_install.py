@@ -220,14 +220,9 @@ class CommandInstall(Command):
         Verbosity(self.Verbosity).print("check database table `CronJobs`")
         self.__db.appendTable("CronJobs")
         self.__db.appendColumnString("CronJobs", "Name", 60)
-
-        # check table CronExecutions
-        Verbosity(self.Verbosity).print("check database table `CronExecutions`")
-        self.__db.appendTable("CronExecutions")
-        self.__db.appendColumnUInt("CronExecutions", "CronJob")
-        self.__db.appendColumnCurrentTimestamp("CronExecutions", "Start")
-        self.__db.appendColumnUInt("CronExecutions", "Duration")
-        self.__db.appendColumnText("CronExecutions", "Log")
+        self.__db.appendColumnCurrentTimestamp("CronJobs", "LastStart")
+        self.__db.appendColumnUInt("CronJobs", "LastDuration")
+        self.__db.appendColumnString("CronJobs", "Status", 50)
 
 
         # check table ServerPresets
