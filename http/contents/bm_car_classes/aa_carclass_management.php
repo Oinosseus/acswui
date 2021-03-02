@@ -173,7 +173,7 @@ class aa_carclass_management extends cContentPage {
                 // output row
                 $car_id = $car->id();
                 $html .= "<tr>";
-                $html .= "<td>" . $car->name() . getImgCarSkin($car->skins()[0]->id(), $car->id()) . "</td>";
+                $html .= "<td>" . $car->name() . $car->skins()[0]->htmlImg($car->id(), 300) . "</td>";
                 $html .= "<td><input type=\"number\"   name=\"BALLAST_$car_id\" min=\"0\" max=\"9999\" step=\"1\" size=\"5\" value=\"$ballast\"> kg</td>";
                 $html .= "<td><input type=\"number\"   name=\"RESTRICTOR_$car_id\" max=\"100\" min=\"0\" step=\"1\" size=\"3\" value=\"$restrictor\"> &percnt;</td>";
                 $html .= "<td><button type=\"submit\"  name=\"DELETE_CAR\" value=\"$car_id\" >" . _("delete") . "</button></td>";
@@ -217,7 +217,7 @@ class aa_carclass_management extends cContentPage {
                     }
                     $html .= "<label for=\"car_add_option_id_" . $car->id() . "\">";
                     $html .= $car->name();
-                    if (count($car->skins()) > 0) $html .= $car->skins()[0]->htmlImg();
+                    if (count($car->skins()) > 0) $html .= $car->skins()[0]->htmlImg("", 200);
                     $html .= "</label></div>";
                 }
             }

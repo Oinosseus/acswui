@@ -15,15 +15,15 @@
  *                #contents__bm_car_classes
  ******************************************************************************/
 
-#contents__aa_carclass_management table#available_cars tr td img{
+#contents__bm_car_classes__aa_carclass_management table#available_cars tr td img{
     display:none;
 }
 
-#contents__aa_carclass_management table#available_cars tr:hover td {
+#contents__bm_car_classes__aa_carclass_management table#available_cars tr:hover td {
     background-color: rgba(255, 0, 0, 0.75);
 }
 
-#contents__aa_carclass_management table#available_cars tr:hover img {
+#contents__bm_car_classes__aa_carclass_management table#available_cars tr:hover img {
     display:block;
     position: absolute;
     border: 10px solid rgba(0,0,0,0.5);
@@ -33,40 +33,40 @@
     margin-top:15px;
 }
 
-#contents__aa_carclass_management table#available_cars tr:last-child:hover td {
+#contents__bm_car_classes__aa_carclass_management table#available_cars tr:last-child:hover td {
     background-color: rgba(0, 0, 0, 0.0);
 }
 
-#contents__aa_carclass_management table#available_cars tr:hover td:last-child {
+#contents__bm_car_classes__aa_carclass_management table#available_cars tr:hover td:last-child {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
 
-#contents__aa_carclass_management div.car_add_option{
+#contents__bm_car_classes__aa_carclass_management div.car_add_option{
     display:inline-block;
     margin: 5px;
     border-radius: 5px;
     width: auto;
 }
 
-#contents__aa_carclass_management div.car_add_option input[type=checkbox] {
+#contents__bm_car_classes__aa_carclass_management div.car_add_option input[type=checkbox] {
     display: none;
 }
 
-#contents__aa_carclass_management div.car_add_option img {
+#contents__bm_car_classes__aa_carclass_management div.car_add_option img {
     display: block;
 }
 
-#contents__aa_carclass_management div.car_add_option input[type=checkbox] + label {
+#contents__bm_car_classes__aa_carclass_management div.car_add_option input[type=checkbox] + label {
     background-color: rgba(0,0,0,0.2);
     padding: 5px;
 }
 
-#contents__aa_carclass_management div.car_add_option input[type=checkbox] + label:hover {
+#contents__bm_car_classes__aa_carclass_management div.car_add_option input[type=checkbox] + label:hover {
     background-color: rgba(0,0,0,0.5);
 }
 
-#contents__aa_carclass_management div.car_add_option input[type=checkbox]:checked + label {
+#contents__bm_car_classes__aa_carclass_management div.car_add_option input[type=checkbox]:checked + label {
     background-color: rgba(255,0,0,0.75);
 }
 
