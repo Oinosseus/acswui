@@ -133,7 +133,9 @@ class Database(object):
         self.__db_handle.commit()
 
         # retype parameters
-        if coldefault is not None:
+        if coldefault == "":
+            coldefault = "DEFAULT ''"
+        elif coldefault is not None:
             coldefault = "DEFAULT %s" % coldefault
         else:
             coldefault = ""
@@ -190,7 +192,7 @@ class Database(object):
         self.__appendColumn(tblname, colname, "varchar(" + str(length) + ")", "''")
 
     def appendColumnText(self, tblname, colname):
-        self.__appendColumn(tblname, colname, "text")
+        self.__appendColumn(tblname, colname, "text", "")
 
     def appendColumnDateTime(self, tblname, colname):
         self.__appendColumn(tblname, colname, "DATETIME")

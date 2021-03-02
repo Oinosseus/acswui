@@ -27,9 +27,12 @@ class occupation extends cContentPage {
         // get requested class
         if (isset($_REQUEST['CARCLASS_ID'])) {
             $this->CurrentCarClass = new CarClass((int) $_REQUEST['CARCLASS_ID']);
-            $_SESSION['CARCLASS_ID'] = $this->CurrentCarClass->id();
         } else if (isset($_SESSION['CARCLASS_ID'])) {
             $this->CurrentCarClass = new CarClass((int) $_SESSION['CARCLASS_ID']);
+        }
+
+        if ($this->CurrentCarClass !== NULL) {
+            $_SESSION['CARCLASS_ID'] = $this->CurrentCarClass->id();
         }
 
 
@@ -62,6 +65,11 @@ class occupation extends cContentPage {
         }
         $html .= "</select>";
         $html .= "</form>";
+
+        // description
+        if ($this->CurrentCarClass !== NULL) {
+            $html .= "<p>" . $this->CurrentCarClass->description() . "</p>";
+        }
 
         // show current occupations
         $html .= "<h1>" . _("Current Occupations") . "</h1>";
