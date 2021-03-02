@@ -113,12 +113,18 @@ class Track {
 
         // get path
         if ($config !="") {
-            $basepath = $acswuiConfig->AbsPathHtdata . "/content/tracks/$track/ui/$config";
+            $basepath = $acswuiConfig->RelPathHtdata . "/content/tracks/$track/ui/$config";
         } else {
-            $basepath = $acswuiConfig->AbsPathHtdata . "/content/tracks/$track/ui";
+            $basepath = $acswuiConfig->RelPathHtdata . "/content/tracks/$track/ui";
         }
 
-        return "<img src=\"$basepath/preview.png\" $img_id alt=\"$name\" title=\"$name\" $max_height>";
+        // title
+        $title = $name . "\n";
+        $title .= HumanValue::format($this->length(), "m") . " / ";
+        $title .= $this->pitboxes() . " pits\n";
+        $title .= $this->track() . "/" . $this->config();
+
+        return "<img src=\"$basepath/preview.png\" $img_id alt=\"$name\" title=\"$title\" $max_height>";
     }
 
 

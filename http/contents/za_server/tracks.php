@@ -16,10 +16,20 @@ class tracks extends cContentPage {
         // initialize the html output
         $html  = "";
 
-        foreach($acswuiDatabase->fetch_2d_array("Tracks", ["Id", "Track", "Config", "Name", "Length"], [], "Name") as $t) {
+        $last_section = "";
+        foreach (Track::listTracks() as $t) {
+
+            // check for section
+            $current_section = strtoupper(substr($t->name(), 0, 1));
+            if ($current_section != $last_section) {
+                $html .= "<h1>$current_section</h1>";
+                $last_section = $current_section;
+            }
+
+
             $html .= '<div style="display: inline-block; margin: 5px;">';
-            $html .= "<strong>" . $t["Name"] . "</strong><br>";
-            $html .= getImgTrack($t['Id']);
+            $html .= "<strong>" . $t->name() . "</strong><br>";
+            $html .= $t->htmlImg("", 300);
             $html .= "</div>";
         }
 
