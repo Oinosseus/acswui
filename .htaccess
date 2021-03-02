@@ -1,0 +1,3 @@
+<Files ~ ".*ini">
+    Require all denied
+</Files>
