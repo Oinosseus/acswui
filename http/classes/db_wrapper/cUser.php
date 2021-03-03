@@ -10,6 +10,7 @@ class User implements JsonSerializable {
     private $Password = NULL;
     private $Steam64GUID = NULL;
     private $Color = NULL;
+    private $Privacy = NULL;
 
     private static $UserList = NULL;
     private static $DriverList = NULL;
@@ -37,6 +38,23 @@ class User implements JsonSerializable {
         return $this->Color;
     }
 
+
+    //! @return The usrname that shall be displayed on HTML output (depending on privacy settings)
+    public function displayName() {
+        global $acswuiUser;
+
+        $privacy = $this->privacy();
+
+        if ($privacy == 2) {
+            return $this->login();
+        } else if ($privacy == 1 && $acswuiUser->IsLogged) {
+            return $this->login();
+        }
+
+        return "***";
+    }
+
+
     //! @return The database table id
     public function id() {
         return $this->Id;
@@ -62,6 +80,50 @@ class User implements JsonSerializable {
         return $this->Password;
     }
 
+
+    /**
+     * Set a new color for the user
+     * @param $color E.g. '#12ab98'
+     */
+    public function setColor(string $color) {
+        global $acswuiDatabase, $acswuiLog;
+
+        if (strlen($color) !== 7 || substr($color, 0, 1) != "#") {
+            $acswuiLog->logError("Malformed color: '$color'!");
+            return;
+        }
+
+        $acswuiDatabase->update_row("Users", $this->id(), ['Color'=>$color]);
+        $this->Color = $color;
+    }
+
+
+    public function setPrivacy(int $privacy) {
+        global $acswuiDatabase, $acswuiLog;
+
+        if ($privacy < 0 || $privacy > 2) {
+            $acswuiLog->logError("Invalid privacy: $privacy!");
+            return;
+        }
+
+        $acswuiDatabase->update_row("Users", $this->id(), ['Privacy'=>$privacy]);
+        $this->Privacy = $privacy;
+    }
+
+
+    /**
+     * Following values are possible:
+     * 0 (Private): Absolute privacy (not showing any personal information to public
+     * 1 (Community): Only show personal information to logged in users
+     * 2 (Public): Allow anyone to see personal information
+     * @return The privacy level for this user
+     */
+    public function privacy() {
+        if ($this->Privacy == NULL) $this->updateFromDb();
+        return $this->Privacy;
+    }
+
+
     //! @return The Steam64GUID of the user
     public function steam64GUID() {
         if ($this->Steam64GUID === NULL) $this->updateFromDb();
@@ -79,7 +141,7 @@ class User implements JsonSerializable {
         global $acswuiDatabase;
         global $acswuiLog;
 
-        $res = $acswuiDatabase->fetch_2d_array("Users", ['Login', 'Password', 'Steam64GUID', 'Color'], ['Id'=>$this->Id]);
+        $res = $acswuiDatabase->fetch_2d_array("Users", ['Login', 'Password', 'Steam64GUID', 'Color', 'Privacy'], ['Id'=>$this->Id]);
         if (count($res) !== 1) {
             $acswuiLog->logError("Cannot find User.Id=" . $this->Id);
             return;
@@ -89,6 +151,7 @@ class User implements JsonSerializable {
         $this->Password = $res[0]['Password'];
         $this->Steam64GUID = $res[0]['Steam64GUID'];
         $this->Color = $res[0]['Color'];
+        $this->Privacy = (int) $res[0]['Privacy'];
     }
 
     //! @return A list of all users

@@ -80,7 +80,7 @@ class occupation extends cContentPage {
                 foreach ($this->CurrentCarClass->occupations($car) as $occupation) {
                     $html .= "<tr>";
                     $html .= "<td>" . $occupation->skin()->htmlImg("", 100) . "</td>";
-                    $html .= "<td>" . $occupation->user()->login() . "</td>";
+                    $html .= "<td>" . $occupation->user()->displayName() . "</td>";
                     $html .= "</tr>";
                 }
             }
@@ -128,7 +128,7 @@ class occupation extends cContentPage {
                                 $disabled = "disabled";
                                 $checked = "";
                             }
-                            $occupying_driver = $current_occupations[$skin->id()]->user()->login();
+                            $occupying_driver = $current_occupations[$skin->id()]->user()->displayName();
                         }
 
                         $input_id = "OCCUPATE_CAR_" . $car->id() . "_SKIN_" . $skin->id();

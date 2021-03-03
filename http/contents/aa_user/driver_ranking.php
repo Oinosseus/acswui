@@ -178,7 +178,7 @@ class driver_ranking extends cContentPage {
             }
 
             $html .= "<tr id=\"table_row_user_$user_id\">";
-            $html .= "<td>" . $drv_rnk->user()->login() . "</td>";
+            $html .= "<td>" . $drv_rnk->user()->displayName() . "</td>";
             $html .= "<td>" . $this->getScoreHtml($drv_rnk, "XP") . "</td>";
             $html .= "<td>" . $this->getScoreHtml($drv_rnk, "SX", "RT") . "</td>";
             $html .= "<td>" . $this->getScoreHtml($drv_rnk, "SF", "CUT") . "</td>";

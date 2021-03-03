@@ -132,7 +132,7 @@ class racepoll extends cContentPage {
 
         foreach (User::listUsers() as $user) {
             $html .= "<tr>";
-            $html .= "<td>" . $user->login() . "</td>";
+            $html .= "<td>" . $user->displayName() . "</td>";
             foreach ($rpds as $rpd) {
 
                 $class = "availability";

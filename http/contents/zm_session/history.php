@@ -23,12 +23,6 @@ class history extends cContentPage {
         global $acswuiDatabase;
         global $acswuiUser;
 
-//         // get dictionary of drivers
-//         $drivers = array();
-//         foreach ($acswuiDatabase->fetch_2d_array('Users', ['Id', 'Login']) as $row) {
-//             $id = $row['Id'];
-//             $drivers[$id] = $row['Login'];
-//         }
 
 
         // --------------------------------------------------------------------
@@ -260,7 +254,7 @@ class history extends cContentPage {
 
                 $html .= '<tr>';
                 $html .= '<td>' . $rslt->position() . '</th>';
-                $html .= '<td>' . $rslt->user()->login() . '</th>';
+                $html .= '<td>' . $rslt->user()->displayName() . '</th>';
                 $html .= '<td>' . $rslt->carSkin()->htmlImg("", 50) . '</th>';
                 $html .= '<td>' . HumanValue::format($rslt->bestlap(), "LAPTIME") . '</td>';
                 $html .= '<td>' . HumanValue::format($rslt->totaltime(), "ms") . '</td>';
@@ -306,7 +300,7 @@ class history extends cContentPage {
             $html .= "<td>" . HumanValue::format($lap->laptime(), "LAPTIME") . "</td>";
             $html .= "<td>" . HumanValue::format($lap->laptime() - $laptime_best, "ms") . "</td>";
             $html .= "<td>" . $lap->cuts() . "</td>";
-            $html .= "<td>" . $lap->user()->login() . "</td>";
+            $html .= "<td>" . $lap->user()->displayName() . "</td>";
             $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
             $html .= "<td>" . HumanValue::format($lap->ballast(), "kg") . "</td>";
             $html .= "<td>" . HumanValue::format($lap->restrictor(), "%") . "</td>";
@@ -341,14 +335,14 @@ class history extends cContentPage {
             foreach ($this->Session->collisions() as $cll) {
 
                 $other = "";
-                if ($cll->otherUser() != NULL) $other = $cll->otherUser()->login();
+                if ($cll->otherUser() != NULL) $other = $cll->otherUser()->displayName();
 
                 $class = "class=\"";
                 $class .= ($cll->secondary()) ? " secondary_collision" : "";
                 $class .= "\"";
 
                 $html .= "<tr $class>";
-                $html .= "<td>" . $cll->user()->login() . "</td>";
+                $html .= "<td>" . $cll->user()->displayName() . "</td>";
                 $html .= "<td>$other</td>";
                 $html .= "<td>" . sprintf("%0.0f", $cll->speed()) . "</td>";
                 $html .= "<td>" . $cll->timestamp()->format("Y-m-d H:i:s") . "</td>";
@@ -379,7 +373,7 @@ class history extends cContentPage {
             $html .= "<td>" . $lap_number . "</td>";
             $html .= "<td>" . HumanValue::format($lap->laptime(), "LAPTIME") . "</td>";
             $html .= "<td>" . $lap->cuts() . "</td>";
-            $html .= "<td>" . $lap->user()->login() . "</td>";
+            $html .= "<td>" . $lap->user()->displayName() . "</td>";
             $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
             $html .= "<td>" . HumanValue::format($lap->ballast(), "kg") . "</td>";
             $html .= "<td>" . HumanValue::format($lap->restrictor(), "%") . "</td>";
@@ -412,7 +406,7 @@ class history extends cContentPage {
         // determine driver name langths
         $max_user_login_length = 0;
         foreach ($drivers as $u) {
-            $len = strlen($u->login());
+            $len = strlen($u->displayName());
             if ($len > $max_user_login_length)
                 $max_user_login_length = $len;
         }
@@ -470,7 +464,7 @@ class history extends cContentPage {
         $html .= "<g id=\"plots\">";
         foreach ($drivers as $u) {
             $user_id = $u->id();
-            $user_login = $u->login();
+            $user_login = $u->displayName();
             $user_color = $u->color();
             $polyline_points = "";
 
@@ -615,7 +609,7 @@ class history extends cContentPage {
         $html .= "<g id=\"plots\">";
         foreach ($this->Session->drivers() as $u) {
             $uid = $u->id();
-            $ul = $u->login();
+            $ul = $u->displayName();
             $uc = $u->color();
             $polyline_points = "";
 

@@ -363,6 +363,7 @@ class CommandInstall(Command):
         self.__db.appendColumnString("Users", "Password", 100)
         self.__db.appendColumnString("Users", "Steam64GUID", 50)
         self.__db.appendColumnString("Users", "Color", 10)
+        self.__db.appendColumnTinyInt("Users", "Privacy")
 
         # check table Groups
         Verbosity(self.Verbosity).print("check database table `Groups`")

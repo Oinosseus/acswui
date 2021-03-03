@@ -98,7 +98,7 @@ class overview extends cContentPage {
                 }
 
                 $html .= '<tr>';
-                $html .= '<td>' . $user->login() . '</th>';
+                $html .= '<td>' . $user->displayName() . '</th>';
                 $html .= '<td>' . HumanValue::format($lap_count, "laps") . '</td>';
                 $html .= '<td>' . HumanValue::format($lap_count * $this->Session->track()->length(), "m") . '</td>';
                 $html .= '</tr>';
@@ -133,7 +133,7 @@ class overview extends cContentPage {
             $html .= "<td>" . HumanValue::format($lap->laptime(), "LAPTIME") . "</td>";
             $html .= "<td>" . HumanValue::format($lap->laptime() - $laptime_best, "ms") . "</td>";
             $html .= "<td>" . $lap->cuts() . "</td>";
-            $html .= "<td>" . $lap->user()->login() . "</td>";
+            $html .= "<td>" . $lap->user()->displayName() . "</td>";
             $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
             $html .= "<td>" . HumanValue::format($lap->ballast(), "kg") . "</td>";
             $html .= "<td>" . HumanValue::format($lap->restrictor(), "%") . "</td>";

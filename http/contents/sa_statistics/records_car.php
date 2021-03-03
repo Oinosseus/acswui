@@ -52,7 +52,7 @@ class records_car extends cContentPage {
                     $html .= '<tr>';
                     $html .= '<td>' . HumanValue::format($lap->laptime(), "LAPTIME") . '</td>';
                     $html .= '<td>' . HumanValue::format($lap->laptime() - $best_laptime, "ms") . '</td>';
-                    $html .= '<td>' . $lap->user()->login() . '</td>';
+                    $html .= '<td>' . $lap->user()->displayName() . '</td>';
                     $html .= '<td>' . $lap->carSkin()->htmlImg("", 50) . '</td>';
                     $html .= '<td>' . $lap->carSkin()->car()->name() . '</td>';
                     $html .= '<td>' . HumanValue::format($lap->ballast(), "kg") . '</td>';

@@ -2,6 +2,8 @@
 
 class cUser {
 
+    private $User = NULL;
+
     public function __construct() {
 
         // initialize session variables
@@ -185,6 +187,13 @@ class cUser {
         return FALSE;
     }
 
+
+    //! @return The User object for the current logged user (NULL if no user is logged in)
+    public function user() {
+        if ($this->IsLogged !== TRUE) return NULL;
+        if ($this->User === NULL) $this->User = new User($this->Id);
+        return $this->User;
+    }
 }
 
 ?>
