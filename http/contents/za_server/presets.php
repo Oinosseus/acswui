@@ -10,7 +10,7 @@ class presets extends cContentPage {
         $this->MenuName   = _("Presets");
         $this->PageTitle  = "Server Presets";
         $this->TextDomain = "acswui";
-        $this->RequirePermissions = ["View_ServerContent"];
+        $this->RequirePermissions = ["Server_Presets_View"];
 
         // class variables used for html processing
         $this->CanEdit = FALSE;
