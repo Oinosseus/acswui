@@ -45,7 +45,9 @@ class User implements JsonSerializable {
 
         $privacy = $this->privacy();
 
-        if ($privacy == 2) {
+        if ($acswuiUser->Id == $this->id()) {
+            return $this->login();
+        } else if ($privacy == 2) {
             return $this->login();
         } else if ($privacy == 1 && $acswuiUser->IsLogged) {
             return $this->login();
