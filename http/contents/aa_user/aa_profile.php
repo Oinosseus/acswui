@@ -49,7 +49,7 @@ class aa_profile extends cContentPage {
         $html .= "<option value=\"$value\" $select>Community (Personal information only visible to logged users)</option>";
         $value = 2;
         $select = ($acswuiUser->user()->privacy() == $value) ? "selected" : "";
-        $html .= "<option value=\"$value\" $select>Public (Personal information anyone)</option>";
+        $html .= "<option value=\"$value\" $select>Public (Personal information visible to anyone)</option>";
         $html .= "</select>";
         $html .= "<br>";
 
