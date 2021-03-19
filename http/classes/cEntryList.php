@@ -3,9 +3,11 @@
 
 
 class EntryListItem {
+    private $CClass = NULL;
     private $Skin = NULL;
 
-    public function  __construct(CarSkin $skin) {
+    public function  __construct(CarClass $cc, CarSkin $skin) {
+        $this->CClass = $cc;
         $this->Skin = $skin;
     }
 
@@ -20,6 +22,8 @@ class EntryListItem {
     public function writeFile($fd, int $car_id) {
             $model = $this->Skin->car()->model();
             $skin = $this->Skin->skin();
+            $ballast = $this->CClass->ballast($this->Skin->car());
+            $restrictor = $this->CClass->restrictor($this->Skin->car());
 
             fwrite($fd, "[CAR_$car_id]\n");
             fwrite($fd, "MODEL=$model\n");
@@ -28,8 +32,8 @@ class EntryListItem {
             fwrite($fd, "DRIVERNAME=\n");
             fwrite($fd, "TEAM=\n");
             fwrite($fd, "GUID=\n");
-            fwrite($fd, "BALLAST=\n");
-            fwrite($fd, "RESTRICTOR=\n");
+            fwrite($fd, "BALLAST=$ballast\n");
+            fwrite($fd, "RESTRICTOR=$restrictor\n");
             fwrite($fd, "\n");
     }
 }
@@ -38,7 +42,7 @@ class EntryListItemOccupied extends EntryListItem {
     private $Occupation = NULL;
 
     public function __construct(CarClassOccupation $occupation) {
-        parent::__construct($occupation->skin());
+        parent::__construct($occupation->class(), $occupation->skin());
         $this->Occupation = $occupation;
     }
 
@@ -202,7 +206,7 @@ class EntryList {
         while (count($this->EntryItemsList) < $this->Track->pitboxes()) {
             $skin = $this->leastRepresentedAvailableCarskin();
             if ($skin === NULL) break;
-            $this->EntryItemsList[] = new EntryListItem($skin);
+            $this->EntryItemsList[] = new EntryListItem($this->CarClass, $skin);
         }
 
         // randomize entries to have random pit assignment
