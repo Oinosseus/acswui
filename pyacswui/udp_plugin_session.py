@@ -5,7 +5,7 @@ import json
 
 class UdpPluginSession(object):
 
-    def __init__(self, database, packet, predecessor=None, verbosity=0):
+    def __init__(self, server_slot_id, database, packet, predecessor=None, verbosity=0):
 
         # sanity check
         if not isinstance(database, Database):
@@ -13,6 +13,7 @@ class UdpPluginSession(object):
         if not isinstance(packet, UdpPacket):
             raise TypeError("Parameter 'packet' must be a UdpPacket object!")
 
+        self.__server_slot_id = server_slot_id
         self.__db = database
         self.__db_field_cache = {}
         self._db_id = None
@@ -28,8 +29,6 @@ class UdpPluginSession(object):
 
     @property
     def Id(self):
-        if self._db_id is None:
-            self.__save_cache()
         return self._db_id
 
 
@@ -109,19 +108,11 @@ class UdpPluginSession(object):
         self.__db_field_cache['TempRoad'] = temp_road
         self.__db_field_cache['WheatherGraphics'] = weather_graphics
         self.__db_field_cache['Elapsed'] = elapsed_ms
+        self.__db_field_cache['ServerSLot'] = self.__server_slot_id
 
-        # immediately save cache when existing session is updated
-        # If new session, inform that cache needs to be saved
-        if not is_new_session:
-            self.__save_cache()
-        else:
-            self._db_id = None
-            self.__verbosity.print("New Session: Id =", self._db_id, ", name =", session_name)
-
-
-
-    def __save_cache(self):
-        if self._db_id is None:
+        # save to db
+        if is_new_session:
             self._db_id = self.__db.insertRow("Sessions", self.__db_field_cache)
         else:
             self.__database.updateRow("Sessions", self._db_id, self.__db_field_cache)
+        self.__verbosity.print("Update Session: Id =", self._db_id, ", name =", session_name, " on server slot =", self.__server_slot_id)

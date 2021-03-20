@@ -43,11 +43,13 @@ class CommandSrvrun(Command):
 
         # setup UDP Plugin
         self.Verbosity.print("Setup UDP plugin server")
+        server_slot_id = server_cfg['ACSWUI']['SERVER_SLOT']
         udpp_port_server = server_cfg['SERVER']['UDP_PLUGIN_LOCAL_PORT']
         udpp_cfg = server_cfg['SERVER']['UDP_PLUGIN_ADDRESS'].split(":")
         udpp_addr = udpp_cfg[0]
         udpp_port_plugin = udpp_cfg[1]
-        udpp = UdpPluginServer(udpp_port_server, udpp_port_plugin, db,
+        udpp = UdpPluginServer(server_slot_id,
+                               udpp_port_server, udpp_port_plugin, db,
                                path_entry_list,
                                path_data_acserver,
                                path_realtime_json,

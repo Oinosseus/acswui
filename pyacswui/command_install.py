@@ -273,6 +273,7 @@ class CommandInstall(Command):
         self.__db.appendColumnString("Sessions", 'WheatherGraphics', 50)
         self.__db.appendColumnInt("Sessions", "Elapsed")
         self.__db.appendColumnCurrentTimestamp("Sessions", "Timestamp")
+        self.__db.appendColumnUInt("Sessions", "ServerSlot")
 
         # check table SessionResults
         Verbosity(self.Verbosity).print("check database table `SessionResults`")
@@ -869,6 +870,7 @@ class CommandInstall(Command):
         paths.append(os.path.join(abspath_data, "htcache"))
         paths.append(os.path.join(abspath_data, "acserver"))
         paths.append(os.path.join(abspath_data, "acserver", "cfg"))
+        paths.append(os.path.join(abspath_htdata, "realtime"))
         for path in paths:
             cmd = ["chmod", "g+w", path]
             verb2.print(" ".join(cmd))

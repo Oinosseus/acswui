@@ -199,6 +199,12 @@ class ServerSlot {
         $section = $preset->getSection("WEATHER_0");
         $this->writeServerCfgSection($fd, $section);
 
+        // section ACSWUI
+        fwrite($fd, "[ACSWUI]\n");
+        fwrite($fd, "SERVER_SLOT=" . $this->Id . "\n");
+        fwrite($fd, "\n");
+
+
         // close file
         fclose($fd);
     }
