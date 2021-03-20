@@ -43,6 +43,7 @@ class CommandInstall(Command):
         self.__work_cconfig()
         self.__work_scan_cars()
         self.__work_scan_tracks()
+        self.__work_translations()
         if self.getArg("base-data") is True:
             self.__work_install_basics()
         self.__set_chmod()
@@ -816,6 +817,30 @@ class CommandInstall(Command):
                     if len(res) == 1:
                         car_id = res[0]['Id']
                         self.__db.insertRow("CarClassesMap", {'Car': car_id, 'CarClass': cc_id, 'Ballast':0})
+
+
+
+    def __work_translations(self):
+        self.Verbosity.print("compile translations")
+        verb2 = Verbosity(self.Verbosity)
+        verb3 = Verbosity(verb2)
+
+        # scanning for languages
+        path_locales = os.path.join(self.getGeneralArg('path-htdocs'), "locale")
+        for locale in sorted(os.listdir(path_locales)):
+            verb2.print(locale)
+
+            # scan all .po files
+            path_lc_messages = os.path.join(path_locales, locale, "LC_MESSAGES")
+            for po_file in os.listdir(path_lc_messages):
+                if po_file[-3:] != ".po":
+                    continue
+
+                verb3.print(po_file)
+                po_path = os.path.join(path_lc_messages, po_file)
+                mo_path = os.path.join(path_lc_messages, po_file[:-3] + ".mo")
+                cmd = ["msgfmt", "-o", mo_path, po_path]
+                subprocess.run(cmd)
 
 
 
