@@ -110,6 +110,7 @@ class UdpPluginSession(object):
         self.__db_field_cache['Elapsed'] = elapsed_ms
         self.__db_field_cache['ServerSlot'] = self.__acswui_info['SERVER_SLOT']
         self.__db_field_cache['ServerPreset'] = self.__acswui_info['SERVER_PRESET']
+        self.__db_field_cache['CarClass'] = self.__acswui_info['CAR_CLASS']
 
         # save to db
         if is_new_session:

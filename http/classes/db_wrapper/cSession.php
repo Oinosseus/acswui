@@ -39,6 +39,7 @@ class Session {
     private $Predecessor = NULL;
     private $ServerSlot = NULL;
     private $ServerPreset = NULL;
+    private $CarClass = NULL;
 
     private $DrivenLaps = NULL;
     private $FirstDrivenLap = NULL;
@@ -64,6 +65,14 @@ class Session {
         if ($this->Id === NULL) $this->updateFromDb();
         return $this->Id;
     }
+
+
+    //! @return The CarClass object used for this session
+    public function carClass() {
+        if ($this->CarClass === NULL) $this->updateFromDb();
+        return $this->CarClass;
+    }
+
 
     //! @return A list of CollisionEnv and CollisionCar objects from this session
     public function collisions() {
@@ -486,6 +495,7 @@ class Session {
         $columns[] = 'Predecessor';
         $columns[] = 'ServerSlot';
         $columns[] = 'ServerPreset';
+        $columns[] = 'CarClass';
 
         $res = $acswuiDatabase->fetch_2d_array("Sessions", $columns, ['Id'=>$this->RequestedId]);
         if (count($res) !== 1) {
@@ -517,6 +527,7 @@ class Session {
         $this->ServerSlot = ($slot < count($acswuiConfig->ServerSlots)) ? new ServerSlot($slot) : NULL;
 
         $this->ServerPreset = new ServerPreset($res[0]['ServerPreset']);
+        $this->CarClass = new CarClass($res[0]['CarClass']);
     }
 
 

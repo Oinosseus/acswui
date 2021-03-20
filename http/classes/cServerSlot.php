@@ -225,6 +225,7 @@ class ServerSlot {
         fwrite($fd, "[ACSWUI]\n");
         fwrite($fd, "SERVER_SLOT=" . $this->Id . "\n");
         fwrite($fd, "SERVER_PRESET=" . $preset->id() . "\n");
+        fwrite($fd, "CAR_CLASS=" . $carclass->id() . "\n");
         fwrite($fd, "\n");
 
 

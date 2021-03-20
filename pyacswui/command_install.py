@@ -275,6 +275,7 @@ class CommandInstall(Command):
         self.__db.appendColumnCurrentTimestamp("Sessions", "Timestamp")
         self.__db.appendColumnUInt("Sessions", "ServerSlot")
         self.__db.appendColumnUInt("Sessions", "ServerPreset")
+        self.__db.appendColumnUInt("Sessions", 'CarClass')
 
         # check table SessionResults
         Verbosity(self.Verbosity).print("check database table `SessionResults`")
