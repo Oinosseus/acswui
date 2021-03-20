@@ -274,6 +274,7 @@ class CommandInstall(Command):
         self.__db.appendColumnInt("Sessions", "Elapsed")
         self.__db.appendColumnCurrentTimestamp("Sessions", "Timestamp")
         self.__db.appendColumnUInt("Sessions", "ServerSlot")
+        self.__db.appendColumnUInt("Sessions", "ServerPreset")
 
         # check table SessionResults
         Verbosity(self.Verbosity).print("check database table `SessionResults`")

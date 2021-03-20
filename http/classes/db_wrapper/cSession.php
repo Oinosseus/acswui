@@ -37,6 +37,8 @@ class Session {
     private $Elapsed = NULL;
     private $Timestamp = NULL;
     private $Predecessor = NULL;
+    private $ServerSlot = NULL;
+    private $ServerPreset = NULL;
 
     private $DrivenLaps = NULL;
     private $FirstDrivenLap = NULL;
@@ -313,6 +315,13 @@ class Session {
     }
 
 
+    //! @return The ServerPreset object that is used for this session
+    public function preset() {
+        if ($this->ServerPreset === NULL) $this->updateFromDb();
+        return $this->ServerPreset;
+    }
+
+
     //! @todo Write a description
     public function protocolVersion() {
         if ($this->ProtocolVersion === NULL) $this->updateFromDb();
@@ -344,6 +353,14 @@ class Session {
     public function serverName() {
         if ($this->ServerName=== NULL) $this->updateFromDb();
         return $this->ServerName;
+    }
+
+
+
+    //! @return The ServerSlot that was used for this session
+    public function slot() {
+        if ($this->ServerSlot === NULL) $this->updateFromDb();
+        return $this->ServerSlot;
     }
 
 
@@ -445,7 +462,7 @@ class Session {
 
 
     private function updateFromDb() {
-        global $acswuiDatabase, $acswuiLog;
+        global $acswuiConfig, $acswuiDatabase, $acswuiLog;
 
         // request from db
         $columns = array();
@@ -467,6 +484,8 @@ class Session {
         $columns[] = 'Elapsed';
         $columns[] = 'Timestamp';
         $columns[] = 'Predecessor';
+        $columns[] = 'ServerSlot';
+        $columns[] = 'ServerPreset';
 
         $res = $acswuiDatabase->fetch_2d_array("Sessions", $columns, ['Id'=>$this->RequestedId]);
         if (count($res) !== 1) {
@@ -492,6 +511,12 @@ class Session {
         $this->Elapsed = $res[0]['Elapsed'];
         $this->Timestamp = new DateTime($res[0]['Timestamp']);
         $this->Predecessor = new Session($res[0]['Predecessor']);
+
+        // save slot (db can have higher id than currently available
+        $slot = (int) $res[0]['ServerSlot'];
+        $this->ServerSlot = ($slot < count($acswuiConfig->ServerSlots)) ? new ServerSlot($slot) : NULL;
+
+        $this->ServerPreset = new ServerPreset($res[0]['ServerPreset']);
     }
 
 

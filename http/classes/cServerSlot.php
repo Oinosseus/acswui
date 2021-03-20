@@ -224,6 +224,7 @@ class ServerSlot {
         // section ACSWUI
         fwrite($fd, "[ACSWUI]\n");
         fwrite($fd, "SERVER_SLOT=" . $this->Id . "\n");
+        fwrite($fd, "SERVER_PRESET=" . $preset->id() . "\n");
         fwrite($fd, "\n");
 
 
