@@ -402,6 +402,25 @@ class Session {
     }
 
 
+    //! @return The representative name of the session type
+    public function typeName() {
+        if ($this->Type === NULL) $this->updateFromDb();
+        if ($this->Type == 0) {
+            return _("Booking");
+        } else if ($this->Type == 1) {
+            return _("Practice");
+        } else if ($this->Type == 2) {
+            return _("Qualifying");
+        } else if ($this->Type == 3) {
+            return _("Race");
+        } else {
+            global $acswuiLog;
+            $acswuiLog->logError("Unknown type '" . $this->type() . "'!");
+            return "UNKNOWN";
+        }
+    }
+
+
     private function updateDrivenLaps() {
         global $acswuiDatabase;
         $this->DrivenLaps = array();

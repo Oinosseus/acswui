@@ -21,6 +21,28 @@ class ServerSlot {
         $this->ServerSlot = $acswuiConfig->ServerSlots[$this->Id];
     }
 
+
+    //! @return The according Session object that currently runs on the slot (can be NULL)
+    public function currentSession() {
+        global $acswuiDatabase;
+
+        $session = NULL;
+
+        if ($this->online()) {
+
+            // find last session on this slot
+            $query = "SELECT `Id` FROM `Sessions` WHERE `ServerSlot` = " . $this->Id . " ORDER BY `Id` DESC LIMIT 1;";
+            $res = $acswuiDatabase->fetch_raw_select($query);
+
+            if (count($res) == 1) {
+                $session = new Session($res[0]['Id']);
+            }
+        }
+
+        return $session;
+    }
+
+
     //! @return A list of available ServerSlot objects
     public static function listSlots() {
         global $acswuiConfig;

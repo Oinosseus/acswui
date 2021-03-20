@@ -118,15 +118,23 @@ class control extends cContentPage {
         $html .= "<h1>Server Status</h1>";
 
         $html .= "<table>";
-        $html .= "<tr><th>Server</th><th>Status</th></tr>";
+        $html .= "<tr><th rowspan=\"2\">" . _("Server Slot") . "</th><th rowspan=\"2\">" . _("Status") . "</th><th colspan=\"4\">" . _("Session") . "</th></tr>";
+        $html .= "<tr><th>" . _("Id") . "</th><th>" . _("Type") . "</th><th>" . _("Track") . "</th><th>" . ("Start Time") . "</th></tr>";
         foreach (ServerSlot::listSlots() as $ss) {
             $html .= "<tr>";
             $html .= "<td>" . $ss->name() . "</td>";
-        if ($ss->online()) {
-            $html .= '<td style="color:#0d0; font-weight:bold;">online</td>';
-        } else {
-            $html .= '<td style="color:#d00; font-weight:bold;">offline</td>';
-        }
+            if ($ss->online()) {
+                $html .= '<td style="color:#0d0; font-weight:bold;">online</td>';
+            } else {
+                $html .= '<td style="color:#d00; font-weight:bold;">offline</td>';
+            }
+            $session = $ss->currentSession();
+            if ($session !== NULL) {
+                $html .= "<td>" . $session->id() . "</td>";
+                $html .= "<td>" . $session->typeName() . "</td>";
+                $html .= "<td>" . $session->track()->name() . "</td>";
+                $html .= "<td>" . $session->timestamp()->format("Y-m-d H:i:s") . "</td>";
+            }
             $html .= "</tr>";
         }
         $html .= "</table>";
