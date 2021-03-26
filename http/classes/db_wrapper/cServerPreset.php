@@ -156,6 +156,23 @@ class ServerPresetSection {
     }
 
 
+    //! @return The current value of a certain field in a section
+    public function currentValue($field_tag) {
+        global $acswuiConfig;
+
+        foreach (array_keys($this->accessServerCfg()) as $f) {
+            $fieldset = new ServerPresetFieldset($this, $f);
+            foreach ($fieldset->fields() as $field) {
+                if ($field->tag() == $field_tag) {
+                    return $field->current();
+                }
+            }
+        }
+
+        $acswuiConfig->logError("Cannot find field '$field_tag' in section '" . $this->Tag . "'!");
+    }
+
+
     //! @return The tag name of the section
     public function tag() {
         return $this->Tag;

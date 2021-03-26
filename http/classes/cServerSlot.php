@@ -199,19 +199,23 @@ class ServerSlot {
 
         // section BOOKING
         $section = $preset->getSection("BOOKING");
-        $this->writeServerCfgSection($fd, $section);
+        if ($section->currentValue("TIME") != 0)
+            $this->writeServerCfgSection($fd, $section);
 
         // section PRACTICE
         $section = $preset->getSection("PRACTICE");
-        $this->writeServerCfgSection($fd, $section);
+        if ($section->currentValue("TIME") != 0)
+            $this->writeServerCfgSection($fd, $section);
 
         // section QUALIFY
         $section = $preset->getSection("QUALIFY");
-        $this->writeServerCfgSection($fd, $section);
+        if ($section->currentValue("TIME") != 0)
+            $this->writeServerCfgSection($fd, $section);
 
         // section RACE
         $section = $preset->getSection("RACE");
-        $this->writeServerCfgSection($fd, $section);
+        if ($section->currentValue("TIME") != 0 || $section->currentValue("LAPS") != 0)
+            $this->writeServerCfgSection($fd, $section);
 
         // section DYNAMIC_TRACK
         $section = $preset->getSection("DYNAMIC_TRACK");
