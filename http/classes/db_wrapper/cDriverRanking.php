@@ -318,6 +318,9 @@ class DriverRanking implements JsonSerializable {
                 $result += $this->getScore($group, 'CE');
                 $result += $this->getScore($group, 'CC');
 
+            } else if ($driven == 0) {  // catch division by zero
+                $result = 0;
+
             } else if ($value == "CT") {
                 $result = $acswuiConfig->DriverRanking['SF']['CT'];
                 $result *= $this->Characteristics['SF']['CT'];
