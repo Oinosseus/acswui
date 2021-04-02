@@ -388,10 +388,14 @@ class CarClass {
      * @return True if the requested lap object is valid for this carclass
      */
     public function validLap(Lap $lap) {
+
+        $carskin = $lap->carSkin();
+        if ($carskin === NULL) return FALSE;
+
         foreach ($this->cars() as $c) {
 
             // check car
-            if ($c->id() != $lap->carSkin()->car()->id()) continue;
+            if ($c->id() != $carskin->car()->id()) continue;
 
             // check ballast
             if ($lap->ballast() < $this->ballast($c)) continue;
