@@ -110,9 +110,11 @@ class presets extends cContentPage {
         if ($this->CurrentPreset !== NULL) {
             $html .= "<form action=\"\" method=\"post\"><input type=\"hidden\" name=\"PRESET_ID\" value=\"" . $this->CurrentPreset->id() . "\"/>";
 
-            # preset name
+            # general settings
             $html .= "<fieldset>";
             $html .= "Preset Name: <input type=\"text\" name=\"Name\" value=\"" . $this->CurrentPreset->name() . "\" " . (($this->CanEdit) ? "" : "readonly") . "/>";
+            $html .= "<br>";
+            $html .= "Restricted Access: <input type=\"checkbox\" name=\"Restricted\" value=\"TRUE\" " . (($this->CurrentPreset->restricted() === TRUE) ? "checked" : "") . "/>";
             $html .= "</fieldset>";
 
             # save buttons
@@ -278,6 +280,7 @@ class presets extends cContentPage {
         // gather data
         $data = array();
         $data['Name'] = $_POST['Name'];
+        $data['Restricted'] = (isset($_POST['Restricted']) && $_POST['Restricted'] == "TRUE") ? 1 : 0;
         foreach ($this->CurrentPreset->sections() as $section) {
             foreach ($section->fieldsets() as $fieldset) {
                 foreach ($fieldset->fields() as $field) {

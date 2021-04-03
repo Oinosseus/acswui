@@ -230,6 +230,7 @@ class CommandInstall(Command):
         Verbosity(self.Verbosity).print("check database table `ServerPresets`")
         self.__db.appendTable("ServerPresets")
         self.__db.appendColumnString("ServerPresets", "Name", 60)
+        self.__db.appendColumnInt("ServerPresets", "Restricted")
 
         for section in self.__server_cfg_json:
             for fieldset in self.__server_cfg_json[section]:

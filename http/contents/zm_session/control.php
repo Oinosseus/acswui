@@ -41,6 +41,7 @@ class control extends cContentPage {
         // check permissions
         $CanStartSlot = array();
         $CanStopSlot = array();
+        $CanAccessRestricted = $acswuiUser->hasPermission("Server_PresetAccessRestricted");
         foreach (ServerSlot::listSlots() as $slot) {
             $CanStartSlot[$slot->id()] = $acswuiUser->hasPermission("Session_Slot" . $slot->id() . "_Start");
             $CanStopSlot[$slot->id()] = $acswuiUser->hasPermission("Session_Slot" . $slot->id() . "_Stop");
@@ -90,7 +91,9 @@ class control extends cContentPage {
             if ($_POST['ACTION'] == "START_SERVER") {
 
                 if ($this->CurrentServerSlot->online() === FALSE
-                    && $CanStartSlot[$this->CurrentServerSlot->id()]) {
+                    && $CanStartSlot[$this->CurrentServerSlot->id()]
+                    && ($this->CurrentPreset->restricted() === FALSE || $CanAccessRestricted)
+                    ) {
                     $this->CurrentServerSlot->start($this->CurrentPreset,
                                                     $this->CurrentCarClass,
                                                     $this->CurrentTrack);
@@ -173,7 +176,7 @@ class control extends cContentPage {
                     // preset
                     $html .= "Server Preset";
                     $html .= '<select name="PRESET_ID">';
-                    foreach (ServerPreset::listPresets() as $sp) {
+                    foreach (ServerPreset::listPresets($CanAccessRestricted) as $sp) {
                         if ($this->CurrentPreset === NULL) $this->CurrentPreset = $sp;
                         $selected = ($this->CurrentPreset->id() == $sp->id()) ? "selected" : "";
                         $html .= '<option value="' . $sp->id() . '"' . $selected . '>' . $sp->name() . '</option>';

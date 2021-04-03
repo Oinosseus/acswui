@@ -207,6 +207,7 @@ class ServerPreset {
 
     private $Id = NULL;
     private $Name = NULL;
+    private $Restricted = TRUE;
     private static $DatabaseColumns = NULL;
     private $ServerCfgJson = NULL;
 
@@ -219,13 +220,14 @@ class ServerPreset {
 
         $this->Id = (int) $id;
 
-        $res = $acswuiDatabase->fetch_2d_array("ServerPresets", ['Id', 'Name'], ['Id'=>$this->Id]);
+        $res = $acswuiDatabase->fetch_2d_array("ServerPresets", ['Id', 'Name', 'Restricted'], ['Id'=>$this->Id]);
         if (count($res) !== 1) {
             $acswuiLog->logError("Cannot find ServerPresets.Id=" . $this->Id);
             return;
         }
 
         $this->Name = $res[0]['Name'];
+        $this->Restricted = ($res[0]['Restricted'] == 0) ? FALSE : TRUE;
     }
 
 
@@ -239,12 +241,18 @@ class ServerPreset {
     }
 
 
-    //! @return A list of all available ServerPreset objects
-    public static function listPresets() {
+    /**
+     * @param $list_restricted When TRUE, also restricted presets are listed
+     * @return A list of all available ServerPreset objects
+     */
+    public static function listPresets(bool $list_restricted = FALSE) {
         global $acswuiDatabase;
 
+        $where = array();
+        if ($list_restricted !== TRUE) $where['Restricted'] = 0;
+
         $presets = array();
-        foreach ($acswuiDatabase->fetch_2d_array("ServerPresets", ['Id'], [], "Name") as $sp) {
+        foreach ($acswuiDatabase->fetch_2d_array("ServerPresets", ['Id'], $where, "Name") as $sp) {
             $presets[] = new ServerPreset($sp['Id']);
         }
 
@@ -274,6 +282,12 @@ class ServerPreset {
 
         $id = $acswuiDatabase->insert_row("ServerPresets", $cols);
         return new ServerPreset($id);
+    }
+
+
+    //! @return TRUE if this preset shall have restricted access/usage
+    public function restricted() {
+        return $this->Restricted;
     }
 
 
