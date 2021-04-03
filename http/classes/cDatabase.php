@@ -61,7 +61,7 @@
     // $coulumns must be an string array (can be NULL to fetch all columns)
     // $table must be a string
     // $where is an accociative array (key = table column, value = column value)
-    public function fetch_2d_array($table, array $columns, $where = [], $sort_by = NULL, $order_asc = true) {
+    public function fetch_2d_array($table, array $columns = NULL, $where = [], $sort_by = NULL, $order_asc = true) {
 
         global $acswuiConfig;
         global $acswuiLog;
