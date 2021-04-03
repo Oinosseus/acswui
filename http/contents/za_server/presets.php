@@ -57,8 +57,8 @@ class presets extends cContentPage {
             $this->CurrentPreset->delete();
             $this->CurrentPreset = NULL;
             $_SESSION['PRESET_ID'] = NULL;
-            if (count(ServerPreset::listPresets()) > 0) {
-                $this->CurrentPreset = ServerPreset::listPresets()[0];
+            if (count(ServerPreset::listPresets(TRUE)) > 0) {
+                $this->CurrentPreset = ServerPreset::listPresets(TRUE)[0];
                 $_SESSION['PRESET_ID'] = $this->CurrentPreset->id();
             }
         }
@@ -84,7 +84,7 @@ class presets extends cContentPage {
 
         // existing presets
         $current_preset_found = false;
-        foreach (ServerPreset::listPresets() as $sp) {
+        foreach (ServerPreset::listPresets(TRUE) as $sp) {
             if ($this->CurrentPreset === NULL) $this->CurrentPreset = $sp;
             if ($this->CurrentPreset->id() == $sp->id()) {
                 $selected = "selected";
