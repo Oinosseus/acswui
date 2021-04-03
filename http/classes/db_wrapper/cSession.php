@@ -526,7 +526,11 @@ class Session {
         $slot = (int) $res[0]['ServerSlot'];
         $this->ServerSlot = ($slot < count($acswuiConfig->ServerSlots)) ? new ServerSlot($slot) : NULL;
 
-        $this->ServerPreset = new ServerPreset($res[0]['ServerPreset']);
+        if ($res[0]['ServerPreset'] == 0)
+            $this->ServerPreset = NULL;
+        else
+            $this->ServerPreset = new ServerPreset($res[0]['ServerPreset']);
+
         $this->CarClass = new CarClass($res[0]['CarClass']);
     }
 
