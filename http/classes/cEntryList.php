@@ -136,13 +136,18 @@ class EntryList {
 
     private $CarClass = NULL;
     private $Track = NULL;
+    private $SeatOccupation = NULL;
 
     private $AvailableCarSkinList = NULL;
     private $EntryItemsList = NULL;
 
-    public function __construct(CarClass $carclass, Track $track) {
+    /**
+     * @param $seat_occupations When set to FALSE, seat occupations are ignored (default = TRUE)
+     */
+    public function __construct(CarClass $carclass, Track $track, bool $seat_occupations = TRUE) {
         $this->CarClass = $carclass;
         $this->Track = $track;
+        $this->SeatOccupation = $seat_occupations;
     }
 
     private function leastRepresentedAvailableCarskin() {
@@ -187,9 +192,11 @@ class EntryList {
         $this->EntryItemsList = array();
 
         // add all seat occupations
-        foreach ($this->CarClass->occupations() as $ocu) {
-            $this->EntryItemsList[] = new EntryListItemOccupied($ocu);
-            $this->AvailableCarSkinList->popCarSkin($ocu->skin());
+        if ($this->SeatOccupation) {
+            foreach ($this->CarClass->occupations() as $ocu) {
+                $this->EntryItemsList[] = new EntryListItemOccupied($ocu);
+                $this->AvailableCarSkinList->popCarSkin($ocu->skin());
+            }
         }
 //         echo $this->AvailableCarSkinList->listHtml() . "<br>";
 

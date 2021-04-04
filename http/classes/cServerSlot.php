@@ -131,14 +131,15 @@ class ServerSlot {
 
     /**
      * Starts the server
+     * @param $seat_occupations When set to FALSE, seat occupations are ignored (default = TRUE)
      */
-    public function start(ServerPreset $preset, CarClass $carclass, Track $track) {
+    public function start(ServerPreset $preset, CarClass $carclass, Track $track, bool $seat_occupations = TRUE) {
         global $acswuiConfig;
         $id = $this->Id;
 
         // entry_list.ini
         $entry_list_path = $acswuiConfig->AbsPathData . "/acserver/cfg/entry_list_$id.ini";
-        $entry_list = new EntryList($carclass, $track);
+        $entry_list = new EntryList($carclass, $track, $seat_occupations);
         $entry_list->writeToFile($entry_list_path);
 
         // server_cfg.ini

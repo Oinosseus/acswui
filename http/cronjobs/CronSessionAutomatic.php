@@ -19,7 +19,10 @@ class CronSessionAutomatic extends Cronjob {
             $sq = SessionQueue::next($sslot);
             if ($sq !== NULL) {
                 $this->log("Starting ServerQueue.Id=" . $sq->id());
-                $sslot->start($sq->preset(), $sq->carClass(), $sq->track());
+                $sslot->start($sq->preset(),
+                              $sq->carClass(),
+                              $sq->track(),
+                              $sq->seatOccupations());
             }
         }
     }
