@@ -4,7 +4,7 @@
 class Webhooks {
 
     public static function manualServerStart(ServerSlot $slot, ServerPreset $preset, CarClass $carclass, Track $track) {
-        global $acswuiConfig;
+        global $acswuiConfig, $acswuiUser;
 
         // get globals
         $url = $acswuiConfig->DWhManSrvStrtUrl;
@@ -14,15 +14,16 @@ class Webhooks {
 
         // message content
         $content = "";
-        if ($gmntn != "") $content .= "<@&$gmntn>\n";
-        $content .= "*" . _("starting") . "*: **" . $preset->name() . "**\n";
-        $content .= "*" . _("car class") . "*: **" . $carclass->name() . "**\n";
-        $content .= "*" . _("on track") . "*: **" . $track->name() . "**";
+        if ($gmntn != "") $content .= "<@&$gmntn> ";
+        $content .= _("startet") . " " . $slot->name() . "\n";
+        $content .= "*" . _("Server Preset") . "*: **" . $preset->name() . "**\n";
+        $content .= "*" . _("Car Class") . "*: **" . $carclass->name() . "**\n";
+        $content .= "*" . _("Track") . "*: **" . $track->name() . "**";
 
         // create message json
         $json_array = array();
         $json_array['content'] = $content;
-        $json_array['username'] = $slot->name();
+        $json_array['username'] = $acswuiUser->user()->displayName(2);
         $json_post = json_encode($json_array);
 
         // send webhook request

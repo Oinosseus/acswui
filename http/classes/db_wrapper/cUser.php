@@ -39,11 +39,14 @@ class User implements JsonSerializable {
     }
 
 
-    //! @return The usrname that shall be displayed on HTML output (depending on privacy settings)
-    public function displayName() {
+    /**
+     * @param $privacy Force a certain privacy level (defautl=NULL -> use current privacy level)
+     * @return The usrname that shall be displayed on HTML output (depending on privacy settings)
+     */
+    public function displayName(int $privacy = NULL) {
         global $acswuiUser;
 
-        $privacy = $this->privacy();
+        if ($privacy === NULL) $privacy = $this->privacy();
 
         if ($acswuiUser->Id == $this->id()) {
             return $this->login();
