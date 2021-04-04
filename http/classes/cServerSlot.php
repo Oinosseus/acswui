@@ -254,6 +254,17 @@ class ServerSlot {
                 if (array_key_exists($field->dbColumn(), $acswuiConfig->ServerSlots[$this->Id])) {
                     $value = $acswuiConfig->ServerSlots[$this->Id][$field->dbColumn()];
                 }
+
+                // catch handling for WELCOME_MESSAGE
+                if ($sectag == "SERVER" && $key == "WELCOME_MESSAGE") {
+                    $id = $this->Id;
+                    $welcome_path = $acswuiConfig->AbsPathData . "/acserver/cfg/welcome_$id.txt";
+                    $welcome_fd = fopen($welcome_path, 'w');
+                    fwrite($welcome_fd, $value);
+                    fclose($welcome_fd);
+                    $value = $welcome_path;
+                }
+
                 fwrite($fd, "$key=$value\n");
             }
         }
