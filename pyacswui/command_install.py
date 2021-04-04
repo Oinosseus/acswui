@@ -467,6 +467,17 @@ class CommandInstall(Command):
         self.__db.appendColumnString("Championships", "BallanceRestrictor", 100)
         self.__db.appendColumnString("Championships", "Tracks", 100)
 
+        # check table SessionQueue
+        Verbosity(self.Verbosity).print("check database table `SessionQueue`")
+        self.__db.appendTable("SessionQueue")
+        self.__db.appendColumnString("SessionQueue", "Name", 100)
+        self.__db.appendColumnInt("SessionQueue", 'Enabled')
+        self.__db.appendColumnInt("SessionQueue", 'SeatOccupations')
+        self.__db.appendColumnUInt("SessionQueue", 'Preset')
+        self.__db.appendColumnUInt("SessionQueue", 'CarClass')
+        self.__db.appendColumnUInt("SessionQueue", 'Track')
+        self.__db.appendColumnInt("SessionQueue", 'Slot')
+
 
 
         # ---------------------------------------------------------------------
