@@ -15,9 +15,9 @@ class Webhooks {
         // message content
         $content = "";
         if ($gmntn != "") $content .= "<@&$gmntn>\n";
-        $content .= _("starting") . ": " . $preset->name() . "\n";
-        $content .= _("car class") . ": " . $carclass->name() . "\n";
-        $content .= _("on track") . ": " . $track->name();
+        $content .= "*" . _("starting") . "*: **" . $preset->name() . "**\n";
+        $content .= "*" . _("car class") . "*: **" . $carclass->name() . "**\n";
+        $content .= "*" . _("on track") . "*: **" . $track->name() . "**";
 
         // create message json
         $json_array = array();
