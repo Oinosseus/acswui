@@ -125,7 +125,7 @@ class ServerSlot {
         $pid = $this->pid();
         if ($pid === NULL) return FALSE;
         exec("kill $pid");
-        sleep(2);
+        sleep(3);
     }
 
 

@@ -99,6 +99,13 @@ class control extends cContentPage {
                                                     $this->CurrentTrack);
                 }
 
+                // send webhooks
+                Webhooks::manualServerStart($this->CurrentServerSlot,
+                                            $this->CurrentPreset,
+                                            $this->CurrentCarClass,
+                                            $this->CurrentTrack);
+
+
             } else if ($_POST['ACTION'] == "STOP_SERVER") {
 
                 if ($this->CurrentServerSlot->online() === TRUE

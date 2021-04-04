@@ -10,6 +10,7 @@ include("classes/cContentPage.php");
 include("classes/cNonContentPage.php");
 include("classes/cUser.php");
 include("classes/cCronjob.php");
+include("classes/cWebhooks.php");
 
 // enhanced
 include("classes/cHumanValue.php");
