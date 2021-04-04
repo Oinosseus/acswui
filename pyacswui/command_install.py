@@ -121,6 +121,21 @@ class CommandInstall(Command):
             verb3.print("mkdirs " + path_data_acserver_cfg)
             self.mkdirs(path_data_acserver_cfg)
 
+        # prepare cfg files (to save ownership)
+        slot_nr = 0
+        while True:
+            slot_dict = self.getIniSection("SERVER_SLOT_" + str(slot_nr))
+            if slot_dict is None:
+                break
+
+            for filename in ["entry_list_%i.ini", "server_cfg_%i.ini", "welcome_%i.txt"]:
+                path_file = os.path.join(path_data_acserver_cfg, filename % slot_nr)
+                with open(path_file, "w") as f:
+                    f.write("\n")
+
+            slot_nr += 1
+
+
         # log dirs
         for logdir in ['logs_acserver', 'logs_cron', 'logs_http']:
             path_data_log = os.path.join(path_data, logdir)
@@ -890,7 +905,7 @@ class CommandInstall(Command):
         paths.append(os.path.join(abspath_data, "acserver", "cfg"))
         paths.append(os.path.join(abspath_htdata, "realtime"))
         for path in paths:
-            cmd = ["chmod", "g+w", path]
+            cmd = ["chmod", "-R", "g+w", path]
             verb2.print(" ".join(cmd))
             subprocess.run(cmd)
 
