@@ -123,6 +123,9 @@ class driver_ranking extends cContentPage {
             $polyline_points = "";
             $user_id = $drv_rnk->user()->id();
 
+            // ensure privacy
+            if ($drv_rnk->user()->privacyFulfilled() !== TRUE) continue;
+
             // append data from db
             $query = "SELECT Id FROM DriverRanking WHERE User = '$user_id' AND Timestamp >= '$timestamp' ORDER BY Id DESC";
             foreach ($acswuiDatabase->fetch_raw_select($query) as $row) {
@@ -170,6 +173,10 @@ class driver_ranking extends cContentPage {
         $mean = DriverRanking::initCharacteristics();
         foreach ($driver_rank_list as $drv_rnk) {
             $user_id = $drv_rnk->user()->id();
+
+            // ensure privacy
+            if ($drv_rnk->user()->privacyFulfilled() !== TRUE) continue;
+
 
             foreach (array_keys($mean) as $group) {
                 foreach (array_keys($mean[$group]) as $value) {

@@ -129,6 +129,24 @@ class User implements JsonSerializable {
     }
 
 
+    //! @return TRUE if the requsted privacy level is currenlty fulfuilled
+    public function privacyFulfilled() {
+        global $acswuiUser;
+
+        $privacy = $this->privacy();
+
+        if ($acswuiUser->Id == $this->id()) {
+            return TRUE;
+        } else if ($privacy == 2) {
+            return TRUE;
+        } else if ($privacy == 1 && $acswuiUser->IsLogged) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+
     //! @return The Steam64GUID of the user
     public function steam64GUID() {
         if ($this->Steam64GUID === NULL) $this->updateFromDb();
@@ -158,6 +176,7 @@ class User implements JsonSerializable {
         $this->Color = $res[0]['Color'];
         $this->Privacy = (int) $res[0]['Privacy'];
     }
+
 
     //! @return A list of all users
     public static function listUsers() {
