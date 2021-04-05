@@ -135,6 +135,11 @@ class CommandInstall(Command):
 
             slot_nr += 1
 
+        # results
+        path_data_acserver_results = os.path.join(path_data_acserver, "results")
+        if not os.path.isdir(path_data_acserver_results):
+            verb3.print("mkdirs " + path_data_acserver_results)
+            self.mkdirs(path_data_acserver_results)
 
         # log dirs
         for logdir in ['logs_acserver', 'logs_cron', 'logs_http']:
@@ -903,6 +908,7 @@ class CommandInstall(Command):
         paths.append(os.path.join(abspath_data, "htcache"))
         paths.append(os.path.join(abspath_data, "acserver"))
         paths.append(os.path.join(abspath_data, "acserver", "cfg"))
+        paths.append(os.path.join(abspath_data, "acserver", "results"))
         paths.append(os.path.join(abspath_htdata, "realtime"))
         for path in paths:
             cmd = ["chmod", "-R", "g+w", path]

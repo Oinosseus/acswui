@@ -71,7 +71,7 @@ The installation consists of two steps:
 1. ./acswui.py -vv install --base-data --root-password MYROOTPASSWORD myserver.ini
 1. create cronjob:
     1. crontab- e
-    1. */1 * * * * cd /var/acswui_htdocs && nice -19 php7.4 cron.php
+    1. */1 * * * * curl --insecure https://my.domain.tld/acswui/cron.php
 
 # Update Guide
 
