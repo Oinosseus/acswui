@@ -4,7 +4,7 @@ class CronDbCleanEmptySessions extends Cronjob {
 
 
     public function __construct() {
-        parent::__construct(new DateInterval("P1D"));
+        parent::__construct(new DateInterval("PT15M"));
     }
 
 
@@ -18,7 +18,7 @@ class CronDbCleanEmptySessions extends Cronjob {
         foreach ($res_sessions as $row) {
             $session_id = $row['Id'];
 
-            if ($this->sessionIsEmpty($session_id) === TRUE) {
+            if ($this->sessionIsEmpty($session_id) === TRUE && $this->sessionIsActive($session_id) === FALSE) {
                 $this->sessionDelete($session_id);
             }
         }
@@ -34,10 +34,22 @@ class CronDbCleanEmptySessions extends Cronjob {
         $acswuiDatabase->delete_row("Sessions", $session_id);
 
         // delete session results
-        $res = $acswuiDatabase->fetch_2d_array("SessionResults", "Id", ["Session"=>$session_id]);
+        $res = $acswuiDatabase->fetch_2d_array("SessionResults", ["Id"], ["Session"=>$session_id]);
         foreach ($res as $row) {
             $acswuiDatabase->delete_row("SessionResults", $row['Id']);
         }
+    }
+
+
+    private function sessionIsActive(int $session_id) {
+
+        // check if any slot has requested session as current session
+        foreach (ServerSlot::listSlots() as $slot) {
+            $session = $slot->currentSession();
+            if ($session !== NULL && $session->id() == $session_id) return TRUE;
+        }
+
+        return FALSE;
     }
 
 
