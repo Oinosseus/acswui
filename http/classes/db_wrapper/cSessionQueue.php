@@ -46,6 +46,17 @@ class SessionQueue {
     }
 
 
+    /**
+     * Deletes the SessionQueue object.
+     * After this call the SessionQueue object is invalid and must not be used anymore!
+     */
+    public function delete() {
+        global $acswuiDatabase;
+        $acswuiDatabase->delete_row("SessionQueue", $this->Id);
+        $this->Id = NULL;
+    }
+
+
     //! @return TRUE if this item is enabled
     public function enabled() {
         if ($this->Enabled === NULL) $this->updateFromDb();

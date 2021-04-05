@@ -131,6 +131,13 @@ class queue extends cContentPage {
                 $html .= "</select>";
                 $html .= "</td>";
 
+                // delete
+                if ($this->CanEdit) {
+                    $html .= "<td>";
+                    $html .= "<button type=\"submit\" name=\"Delete\" value=\"$sq_id\">" . _("Delete") . "</button>";
+                    $html .= "</td>";
+                }
+
                 $html .= "</tr>";
             }
 
@@ -209,85 +216,93 @@ class queue extends cContentPage {
 
 
     private function processData() {
-        if (!isset($_POST['Action'])) return;
-        if ($_POST['Action'] != "Save") return;
+        if ($this->CanEdit !== TRUE) return;
 
-        // change items
-        foreach (SessionQueue::listQueues() as $sq) {
-            $sq_id = $sq->id();
+        if (isset($_POST['Action']) && $_POST['Action'] == "Save") {
 
-            // enabled
-            $post_id = "Enabled$sq_id";
-            $new_value = (isset($_POST[$post_id]) && $_POST[$post_id] == "TRUE") ? TRUE : FALSE;
-            $sq->setEnabled($new_value);
+            // change items
+            foreach (SessionQueue::listQueues() as $sq) {
+                $sq_id = $sq->id();
 
-            // seat
-            $post_id = "SeatOccupations$sq_id";
-            $new_value = (isset($_POST[$post_id]) && $_POST[$post_id] == "TRUE") ? TRUE : FALSE;
-            $sq->setSeatOccupations($new_value);
+                // enabled
+                $post_id = "Enabled$sq_id";
+                $new_value = (isset($_POST[$post_id]) && $_POST[$post_id] == "TRUE") ? TRUE : FALSE;
+                $sq->setEnabled($new_value);
 
-            // name
-            $post_id = "Name$sq_id";
-            if (isset($_POST[$post_id])) {
-                $new_value = $_POST[$post_id];
-                $sq->setName($new_value);
+                // seat
+                $post_id = "SeatOccupations$sq_id";
+                $new_value = (isset($_POST[$post_id]) && $_POST[$post_id] == "TRUE") ? TRUE : FALSE;
+                $sq->setSeatOccupations($new_value);
+
+                // name
+                $post_id = "Name$sq_id";
+                if (isset($_POST[$post_id])) {
+                    $new_value = $_POST[$post_id];
+                    $sq->setName($new_value);
+                }
+
+                // slot
+                $post_id = "Slot$sq_id";
+                if (isset($_POST[$post_id])) {
+                    $id = $_POST[$post_id];
+                    $obj = new ServerSLot($id);
+                    $sq->setSlot($obj);
+                }
+
+                // preset
+                $post_id = "Preset$sq_id";
+                if (isset($_POST[$post_id])) {
+                    $id = $_POST[$post_id];
+                    $obj = new ServerPreset($id);
+                    $sq->setPreset($obj);
+                }
+
+                // carclass
+                $post_id = "CarClass$sq_id";
+                if (isset($_POST[$post_id])) {
+                    $id = $_POST[$post_id];
+                    $obj = new CarClass($id);
+                    $sq->setCarClass($obj);
+                }
+
+                // track
+                $post_id = "Track$sq_id";
+                if (isset($_POST[$post_id])) {
+                    $id = $_POST[$post_id];
+                    $obj = new Track($id);
+                    $sq->setTrack($obj);
+                }
             }
 
-            // slot
-            $post_id = "Slot$sq_id";
-            if (isset($_POST[$post_id])) {
-                $id = $_POST[$post_id];
-                $obj = new ServerSLot($id);
-                $sq->setSlot($obj);
-            }
+            // create new
+            if (isset($_POST['NewItemSlot']) && $_POST['NewItemSlot'] != "") {
 
-            // preset
-            $post_id = "Preset$sq_id";
-            if (isset($_POST[$post_id])) {
-                $id = $_POST[$post_id];
-                $obj = new ServerPreset($id);
-                $sq->setPreset($obj);
-            }
+                // get vars
+                $name = $_POST['NewItemName'];
+                $ena = (isset($_POST['NewItemEnabled']) && $_POST['NewItemEnabled'] == "TRUE") ? TRUE : FALSE;
+                $seat = (isset($_POST['NewItemSeatOccupations']) && $_POST['NewItemSeatOccupations'] == "TRUE") ? TRUE : FALSE;
+                $slot = new ServerSlot($_POST['NewItemSlot']);
+                $prst = $_POST['NewItemPreset'];
+                $cc = $_POST['NewItemCarClass'];
+                $t = $_POST['NewItemTrack'];
 
-            // carclass
-            $post_id = "CarClass$sq_id";
-            if (isset($_POST[$post_id])) {
-                $id = $_POST[$post_id];
-                $obj = new CarClass($id);
-                $sq->setCarClass($obj);
-            }
-
-            // track
-            $post_id = "Track$sq_id";
-            if (isset($_POST[$post_id])) {
-                $id = $_POST[$post_id];
-                $obj = new Track($id);
-                $sq->setTrack($obj);
+                if ($prst != "" && $cc != "" && $t != "") {
+                    $sq = SessionQueue::createNew();
+                    $sq->setName($name);
+                    $sq->setEnabled($ena);
+                    $sq->setSeatOccupations($seat);
+                    $sq->setSlot($slot);
+                    $sq->setPreset(new ServerPreset($prst));
+                    $sq->setCarClass(new CarClass($cc));
+                    $sq->setTrack(new Track($t));
+                }
             }
         }
 
-        // create new
-        if (isset($_POST['NewItemSlot']) && $_POST['NewItemSlot'] != "") {
 
-            // get vars
-            $name = $_POST['NewItemName'];
-            $ena = (isset($_POST['NewItemEnabled']) && $_POST['NewItemEnabled'] == "TRUE") ? TRUE : FALSE;
-            $seat = (isset($_POST['NewItemSeatOccupations']) && $_POST['NewItemSeatOccupations'] == "TRUE") ? TRUE : FALSE;
-            $slot = new ServerSlot($_POST['NewItemSlot']);
-            $prst = $_POST['NewItemPreset'];
-            $cc = $_POST['NewItemCarClass'];
-            $t = $_POST['NewItemTrack'];
-
-            if ($prst != "" && $cc != "" && $t != "") {
-                $sq = SessionQueue::createNew();
-                $sq->setName($name);
-                $sq->setEnabled($ena);
-                $sq->setSeatOccupations($seat);
-                $sq->setSlot($slot);
-                $sq->setPreset(new ServerPreset($prst));
-                $sq->setCarClass(new CarClass($cc));
-                $sq->setTrack(new Track($t));
-            }
+        if (isset($_POST['Delete'])) {
+            $sq = new SessionQueue($_POST['Delete']);
+            $sq->delete();
         }
 
     }
