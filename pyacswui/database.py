@@ -197,8 +197,11 @@ class Database(object):
     def appendColumnDateTime(self, tblname, colname):
         self.__appendColumn(tblname, colname, "DATETIME")
 
+    def appendColumnTimestamp(self, tblname, colname):
+        self.__appendColumn(tblname, colname, "TIMESTAMP", "'0000-00-00 00:00'")
+
     def appendColumnCurrentTimestamp(self, tblname, colname):
-        self.__appendColumn(tblname, colname, "timestamp", "CURRENT_TIMESTAMP")
+        self.__appendColumn(tblname, colname, "TIMESTAMP", "CURRENT_TIMESTAMP")
 
 
     def findIds(self, tblname, where_dict):

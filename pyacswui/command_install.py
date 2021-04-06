@@ -498,6 +498,17 @@ class CommandInstall(Command):
         self.__db.appendColumnUInt("SessionQueue", 'Track')
         self.__db.appendColumnInt("SessionQueue", 'Slot')
 
+        # check table SessionSchedule
+        Verbosity(self.Verbosity).print("check database table `SessionSchedule`")
+        self.__db.appendTable("SessionSchedule")
+        self.__db.appendColumnString("SessionSchedule", "Name", 100)
+        self.__db.appendColumnTimestamp("SessionSchedule", 'Start')
+        self.__db.appendColumnInt("SessionSchedule", 'SeatOccupations')
+        self.__db.appendColumnUInt("SessionSchedule", 'Preset')
+        self.__db.appendColumnUInt("SessionSchedule", 'CarClass')
+        self.__db.appendColumnUInt("SessionSchedule", 'Track')
+        self.__db.appendColumnInt("SessionSchedule", 'Slot')
+
 
 
         # ---------------------------------------------------------------------
