@@ -18,9 +18,11 @@ class CronDbCleanEmptySessions extends Cronjob {
         foreach ($res_sessions as $row) {
             $session_id = $row['Id'];
 
-            if ($this->sessionIsEmpty($session_id) === TRUE && $this->sessionIsActive($session_id) === FALSE) {
+            if ($this->sessionIsActive($session_id)) continue;
+            if ($this->sessionIsMiddle($session_id)) continue;
+
+            if ($this->sessionIsEmpty($session_id))
                 $this->sessionDelete($session_id);
-            }
         }
     }
 
@@ -37,6 +39,7 @@ class CronDbCleanEmptySessions extends Cronjob {
         $res = $acswuiDatabase->fetch_2d_array("SessionResults", ["Id"], ["Session"=>$session_id]);
         foreach ($res as $row) {
             $acswuiDatabase->delete_row("SessionResults", $row['Id']);
+            $this->log("Delete empty session  ID $session_id");
         }
     }
 
@@ -57,10 +60,6 @@ class CronDbCleanEmptySessions extends Cronjob {
     private function sessionIsEmpty(int $session_id) {
         global $acswuiDatabase;
 
-        // check if session is a predecessor
-        $res = $acswuiDatabase->fetch_2d_array("Sessions", ["Id"], ["Predecessor"=>$session_id]);
-        if (count($res) > 0) return FALSE;
-
         // check if laps or collisions exist
         foreach (array("Laps", "CollisionEnv", "CollisionCar") as $table) {
             $query_laps = "SELECT Id FROM $table WHERE Session = $session_id;";
@@ -69,6 +68,22 @@ class CronDbCleanEmptySessions extends Cronjob {
         }
 
         return TRUE;
+    }
+
+
+    //! @return TRUE if the session is a predecessor and has a predecessor
+    private function sessionIsMiddle(int $session_id) {
+        global $acswuiDatabase;
+
+        // check if session is a predecessor
+        $res = $acswuiDatabase->fetch_2d_array("Sessions", ["Id"], ["Predecessor"=>$session_id]);
+        $is_predecessor = (count($res) > 0) ? TRUE : FALSE;
+
+        // check if session has a predecessor
+        $res = $acswuiDatabase->fetch_2d_array("Sessions", ["Predecessor"], ["Id"=>$session_id]);
+        $has_predecessor = ($res[0]['Predecessor'] == 0) ? FALSE : TRUE;
+
+        return $is_predecessor && $has_predecessor;
     }
 
 
