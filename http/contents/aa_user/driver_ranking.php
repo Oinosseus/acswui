@@ -24,6 +24,7 @@ class driver_ranking extends cContentPage {
         $html .= "<script>";
         $html .= "let SvgUserIds = new Array;\n";
         foreach (DriverRanking::listLatest() as $drv_rnk) {
+            if ($drv_rnk->user()->privacyFulfilled() !== TRUE) continue;
             $user_id = $drv_rnk->user()->id();
             $html .= "SvgUserIds.push($user_id);\n";
         }
@@ -162,6 +163,7 @@ class driver_ranking extends cContentPage {
         // table head
         $html .= "<table id=\"driver_ranking_table\">";
         $html .= "<tr>";
+        $html .= "<th>" . _("Position") . "</th>";
         $html .= "<th>" . _("Driver") . "</th>";
         $html .= "<th>XP</th>";
         $html .= "<th>SX</th>";
@@ -171,12 +173,11 @@ class driver_ranking extends cContentPage {
         $html .= "</tr>";
 
         $mean = DriverRanking::initCharacteristics();
+        $position = 0;
+        $last_skipped_by_privacy = FALSE;
         foreach ($driver_rank_list as $drv_rnk) {
             $user_id = $drv_rnk->user()->id();
-
-            // ensure privacy
-            if ($drv_rnk->user()->privacyFulfilled() !== TRUE) continue;
-
+            $position += 1;
 
             foreach (array_keys($mean) as $group) {
                 foreach (array_keys($mean[$group]) as $value) {
@@ -184,16 +185,26 @@ class driver_ranking extends cContentPage {
                 }
             }
 
-            $html .= "<tr id=\"table_row_user_$user_id\">";
-            $html .= "<td>" . $drv_rnk->user()->displayName() . "</td>";
-            $html .= "<td>" . $this->getScoreHtml($drv_rnk, "XP") . "</td>";
-            $html .= "<td>" . $this->getScoreHtml($drv_rnk, "SX", "RT") . "</td>";
-            $html .= "<td>" . $this->getScoreHtml($drv_rnk, "SF", "CUT") . "</td>";
-            $html .= "<td>" . $this->getScoreHtml($drv_rnk) . "</td>";
+            // ensure privacy
+            if ($drv_rnk->user()->privacyFulfilled()) {
+                $html .= "<tr id=\"table_row_user_$user_id\">";
+                $html .= "<td>$position</td>";
+                $html .= "<td>" . $drv_rnk->user()->displayName() . "</td>";
+                $html .= "<td>" . $this->getScoreHtml($drv_rnk, "XP") . "</td>";
+                $html .= "<td>" . $this->getScoreHtml($drv_rnk, "SX", "RT") . "</td>";
+                $html .= "<td>" . $this->getScoreHtml($drv_rnk, "SF", "CUT") . "</td>";
+                $html .= "<td>" . $this->getScoreHtml($drv_rnk) . "</td>";
 
-            $checked = ($user_id == $acswuiUser->Id) ? "checked=\"true\"": "";
-            $html .= "<td><input type=\"checkbox\" id=\"show_$user_id\" $checked/></td>";
-            $html .= "</tr>";
+                $checked = ($user_id == $acswuiUser->Id) ? "checked=\"true\"": "";
+                $html .= "<td><input type=\"checkbox\" id=\"show_$user_id\" $checked/></td>";
+                $html .= "</tr>";
+
+                $last_skipped_by_privacy = FALSE;
+
+            } else if ($last_skipped_by_privacy == FALSE) {
+                $html .= "<tr><td>...</td></tr>";
+                $last_skipped_by_privacy = TRUE;
+            }
         }
 
         // mean value row
@@ -205,7 +216,7 @@ class driver_ranking extends cContentPage {
             }
         }
         $html .= "<tr>";
-        $html .= "<td><small><i>" . _("Mean Value") . "</i></small></td>";
+        $html .= "<td colspan=\"2\"><small><i>" . _("Mean Value") . "</i></small></td>";
         foreach (['XP', 'SX', 'SF'] as $group) {
             $title = "";
             $mean_value = 0;
