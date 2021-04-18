@@ -148,6 +148,12 @@ table tr.lap_invalid {
 }
 
 
+#contents__zm_session__history #session_predecessor_chain a {
+    display: inline-block;
+}
+
+
+
 /******************************************************************************
  *                #contents__zm_session__schedule
  ******************************************************************************/

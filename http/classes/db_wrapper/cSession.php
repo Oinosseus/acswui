@@ -37,6 +37,7 @@ class Session {
     private $Elapsed = NULL;
     private $Timestamp = NULL;
     private $Predecessor = NULL;
+    private $PredecessorUpdated = NULL;
     private $ServerSlot = NULL;
     private $ServerPreset = NULL;
     private $CarClass = NULL;
@@ -48,6 +49,7 @@ class Session {
     private $Results = NULL;
     private $DynamicPositions = NULL;
     private $Successor = NULL;
+    private $SuccessorScanned = NULL;
 
     /**
      * @param $id Database table id
@@ -288,11 +290,22 @@ class Session {
         return $this->DynamicPositions[$user->id()];
     }
 
+
     //! @todo Write a description
     public function elapsed() {
         if ($this->Elapsed === NULL) $this->updateFromDb();
         return $this->Elapsed;
     }
+
+
+    //! @return TRUE when a session with the requested ID does exist
+    public static function exists(int $id) {
+        global $acswuiDatabase;
+
+        $res = $acswuiDatabase->fetch_2d_array("Sessions", ['Id'], ['Id'=>$id]);
+        return (count($res) == 0) ? FALSE : TRUE;
+    }
+
 
     /**
      * This is intended to be used to determine session relative lap numbers:
@@ -319,7 +332,7 @@ class Session {
 
     //! @return The predecessing session
     public function predecessor() {
-        if ($this->Predecessor === NULL) $this->updateFromDb();
+        if ($this->PredecessorUpdated !== TRUE) $this->updateFromDb();
         return $this->Predecessor;
     }
 
@@ -378,11 +391,12 @@ class Session {
         global $acswuiDatabase;
 
         // update cache
-        if ($this->Successor === NULL) {
+        if ($this->SuccessorScanned !== TRUE) {
             $res = $acswuiDatabase->fetch_2d_array("Sessions", ['Id'], ['Predecessor'=>$this->id()]);
             if (count($res) > 0) {
                 $this->Successor = new Session($res[0]['Id']);
             }
+            $this->SuccessorScanned = TRUE;
         }
 
         return $this->Successor;
@@ -520,7 +534,14 @@ class Session {
         $this->WheatherGraphics = $res[0]['WheatherGraphics'];
         $this->Elapsed = $res[0]['Elapsed'];
         $this->Timestamp = new DateTime($res[0]['Timestamp']);
-        $this->Predecessor = new Session($res[0]['Predecessor']);
+
+        if (Session::exists($res[0]['Predecessor'])) {
+            $this->Predecessor = new Session($res[0]['Predecessor']);
+            $this->PredecessorUpdated = TRUE;
+        } else {
+            $this->Predecessor = NULL;
+            $this->PredecessorUpdated = TRUE;
+        }
 
         // save slot (db can have higher id than currently available
         $slot = (int) $res[0]['ServerSlot'];

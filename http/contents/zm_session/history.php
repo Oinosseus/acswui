@@ -36,10 +36,17 @@ class history extends cContentPage {
                 $_SESSION['SESSION_ID'] = $this->Session->id();
             }
 
-            $_SESSION['SESSION_FILTER_RACE'] = array_key_exists("SESSION_FILTER_RACE", $_REQUEST);
-            $_SESSION['SESSION_FILTER_QUAL'] = array_key_exists("SESSION_FILTER_QUAL", $_REQUEST);
-            $_SESSION['SESSION_FILTER_PRTC'] = array_key_exists("SESSION_FILTER_PRTC", $_REQUEST);
-            $_SESSION['SESSION_FILTER_TRCK'] = $_REQUEST["SESSION_FILTER_TRCK"];
+            if (isset($_REQUEST['SESSION_FILTER_RACE']))
+                $_SESSION['SESSION_FILTER_RACE'] = array_key_exists("SESSION_FILTER_RACE", $_REQUEST);
+
+            if (isset($_REQUEST['SESSION_FILTER_QUAL']))
+                $_SESSION['SESSION_FILTER_QUAL'] = array_key_exists("SESSION_FILTER_QUAL", $_REQUEST);
+
+            if (isset($_REQUEST['SESSION_FILTER_PRTC']))
+                $_SESSION['SESSION_FILTER_PRTC'] = array_key_exists("SESSION_FILTER_PRTC", $_REQUEST);
+
+            if (isset($_REQUEST['SESSION_FILTER_TRCK']))
+                $_SESSION['SESSION_FILTER_TRCK'] = $_REQUEST["SESSION_FILTER_TRCK"];
         }
 
         if (isset($_SESSION['SESSION_ID'])) {
@@ -182,6 +189,13 @@ class history extends cContentPage {
 
         if ($this->Session !== NULL) {
             $html .= "<h1>" . _("Session Info") . "</h1>";
+
+            // predecessor/successor chain
+            $html .= "<div id=\"session_predecessor_chain\">";
+            $html .= $this->predecessorChain($this->Session);
+            $html .= $this->Session->name();
+            $html .= $this->successorChain($this->Session);
+            $html .= "</div>";
 
             // sesion info
             $html .= '<table>';
@@ -629,6 +643,40 @@ class history extends cContentPage {
         $html .= "</g>";
 
         $html .= "</svg>";
+
+        return $html;
+    }
+
+
+    private function predecessorChain(Session $s) {
+        $html = "";
+
+        if ($s->predecessor() !== NULL) {
+
+            if ($s->predecessor()->predecessor() !== NULL)
+                $html .= $this->predecessorChain($s->predecessor());
+
+            $html .= "<a href=\"?SESSION_SELECT&SESSION_ID=" . $s->predecessor()->id() . "\">";
+            $html .= $s->predecessor()->name();
+            $html .= "</a> -&gt; ";
+        }
+
+        return $html;
+    }
+
+
+    private function successorChain(Session $s) {
+        $html = "";
+
+        if ($s->successor() !== NULL) {
+
+            $html .= " -&gt; <a href=\"?SESSION_SELECT&SESSION_ID=" . $s->successor()->id() . "\">";
+            $html .= $s->successor()->name();
+            $html .= "</a>";
+
+            if ($s->successor()->successor() !== NULL)
+                $html .= $this->successorChain($s->successor());
+        }
 
         return $html;
     }
