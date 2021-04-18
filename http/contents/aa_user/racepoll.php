@@ -131,8 +131,9 @@ class racepoll extends cContentPage {
         $html .= "</tr>";
 
         foreach (User::listUsers() as $user) {
-            $html .= "<tr>";
-            $html .= "<td>" . $user->displayName() . "</td>";
+            $has_any_date_voted = FALSE;
+            $html_prep = "<tr>";
+            $html_prep .= "<td>" . $user->displayName() . "</td>";
             foreach ($rpds as $rpd) {
 
                 $class = "availability";
@@ -140,9 +141,11 @@ class racepoll extends cContentPage {
                 if ($rpd->isAvailable($user)) {
                     $checked = 'checked="checked"';
                     $class .= " available";
+                    $has_any_date_voted = TRUE;
                 } else if ($rpd->isUnAvailable($user)) {
                     $checked = "";
                     $class .= " unavailable";
+                    $has_any_date_voted = TRUE;
                 } else {
                     $checked = "";
                 }
@@ -152,17 +155,21 @@ class racepoll extends cContentPage {
                     $name = "AVAILABLE_DATE_ID" . $rpd->id();
                     $value = "TRUE";
                     $class .= " user";
-                    $html .= "<td class=\"$class\"><input type=\"checkbox\" name=\"$name\" value=\"$value\" $checked $disabled form=\"mainpoll\"></td>";
+                    $html_prep .= "<td class=\"$class\"><input type=\"checkbox\" name=\"$name\" value=\"$value\" $checked $disabled form=\"mainpoll\"></td>";
                 } else {
                     $disabled = 'disabled="disabled"';
                     $name = "";
                     $value = "";
                     $class .= " other";
-                    $html .= "<td class=\"$class\">&nbsp;</td>";
+                    $html_prep .= "<td class=\"$class\">&nbsp;</td>";
                 }
 
             }
-            $html .= "</tr>";
+            $html_prep .= "</tr>";
+
+            if ($has_any_date_voted || $user->privacy() > 0 || $user->id() == $acswuiUser->Id) {
+                $html .= $html_prep;
+            }
         }
 
         // summarize
