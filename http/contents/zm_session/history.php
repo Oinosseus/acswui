@@ -558,7 +558,10 @@ class history extends cContentPage {
         foreach ($driver_densities as $uid=>$densities) {
             $normdens = array();
             foreach ($densities as $res=>$count) {
-                $d = (int) (-100 * $count / $driver_lap_counts[$uid]);
+                if ($driver_lap_counts[$uid] == 0)
+                    $d = 0;
+                else
+                    $d = (int) (-100 * $count / $driver_lap_counts[$uid]);
                 $normdens[$res] = $d;
             }
             $normalized_densities[$uid] = $normdens;
