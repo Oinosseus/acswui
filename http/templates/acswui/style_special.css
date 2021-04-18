@@ -149,6 +149,15 @@ table tr.lap_invalid {
 
 
 /******************************************************************************
+ *                #contents__zm_session__schedule
+ ******************************************************************************/
+
+#contents__zm_session__schedule tr.overdue td {
+    background-color: var(--color-red-accent);
+}
+
+
+/******************************************************************************
  *                #contents__aa_user__racepoll
  ******************************************************************************/
 
@@ -157,7 +166,7 @@ table tr.lap_invalid {
 }
 
 #contents__aa_user__racepoll td.availability.unavailable {
-    background-color: #bd0000;
+    background-color: var(--color-red-accent);
 }
 
 #contents__aa_user__racepoll td.availability input[type="checkbox"] {
@@ -194,7 +203,7 @@ table tr.lap_invalid {
  ******************************************************************************/
 
 #contents__zz_admin__groups tr:hover {
-    background-color: #bd0000;
+    background-color: var(--color-red-accent);
 }
 
 
@@ -204,7 +213,7 @@ table tr.lap_invalid {
  ******************************************************************************/
 
 #contents__zz_admin__users tr:hover {
-    background-color: #bd0000;
+    background-color: var(--color-red-accent);
 }
 
 

@@ -668,6 +668,8 @@ class CommandInstall(Command):
             f.write("    // discord webhooks\n")
             f.write("    private $DWhManSrvStrtUrl = \"%s\";\n" % self.getIniSection("DISCORD_WEBHOOKS")['MANUAL_SERVER_START_URL'])
             f.write("    private $DWhManSrvStrtGMntn = \"%s\";\n" % self.getIniSection("DISCORD_WEBHOOKS")['MANUAL_SERVER_START_MENTION_GROUPID'])
+            f.write("    private $DWhSchSrvStrtUrl = \"%s\";\n" % self.getIniSection("DISCORD_WEBHOOKS")['SCHEDULE_SERVER_START_URL'])
+            f.write("    private $DWhSchSrvStrtGMntn = \"%s\";\n" % self.getIniSection("DISCORD_WEBHOOKS")['SCHEDULE_SERVER_START_MENTION_GROUPID'])
             f.write("\n")
             f.write("    // misc\n")
             f.write("    private $DriverRanking = %s;\n" % self.dict2php(driver_ranking))

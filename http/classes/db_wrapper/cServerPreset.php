@@ -242,6 +242,46 @@ class ServerPreset {
 
 
     /**
+     * Estimate the maximum duration for a server run in seconds
+     * @param $t The track where the estimation should be based on
+     * @return The maximum duration (estimated for lap based races) as seconds
+     */
+    public function durationMax(Track $t) {
+
+        // estimate fastest laptime
+        $laptime = $t->length() * 36e-3; // estimate 100km/h average speed
+
+        $duration = 0;
+
+        // add booking duration
+        $duration += 60 * (int) $this->getSection("BOOKING")->currentValue("TIME");
+
+        // add practice duration
+        $duration += 60 * (int) $this->getSection("PRACTICE")->currentValue("TIME");
+        $duration += (int) $this->getSection("SERVER")->currentValue("RESULT_SCREEN_TIME");
+
+        // add qualifying duration
+        $duration += 60 * (int) $this->getSection("QUALIFY")->currentValue("TIME");
+        $duration += $laptime * ((int) $this->getSection("SERVER")->currentValue("QUALIFY_MAX_WAIT_PERC")) / 100;
+        $duration += (int) $this->getSection("SERVER")->currentValue("RESULT_SCREEN_TIME");
+
+        // add race duration
+        $duration += (int) $this->getSection("RACE")->currentValue("WAIT_TIME");
+        if ($this->getSection("RACE")->currentValue("TIME") !== "0") {
+            $duration += (int) $this->getSection("RACE")->currentValue("TIME");
+            if ($this->getSection("SERVER")->currentValue("RACE_EXTRA_LAP") == "1")
+                $duration += $laptime;
+        } else {
+            $duration += $laptime * ((int) $this->getSection("RACE")->currentValue("LAPS"));
+        }
+        $duration += (int) $this->getSection("SERVER")->currentValue("RACE_OVER_TIME");
+        $duration += (int) $this->getSection("SERVER")->currentValue("RESULT_SCREEN_TIME");
+
+        return $duration;
+    }
+
+
+    /**
      * @param $list_restricted When TRUE, also restricted presets are listed
      * @return A list of all available ServerPreset objects
      */

@@ -47,6 +47,7 @@ class schedule extends cContentPage {
         $html .= "<th>" . _("Id") . "</th>";
         $html .= "<th>" . _("Date") . "</th>";
         $html .= "<th>" . _("Time") . "</th>";
+        $html .= "<th>" . _("Duration") . "</th>";
         $html .= "<th>" . _("Name") . "</th>";
         $html .= "<th><span title=\"" . _("Enable Seat Occupations") . "\">Seat</span></th>";
         $html .= "<th>" . _("Preset") . "</th>";
@@ -71,16 +72,18 @@ class schedule extends cContentPage {
         foreach (SessionSchedule::listSchedules() as $sq) {
             $sq_id = $sq->id();
 
-            $html .= "<tr>";
+            $tr_class = ($sq->isOverdue()) ? "class=\"overdue\"" : "";
+            $html .= "<tr $tr_class>";
             $html .= "<td>$sq_id</td>";
 
             // avoid editing when disabled or already executed
             $disabled = ($this->CanEdit && !$sq->executed()) ? "" : "disabled";
 
-            // start
+            // start, duration
             $start = $sq->start();
             $html .= "<td><input type=\"date\" name=\"Date$sq_id\" value=\"" . $start->format("Y-m-d") . "\"></td>";
             $html .= "<td><input type=\"time\" name=\"Time$sq_id\" value=\"" . $start->format("H:i") . "\"></td>";
+            $html .= "<td>" . HumanValue::format($sq->preset()->durationMax($sq->track()), "s") . "</td>";
 
             // name
             $html .= "<td><input type=\"text\" name=\"Name$sq_id\" value=\"" . $sq->name() . "\" $disabled></td>";
@@ -163,6 +166,7 @@ class schedule extends cContentPage {
         $now = new DateTimeImmutable();
         $html .= "<td><input type=\"date\" name=\"NewItemDate\" value=\"" . $now->format("Y-m-d") . "\"></td>";
         $html .= "<td><input type=\"time\" name=\"NewItemTime\" value=\"" . $now->format("H:i") . "\"></td>";
+        $html .= "<td>-</td>";
 
         // name, seat
         $html .= "<td><input type=\"text\" name=\"NewItemName\"></td>";

@@ -71,6 +71,50 @@ class SessionSchedule {
     }
 
 
+    //! @return TRUE when the schedule item should have been already executed
+    public function isOverdue() {
+
+        // not overdue when already executed
+        if ($this->executed()) return FALSE;
+
+        // check if start is in future
+        $start = $this->start();
+        $now = new DateTime();
+        $diff = $now->diff($start);
+        if ($diff->invert == 0) return FALSE;
+
+        // check if start is less ago than 60s
+        if ($diff->y > 0) return TRUE;
+        if ($diff->m > 0) return TRUE;
+        if ($diff->d > 0) return TRUE;
+        if ($diff->h > 0) return TRUE;
+        if ($diff->i > 0) return TRUE;
+
+        return FALSE;
+    }
+
+
+    //! @return TRUE when this schedule item should be executed right now
+    public function isDue() {
+
+        $start = $this->start();
+        $now = new DateTime();
+
+        // not overdue when already executed
+        if ($this->executed()) return FALSE;
+
+        // check if start is less ago than 60s around now
+        $diff = $now->diff($start);
+        if ($diff->y > 0) return FALSE;
+        if ($diff->m > 0) return FALSE;
+        if ($diff->d > 0) return FALSE;
+        if ($diff->h > 0) return FALSE;
+        if ($diff->i > 0) return FALSE;
+
+        return TRUE;
+    }
+
+
     /**
      * List available SessionSchedule objects
      * @param $also_executed When set to TRUE also executed items are listed (default: FALSE)
@@ -197,6 +241,24 @@ class SessionSchedule {
         $acswuiDatabase->update_row("SessionSchedule", $this->Id, $cols);
 
         $this->CarClass = $car_class;
+    }
+
+
+    //! Mark a SessionSchedule object as executed
+    public function setExecuted() {
+        global $acswuiDatabase;
+
+        if ($this->executed() !== FALSE) {
+            global $acswuiLog;
+            $acswuiLog->LogError("Canot modify executed schedule ID " . $this->Id . "!");
+            return;
+        }
+
+        $cols = array();
+        $cols['Executed'] = 1;
+        $acswuiDatabase->update_row("SessionSchedule", $this->Id, $cols);
+
+        $this->Executed = TRUE;
     }
 
 

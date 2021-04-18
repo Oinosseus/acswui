@@ -5,6 +5,7 @@
     /* Common colors */
     --color-text: #ddd;
     --color-bg-elements: rgba(0, 0, 0, 0.2);
+    --color-red-accent: #bd0000;
 
     /* SVG Charts */
     --color-chart-axis: var(--color-text);
@@ -176,7 +177,7 @@ a {
 }
 
 a:hover {
-  background-color: #bd0000;
+  background-color: var(--color-red-accent);
 }
 
 table {
@@ -258,7 +259,7 @@ button {
   border: 1px solid black;
   border-radius: 0px;
 
-  background-color: #bd0000;
+  background-color: var(--color-red-accent);
   box-shadow: #111A20 3px 3px 1px;
 }
 
@@ -269,7 +270,7 @@ button:hover {
 
 input[type="checkbox"] {
   border: 1px solid black;
-  background-color: #bd0000;
+  background-color: var(--color-red-accent);
 }
 
 input[type="text"],

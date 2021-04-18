@@ -50,6 +50,7 @@ class queue extends cContentPage {
         $html .= "<th>" . _("Name") . "</th>";
         $html .= "<th>" . _("Slot") . "</th>";
         $html .= "<th>" . _("Preset") . "</th>";
+        $html .= "<th>" . _("Duration") . "</th>";
         $html .= "<th>" . _("Car Class") . "</th>";
         $html .= "<th>" . _("Track") . "</th>";
         $html .= "</tr>";
@@ -110,6 +111,9 @@ class queue extends cContentPage {
                 }
                 $html .= "</select>";
                 $html .= "</td>";
+
+                // duration
+                $html .= "<td>" . HumanValue::format($sq->preset()->durationMax($sq->track()), "s") . "</td>";
 
                 // carclass
                 $html .= "<td>";
@@ -186,6 +190,9 @@ class queue extends cContentPage {
         }
         $html .= "</select>";
         $html .= "</td>";
+
+        // duration
+        $html .= "<td>-</td>";
 
         // carclass
         $html .= "<td>";

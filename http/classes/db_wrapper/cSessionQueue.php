@@ -111,9 +111,10 @@ class SessionQueue {
      * When no queue item is available, NULL is returned.
      *
      * @param $sslot The server slot for which the next queue item is requested
+     * @param $auto_yield When set to FALSE, the next state is not saved (next call will return same item, default FALSE)
      * @return The next SessionQueue item or NULL
      */
-    public static function next(ServerSlot $sslot) {
+    public static function next(ServerSlot $sslot, bool $auto_yield = TRUE) {
         global $acswuiConfig;
 
         $sq_next = NULL;
@@ -158,10 +159,12 @@ class SessionQueue {
         }
 
         // save current state
-        $f = fopen($json_path, 'w');
-        $json_data[$sslot->id()] = $last_id;
-        fwrite($f, json_encode($json_data));
-        fclose($f);
+        if ($auto_yield == TRUE) {
+            $f = fopen($json_path, 'w');
+            $json_data[$sslot->id()] = $last_id;
+            fwrite($f, json_encode($json_data));
+            fclose($f);
+        }
 
         // done
         return $sq_next;
