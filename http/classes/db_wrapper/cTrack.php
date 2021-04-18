@@ -49,6 +49,18 @@ class Track {
         $this->Pitboxes = (int) $res[0]['Pitboxes'];
     }
 
+    /**
+     * Compares to Track objects by their name (case insensitive)
+     * This is intended for usort() of arrays with Track objects
+     * @param $t1 Track object
+     * @param $t2 Track object
+     * @return -1 if $l1 is quicker, +1 when $l2 is quicker, 0 if both are equal
+     */
+    public static function compareName(Track $t1, Track $t2) {
+        return strcasecmp($t1->name(), $t2->name());
+    }
+
+
     //! @return Track config identification name
     public function config() {
         if ($this->Config === NULL) $this->cacheUpdateBasics();

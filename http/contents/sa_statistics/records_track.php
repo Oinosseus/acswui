@@ -124,6 +124,8 @@ class records_track extends cContentPage {
                 $ret[] = new Track($tid);
         }
 
+        usort($ret, "Track::compareName");
+
         return $ret;
     }
 }
