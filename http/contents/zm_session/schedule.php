@@ -62,18 +62,20 @@ class schedule extends cContentPage {
     private function existingItemForm() {
         $html = "";
 
-        $disabled = ($this->CanEdit) ? "" : "disabled";
 
         $html .= "<h1>" . _("Scheduled Sessions") . "</h1>";
 
         $html .= "<table>";
         $html .= $this->tableHeader();
 
-        foreach (SessionSchedule::listSchedules(new DateInterval("P7D")) as $sq) {
+        foreach (SessionSchedule::listSchedules() as $sq) {
             $sq_id = $sq->id();
 
             $html .= "<tr>";
             $html .= "<td>$sq_id</td>";
+
+            // avoid editing when disabled or already executed
+            $disabled = ($this->CanEdit && !$sq->executed()) ? "" : "disabled";
 
             // start
             $start = $sq->start();
@@ -128,7 +130,7 @@ class schedule extends cContentPage {
             $html .= "</td>";
 
             // delete
-            if ($this->CanEdit) {
+            if ($this->CanEdit && !$sq->executed()) {
                 $html .= "<td>";
                 $html .= "<button type=\"submit\" name=\"Delete\" value=\"$sq_id\">" . _("Delete") . "</button>";
                 $html .= "</td>";
@@ -220,7 +222,7 @@ class schedule extends cContentPage {
         if (isset($_POST['Action']) && $_POST['Action'] == "Save") {
 
             // change items
-            foreach (SessionSchedule::listSchedules(new DateInterval("P7D")) as $sq) {
+            foreach (SessionSchedule::listSchedules() as $sq) {
                 $sq_id = $sq->id();
 
                 // start
@@ -286,6 +288,7 @@ class schedule extends cContentPage {
                 $prst = $_POST['NewItemPreset'];
                 $cc = $_POST['NewItemCarClass'];
                 $t = $_POST['NewItemTrack'];
+
 
                 if ($prst != "" && $cc != "" && $t != "") {
                     $sq = SessionSchedule::createNew();

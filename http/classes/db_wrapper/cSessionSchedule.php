@@ -10,6 +10,7 @@ class SessionSchedule {
     private $Preset = NULL;
     private $CarClass = NULL;
     private $Track = NULL;
+    private $Executed = NULL;
 
     public function __construct(int $id) {
         $this->Id = $id;
@@ -57,6 +58,13 @@ class SessionSchedule {
     }
 
 
+    //! @return TRUE if this schedule has already been executed
+    public function executed() {
+        if ($this->Executed === NULL) $this->updateFromDb();
+        return $this->Executed;
+    }
+
+
     //! @return The Id of the queue item
     public function id() {
         return $this->Id;
@@ -65,19 +73,17 @@ class SessionSchedule {
 
     /**
      * List available SessionSchedule objects
-     * @param $show_passed_interval A DateInterval in the past from now (zero by default)
-     * @return An array of SessionSchedule objects
+     * @param $also_executed When set to TRUE also executed items are listed (default: FALSE)
+     * @return An array of SessionSchedule objects ordered by their start date
      */
-    public static function listSchedules(DateInterval $show_passed_interval = NULL) {
+    public static function listSchedules(bool $also_executed = FALSE) {
         global $acswuiDatabase;
         $ret = array();
 
-        if ($show_passed_interval === NULL) $show_passed_interval = new DateInterval("P0D");
-
         // create query
         $query = "SELECT Id FROM SessionSchedule";
-        $date_threshold = (new DateTimeImmutable())->sub($show_passed_interval);
-        $query .= " WHERE Start >= '" . $date_threshold->format("Y-m-d H:i:s") . "'";
+        if ($also_executed == FALSE)
+            $query .= " WHERE Executed = 0 ";
         $query .= " ORDER BY Start ASC";
 
         // execute query
@@ -180,6 +186,12 @@ class SessionSchedule {
     public function setCarClass(CarClass $car_class) {
         global $acswuiDatabase;
 
+        if ($this->executed() !== FALSE) {
+            global $acswuiLog;
+            $acswuiLog->LogError("Canot modify executed schedule ID " . $this->Id . "!");
+            return;
+        }
+
         $cols = array();
         $cols['CarClass'] = $car_class->id();
         $acswuiDatabase->update_row("SessionSchedule", $this->Id, $cols);
@@ -191,6 +203,12 @@ class SessionSchedule {
     //! @param $name Set new name for the queue item
     public function setName(string $name) {
         global $acswuiDatabase;
+
+        if ($this->executed() !== FALSE) {
+            global $acswuiLog;
+            $acswuiLog->LogError("Canot modify executed schedule ID " . $this->Id . "!");
+            return;
+        }
 
         $cols = array();
         $cols['Name'] = $name;
@@ -204,6 +222,12 @@ class SessionSchedule {
     public function setPreset(ServerPreset $preset) {
         global $acswuiDatabase;
 
+        if ($this->executed() !== FALSE) {
+            global $acswuiLog;
+            $acswuiLog->LogError("Canot modify executed schedule ID " . $this->Id . "!");
+            return;
+        }
+
         $cols = array();
         $cols['Preset'] = $preset->id();
         $acswuiDatabase->update_row("SessionSchedule", $this->Id, $cols);
@@ -215,6 +239,12 @@ class SessionSchedule {
     //! @param $occupation Set if seat occupations shall be enabled
     public function setSeatOccupations(bool $occupation) {
         global $acswuiDatabase;
+
+        if ($this->executed() !== FALSE) {
+            global $acswuiLog;
+            $acswuiLog->LogError("Canot modify executed schedule ID " . $this->Id . "!");
+            return;
+        }
 
         $cols = array();
         $cols['SeatOccupations'] = ($occupation) ? 1 : 0;
@@ -228,6 +258,12 @@ class SessionSchedule {
     public function setSlot(ServerSlot $slot) {
         global $acswuiDatabase;
 
+        if ($this->executed() !== FALSE) {
+            global $acswuiLog;
+            $acswuiLog->LogError("Canot modify executed schedule ID " . $this->Id . "!");
+            return;
+        }
+
         $cols = array();
         $cols['Slot'] = $slot->id();
         $acswuiDatabase->update_row("SessionSchedule", $this->Id, $cols);
@@ -240,6 +276,12 @@ class SessionSchedule {
     public function setStart(DateTime $start) {
         global $acswuiDatabase;
 
+        if ($this->executed() !== FALSE) {
+            global $acswuiLog;
+            $acswuiLog->LogError("Canot modify executed schedule ID " . $this->Id . "!");
+            return;
+        }
+
         $cols = array();
         $cols['Start'] = $start->format("Y-m-d H:i:s");
         $acswuiDatabase->update_row("SessionSchedule", $this->Id, $cols);
@@ -251,6 +293,12 @@ class SessionSchedule {
     //! @param $track The required Track object for this item
     public function setTrack(Track $track) {
         global $acswuiDatabase;
+
+        if ($this->executed() !== FALSE) {
+            global $acswuiLog;
+            $acswuiLog->LogError("Canot modify executed schedule ID " . $this->Id . "!");
+            return;
+        }
 
         $cols = array();
         $cols['Track'] = $track->id();
@@ -294,6 +342,7 @@ class SessionSchedule {
         $columns[] = 'Preset';
         $columns[] = 'CarClass';
         $columns[] = 'Track';
+        $columns[] = 'Executed';
         $res = $acswuiDatabase->fetch_2d_array("SessionSchedule", $columns, ['Id'=>$this->Id]);
         if (count($res) !== 1) {
             $acswuiLog->logError("Cannot find SessionSchedule.Id=" . $this->Id);
@@ -308,6 +357,7 @@ class SessionSchedule {
         $this->Preset = new ServerPreset($res[0]['Preset']);
         $this->CarClass = new CarClass($res[0]['CarClass']);
         $this->Track = new Track($res[0]['Track']);
+        $this->Executed = ($res[0]['Executed'] == "0") ? FALSE : TRUE;
     }
 }
 

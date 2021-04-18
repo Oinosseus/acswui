@@ -508,6 +508,7 @@ class CommandInstall(Command):
         self.__db.appendColumnUInt("SessionSchedule", 'CarClass')
         self.__db.appendColumnUInt("SessionSchedule", 'Track')
         self.__db.appendColumnInt("SessionSchedule", 'Slot')
+        self.__db.appendColumnInt("SessionSchedule", 'Executed')
 
 
 
