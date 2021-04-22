@@ -36,14 +36,9 @@ class history extends cContentPage {
                 $_SESSION['SESSION_ID'] = $this->Session->id();
             }
 
-            if (isset($_REQUEST['SESSION_FILTER_RACE']))
-                $_SESSION['SESSION_FILTER_RACE'] = array_key_exists("SESSION_FILTER_RACE", $_REQUEST);
-
-            if (isset($_REQUEST['SESSION_FILTER_QUAL']))
-                $_SESSION['SESSION_FILTER_QUAL'] = array_key_exists("SESSION_FILTER_QUAL", $_REQUEST);
-
-            if (isset($_REQUEST['SESSION_FILTER_PRTC']))
-                $_SESSION['SESSION_FILTER_PRTC'] = array_key_exists("SESSION_FILTER_PRTC", $_REQUEST);
+            $_SESSION['SESSION_FILTER_RACE'] = array_key_exists("SESSION_FILTER_RACE", $_REQUEST);
+            $_SESSION['SESSION_FILTER_QUAL'] = array_key_exists("SESSION_FILTER_QUAL", $_REQUEST);
+            $_SESSION['SESSION_FILTER_PRTC'] = array_key_exists("SESSION_FILTER_PRTC", $_REQUEST);
 
             if (isset($_REQUEST['SESSION_FILTER_TRCK']))
                 $_SESSION['SESSION_FILTER_TRCK'] = $_REQUEST["SESSION_FILTER_TRCK"];
@@ -271,7 +266,7 @@ class history extends cContentPage {
                 $html .= '<td>' . $rslt->user()->displayName() . '</th>';
                 $html .= '<td>' . $rslt->carSkin()->htmlImg("", 50) . '</th>';
                 $html .= '<td>' . HumanValue::format($rslt->bestlap(), "LAPTIME") . '</td>';
-                $html .= '<td>' . HumanValue::format($rslt->totaltime(), "ms") . '</td>';
+                $html .= '<td>' . HumanValue::format($rslt->totaltime(), "LAPTIME") . '</td>';
                 $html .= '<td>' . HumanValue::format($rslt->ballast(), "kg") . '</td>';
                 $html .= '<td>' . HumanValue::format($rslt->restrictor(), "%") . '</td>';
                 $html .= '<td>' . $rslt->amountLaps() . '</th>';
