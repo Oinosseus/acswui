@@ -20,7 +20,14 @@ function getPreferredClientLanguage() {
     }
 
     // check preferred browser languages
-    $preferred = explode(",", $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+    $preferred = array();
+    if (function_exists("apache_request_headers")) {
+        $preferred = explode(",", apache_request_headers()["Accept-Language"]);
+    } else {
+        $preferred = explode(",", $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+    }
+
+    // decide for translation
     foreach ($preferred as $pref) {
         // check against each available language
         foreach ($available as $avbl) {
