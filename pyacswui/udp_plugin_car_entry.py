@@ -201,7 +201,7 @@ class UdpPluginCarEntry(object):
             self.__verbosity2.print("Collision of car ", self.__id,
                                     " (" + self.__driver_name + ")",
                                     "with other car ", other_car_entry.__id,
-                                    " (" + other_car_entry.__driver_name + ")",
+                                    " (" + str(other_car_entry.__driver_name) + ")",
                                     "at speed", speed)
 
             fields = {}

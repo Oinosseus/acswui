@@ -152,7 +152,7 @@ class ServerSlot {
         // start server
         $cmd_str = array();
         $cmd_ret = 0;
-        $cmd = "nohup ". $acswuiConfig->AbsPathAcswui . "/acswui.py -vvv srvrun ";
+        $cmd = "nohup ". $acswuiConfig->AbsPathAcswui . "/acswui.py -vvvvvv srvrun ";
         $cmd .= " \"" . $acswuiConfig->AbsPathData . "/acswui.ini\" ";
         $cmd .= " --slot $id";
         $cmd .= " >" . $acswuiConfig->AbsPathData . "/logs_acserver/slot_$id.log 2>&1 &";
