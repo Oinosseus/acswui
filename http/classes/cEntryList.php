@@ -204,7 +204,7 @@ class EntryList {
         // TODO How to handle more occupations than pitboxes???
         if (count($this->EntryItemsList) > $this->Track->pitboxes()) {
             $msg = "Try to generate an entry list with more occupations than pitboxes.\n";
-            $msg .= "CarClass '" . $this->CarClass->name() . "' (ID " . $this->CarClass->id() . ", " . count($entry_items_list) . " occupations)";
+            $msg .= "CarClass '" . $this->CarClass->name() . "' (ID " . $this->CarClass->id() . ", " . count($this->EntryItemsList) . " occupations)";
             $msg .= "Track '" . $this->Track->name() . "' (ID " . $this->Track->id() . ", " . $this->Track->pitboxes() . " pits)";
             $acswuiLog->logWarning($msg);
         }
