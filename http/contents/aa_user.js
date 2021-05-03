@@ -17,7 +17,7 @@ function loginAction() {
     ajax.send("USERNAME=" + username + "&PASSWORD=" + userpass);
 
     // check response
-    if (ajax.responseText != "login successful") {
+    if (ajax.responseText.trim() != "login successful") {
         alert("Login failed!\nCheck username and password.");
     }
 
