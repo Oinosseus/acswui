@@ -58,6 +58,12 @@ class CarClass {
             $this->BallastMap[$row['Car']] = $row['Ballast'];
         }
 
+        // catch rare situation
+        if (!array_key_exists($car->id(), $this->BallastMap)) {
+            global $acswuiLog;
+            $acswuiLog->logError("Cannot find car ID" . $car->id() . " in car class ID" . $this->Id . "!");
+        }
+
         return $this->BallastMap[$car->id()];
     }
 
@@ -275,9 +281,33 @@ class CarClass {
      */
     public function removeCar(Car $car) {
         global $acswuiDatabase;
+
+        // release seat occupations
+        $query = "SELECT CarClassOccupationMap.Id FROM CarClassOccupationMap ";
+        $query .= "INNER JOIN CarSkins ON CarSkins.Id = CarClassOccupationMap.CarSkin ";
+        $query .= "WHERE CarClassOccupationMap.CarClass = " . $this->Id . " AND CarSkins.Car = " . $car->id();
+        $res = $acswuiDatabase->query($query);
+        if ($res === FALSE) {
+            global $acswuiLog;
+
+            $msg = "Could not remove seat occupations for CarClass ID";
+            $msg .= $this->id();
+            $msg .= " for Car ID" . $car->id();
+            $msg .= "!";
+
+            $acswuiLog->logError($msg);
+            return;
+        } else {
+            foreach ($res->fetch_all(MYSQLI_ASSOC) as $row) {
+                $acswuiDatabase->delete_row("CarClassOccupationMap", $row['Id']);
+            }
+        }
+
+        // release car mapping
         $res = $acswuiDatabase->fetch_2d_array("CarClassesMap", ['Id'], ['Car'=>$car->id(), 'CarClass'=>$this->Id]);
         $map_id = $this->getCarMapId($car);
         $acswuiDatabase->delete_row("CarClassesMap", $map_id);
+
         $this->clearCache();
     }
 
@@ -303,6 +333,12 @@ class CarClass {
         $this->RestrictorMap = array();
         foreach ($acswuiDatabase->fetch_2d_array("CarClassesMap", ['Car', 'Restrictor'], ['CarClass'=>$this->Id]) as $row) {
             $this->RestrictorMap[$row['Car']] = $row['Restrictor'];
+        }
+
+        // catch rare situation
+        if (!array_key_exists($car->id(), $this->RestrictorMap)) {
+            global $acswuiLog;
+            $acswuiLog->logError("Cannot find car ID" . $car->id() . " in car class ID" . $this->Id . "!");
         }
 
         return $this->RestrictorMap[$car->id()];

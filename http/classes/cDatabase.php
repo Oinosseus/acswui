@@ -300,5 +300,23 @@
         return (count($res) === 0) ? False : True;
     }
 
+
+
+    /**
+     * Executing a raw database query
+     * @param $query_string The SQL query
+     * @return Same as mysqli::query(), either FALSE or a mysqli_result object
+     */
+    public function query($query_string, bool $fetch = TRUE) {
+
+        // execute query
+        $result = $this->db_handle->query($query_string);
+        if ($result === FALSE) {
+            global $acswuiLog;
+            $acswuiLog->LogError("Failed SQL query: " . $query_string . "\nERROR: " . $this->db_handle->error);
+        }
+
+        return $result;
+    }
 }
 ?>
