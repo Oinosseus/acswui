@@ -175,6 +175,9 @@ class User implements JsonSerializable {
         $this->Steam64GUID = $res[0]['Steam64GUID'];
         $this->Color = $res[0]['Color'];
         $this->Privacy = (int) $res[0]['Privacy'];
+
+        // automatically set privacy to community when user has a password
+        if ($this->Password !== "" && $this->Privacy < 1) $this->Privacy = 1;
     }
 
 

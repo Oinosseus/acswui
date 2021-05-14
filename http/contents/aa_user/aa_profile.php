@@ -41,9 +41,9 @@ class aa_profile extends cContentPage {
         // privacy
         $html .= _("Pirvacy") . ": ";
         $html .= "<select name=\"Privacy\">";
-        $value = 0;
-        $select = ($acswuiUser->user()->privacy() == $value) ? "selected" : "";
-        $html .= "<option value=\"$value\" $select>Private (No personal information visible)</option>";
+//         $value = 0;
+//         $select = ($acswuiUser->user()->privacy() == $value) ? "selected" : "";
+//         $html .= "<option value=\"$value\" $select>Private (No personal information visible)</option>";
         $value = 1;
         $select = ($acswuiUser->user()->privacy() == $value) ? "selected" : "";
         $html .= "<option value=\"$value\" $select>Community (Personal information only visible to logged users)</option>";
