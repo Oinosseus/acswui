@@ -114,7 +114,7 @@ class Track {
 
 
     //! @return Html img tag containing preview image
-    public function htmlImg($img_id="", $max_height=NULL) {
+    public function htmlImg($img_id="", $max_height=NULL, $max_width=NULL) {
         global $acswuiConfig;
 
         $track = $this->track();
@@ -122,6 +122,7 @@ class Track {
         $name = $this->name();
         $img_id = ($img_id == "") ? "":"id=\"$img_id\"";
         $max_height = ($max_height === NULL) ? "" : "height=\"$max_height\"";
+        $max_width = ($max_width === NULL) ? "" : "width=\"$max_width\"";
 
         // get path
         if ($config !="") {
@@ -136,7 +137,7 @@ class Track {
         $title .= $this->pitboxes() . " pits\n";
         $title .= $this->track() . "/" . $this->config();
 
-        return "<img src=\"$basepath/preview.png\" $img_id alt=\"$name\" title=\"$title\" $max_height>";
+        return "<img src=\"$basepath/preview.png\" $img_id alt=\"$name\" title=\"$title\" $max_height $max_width>";
     }
 
 

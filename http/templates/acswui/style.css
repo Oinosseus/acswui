@@ -6,6 +6,7 @@
     --color-text: #ddd;
     --color-bg-elements: rgba(0, 0, 0, 0.2);
     --color-red-accent: #bd0000;
+    --color-disabled: #883440;
 
     /* SVG Charts */
     --color-chart-axis: var(--color-text);
@@ -300,7 +301,7 @@ select[readonly]:focus,
 select[disabled],
 select[disabled]:focus,
 .disabled_input {
-  color: #883440;
+  color: var(--color-disabled);
 }
 
 form label {

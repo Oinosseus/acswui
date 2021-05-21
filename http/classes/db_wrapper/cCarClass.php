@@ -149,6 +149,25 @@ class CarClass {
         return $res[0]['Id'];
     }
 
+
+
+    //! @return Html img tag containing preview image
+    public function htmlImg($img_id="", $max_height=NULL) {
+
+        // try to find first available CarSkin
+        $cars = $this->cars();
+        if (count($cars)) {
+            $skins = $cars[0]->skins();
+            if (count($skins)) {
+                return $skins[0]->htmlImg($img_id, $max_height);
+            }
+        }
+
+        return "<img alt=\"no car for preview\" id=\"$img_id\">";
+    }
+
+
+
     //! @return The unique Database row ID of the CarClass
     public function id() {
         return $this->Id;

@@ -468,6 +468,40 @@ class CommandInstall(Command):
         self.__db.appendColumnUInt("RacePollTrackMap", 'Score')
 
 
+        # check table Polls
+        Verbosity(self.Verbosity).print("check database table `Polls`")
+        self.__db.appendTable("Polls")
+        self.__db.appendColumnSmallInt("Polls", 'IsSecret')
+        self.__db.appendColumnUInt("Polls", 'PointsForTracks')
+        self.__db.appendColumnUInt("Polls", 'PointsPerTrack')
+        self.__db.appendColumnUInt("Polls", 'PointsForCarClasses')
+        self.__db.appendColumnUInt("Polls", 'PointsPerCarClass')
+        self.__db.appendColumnString("Polls", 'Name', 50)
+        self.__db.appendColumnText("Polls", 'Description')
+        self.__db.appendColumnDateTime("Polls", 'Closing')
+
+        # check table PollTracks
+        Verbosity(self.Verbosity).print("check database table `PollTracks`")
+        self.__db.appendTable("PollTracks")
+        self.__db.appendColumnUInt("PollTracks", 'Poll')
+        self.__db.appendColumnUInt("PollTracks", 'Track')
+
+        # check table PollCarClasses
+        Verbosity(self.Verbosity).print("check database table `PollCarClasses`")
+        self.__db.appendTable("PollCarClasses")
+        self.__db.appendColumnUInt("PollCarClasses", 'Poll')
+        self.__db.appendColumnUInt("PollCarClasses", 'CarClass')
+
+        # check table PollVotes
+        Verbosity(self.Verbosity).print("check database table `PollVotes`")
+        self.__db.appendTable("PollVotes")
+        self.__db.appendColumnUInt("PollVotes", 'User')
+        self.__db.appendColumnUInt("PollVotes", 'PollTrack')
+        self.__db.appendColumnUInt("PollVotes", 'PollCarClass')
+        self.__db.appendColumnUInt("PollVotes", 'Points')
+
+
+
 
         # ---------------------------------------------------------------------
         #                           Green Tables

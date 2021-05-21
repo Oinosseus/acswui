@@ -232,3 +232,61 @@ table tr.lap_invalid {
     display: grid;
     grid-template-columns: max-content max-content;
 }
+
+
+
+/******************************************************************************
+ *                #contents__aa_user__polls
+ ******************************************************************************/
+
+#contents__aa_user__polls tr.closed_poll td,
+#contents__aa_user__polls tr.closed_poll td a {
+  color: var(--color-disabled);
+}
+
+#contents__aa_user__polls div.poll_item{
+    display:inline-block;
+    margin: 5px;
+    border-radius: 5px;
+    width: auto;
+}
+
+#contents__aa_user__polls div.poll_item img {
+    display: block;
+}
+
+#contents__aa_user__polls div.poll_item input[type=checkbox] {
+    display: none;
+}
+
+#contents__aa_user__polls div.poll_item label {
+    background-color: rgba(0,0,0,0.2);
+    padding: 5px;
+    display: block;
+}
+
+#contents__aa_user__polls div.poll_item input[type=range] {
+    width: 99%;
+}
+
+#contents__aa_user__polls div.poll_item label:hover {
+    background-color: rgba(0,0,0,0.5);
+}
+
+#contents__aa_user__polls div.poll_item input[type=checkbox]:checked + label {
+    background-color: rgba(255,0,0,0.75);
+}
+
+#contents__aa_user__polls span.PollPointsEmpty {
+    font-weight: normal;
+    color: var(--color-text);
+    background-color: none;
+    padding: 0px;
+}
+
+#contents__aa_user__polls span.PollPointsAvailable {
+    font-weight: bold;
+    color: var(--color-red-accent);
+    background-color: var(--color-text);
+    padding: 0.2em 0.5em;
+}

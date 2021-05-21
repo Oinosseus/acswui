@@ -39,6 +39,7 @@ include("classes/db_wrapper/cStatsTrackPopularity.php");
 include("classes/db_wrapper/cStatsCarClassPopularity.php");
 include("classes/db_wrapper/cSessionQueue.php");
 include("classes/db_wrapper/cSessionSchedule.php");
+include("classes/db_wrapper/cPoll.php");
 
 // functions
 include("functions/getMenuArrayFromContentDir.php");
