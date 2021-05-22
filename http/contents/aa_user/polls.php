@@ -235,11 +235,10 @@ class polls extends cContentPage {
         $p = $this->CurrentPoll;
         $html = "";
 
-        $html .= "<form action=\"\" method=\"post\" id=\"EditPollForm\">";
+        $html .= "<form action=\"\" method=\"post\">";
         $html .= "<input type=\"hidden\" name=\"SavePollEdit\" value=\"True\">";
-        $html .= "<input type=\"hidden\" name=\"Action\" value=\"EditPoll\">";
         $html .= "<input type=\"hidden\" name=\"PollId\" value=\"" . $p->id() . "\">";
-        $html .= "<button type=\"submit\">" . _("Save Poll") . "</button>";
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"EditPoll\">" . _("Save Poll") . "</button>";
 
         $close_disabled = ($p->isClosed()) ? "disabled" : "";
 
@@ -270,7 +269,6 @@ class polls extends cContentPage {
         $html .= "</table>";
         $html .= "</fieldset>";
 
-        $html .= "</form>";
 
 
 
@@ -283,10 +281,10 @@ class polls extends cContentPage {
         $html .= "<table>";
 
         $html .= "<tr><th>" . _("Points for all Tracks") . "</th>";
-        $html .= "<td><input type=\"number\" name=\"PollPointsForTracks\" min=\"0\" step=\"1\" value=\"" . $p->pointsForTracks() . "\" form=\"EditPollForm\" $close_disabled></td></tr>";
+        $html .= "<td><input type=\"number\" name=\"PollPointsForTracks\" min=\"0\" step=\"1\" value=\"" . $p->pointsForTracks() . "\" $close_disabled></td></tr>";
 
         $html .= "<tr><th>" . _("Points per Track") . "</th>";
-        $html .= "<td><input type=\"number\" name=\"PollPointsPerTrack\" min=\"0\" step=\"1\" value=\"" . $p->pointsPerTrack() . "\" form=\"EditPollForm\" $close_disabled></td></tr>";
+        $html .= "<td><input type=\"number\" name=\"PollPointsPerTrack\" min=\"0\" step=\"1\" value=\"" . $p->pointsPerTrack() . "\" $close_disabled></td></tr>";
 
 
         $html .= "<tr><td colspan=\"2\">";
@@ -295,7 +293,7 @@ class polls extends cContentPage {
             $input_value = $t->id();
 
             $html .= "<div class=\"poll_item\">";
-            $html .= "<input type=\"checkbox\" id=\"$input_id\" name=\"$input_id\" value=\"TRUE\" form=\"EditPollForm\" checked $close_disabled>";
+            $html .= "<input type=\"checkbox\" id=\"$input_id\" name=\"$input_id\" value=\"TRUE\" checked $close_disabled>";
             $html .= "<label for=\"$input_id\">";
             $html .= "<div class=\"track_name\">" . $t->name() . "</div>";
             $html .= $t->htmlImg("", 100);
@@ -307,11 +305,7 @@ class polls extends cContentPage {
         $html .= "</fieldset>";
 
         if (!$p->isClosed()) {
-            $html .= "<form action=\"\" method=\"post\" id=\"AddTrackForm\">";
-            $html .= "<input type=\"hidden\" name=\"Action\" value=\"AddTracks\">";
-            $html .= "<input type=\"hidden\" name=\"PollId\" value=\"" . $p->id() . "\">";
-            $html .= "<button type=\"submit\">" . _("Add Tracks") . "</button>";
-            $html .= "</form>";
+            $html .= "<button type=\"submit\" name=\"Action\" value=\"AddTracks\">" . _("Add Tracks") . "</button>";
         }
 
 
@@ -325,10 +319,10 @@ class polls extends cContentPage {
         $html .= "<table>";
 
         $html .= "<tr><th>" . _("Points for all Car Classes") . "</th>";
-        $html .= "<td><input type=\"number\" name=\"PollPointsForCarClasses\" min=\"0\" step=\"1\" value=\"" . $p->pointsForCarClasses() . "\" form=\"EditPollForm\" $close_disabled></td></tr>";
+        $html .= "<td><input type=\"number\" name=\"PollPointsForCarClasses\" min=\"0\" step=\"1\" value=\"" . $p->pointsForCarClasses() . "\" $close_disabled></td></tr>";
 
         $html .= "<tr><th>" . _("Points per Car Class") . "</th>";
-        $html .= "<td><input type=\"number\" name=\"PollPointsPerCarClass\" min=\"0\" step=\"1\" value=\"" . $p->pointsPerCarClass() . "\" form=\"EditPollForm\" $close_disabled></td></tr>";
+        $html .= "<td><input type=\"number\" name=\"PollPointsPerCarClass\" min=\"0\" step=\"1\" value=\"" . $p->pointsPerCarClass() . "\" $close_disabled></td></tr>";
 
 
         $html .= "<tr><td colspan=\"2\">";
@@ -337,7 +331,7 @@ class polls extends cContentPage {
             $input_value = $cc->id();
 
             $html .= "<div class=\"poll_item\">";
-            $html .= "<input type=\"checkbox\" id=\"$input_id\" name=\"$input_id\" value=\"TRUE\" form=\"EditPollForm\" checked $close_disabled>";
+            $html .= "<input type=\"checkbox\" id=\"$input_id\" name=\"$input_id\" value=\"TRUE\" checked $close_disabled>";
             $html .= "<label for=\"$input_id\">";
             $html .= "<div class=\"poll_item_name\">" . $cc->name() . "</div>";
             $html .= $cc->htmlImg("", 100);
@@ -349,13 +343,10 @@ class polls extends cContentPage {
         $html .= "</fieldset>";
 
         if (!$p->isClosed()) {
-            $html .= "<form action=\"\" method=\"post\" id=\"AddCarClassForm\">";
-            $html .= "<input type=\"hidden\" name=\"Action\" value=\"AddCarClasses\">";
-            $html .= "<input type=\"hidden\" name=\"PollId\" value=\"" . $p->id() . "\">";
-            $html .= "<button type=\"submit\">" . _("Add Car Class") . "</button>";
-            $html .= "</form>";
+            $html .= "<button type=\"submit\" name=\"Action\" value=\"AddCarClasses\">" . _("Add Car Class") . "</button>";
         }
 
+        $html .= "</form>";
         return $html;
     }
 
