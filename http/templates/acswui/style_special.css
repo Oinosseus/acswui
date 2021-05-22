@@ -161,6 +161,10 @@ table tr.lap_invalid {
     margin-bottom: 20px;
 }
 
+#contents__zm_session div.DrivertItem label {
+    display: block;
+}
+
 #contents__zm_session div.SessionId {
     font-style: italic;
     display: block;
