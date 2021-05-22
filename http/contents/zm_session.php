@@ -2,39 +2,83 @@
 
 class zm_session extends cContentPage {
 
+    private $CanStart = NULL;
+    private $CanStop = NULL;
+    private $CanKill = NULL;
+
+
+
     public function __construct() {
         $this->MenuName   = _("Session");
         $this->TextDomain = "acswui";
         $this->RequirePermissions = ["Session"];
     }
 
-    public function getHtml() {
 
+
+    public function getHtml() {
+        global $acswuiUser;
+
+        // check permissions
+        foreach (ServerSlot::listSlots() as $ss) {
+            $this->CanStart[$ss->id()] = $acswuiUser->hasPermission("Session_Slot" . $ss->id() . "_Start");
+            $this->CanStop[$ss->id()] = $acswuiUser->hasPermission("Session_Slot" . $ss->id() . "_Stop");
+            $this->CanKill[$ss->id()] = $acswuiUser->hasPermission("Session_Slot" . $ss->id() . "_Kill");
+        }
+
+        // start html
         $html = "";
 
-        $html .= "<table>";
-        $html .= "<tr><th rowspan=\"2\">" . _("Server Slot") . "</th><th rowspan=\"2\">" . _("Status") . "</th><th rowspan=\"2\">" . _("Server Preset") . "</th><th rowspan=\"2\">" . _("Car Class") . "</th><th rowspan=\"2\">" . _("Track") . "</th><th colspan=\"3\">" . _("Session") . "</th></tr>";
-        $html .= "<tr><th>" . _("Id") . "</th><th>" . _("Type") . "</th><th>" . ("Start Time") . "</th></tr>";
+
         foreach (ServerSlot::listSlots() as $ss) {
-            $html .= "<tr>";
-            $html .= "<td>" . $ss->name() . "</td>";
-            if ($ss->online()) {
-                $html .= '<td style="color:#0d0; font-weight:bold;">online</td>';
-            } else {
-                $html .= '<td style="color:#d00; font-weight:bold;">offline</td>';
+            $html .= "<h1>" . $ss->name() . "</h1>";
+
+            if (!$ss->online()) {
+                $html .= "<div class=\"SlotOffline\">" . _("Offline") . "</div>";
+                continue;
             }
+
             $session = $ss->currentSession();
-            if ($session !== NULL) {
-                $html .= "<td>" . $session->preset()->name() . "</td>";
-                $html .= "<td>" . $session->carClass()->name() . "</td>";
-                $html .= "<td>" . $session->track()->name() . "</td>";
-                $html .= "<td>" . $session->id() . "</td>";
-                $html .= "<td>" . $session->typeName() . "</td>";
-                $html .= "<td>" . $session->timestamp()->format("Y-m-d H:i:s") . "</td>";
+            if ($session === NULL) continue;
+
+            // find carskins of all users
+            $user_carskins = array();
+            foreach ($session->drivenLaps() as $lap) {
+                $uid = $lap->user()->id();
+                if (array_key_exists($uid, $user_carskins)) continue;
+                $user_carskins[$uid] = $lap->carSkin();
             }
-            $html .= "</tr>";
+
+
+            $html .= "<p>";
+            $html .= $session->preset()->name() . " (" . $session->typeName() . ")<br>";
+            $html .= $session->carClass()->name() . "<br>";
+            $html .= $session->timestamp()->format("Y-m-d H:i:s") . "<br>";
+            $html .= "</p>";
+
+            $html .= "<div class=\"SessionImages\">";
+
+            $html .= "<div class=\"TrackImage\">";
+            $html .= $session->track()->htmlImg("", NULL, 300);
+            $html .= "</div>";
+
+            $html .= "<div class=\"DriverItems\">";
+            foreach ($ss->driversOnline() as $user) {
+                $html .= "<div class=\"DrivertItem\">";
+                $html .= "<label>" . $user->displayName() . "</label>";
+                if (array_key_exists($user->id(), $user_carskins)) {
+                    $carskin = $user_carskins[$user->id()];
+                    $html .= $carskin->htmlImg("", 100);
+                }
+                $html .= "</div>";
+            }
+            $html .= "</div>";
+            $html .= "</div>";
+
+            $html .= "<div class=\"SessionId\">Session-ID: ";
+            $html .= $session->id();
+            $html .= "</div>";
         }
-        $html .= "</table>";
 
 
         return $html;

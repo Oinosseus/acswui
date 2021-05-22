@@ -41,10 +41,12 @@ class control extends cContentPage {
         // check permissions
         $CanStartSlot = array();
         $CanStopSlot = array();
+        $CanKillSlot = array();
         $CanAccessRestricted = $acswuiUser->hasPermission("Server_PresetAccessRestricted");
         foreach (ServerSlot::listSlots() as $slot) {
             $CanStartSlot[$slot->id()] = $acswuiUser->hasPermission("Session_Slot" . $slot->id() . "_Start");
             $CanStopSlot[$slot->id()] = $acswuiUser->hasPermission("Session_Slot" . $slot->id() . "_Stop");
+            $CanKillSlot[$slot->id()] = $acswuiUser->hasPermission("Session_Slot" . $slot->id() . "_Kill");
         }
 
 
@@ -107,10 +109,16 @@ class control extends cContentPage {
 
 
             } else if ($_POST['ACTION'] == "STOP_SERVER") {
-
                 if ($this->CurrentServerSlot->online() === TRUE
                     && $CanStopSlot[$this->CurrentServerSlot->id()]) {
                     $this->CurrentServerSlot->stop();
+                }
+
+            } else if ($_POST['ACTION'] == "KILL_SERVER") {
+
+                if ($this->CurrentServerSlot->online() === TRUE
+                    && $CanKillSlot[$this->CurrentServerSlot->id()]) {
+                    $this->CurrentServerSlot->stop(TRUE);
                 }
             }
         }
@@ -118,38 +126,6 @@ class control extends cContentPage {
 
         // initialize the html output
         $html  = "";
-
-
-
-        // --------------------------------------------------------------------
-        //                            Server Status
-        // --------------------------------------------------------------------
-
-        $html .= "<h1>Server Status</h1>";
-
-        $html .= "<table>";
-        $html .= "<tr><th rowspan=\"2\">" . _("Server Slot") . "</th><th rowspan=\"2\">" . _("Status") . "</th><th rowspan=\"2\">" . _("Server Preset") . "</th><th rowspan=\"2\">" . _("Car Class") . "</th><th rowspan=\"2\">" . _("Track") . "</th><th colspan=\"3\">" . _("Session") . "</th></tr>";
-        $html .= "<tr><th>" . _("Id") . "</th><th>" . _("Type") . "</th><th>" . ("Start Time") . "</th></tr>";
-        foreach (ServerSlot::listSlots() as $ss) {
-            $html .= "<tr>";
-            $html .= "<td>" . $ss->name() . "</td>";
-            if ($ss->online()) {
-                $html .= '<td style="color:#0d0; font-weight:bold;">online</td>';
-            } else {
-                $html .= '<td style="color:#d00; font-weight:bold;">offline</td>';
-            }
-            $session = $ss->currentSession();
-            if ($session !== NULL) {
-                $html .= "<td>" . $session->preset()->name() . "</td>";
-                $html .= "<td>" . $session->carClass()->name() . "</td>";
-                $html .= "<td>" . $session->track()->name() . "</td>";
-                $html .= "<td>" . $session->id() . "</td>";
-                $html .= "<td>" . $session->typeName() . "</td>";
-                $html .= "<td>" . $session->timestamp()->format("Y-m-d H:i:s") . "</td>";
-            }
-            $html .= "</tr>";
-        }
-        $html .= "</table>";
 
 
 
@@ -162,14 +138,21 @@ class control extends cContentPage {
 
             if ($ss->online()) {
 
-                if ($CanStopSlot[$ss->id()]) {
-                    $html .= "<h1>Control Server &quot;" . $ss->name() . "&quot;</h1>";
-                    $html .= '<form action="" method="post">';
-                    $html .= '<input type="hidden" name="SERVERSLOT_ID" value="' . $ss->id() . '">';
-                    $html .= '<span style="color:#0d0; font-weight:bold; font-size: 1.5em;">online</span><br>';
+                $html .= "<h1>Control Server &quot;" . $ss->name() . "&quot;</h1>";
+                $html .= '<form action="" method="post">';
+                $html .= '<input type="hidden" name="SERVERSLOT_ID" value="' . $ss->id() . '">';
+                $html .= '<span style="color:#0d0; font-weight:bold; font-size: 1.5em;">online</span><br>';
+
+                // stop slot
+                if ($CanStopSlot[$ss->id()] && $ss->currentSession()->type() != 3 && count($ss->driversOnline()) == 0) {
                     $html .= '<button type="submit" name="ACTION" value="STOP_SERVER">' . _("Stop Server") . '</button>';
-                    $html .= '</form>';
+
+                // kill slot
+                } else if ($CanKillSlot[$ss->id()]) {
+                    $html .= '<button type="submit" name="ACTION" value="KILL_SERVER">' . _("Kill Server") . '</button>';
                 }
+
+                $html .= '</form>';
 
             } else {
 

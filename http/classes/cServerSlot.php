@@ -22,6 +22,7 @@ class ServerSlot {
     }
 
 
+
     //! @return The according Session object that currently runs on the slot (can be NULL)
     public function currentSession() {
         global $acswuiDatabase;
@@ -40,6 +41,26 @@ class ServerSlot {
         }
 
         return $session;
+    }
+
+
+
+    //! @return An array of User objects that are currently online
+    public function driversOnline() {
+        global $acswuiDatabase;
+
+        $drivers = array();
+
+        // get current session of this slot
+        $session = $this->currentSession();
+        if ($session === NULL) return $drivers;
+
+        $res = $acswuiDatabase->fetch_2d_array("Users", ['Id'], ['CurrentSession'=>$session->id()]);
+        foreach ($res as $row) {
+            $drivers[] = new User($row['Id']);
+        }
+
+        return $drivers;
     }
 
 
@@ -120,10 +141,34 @@ class ServerSlot {
 
     /**
      * Stop the server
+     * When drivers are currently online, this will not work (except forced)
+     * When current session is race, this will not work (except forced)
+     * @param $force If TRUE, online drivers or race sessions are ignored (default=FALSE)
      */
-    public function stop() {
+    public function stop(bool $force = FALSE) {
+        global $acswuiLog;
+
+        // check if server is running
         $pid = $this->pid();
-        if ($pid === NULL) return FALSE;
+        if (!$force && $pid === NULL) {
+            $acswuiLog->logWarning("Ignore stopping of not running server slot");
+            return;
+        }
+
+        // check if drivers are online
+        if (!$force && count($this->driversOnline()) > 0) {
+            $acswuiLog->logWarning("Ignore stopping of server slot with online drivers");
+            return;
+        }
+
+        // check if current session is race
+        $session = $this->currentSession();
+        if (!$force && $session !== NULL && $session->type() == 3) {
+            $acswuiLog->logWarning("Ignore stopping of server slot with race session");
+            return;
+        }
+
+
         exec("kill $pid");
         sleep(3);
     }
@@ -169,6 +214,7 @@ class ServerSlot {
             $acswuiLog->logError($msg);
         }
     }
+
 
 
     private function writeServerCfg($filepath, ServerPreset $preset, CarClass $carclass, Track $track) {

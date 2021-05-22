@@ -118,7 +118,7 @@ class UdpPluginCarEntry(object):
         return d
 
 
-    def occupy(self, driver_name, driver_guid):
+    def occupy(self, driver_name, driver_guid, session):
         """ Incomming driver connection
             ... occupy a seat in this car entry
         """
@@ -129,10 +129,14 @@ class UdpPluginCarEntry(object):
         self.__driver_id = None
         res = self.__db.fetch("Users", "Id", {'Steam64GUID': self.__driver_guid})
         if len(res) == 0:
-            self.__driver_id = self.__db.insertRow("Users", {'Login':self.__driver_name, 'Steam64GUID':driver_guid, 'Password':""})
+            self.__driver_id = self.__db.insertRow("Users", {'Login': self.__driver_name,
+                                                             'Steam64GUID': driver_guid,
+                                                             'Password': "",
+                                                             'CurrentSession': session.Id})
         elif len(res) == 1:
             self.__driver_id = res[0]['Id']
-            self.__db.updateRow("Users", self.__driver_id, {"Login": self.__driver_name})
+            self.__db.updateRow("Users", self.__driver_id, {"Login": self.__driver_name,
+                                                            "CurrentSession": session.Id})
         else:
             raise ValueError("Database table 'Users' is ambigous")
 
@@ -146,6 +150,11 @@ class UdpPluginCarEntry(object):
         self.__verbosity2.print("Car", self.__id,
                                 "released from driver: Id =", self.__driver_id,
                                 ", name =", self.__driver_name)
+
+        # inform that driver is not online anymore
+        self.__db.updateRow("Users", self.__driver_id, {"CurrentSession": 0})
+
+
         self.__driver_guid = None
         self.__driver_name = None
         self.__driver_id = None

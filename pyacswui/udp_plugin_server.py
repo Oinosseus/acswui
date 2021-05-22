@@ -111,7 +111,7 @@ class UdpPluginServer(object):
             car_model = pkt.readString()
             car_skin = pkt.readString()
             entry = self.get_car_entry(car_id, car_model, car_skin)
-            entry.occupy(driver_name, driver_guid)
+            entry.occupy(driver_name, driver_guid, self.__session)
 
 
         # ACSP_CONNECTION_CLOSED
