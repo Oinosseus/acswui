@@ -11,6 +11,7 @@ class cUser {
         if (!isset($_SESSION['user_login'])) $_SESSION['user_login'] = "";
         if (!isset($_SESSION['user_ip']))    $_SESSION['user_ip']   = "";
         if (!isset($_SESSION['user_time']))  $_SESSION['user_time'] = 0;
+        if (!isset($_SESSION['user_locale']))  $_SESSION['user_locale'] = "";
 
         // check if login is expired
         if (   $_SESSION['user_ip'] != $_SERVER['REMOTE_ADDR']
@@ -38,6 +39,9 @@ class cUser {
         } else if ($name == "Login") {
             return $_SESSION['user_login'];
 
+        } else if ($name == "Locale") {
+            return $_SESSION['user_locale'];
+
         } else {
             $acswuiLog->logError("Invalid property access to " . $name);
             return "";
@@ -50,6 +54,7 @@ class cUser {
         $_SESSION['user_login'] = "";
         $_SESSION['user_ip']   = "";
         $_SESSION['user_time'] = 0;
+        $_SESSION['user_locale'] = "";
         return true;
     }
 
@@ -85,6 +90,7 @@ class cUser {
                 $_SESSION['user_login'] = "root";
                 $_SESSION['user_ip']    = $_SERVER['REMOTE_ADDR'];
                 $_SESSION['user_time']  = time();
+                $_SESSION['user_locale'] = "";
                 return true;
             } else {
                 $this->logout();
@@ -107,11 +113,12 @@ class cUser {
 
             // login
             if (count($positive_user_ids) == 1) {
-                $u = $acswuiDatabase->fetch_2d_array("Users", ["Id", "Login"], ['Id' => $positive_user_ids[0]]);
+                $u = $acswuiDatabase->fetch_2d_array("Users", ["Id", "Login", "Locale"], ['Id' => $positive_user_ids[0]]);
                 $_SESSION['user_id']    = $u[0]['Id'];
                 $_SESSION['user_login'] = $u[0]['Login'];
                 $_SESSION['user_ip']    = $_SERVER['REMOTE_ADDR'];
                 $_SESSION['user_time']  = time();
+                $_SESSION['user_locale'] = $u[0]['Locale'];
                 return true;
             }
         }

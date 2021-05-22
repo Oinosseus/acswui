@@ -389,6 +389,7 @@ class CommandInstall(Command):
         self.__db.appendColumnString("Users", "Steam64GUID", 50)
         self.__db.appendColumnString("Users", "Color", 10)
         self.__db.appendColumnTinyInt("Users", "Privacy")
+        self.__db.appendColumnString("Users", "Locale", 30)
 
         # check table Groups
         Verbosity(self.Verbosity).print("check database table `Groups`")
@@ -671,6 +672,12 @@ class CommandInstall(Command):
             group, key = drfi_key.upper().split("_")
             driver_ranking[group][key] = value
 
+        # scan locales
+        locales = []
+        path_locales = os.path.join(self.getGeneralArg('path-htdocs'), "locale")
+        for locale in sorted(os.listdir(path_locales)):
+            locales.append("'%s'" % locale)
+
 
         with open(os.path.join(abspath_htdocs, "classes" , "cConfig.php"), "w") as f:
             f.write("<?php\n")
@@ -688,6 +695,7 @@ class CommandInstall(Command):
             f.write("    private $LogDebug = \"false\";\n")
             f.write("    private $RootPassword = '%s';\n" % http_root_password)
             f.write("    private $GuestGroup = '%s';\n" % self.getArg('guest-group'))
+            f.write("    private $Locales = [%s];\n" % ", ".join(locales))
             f.write("\n")
             f.write("    // database constants\n")
             f.write("    private $DbHost = \"%s\";\n" % self.getGeneralArg('db-host'))

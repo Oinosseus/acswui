@@ -14,7 +14,7 @@ class aa_profile extends cContentPage {
 
 
     public function getHtml() {
-        global $acswuiUser, $acswuiDatabase;;
+        global $acswuiUser, $acswuiDatabase, $acswuiConfig;
 
         if ($acswuiUser->IsLogged !== TRUE) return "";
 
@@ -28,6 +28,7 @@ class aa_profile extends cContentPage {
         if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "Save") {
             $acswuiUser->user()->setColor($_REQUEST['Color']);
             $acswuiUser->user()->setPrivacy($_REQUEST['Privacy']);
+            $acswuiUser->user()->setLocale($_REQUEST['Locale']);
         }
 
 
@@ -55,6 +56,18 @@ class aa_profile extends cContentPage {
 
         $html .= _("Personal Color") . ": ";
         $html .= "<input type=\"color\" name =\"Color\" value=\"" . $acswuiUser->user()->color() . "\">";
+        $html .= "<br>";
+
+        $html .= _("Preferred Locale") . ": ";
+        $current_locale = $acswuiUser->user()->locale();
+        $html .= "<select name=\"Locale\">";
+        $html .= "<option value=\"\">auto</option>";
+        foreach ($acswuiConfig->Locales as $locale)  {
+            $selected = ($current_locale == $locale) ? "selected" : "";
+            $html .= "<option value=\"$locale\" $selected>$locale</option>";
+        }
+        $html .= "</select>";
+        $html .= " (" . _("requires re-login") . ")";
         $html .= "<br>";
 
         $html .= "<input type=\"hidden\" name=\"Action\" value=\"Save\">";

@@ -18,6 +18,7 @@ function loginAction() {
 
     // check response
     if (ajax.responseText.trim() != "login successful") {
+        console.log(ajax.responseText);
         alert("Login failed!\nCheck username and password.");
     }
 

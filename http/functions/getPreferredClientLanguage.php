@@ -5,20 +5,11 @@
 
 function getPreferredClientLanguage() {
     global $acswuiLog;
+    global $acswuiUser;
+    global $acswuiConfig;
 
-    // 2D array []['short', 'full']
-    // for example short is 'en' and full is 'en_US'
-    $available = array();
-    foreach(scandir("locale/") as $dir) {
-
-        // ignore hidden items and files
-        if (substr($dir, 0, 1) == ".") continue;
-        if (!is_dir("locale/$dir")) continue;
-
-        $i = count($available);
-        $available[$i]['full']  = $dir;
-        $available[$i]['short'] = explode("_", $dir)[0];
-    }
+    // check for manual selected locale
+    if (in_array($acswuiUser->Locale, $acswuiConfig->Locales)) return $acswuiUser->Locale;
 
     // check preferred browser languages
     $preferred = array();
@@ -39,13 +30,15 @@ function getPreferredClientLanguage() {
             $pref = $pref_no_qual;
         }
 
-        // check against each available language
-        foreach ($available as $avbl) {
+        // check against each available locales
+        foreach ($acswuiConfig->Locales as $locale) {
+
+            $locale_short = explode("_", $locale)[0];
 
             // if match found return language directory
-            if (strpos($pref, $avbl['short']) !== False) {
-                $acswuiLog->logNotice("preferred client language: ". $avbl['full']);
-                return $avbl['full'];
+            if (strpos($pref, $locale_short) !== False) {
+                $acswuiLog->logNotice("preferred client language: ". $locale);
+                return $locale;
             }
         }
     }
@@ -53,7 +46,6 @@ function getPreferredClientLanguage() {
     // inform no language match found
     $msg = "Could not find translation!\n";
     $msg .= "Preferred translations: '" . implode("', '", $preferred) . "'\n";
-    $msg .= "Available translations: '" . implode("', '", $available) . "'\n";
     $acswuiLog->logWarning($msg);
 
     return "";

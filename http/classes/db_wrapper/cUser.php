@@ -11,6 +11,7 @@ class User implements JsonSerializable {
     private $Steam64GUID = NULL;
     private $Color = NULL;
     private $Privacy = NULL;
+    private $Locale = NULL;
 
     private static $UserList = NULL;
     private static $DriverList = NULL;
@@ -73,6 +74,14 @@ class User implements JsonSerializable {
     }
 
 
+
+    //! @return The preferred locale of the user
+    public function locale() {
+        if ($this->Locale === NULL) $this->updateFromDb();
+        return $this->Locale;
+    }
+
+
     //! @return The login name of the user
     public function login() {
         if ($this->Login === NULL) $this->updateFromDb();
@@ -101,6 +110,23 @@ class User implements JsonSerializable {
         $acswuiDatabase->update_row("Users", $this->id(), ['Color'=>$color]);
         $this->Color = $color;
     }
+
+
+
+    public function setLocale(string $new_locale) {
+        global $acswuiDatabase, $acswuiConfig;
+
+        // sanity check
+        if (!in_array($new_locale, $acswuiConfig->Locales)) {
+            $new_locale = "";
+        }
+        if ($new_locale === $this->Locale) return;
+
+        // update DB
+        $acswuiDatabase->update_row("Users", $this->id(), ['Locale'=>$new_locale]);
+        $this->Locale = $new_locale;
+    }
+
 
 
     public function setPrivacy(int $privacy) {
@@ -164,7 +190,8 @@ class User implements JsonSerializable {
         global $acswuiDatabase;
         global $acswuiLog;
 
-        $res = $acswuiDatabase->fetch_2d_array("Users", ['Login', 'Password', 'Steam64GUID', 'Color', 'Privacy'], ['Id'=>$this->Id]);
+        $fields = ['Login', 'Password', 'Steam64GUID', 'Color', 'Privacy', 'Locale'];
+        $res = $acswuiDatabase->fetch_2d_array("Users", $fields, ['Id'=>$this->Id]);
         if (count($res) !== 1) {
             $acswuiLog->logError("Cannot find User.Id=" . $this->Id);
             return;
@@ -175,6 +202,7 @@ class User implements JsonSerializable {
         $this->Steam64GUID = $res[0]['Steam64GUID'];
         $this->Color = $res[0]['Color'];
         $this->Privacy = (int) $res[0]['Privacy'];
+        $this->Locale = $res[0]['Locale'];
 
         // automatically set privacy to community when user has a password
         if ($this->Password !== "" && $this->Privacy < 1) $this->Privacy = 1;
