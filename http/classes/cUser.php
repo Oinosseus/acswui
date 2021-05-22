@@ -10,13 +10,10 @@ class cUser {
         if (!isset($_SESSION['user_id']))    $_SESSION['user_id']   = 0;
         if (!isset($_SESSION['user_login'])) $_SESSION['user_login'] = "";
         if (!isset($_SESSION['user_ip']))    $_SESSION['user_ip']   = "";
-        if (!isset($_SESSION['user_time']))  $_SESSION['user_time'] = 0;
         if (!isset($_SESSION['user_locale']))  $_SESSION['user_locale'] = "";
 
         // check if login is expired
-        if (   $_SESSION['user_ip'] != $_SERVER['REMOTE_ADDR']
-            || $_SESSION['user_time'] > (time() + 60*60)) {
-
+        if ($_SESSION['user_ip'] != $_SERVER['REMOTE_ADDR']) {
             $this->logout();
         }
     }
@@ -53,7 +50,6 @@ class cUser {
         $_SESSION['user_id']   = 0;
         $_SESSION['user_login'] = "";
         $_SESSION['user_ip']   = "";
-        $_SESSION['user_time'] = 0;
         $_SESSION['user_locale'] = "";
         return true;
     }
@@ -89,7 +85,6 @@ class cUser {
                 $_SESSION['user_id']    = 0;
                 $_SESSION['user_login'] = "root";
                 $_SESSION['user_ip']    = $_SERVER['REMOTE_ADDR'];
-                $_SESSION['user_time']  = time();
                 $_SESSION['user_locale'] = "";
                 return true;
             } else {
@@ -117,7 +112,6 @@ class cUser {
                 $_SESSION['user_id']    = $u[0]['Id'];
                 $_SESSION['user_login'] = $u[0]['Login'];
                 $_SESSION['user_ip']    = $_SERVER['REMOTE_ADDR'];
-                $_SESSION['user_time']  = time();
                 $_SESSION['user_locale'] = $u[0]['Locale'];
                 return true;
             }
