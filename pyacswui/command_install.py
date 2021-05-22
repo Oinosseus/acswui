@@ -471,6 +471,7 @@ class CommandInstall(Command):
         # check table Polls
         Verbosity(self.Verbosity).print("check database table `Polls`")
         self.__db.appendTable("Polls")
+        self.__db.appendColumnUInt("Polls", 'Creator')
         self.__db.appendColumnSmallInt("Polls", 'IsSecret')
         self.__db.appendColumnUInt("Polls", 'PointsForTracks')
         self.__db.appendColumnUInt("Polls", 'PointsPerTrack')

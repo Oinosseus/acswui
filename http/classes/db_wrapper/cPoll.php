@@ -5,6 +5,7 @@
  */
 class Poll {
     private $Id = NULL;
+    private $Creator = NULL;
     private $IsSecret = NULL;
     private $PointsForTracks = NULL;
     private $PointsPerTrack = NULL;
@@ -22,6 +23,58 @@ class Poll {
     //! @param $id The Id of an existing Polls database row
     public function __construct(int $id) {
         $this->Id = $id;
+    }
+
+
+
+    /**
+     * Add a car class to vote in this poll.
+     * If the car class already exists, it will be ignored
+     * @param $new_carclass The new CarClass object to be added
+     */
+    public function addCarClass(CarClass $new_carclass) {
+        global $acswuiDatabase;
+
+        // check if already available
+        $current_ccs = $this->carClasses();
+        foreach ($current_ccs as $cc) {
+            if ($cc->id() == $new_carclass->id()) return;
+        }
+
+        // add to DB
+        $fields = array();
+        $fields['Poll'] = $this->id();
+        $fields['CarClass'] = $new_carclass->id();
+        $acswuiDatabase->insert_row("PollCarClasses", $fields);
+
+        // invalidate cache
+        $this->CarClasses = NULL;
+    }
+
+
+
+    /**
+     * Add a track to vote in this poll.
+     * If the track already exists, it will be ignored
+     * @param $new_track The new Track object to be added
+     */
+    public function addTrack(Track $new_track) {
+        global $acswuiDatabase;
+
+        // check if already available
+        $current_tracks = $this->tracks();
+        foreach ($current_tracks as $t) {
+            if ($t->id() == $new_track->id()) return;
+        }
+
+        // add to DB
+        $fields = array();
+        $fields['Poll'] = $this->id();
+        $fields['Track'] = $new_track->id();
+        $acswuiDatabase->insert_row("PollTracks", $fields);
+
+        // invalidate cache
+        $this->Tracks = NULL;
     }
 
 
@@ -80,54 +133,10 @@ class Poll {
 
 
 
-    /**
-     * Add a car class to vote in this poll.
-     * If the car class already exists, it will be ignored
-     * @param $new_carclass The new CarClass object to be added
-     */
-    public function addCarClass(CarClass $new_carclass) {
-        global $acswuiDatabase;
-
-        // check if already available
-        $current_ccs = $this->carClasses();
-        foreach ($current_ccs as $cc) {
-            if ($cc->id() == $new_carclass->id()) return;
-        }
-
-        // add to DB
-        $fields = array();
-        $fields['Poll'] = $this->id();
-        $fields['CarClass'] = $new_carclass->id();
-        $acswuiDatabase->insert_row("PollCarClasses", $fields);
-
-        // invalidate cache
-        $this->CarClasses = NULL;
-    }
-
-
-
-    /**
-     * Add a track to vote in this poll.
-     * If the track already exists, it will be ignored
-     * @param $new_track The new Track object to be added
-     */
-    public function addTrack(Track $new_track) {
-        global $acswuiDatabase;
-
-        // check if already available
-        $current_tracks = $this->tracks();
-        foreach ($current_tracks as $t) {
-            if ($t->id() == $new_track->id()) return;
-        }
-
-        // add to DB
-        $fields = array();
-        $fields['Poll'] = $this->id();
-        $fields['Track'] = $new_track->id();
-        $acswuiDatabase->insert_row("PollTracks", $fields);
-
-        // invalidate cache
-        $this->Tracks = NULL;
+    //! @return The user who created this poll (cann be NULL)
+    public function creator() {
+        if ($this->Creator === NULL) $this->updateFromDb();
+        return $this->Creator;
     }
 
 
@@ -135,11 +144,13 @@ class Poll {
     //! @return A new created Poll object
     public static function createNew() {
         global $acswuiDatabase;
+        global $acswuiUser;
 
         $closing = new DateTime();
         $closing->add(new DateInterval('P7D'));
 
         $fields = array();
+        $fields['Creator'] = $acswuiUser->Id;
         $fields['Name'] = "New Poll";
         $fields['Closing'] = $closing->format("Y-m-d H:i");
         $fields['PointsTrack'] = 10;
@@ -535,7 +546,7 @@ class Poll {
     public function setDescription(string $new_description) {
         global $acswuiDatabase;
         $acswuiDatabase->update_row("Polls", $this->Id, ["Description"=>$new_description]);
-        $this->Name = $new_description;
+        $this->Description = $new_description;
     }
 
 
@@ -722,6 +733,7 @@ class Poll {
 
         // db columns
         $columns = array();
+        $columns[] = 'Creator';
         $columns[] = 'IsSecret';
         $columns[] = 'PointsPerTrack';
         $columns[] = 'PointsForTracks';
@@ -739,6 +751,7 @@ class Poll {
         }
 
         // gather data
+        $this->Creator = ($res[0]['Creator'] == 0) ? NULL : new User($res[0]['Creator']);
         $this->IsSecret = ($res[0]['IsSecret'] == "0") ? FALSE : TRUE;
         $this->PointsPerTrack = (int) $res[0]['PointsPerTrack'];
         $this->PointsForTracks = (int) $res[0]['PointsForTracks'];
@@ -751,10 +764,10 @@ class Poll {
 
 
     /**
-     * Determine the current votes of each user for a certain track.
-     * The result is
-     * @param $track The requested Track
-     * @return an
+     * Determine the users that voted
+     * @param $track Include users voted tracks
+     * @param $carclasses Include users voted car classes
+     * @return Array of User objects
      */
     public function votedUsers(bool $tracks = TRUE, bool $carclasses = TRUE) {
         global $acswuiDatabase;

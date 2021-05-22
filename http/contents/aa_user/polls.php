@@ -3,6 +3,9 @@
 
 class polls extends cContentPage {
 
+    private $CurrentPoll = NULL;
+
+    private $CanCreate = FALSE;
     private $CanManage = FALSE;
     private $CanVote = FALSE;
 
@@ -14,14 +17,28 @@ class polls extends cContentPage {
     }
 
 
+
+    private function canEditPoll(Poll $p) {
+        global $acswuiUser;
+        return ($p->creator() !== NULL && $p->creator()->id() == $acswuiUser->Id) ? TRUE : FALSE;
+    }
+
+
+
     public function getHtml() {
         global $acswuiUser;
 
         $html = "";
 
+        // find requested poll
+        if (array_key_exists('PollId', $_REQUEST)) {
+            $this->CurrentPoll = new Poll($_REQUEST['PollId']);
+        }
+
         // check enhanced permissions
-        if ($acswuiUser->hasPermission('Polls_Manage')) $this->CanManage = TRUE;
         if ($acswuiUser->hasPermission('Polls_Vote')) $this->CanVote = TRUE;
+        if ($acswuiUser->hasPermission('Polls_Create')) $this->CanCreate = TRUE;
+        if ($acswuiUser->hasPermission('Polls_Manage')) $this->CanManage = TRUE;
 
 
         // --------------------------------------------------------------------
@@ -29,64 +46,71 @@ class polls extends cContentPage {
         // --------------------------------------------------------------------
 
         // SavePollEdit
-        if (array_key_exists("SavePollEdit", $_POST) && $this->CanManage) {
-            $p = new Poll($_REQUEST['PollId']);
-            $new_closing = $_POST["PollClosingDate"] . " " . $_POST["PollClosingTime"] . ":00";
-            $new_closing = new DateTime($new_closing);
-            $p->setClosing($new_closing);
+        if (array_key_exists("SavePollEdit", $_POST)) {
+            $p = $this->CurrentPoll;
+            if ($this->CanManage || $this->canEditPoll($p)) {
 
-            if (!$p->isClosed()) {
-                if (array_key_exists('PollName', $_POST)) $p->setName($_POST['PollName']);
-                if (array_key_exists('PollDescription', $_POST)) $p->setDescription($_POST['PollDescription']);
-                $p->setSecret(array_key_exists("PollIsSecret", $_POST));
-                if (array_key_exists('PollPointsForTracks', $_POST)) $p->setPointsForTracks($_POST['PollPointsForTracks']);
-                if (array_key_exists('PollPointsPerTrack', $_POST)) $p->setPointsPerTrack($_POST['PollPointsPerTrack']);
-                if (array_key_exists('PollPointsForCarClasses', $_POST)) $p->setPointsForCarClasses($_POST['PollPointsForCarClasses']);
-                if (array_key_exists('PollPointsPerCarClass', $_POST)) $p->setPointsPerCarClass($_POST['PollPointsPerCarClass']);
+                if (!$p->isClosed()) {
+                    $p->setName($_POST['PollName']);
+                    $p->setDescription($_POST['PollDescription']);
+                    $p->setSecret(array_key_exists("PollIsSecret", $_POST));
+                    $p->setPointsForTracks($_POST['PollPointsForTracks']);
+                    $p->setPointsPerTrack($_POST['PollPointsPerTrack']);
+                    $p->setPointsForCarClasses($_POST['PollPointsForCarClasses']);
+                    $p->setPointsPerCarClass($_POST['PollPointsPerCarClass']);
 
-                // remove tracks
-                foreach ($p->tracks() as $t) {
-                    $input_id = "TrackId" . $t->id();
-                    if (!array_key_exists($input_id, $_POST)) {
-                        $p->removeTrack($t);
+                    // remove tracks
+                    foreach ($p->tracks() as $t) {
+                        $input_id = "TrackId" . $t->id();
+                        if (!array_key_exists($input_id, $_POST)) {
+                            $p->removeTrack($t);
+                        }
+                    }
+
+                    // remove carclasses
+                    foreach ($p->carClasses() as $cc) {
+                        $input_id = "CarClassId" . $cc->id();
+                        if (!array_key_exists($input_id, $_POST)) {
+                            $p->removeCarClass($cc);
+                        }
                     }
                 }
 
-                // remove carclasses
-                foreach ($p->carClasses() as $cc) {
-                    $input_id = "CarClassId" . $cc->id();
-                    if (!array_key_exists($input_id, $_POST)) {
-                        $p->removeCarClass($cc);
-                    }
-                }
+                $new_closing = $_POST["PollClosingDate"] . " " . $_POST["PollClosingTime"] . ":00";
+                $new_closing = new DateTime($new_closing);
+                $p->setClosing($new_closing);
             }
         }
 
         // SaveAddedTracks
-        if (array_key_exists("SaveAddedTracks", $_POST) && $this->CanManage) {
-            $p = new Poll($_REQUEST['PollId']);
-            if (!$p->isClosed()) {
-                foreach (Track::listTracks() as $t) {
-                    $input_id = "TrackId" . $t->id();
-                    if (array_key_exists($input_id, $_POST)) {
-                        $p->addTrack($t);
-                    } else {
-                        $p->removeTrack($t);
+        if (array_key_exists("SaveAddedTracks", $_POST)) {
+            $p = $this->CurrentPoll;
+            if ($this->CanManage || $this->canEditPoll($p)) {
+                if (!$p->isClosed()) {
+                    foreach (Track::listTracks() as $t) {
+                        $input_id = "TrackId" . $t->id();
+                        if (array_key_exists($input_id, $_POST)) {
+                            $p->addTrack($t);
+                        } else {
+                            $p->removeTrack($t);
+                        }
                     }
                 }
             }
         }
 
         // SaveAddedCarClasses
-        if (array_key_exists("SaveAddedCarClasses", $_POST) && $this->CanManage) {
-            $p = new Poll($_REQUEST['PollId']);
-            if (!$p->isClosed()) {
-                foreach (CarClass::listClasses() as $cc) {
-                    $input_id = "CarClassId" . $cc->id();
-                    if (array_key_exists($input_id, $_POST)) {
-                        $p->addCarClass($cc);
-                    } else {
-                        $p->removeCarClass($cc);
+        if (array_key_exists("SaveAddedCarClasses", $_POST)) {
+            $p = $this->CurrentPoll;
+            if ($this->CanManage || $this->canEditPoll($p)) {
+                if (!$p->isClosed()) {
+                    foreach (CarClass::listClasses() as $cc) {
+                        $input_id = "CarClassId" . $cc->id();
+                        if (array_key_exists($input_id, $_POST)) {
+                            $p->addCarClass($cc);
+                        } else {
+                            $p->removeCarClass($cc);
+                        }
                     }
                 }
             }
@@ -94,7 +118,7 @@ class polls extends cContentPage {
 
         // SavePollVotes
         if (array_key_exists("SavePollVotes", $_POST)) {
-            $p = new Poll($_REQUEST['PollId']);
+            $p = $this->CurrentPoll;
             $user = $acswuiUser->user();
 
             if (!$p->isClosed()) {
@@ -121,29 +145,25 @@ class polls extends cContentPage {
         // --------------------------------------------------------------------
 
         // create new poll
-        if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "CreateNewPoll") {
-            $p = Poll::createNew();
-            $html .= $this->getHtmlEditPoll($p);
+        if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "CreateNewPoll" && $this->CanCreate) {
+            $this->CurrentPoll = Poll::createNew();
+            $html .= $this->getHtmlEditPoll();
 
         // add track
         } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "AddTracks"){
-            $p = new Poll($_REQUEST['PollId']);
-            $html .= $this->getHtmlAddTracks($p);
+            $html .= $this->getHtmlAddTracks();
 
         // add car class
         } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "AddCarClasses"){
-            $p = new Poll($_REQUEST['PollId']);
-            $html .= $this->getHtmlAddCarClasses($p);
+            $html .= $this->getHtmlAddCarClasses();
 
         // edit poll
         } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "EditPoll"){
-            $p = new Poll($_REQUEST['PollId']);
-            $html .= $this->getHtmlEditPoll($p);
+            $html .= $this->getHtmlEditPoll();
 
         // show poll
         } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "ShowPoll"){
-            $p = new Poll($_REQUEST['PollId']);
-            $html .= $this->getHtmlShowPoll($p);
+            $html .= $this->getHtmlShowPoll();
 
         // list polls
         } else {
@@ -164,6 +184,7 @@ class polls extends cContentPage {
         $html .= "<tr>";
         $html .= "<th>" . _("Id") . "</th>";
         $html .= "<th>" . _("Name") . "</th>";
+        $html .= "<th>" . _("Creator") . "</th>";
         $html .= "<th>" . _("Votes") . "</th>";
         $html .= "<th>" . _("Closing Date") . "</th>";
         if ($this->CanManage) {
@@ -173,13 +194,15 @@ class polls extends cContentPage {
 
         foreach (Poll::listPolls() as $p) {
             $class = ($p->isClosed()) ? "closed_poll":"";
+            $creator = ($p->creator() !== NULL) ? $p->creator()->displayName() : "?";
 
             $html .= "<tr class=\"$class\">";
             $html .= "<td>" . $p->id() . "</td>";
             $html .= "<td><a href=\"?Action=ShowPoll&PollId=" . $p->id() . "\">" . $p->name() . "</a></td>";
-            $html .= "<td>" . 0 . "</td>";
+            $html .= "<td>$creator</td>";
+            $html .= "<td>" . count($p->votedUsers()) . "</td>";
             $html .= "<td>" . $p->closing()->format("Y-m-d H:i") . "</td>";
-            if ($this->CanManage) {
+            if ($this->CanManage || $this->canEditPoll($p)) {
                 $html .= "<td><form action=\"\" method=\"post\">";
                 $html .= "<input type=\"hidden\" name=\"Action\" value=\"EditPoll\">";
                 $html .= "<input type=\"hidden\" name=\"PollId\" value=\"" . $p->id() . "\">";
@@ -192,7 +215,7 @@ class polls extends cContentPage {
         $html .= "</table>";
 
         // button to add new item
-        if ($this->CanManage) {
+        if ($this->CanCreate) {
             $html .= "<br>";
             $html .= "<form action=\"\" method=\"post\">";
             $html .= "<input type=\"hidden\" name=\"Action\" value=\"CreateNewPoll\">";
@@ -205,9 +228,11 @@ class polls extends cContentPage {
 
 
 
-    private function getHtmlEditPoll(Poll $p) {
-        if (!$this->CanManage) return "";
+    private function getHtmlEditPoll() {
+        if ($this->CurrentPoll === NULL) return "";
+        if (!$this->CanManage && !$this->canEditPoll($this->CurrentPoll)) return "";
 
+        $p = $this->CurrentPoll;
         $html = "";
 
         $html .= "<form action=\"\" method=\"post\" id=\"EditPollForm\">";
@@ -231,7 +256,7 @@ class polls extends cContentPage {
 
         $html .= "<tr><th>" . _("Secret Poll") . "</th>";
         $checked = ($p->isSecret()) ? "checked" : "";
-        $html .= "<td><input type=\"checkbox\" name=\"PollIsSecret\" value=\"TRUE\" $checked></td></tr>";
+        $html .= "<td><input type=\"checkbox\" name=\"PollIsSecret\" value=\"TRUE\" $checked $close_disabled></td></tr>";
 
         $html .= "<tr><th>" . _("Poll Closing") . "</th><td>";
         $html .= "<input type=\"date\" name=\"PollClosingDate\" value=\"" . $p->closing()->format("Y-m-d") . "\">";
@@ -336,8 +361,12 @@ class polls extends cContentPage {
 
 
 
-    private function getHtmlAddTracks(Poll $p) {
-        if (!$this->CanManage || $p->isClosed()) return "";
+    private function getHtmlAddTracks() {
+        $p = $this->CurrentPoll;
+        if ($this->CurrentPoll === NULL) return "";
+        if ($p->isClosed()) return "";
+        if (!$this->CanManage && !$this->canEditPoll($p)) return "";
+
         $html = "<h1>" . $p->name() . "</h1>";
 
         $html .= "<form action=\"\" method=\"post\">";
@@ -385,8 +414,13 @@ class polls extends cContentPage {
 
 
 
-    private function getHtmlAddCarClasses(Poll $p) {
-        if (!$this->CanManage || $p->isClosed()) return "";
+    private function getHtmlAddCarClasses() {
+        $p = $this->CurrentPoll;
+        if ($this->CurrentPoll === NULL) return "";
+        if ($p->isClosed()) return "";
+        if (!$this->CanManage && !$this->canEditPoll($p)) return "";
+
+        $p = $this->CurrentPoll;
         $html = "<h1>" . $p->name() . "</h1>";
 
         $html .= "<form action=\"\" method=\"post\">";
@@ -426,8 +460,11 @@ class polls extends cContentPage {
 
 
 
-    private function getHtmlShowPoll(Poll $p) {
+    private function getHtmlShowPoll() {
         global $acswuiUser;
+        if ($this->CurrentPoll === NULL) return "";
+
+        $p = $this->CurrentPoll;
         $u = $acswuiUser->user();
         $html = "";
 
