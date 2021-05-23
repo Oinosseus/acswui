@@ -174,11 +174,11 @@ a {
   padding: 2px 5px;
   color: var(--color-text);
   font-weight: bold;
-  text-decoration: none;
 }
 
 a:hover {
   background-color: var(--color-red-accent);
+  text-decoration: none;
 }
 
 table {

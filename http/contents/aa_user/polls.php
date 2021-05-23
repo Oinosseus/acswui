@@ -558,14 +558,6 @@ class polls extends cContentPage {
         $html .= "</script>";
 
 
-        // save
-        if (!$p->isClosed() && $this->CanVote) {
-            $html .= "<br>";
-            $html .= "<button type=\"submit\">" . _("Save Poll") . "</button>";
-            $html .= "</form>";
-        }
-
-
 
         // --------------------------------------------------------------------
         //                             Poll Results

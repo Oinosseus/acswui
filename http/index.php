@@ -60,6 +60,9 @@ $acswuiUser     = new cUser();
 // l10n
 $lang = getPreferredClientLanguage();
 if ($lang == "") $acswuiLog->LogWarning("Preferred localization could not be determined!");
+$lang .= ".UTF-8";
+putenv("LANG=$lang");
+putenv("LANGUAGE=$lang");
 putenv("LC_ALL=$lang");
 setlocale(LC_ALL, $lang);
 bindtextdomain("acswui", "./locale");

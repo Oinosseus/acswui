@@ -13,10 +13,12 @@ class Command(object):
 
 
 
-    def __init__(self, argparse, cmd_name, cmd_help):
+    def __init__(self, argparse, cmd_name, cmd_help, require_ini_file=True):
+        self.__require_ini_file = require_ini_file
         self.__ini_dict = {}
         self.__argparse = argparse.add_parser(cmd_name, help=cmd_help)
-        self.__argparse.add_argument('inifile', help="path to INI file with configuration definitions")
+        if self.__require_ini_file:
+            self.__argparse.add_argument('inifile', help="path to INI file with configuration definitions")
         self.__argparse.set_defaults(CmdObject=self)
         self.__args = None
         self.__verbosity = Verbosity(0)
@@ -43,9 +45,10 @@ class Command(object):
         self.__args = args
         self.__verbosity = Verbosity(self.__args.v)
 
-        cp = configparser.ConfigParser()
-        cp.read(self.__args.inifile)
-        self.__ini_dict = cp
+        if self.__require_ini_file:
+            cp = configparser.ConfigParser()
+            cp.read(self.__args.inifile)
+            self.__ini_dict = cp
 
 
 
