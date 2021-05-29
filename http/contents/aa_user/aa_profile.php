@@ -39,6 +39,9 @@ class aa_profile extends cContentPage {
 
         $html .= "<form method=\"post\">";
 
+        // Steam64GUID
+        $html .= "Steam64GUID: " . $acswuiUser->user()->steam64GUID() . "<br>";
+
         // privacy
         $html .= _("Pirvacy") . ": ";
         $html .= "<select name=\"Privacy\">";

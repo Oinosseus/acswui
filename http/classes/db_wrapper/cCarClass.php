@@ -67,7 +67,7 @@ class CarClass {
         return $this->BallastMap[$car->id()];
     }
 
-    //! @return A list of Car objects
+    //! @return A list of Car objects (ordered by car name)
     public function cars() {
         global $acswuiDatabase;
 
@@ -79,6 +79,7 @@ class CarClass {
         $query = "SELECT Cars.Id FROM CarClassesMap";
         $query .= " INNER JOIN Cars ON Cars.Id=CarClassesMap.Car";
         $query .= " WHERE CarClassesMap.CarClass=" . $this->Id;
+        $query .= " ORDER BY Cars.Name ASC";
         foreach ($acswuiDatabase->fetch_raw_select($query) as $row) {
             $this->Cars[] = new Car($row['Id']);
         }
@@ -262,6 +263,12 @@ class CarClass {
         }
         if ($skin_is_valid !== TRUE) {
             $acswuiLog->logError("Invalid car occupation");
+            return;
+        }
+
+        // check if skin is preserved
+        if ($skin->steam64GUID() != "" && $skin->steam64GUID() != $user->steam64GUID()) {
+            $acswuiLog->logWarning("Ignore occupying preserved skin.");
             return;
         }
 

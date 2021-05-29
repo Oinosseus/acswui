@@ -374,6 +374,7 @@ class CommandInstall(Command):
         self.__db.appendColumnUInt("CarSkins", "Car")
         self.__db.appendColumnString("CarSkins", "Skin", 50)
         self.__db.appendColumnTinyInt("CarSkins", "Deprecated")
+        self.__db.appendColumnString("CarSkins", "Steam64GUID", 50)
 
 
 
@@ -731,12 +732,16 @@ class CommandInstall(Command):
     def __work_scan_cars(self):
         self.Verbosity.print("scanning for cars")
 
+        # constants
+        REGEX_COMP_UISKIN_STEAM64GUID = re.compile("\"Steam64GUID\"\s*:\s*\"([a-zA-Z0-9]*)\"")
+
         # paths
         abspath_data = os.path.abspath(self.getGeneralArg('path-srvpkg'))
 
         # set all current cars and skins to 'deprecated'
         self.__db.rawQuery("UPDATE Cars SET Deprecated=1 WHERE Deprecated=0")
         self.__db.rawQuery("UPDATE CarSkins SET Deprecated=1 WHERE Deprecated=0")
+        self.__db.rawQuery("UPDATE CarSkins SET Steam64GUID=''")
 
         path_cars = os.path.join(abspath_data, "htdata", "content", "cars")
         for car in sorted(os.listdir(path_cars)):
@@ -771,13 +776,34 @@ class CommandInstall(Command):
                 # insert not existing skins
                 added_skins = 0
                 for skin in car_skins:
+
+                    # check for preserved skin
+                    Steam64GUID = ""
+                    ui_skin_json_path = os.path.join(path_car_skins, skin, "ui_skin.json")
+                    if os.path.isfile(ui_skin_json_path):
+                        with open(ui_skin_json_path, "r") as f:
+
+                            try:
+                                lines = f.readlines()
+                            except UnicodeDecodeError as err:
+                                print("ERROR: Cannot parse '" + ui_skin_json_path + "'\nBecause of " + str(err))
+                                lines = []
+
+                            for line in lines:
+                                line = line.strip()
+                                match = REGEX_COMP_UISKIN_STEAM64GUID.match(line)
+                                if match:
+                                    Steam64GUID = match.group(1)
+                                    self.Verbosity.print("Preserved Skin", skin, "for car", car, "with Steam64GUID", Steam64GUID)
+
+                    # update database
                     existing_car_skins = self.__db.findIds("CarSkins", {"Car": eci, "Skin": skin})
                     if len(existing_car_skins) == 0:
-                        self.__db.insertRow("CarSkins", {"Car": eci, "Skin": skin, "Deprecated":0})
+                        self.__db.insertRow("CarSkins", {"Car": eci, "Skin": skin, "Deprecated":0, "Steam64GUID": Steam64GUID})
                         added_skins += 1
                     else:
                         for skin_id in existing_car_skins:
-                            self.__db.updateRow("CarSkins", skin_id, {"Deprecated":0})
+                            self.__db.updateRow("CarSkins", skin_id, {"Deprecated":0, "Steam64GUID": Steam64GUID})
 
 
 

@@ -129,6 +129,10 @@ class occupation extends cContentPage {
                                 $checked = "";
                             }
                             $occupying_driver = $current_occupations[$skin->id()]->user()->displayName();
+                        } else if ($skin->steam64GUID() != "" && $skin->steam64GUID() != $acswuiUser->user()->steam64GUID()) {
+                            // preserved skin
+                            $disabled = "disabled";
+                            $checked = "";
                         }
 
                         $input_id = "OCCUPATE_CAR_" . $car->id() . "_SKIN_" . $skin->id();

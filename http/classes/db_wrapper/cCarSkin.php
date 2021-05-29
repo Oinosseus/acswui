@@ -8,6 +8,7 @@ class CarSkin {
     private $Id = NULL;
     private $Car = NULL;
     private $Skin = NULL;
+    private $Steam64GUID = NULL;
 
     /**
      * @param $id Database table id
@@ -59,6 +60,16 @@ class CarSkin {
         return $this->Skin;
     }
 
+
+
+    //! @return If this skin is prevered this returns for which Steam64GUID it is preserved (otherwise "")
+    public function steam64GUID() {
+        if ($this->Steam64GUID === NULL) $this->updateFromDb();
+        return $this->Steam64GUID;
+    }
+
+
+
     private function updateFromDb() {
         global $acswuiDatabase;
         global $acswuiLog;
@@ -67,8 +78,9 @@ class CarSkin {
         $columns = array();
         $columns[] = 'Car';
         $columns[] = 'Skin';
+        $columns[] = 'Steam64GUID';
 
-        $res = $acswuiDatabase->fetch_2d_array("CarSkins", ['Car', 'Skin'], ['Id'=>$this->Id]);
+        $res = $acswuiDatabase->fetch_2d_array("CarSkins", $columns, ['Id'=>$this->Id]);
         if (count($res) !== 1) {
             $acswuiLog->logError("Cannot find CarSkins.Id=" . $this->Id);
             return;
@@ -76,6 +88,7 @@ class CarSkin {
 
         $this->Car = new Car($res[0]['Car']);
         $this->Skin = $res[0]['Skin'];
+        $this->Steam64GUID = $res[0]['Steam64GUID'];
     }
 }
 

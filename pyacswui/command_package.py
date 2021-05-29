@@ -125,6 +125,7 @@ class CommandPackage(Command):
             2. copy ui_car.json from path_ac to path_http
             3. copy data/*.ini files to from path_ac path_acs
             4. copy all car skins preview images from path_ac to path_http
+            5. copy ui_skin.json for all skins to http directory
         """
         self.Verbosity.print("Scanning cars")
         verb2 = Verbosity(self.Verbosity)
@@ -168,6 +169,8 @@ class CommandPackage(Command):
                         pass
                     else:
                         print("ERROR: cannot find preview for skin 'cars/%s/skins/%s'" % (car, skin), file=sys.stderr)
+
+                    self._copy2http(path_ac_car, "skins", skin, "ui_skin.json")
 
 
 
