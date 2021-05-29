@@ -12,7 +12,24 @@
 
 
 /******************************************************************************
- *                #contents__bm_car_classes
+ *                         #contents__bm_car_classes
+ ******************************************************************************/
+
+div.CarClassBox {
+    display: inline-block;
+    margin-right: 2em;
+    margin-top: 2em;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.5em;
+}
+
+div.CarClassBox label {
+    display: block;
+}
+
+
+/******************************************************************************
+ *             #contents__bm_car_classes__aa_carclass_management
  ******************************************************************************/
 
 #contents__bm_car_classes__aa_carclass_management table#available_cars tr td img{
