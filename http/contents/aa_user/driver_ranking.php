@@ -53,10 +53,18 @@ class driver_ranking extends cContentPage {
         $html .= "</select>";
         $html .= "</form>";
 
+        // find max score
+        $max_score = 100;
+        foreach (DriverRanking::listLatest() as $drv_rnk) {
+            $score = $drv_rnk->getScore();
+            if ($score > $max_score) $max_score = $score;
+            break;
+        }
+
         // svg configuration data
         $svg_xax_min = 400;
         $svg_yax_min = -20;
-        $svg_yax_max = 100;
+        $svg_yax_max = 50 * ceil(($max_score / 50));
         $svg_ygrid = 25;
         $svg_img_zoom = 2;
         $svg_x_zoom = $svg_xax_min / ($svg_weeks * 7);
