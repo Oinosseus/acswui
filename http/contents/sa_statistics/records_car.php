@@ -44,25 +44,55 @@ class records_car extends cContentPage {
 
                 $html .= "<h1>" . $track->name() . "</h1>";
                 $html .= '<table>';
-                $html .= '<tr><th>' . _("Laptime") . '</th><th>' . _("Delta") . '</th><th>' . _("Driver") . '</th><th colspan="2">' . _("Car") . '</th><th>' . _("Ballast") . '</th><th>' . _("Restrictor") . '</th><th>' . _("Grip") . '</th><th>' . _("Date") . '</th><th>' . _("Session / Lap") . '</th>';
+                $html .= '<tr>';
+                $html .= '<th>' . _("Position") . '</th>';
+                $html .= '<th>' . _("Laptime") . '</th>';
+                $html .= '<th>' . _("Delta") . '</th>';
+                $html .= '<th>' . _("Driver") . '</th>';
+                $html .= '<th colspan="2">' . _("Car") . '</th>';
+                $html .= '<th>' . _("Ballast") . '</th>';
+                $html .= '<th>' . _("Restrictor") . '</th>';
+                $html .= '<th>' . _("Grip") . '</th>';
+                $html .= '<th>' . _("Date") . '</th>';
+                $html .= '<th>' . _("Session / Lap") . '</th>';
+                $html .= '</tr>';
 
                 $best_laptime = NULL;
+                $position = 1;
+                $last_skipped_by_privacy = FALSE;
                 foreach($records as $lap) {
                     if ($best_laptime === NULL) $best_laptime = $lap->laptime();
-                    $html .= '<tr>';
-                    $html .= '<td>' . HumanValue::format($lap->laptime(), "LAPTIME") . '</td>';
-                    $html .= '<td>' . HumanValue::format($lap->laptime() - $best_laptime, "ms") . '</td>';
-                    $html .= '<td>' . $lap->user()->displayName() . '</td>';
-                    $html .= '<td>' . $lap->carSkin()->htmlImg("", 50) . '</td>';
-                    $html .= '<td>' . $lap->carSkin()->car()->name() . '</td>';
-                    $html .= '<td>' . HumanValue::format($lap->ballast(), "kg") . '</td>';
-                    $html .= '<td>' . HumanValue::format($lap->restrictor(), "%") . '</td>';
-                    $html .= '<td>' . HumanValue::format($lap->grip() * 100, "%") . '</td>';
-                    $html .= '<td>' . $lap->timestamp()->format("c") . '</td>';
-                    $link_url = "?CONTENT=/zm_session//history&SESSION_ID=" . $lap->session()->id();
-                    $link_name = $lap->session()->id() . " / " . $lap->id();
-                    $html .= "<td><a href=\"$link_url\">$link_name</a></td>";
-                    $html .= '</tr>';
+
+                    if ($position == 1 ||
+                        $position == count($records) ||
+                        $lap->user()->privacyFulfilled()) {
+
+                        if ($position == count($records) && $last_skipped_by_privacy == TRUE) {
+                            $html .= "<tr><td>...</td></tr>";
+                        }
+
+                        $html .= '<tr>';
+                        $html .= "<td>$position</td>";
+                        $html .= '<td>' . HumanValue::format($lap->laptime(), "LAPTIME") . '</td>';
+                        $html .= '<td>' . HumanValue::format($lap->laptime() - $best_laptime, "ms") . '</td>';
+                        $html .= '<td>' . $lap->user()->displayName() . '</td>';
+                        $html .= '<td>' . $lap->carSkin()->htmlImg("", 50) . '</td>';
+                        $html .= '<td>' . $lap->carSkin()->car()->name() . '</td>';
+                        $html .= '<td>' . HumanValue::format($lap->ballast(), "kg") . '</td>';
+                        $html .= '<td>' . HumanValue::format($lap->restrictor(), "%") . '</td>';
+                        $html .= '<td>' . HumanValue::format($lap->grip() * 100, "%") . '</td>';
+                        $html .= '<td>' . $lap->timestamp()->format("c") . '</td>';
+                        $link_url = "?CONTENT=/zm_session//history&SESSION_ID=" . $lap->session()->id();
+                        $link_name = $lap->session()->id() . " / " . $lap->id();
+                        $html .= "<td><a href=\"$link_url\">$link_name</a></td>";
+                        $html .= '</tr>';
+
+                    } else if ($last_skipped_by_privacy == FALSE) {
+                        $html .= "<tr><td>...</td></tr>";
+                        $last_skipped_by_privacy = TRUE;
+                    }
+
+                    $position += 1;
                 }
 
                 $html .= '</table>';
