@@ -80,6 +80,22 @@ class Car {
         return Car::$AllCarsList;
     }
 
+
+
+    //! @return Html img tag containing preview image
+    public function htmlImg($img_id="", $max_height=NULL) {
+
+        // try to find first available CarSkin
+        $skins = $this->skins();
+        if (count($skins)) {
+            return $skins[0]->htmlImg($img_id, $max_height);
+        }
+
+        return "<img alt=\"no car for preview\" id=\"$img_id\">";
+    }
+
+
+
     //! @return model name of the car
     public function model() {
         if ($this->Model === NULL) $this->updateFromDb();
