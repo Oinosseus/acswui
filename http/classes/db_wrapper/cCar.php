@@ -11,6 +11,7 @@ class Car {
     private $Name = NULL;
     private $Brand = NULL;
     private $Skins = NULL;
+    private $Deprecated = NULL;
     private static $AllCarsList = NULL;
 
     /**
@@ -30,6 +31,12 @@ class Car {
     public function brand() {
         if ($this->Brand === NULL) $this->updateFromDb();
         return $this->Brand;
+    }
+
+    //! @return TRUE when this car is deprected
+    public function deprecated() {
+        if ($this->Deprecated === NULL) $this->updateFromDb();
+        return $this->Deprecated;
     }
 
     //! @return The database table id
@@ -138,7 +145,8 @@ class Car {
         global $acswuiLog;
 
         // get basic information
-        $res = $acswuiDatabase->fetch_2d_array("Cars", ['Car', 'Name', 'Brand'], ['Id'=>$this->Id]);
+        $columns = ['Car', 'Name', 'Brand', 'Deprecated'];
+        $res = $acswuiDatabase->fetch_2d_array("Cars", $columns, ['Id'=>$this->Id]);
         if (count($res) !== 1) {
             $acswuiLog->logError("Cannot find Cars.Id=" . $this->Id);
             return;
@@ -147,6 +155,7 @@ class Car {
         $this->Model = $res[0]['Car'];
         $this->Name = $res[0]['Name'];
         $this->Brand = $res[0]['Brand'];
+        $this->Deprecated = ($res[0]['Deprecated'] == 0) ? FALSE : TRUE;
     }
 }
 

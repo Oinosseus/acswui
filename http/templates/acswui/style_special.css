@@ -87,6 +87,10 @@ div.CarClassBox label {
     background-color: rgba(255,0,0,0.75);
 }
 
+#contents__bm_car_classes__aa_carclass_management tr.DeprecatedCar {
+    color: var(--color-disabled);
+}
+
 
 
 /******************************************************************************

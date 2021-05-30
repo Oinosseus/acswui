@@ -169,10 +169,11 @@ class aa_carclass_management extends cContentPage {
                 // get values
                 $ballast = $this->CurrentCarClass->ballast($car);
                 $restrictor = $this->CurrentCarClass->restrictor($car);
+                $rowclass = ($car->deprecated()) ? "class=\"DeprecatedCar\"" : "";
 
                 // output row
                 $car_id = $car->id();
-                $html .= "<tr>";
+                $html .= "<tr $rowclass>";
                 $html .= "<td>" . $car->name() . $car->htmlImg($car->id(), 300) . "</td>";
                 $html .= "<td><input type=\"number\"   name=\"BALLAST_$car_id\" min=\"0\" max=\"9999\" step=\"1\" size=\"5\" value=\"$ballast\"> kg</td>";
                 $html .= "<td><input type=\"number\"   name=\"RESTRICTOR_$car_id\" max=\"100\" min=\"0\" step=\"1\" size=\"3\" value=\"$restrictor\"> &percnt;</td>";
