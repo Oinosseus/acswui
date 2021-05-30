@@ -23,6 +23,12 @@ class ServerSlot {
 
 
 
+    public function __toString() {
+        return "ServerSlot(Id=" . $this->Id . ")";
+    }
+
+
+
     //! @return The according Session object that currently runs on the slot (can be NULL)
     public function currentSession() {
         global $acswuiDatabase;

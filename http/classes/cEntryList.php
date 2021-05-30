@@ -72,6 +72,7 @@ class CarSkinList {
     private $AvailableCarSkins = NULL;
 
     public function __construct(CarClass $carclass) {
+        global $acswuiLog;
         $this->AvailableCarSkins = array();
 
         foreach ($carclass->cars() as $car) {
@@ -79,7 +80,15 @@ class CarSkinList {
             foreach ($car->skins() as $skin) {
                 $skinlist[] = $skin->id();
             }
-            $this->AvailableCarSkins[$car->id()] = $skinlist;
+            if (count($skinlist) > 0) {
+                $this->AvailableCarSkins[$car->id()] = $skinlist;
+            } else {
+                $msg = "No skins for car '";
+                $msg .= $car->name();
+                $msg .= "' ID ";
+                $msg .= $car->id();
+                $acswuiLog->logWarning($msg);
+            }
         }
     }
 

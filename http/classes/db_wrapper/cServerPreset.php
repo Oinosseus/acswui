@@ -11,7 +11,7 @@ class ServerPresetField {
     }
 
     public function __toString() {
-        return "ServerPreset(Id=" . $this->Id . ")";
+        return "ServerPresetField(Id=" . $this->Id . ")";
     }
 
     //! @return The tag name of the field
@@ -228,6 +228,11 @@ class ServerPreset {
 
         $this->Name = $res[0]['Name'];
         $this->Restricted = ($res[0]['Restricted'] == 0) ? FALSE : TRUE;
+    }
+
+
+    public function __toString() {
+        return "ServerPreset(Id=" . $this->Id . ")";
     }
 
 
