@@ -141,7 +141,7 @@ class CarClass {
     }
 
     private function getCarMapId($car) {
-        global $acswuiDatabase;
+        global $acswuiDatabase, $acswuiLog;
         $res = $acswuiDatabase->fetch_2d_array("CarClassesMap", ['Id'], ['Car'=>$car->id(), 'CarClass'=>$this->Id]);
         if (count($res) !== 1) {
             $acswuiLog->logError("Invalid request for Car::Id=" . $car->id() . ", CarClass::Id=" . $this->Id);
