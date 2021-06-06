@@ -141,6 +141,16 @@ class CommandInstall(Command):
             verb3.print("mkdirs " + path_data_acserver_results)
             self.mkdirs(path_data_acserver_results)
 
+        # copy system directory
+        path_srvpkg_acserver_system = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver", "system")
+        path_data_acserver_system = os.path.join(path_data_acserver, "system")
+        self.copytree(path_srvpkg_acserver_system, path_data_acserver_system)
+
+        # copy content directory
+        path_srvpkg_acserver_content = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver", "content")
+        path_data_acserver_content = os.path.join(path_data_acserver, "content")
+        self.copytree(path_srvpkg_acserver_content, path_data_acserver_content)
+
         # log dirs
         for logdir in ['logs_acserver', 'logs_cron', 'logs_http']:
             path_data_log = os.path.join(path_data, logdir)
