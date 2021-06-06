@@ -4,7 +4,7 @@ class CronDbCleanEmptySessions extends Cronjob {
 
 
     public function __construct() {
-        parent::__construct(new DateInterval("PT15M"));
+        parent::__construct(NULL, TRUE);
     }
 
 

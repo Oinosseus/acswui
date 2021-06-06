@@ -17,11 +17,14 @@ abstract class Cronjob {
     //! DateTime object of last execution (or NULL
     private $LastExecution = NULL;
 
-    //! Absolute time when cronjob is on due
-    private $NextExecutionTime = NULL;
+    //! The ID of the last completed session when this cronjob was executed
+    private $LastSession = NULL;
 
     //! DateInterval object representing the execution period
     private $ExecutionInterval = NULL;
+
+    //! If TRUE, this cronjob shall be executed after a session has been finished
+    private $ExecuteAfterSession = NULL;
 
     //! Cronjob execution log
     private $LogString = "";
@@ -29,31 +32,77 @@ abstract class Cronjob {
     //! Job execution duration [ms]
     private $ExecutionDuration = 0;
 
+    //! Stores a list of all session IDs that are currently running
+    private static $CurrentRunningSessions = NULL;
+
+    //! Stores the Id of the Session, that is completed and where all previous started sessions are also completed
+    private static $LowestCompletedSession = NULL;
+
 
     /**
      * This constructor must be called by derived classed.
      * @param $execution_interval A DateInterval object that defines the cronjob execution period
+     * @param $AfterSession If set to TRUE (default FALSE), the cronjob will be executed after end of each session
      */
-    public function __construct(DateInterval $execution_interval) {
+    public function __construct(DateInterval $execution_interval = NULL, bool $AfterSession = FALSE) {
         global $acswuiDatabase;
+
+        // determine current running sessions
+        if (Cronjob::$CurrentRunningSessions === NULL) {
+            Cronjob::$CurrentRunningSessions = array();
+            foreach (ServerSlot::listSlots() as $slot) {
+                $session = $slot->currentSession();
+                if ($session !== NULL) {
+                    Cronjob::$CurrentRunningSessions[] = $session->id();
+                }
+            }
+        }
+
+
+        // determine latest session that is completed
+        // and where no older sessions are still running
+        if (Cronjob::$LowestCompletedSession === NULL) {
+
+            // no sessions running
+            if (count(Cronjob::$CurrentRunningSessions) == 0) {
+                $query = "SELECT Id FROM Sessions ORDER BY Id DESC LIMIT 1";
+                $res = $acswuiDatabase->fetch_raw_select($query);
+                if (count($res)) {
+                    Cronjob::$LowestCompletedSession = (int) $res[0]['Id'];
+                } else {
+                    Cronjob::$LowestCompletedSession = 0;
+                }
+
+            // sessions running
+            } else {
+                $min_running_session = min(Cronjob::$CurrentRunningSessions);
+                $query = "SELECT Id FROM Sessions WHERE Id < $min_running_session ORDER BY Id DESC LIMIT 1";
+                $res = $acswuiDatabase->fetch_raw_select($query);
+                if (count($res)) {
+                    Cronjob::$LowestCompletedSession = (int) $res[0]['Id'];
+                } else {
+                    Cronjob::$LowestCompletedSession = 0;
+                }
+            }
+
+            echo "Cronjob::LowestCompletedSession=" . Cronjob::$LowestCompletedSession . "<br>";
+        }
 
 
         // determine Id in CronJobs table
-        $dbcols = ['Name'=>get_class($this)];
-        $res = $acswuiDatabase->fetch_2d_array("CronJobs", ['Id', 'LastStart'], $dbcols);
+        $fields_where = ['Name'=>get_class($this)];
+        $fields_request = ['Id', 'LastStart', 'LastSession'];
+        $res = $acswuiDatabase->fetch_2d_array("CronJobs", $fields_request, $fields_where);
         if (count($res) > 0) {
             $this->CronJobId = $res[0]['Id'];
             $this->LastExecution = new DateTimeImmutable($res[0]['LastStart']);
+            $this->LastSession = (int) $res[0]['LastSession'];
         }
 
-        // determine next execution time
+
+        // define execution intervals
+        $this->ExecuteAfterSession = $AfterSession;
         $this->ExecutionInterval = $execution_interval;
-        if ($this->LastExecution === NULL) {
-            $this->NextExecutionTime = new DateTimeImmutable();
-        } else {
-            $this->NextExecutionTime = $this->LastExecution->add($this->ExecutionInterval);
-        }
-
     }
 
     /**
@@ -64,14 +113,37 @@ abstract class Cronjob {
     public function check_execute() {
         global $acswuiDatabase;
 
+        $needs_execution = FALSE;
+        $last_finished_session_id = 0;
+
+
+        // check if jobs needs execution per time interval
+        if ($this->ExecutionInterval !== NULL) {
+            if ($this->LastExecution === NULL) {
+                $needs_execution = TRUE;
+            } else {
+                $next_execution_time = $this->LastExecution->add($this->ExecutionInterval);
+                $now = new DateTimeImmutable();
+                if ($next_execution_time <= $now) {
+                    $needs_execution = TRUE;
+                }
+            }
+        }
+
+
+        // check if job needs execution after sessions
+        if ($this->ExecuteAfterSession === TRUE) {
+            if ($this->LastSession < Cronjob::$LowestCompletedSession) {
+                $needs_execution = TRUE;
+            }
+        }
+
+
+        // execute cronjob
         $executed = FALSE;
         $this->ExecutionDuration = 0;
-
-        // check if jobs needs execution
-        $now = new DateTimeImmutable();
-        if ($this->NextExecutionTime <= $now) {
-
-            $LastExecution = $now;
+        if ($needs_execution === TRUE) {
+            $LastExecution = new DateTimeImmutable();
 
             // log execution in db
             $cols = array();
@@ -79,6 +151,7 @@ abstract class Cronjob {
             $cols['LastStart'] = $LastExecution->format("Y-m-d H:i:s");
             $cols['LastDuration'] = 0;
             $cols['Status'] = "starting";
+            $cols['LastSession'] = Cronjob::$LowestCompletedSession;
             if ($this->CronJobId === NULL) {
                 $this->CronJobId = $acswuiDatabase->insert_row("CronJobs", $cols);
             } else {

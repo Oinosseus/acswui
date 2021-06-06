@@ -244,6 +244,7 @@ class CommandInstall(Command):
         self.__db.appendColumnCurrentTimestamp("CronJobs", "LastStart")
         self.__db.appendColumnUInt("CronJobs", "LastDuration")
         self.__db.appendColumnString("CronJobs", "Status", 50)
+        self.__db.appendColumnUInt("CronJobs", "LastSession")
 
 
         # check table ServerPresets

@@ -3,7 +3,7 @@
 class CronStatsCarClassPopularity extends Cronjob {
 
     public function __construct() {
-        parent::__construct(new DateInterval("P1D"));
+        parent::__construct(NULL, TRUE);
     }
 
 
