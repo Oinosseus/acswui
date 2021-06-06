@@ -75,7 +75,7 @@ class UdpPluginSession(object):
             fields['Name'] = ""
             fields['Length'] = 0
             fields['Pitboxes'] = 0
-            track_id = self.__database.insertRow("Tracks", fields)
+            track_id = self.__db.insertRow("Tracks", fields)
 
         # check if update is a new session
         is_new_session = False
@@ -116,5 +116,5 @@ class UdpPluginSession(object):
         if is_new_session:
             self._db_id = self.__db.insertRow("Sessions", self.__db_field_cache)
         else:
-            self.__database.updateRow("Sessions", self._db_id, self.__db_field_cache)
+            self.__db.updateRow("Sessions", self._db_id, self.__db_field_cache)
         self.__verbosity.print("Update Session: Id =", self._db_id, ", name =", session_name)
