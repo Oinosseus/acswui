@@ -60,37 +60,51 @@ class records_track extends cContentPage {
 
                 $best_laptime = NULL;
                 $position = 1;
-                $last_skipped_by_privacy = FALSE;
-                foreach ($records as $lap) {
+                $last_entry_skipped = FALSE;
+                for ($records_count = 0; $records_count < count($records); ++$records_count) {
+
+                    $lap_previous = ($records_count > 0) ? $records[$records_count - 1] : NULL;
+                    $lap = $records[$records_count];
+                    $lap_next = ($records_count < (count($records)-1)) ? $records[$records_count + 1] : NULL;
+
                     if ($best_laptime === NULL) $best_laptime = $lap->laptime();
 
-                    if ($position == 1 ||
-                        $position == count($records) ||
-                        $lap->user()->privacyFulfilled()) {
+                    $html_row = '<tr>';
+                    $html_row .= "<td>$position</td>";
+                    $html_row .= '<td>' . HumanValue::format($lap->laptime(), "LAPTIME") . '</td>';
+                    $html_row .= '<td>' . HumanValue::format($lap->laptime() - $best_laptime, "ms") . '</td>';
+                    $html_row .= '<td>' . $lap->user()->displayName() . '</td>';
+                    $html_row .= '<td>' . $lap->carSkin()->htmlImg("", 50) . '</td>';
+                    $html_row .= '<td>' . $lap->carSkin()->car()->name() . '</td>';
+                    $html_row .= '<td>' . HumanValue::format($lap->ballast(), "kg") . '</td>';
+                    $html_row .= '<td>' . HumanValue::format($lap->restrictor(), "%") . '</td>';
+                    $html_row .= '<td>' . HumanValue::format($lap->grip() * 100, "%") . '</td>';
+                    $html_row .= '<td>' . $lap->timestamp()->format("c") . '</td>';
+                    $link_url = "?CONTENT=/zm_session//history&SESSION_ID=" . $lap->session()->id();
+                    $link_name = $lap->session()->id() . " / " . $lap->id();
+                    $html_row .= "<td><a href=\"$link_url\">$link_name</a></td>";
+                    $html_row .= '</tr>';
 
-                        if ($position == count($records) && $last_skipped_by_privacy == TRUE) {
-                            $html .= "<tr><td>...</td></tr>";
-                        }
-
-                        $html .= '<tr>';
-                        $html .= "<td>$position</td>";
-                        $html .= '<td>' . HumanValue::format($lap->laptime(), "LAPTIME") . '</td>';
-                        $html .= '<td>' . HumanValue::format($lap->laptime() - $best_laptime, "ms") . '</td>';
-                        $html .= '<td>' . $lap->user()->displayName() . '</td>';
-                        $html .= '<td>' . $lap->carSkin()->htmlImg("", 50) . '</td>';
-                        $html .= '<td>' . $lap->carSkin()->car()->name() . '</td>';
-                        $html .= '<td>' . HumanValue::format($lap->ballast(), "kg") . '</td>';
-                        $html .= '<td>' . HumanValue::format($lap->restrictor(), "%") . '</td>';
-                        $html .= '<td>' . HumanValue::format($lap->grip() * 100, "%") . '</td>';
-                        $html .= '<td>' . $lap->timestamp()->format("c") . '</td>';
-                        $link_url = "?CONTENT=/zm_session//history&SESSION_ID=" . $lap->session()->id();
-                        $link_name = $lap->session()->id() . " / " . $lap->id();
-                        $html .= "<td><a href=\"$link_url\">$link_name</a></td>";
-                        $html .= '</tr>';
-
-                    } else if ($last_skipped_by_privacy == FALSE) {
-                        $html .= "<tr><td>...</td></tr>";
-                        $last_skipped_by_privacy = TRUE;
+                    if ($lap->user()->privacyFulfilled()) {
+                        $html .= $html_row;
+                        $last_entry_skipped = FALSE;
+                    } else if ($lap_previous !== NULL && $lap_previous->user()->privacyFulfilled()) {
+                        $html .= $html_row;
+                        $last_entry_skipped = FALSE;
+                    } else if ($lap_next !== NULL && $lap_next->user()->privacyFulfilled()) {
+                        $html .= $html_row;
+                        $last_entry_skipped = FALSE;
+                    } else if ($records_count == 0) {
+                        $html .= $html_row;
+                        $last_entry_skipped = FALSE;
+                    } else if ($records_count == (count($records)-1)) {
+                        $html .= $html_row;
+                        $last_entry_skipped = FALSE;
+                    } else if (!$last_entry_skipped) {
+                        $html .= "<tr><td>...</td></tr>";;
+                        $last_entry_skipped = TRUE;
+                    } else {
+                        $last_entry_skipped = TRUE;
                     }
 
                     $position += 1;
