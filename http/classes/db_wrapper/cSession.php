@@ -161,17 +161,19 @@ class Session {
             // determine positions based on laps
             if ($this->type() == 3) {
 
-                // get positions of predecessor session
+                // get positions of qualifying session
                 $predec = $this->predecessor();
-                $predec_results = $predec->results();
-                usort($predec_results, "SessionResult::comparePosition");
-                foreach ($predec_results as $rslt) {
-                    $uid = $rslt->user()->id();
-                    if (!array_key_exists($uid, $this->DynamicPositions)) {
-                        $this->DynamicPositions[$uid] = array();
-                        $this->DynamicPositions[$uid][] = 0;
+                if ($predec !== NULL && $predec->type() == 2) {
+                    $predec_results = $predec->results();
+                    usort($predec_results, "SessionResult::comparePosition");
+                    foreach ($predec_results as $rslt) {
+                        $uid = $rslt->user()->id();
+                        if (!array_key_exists($uid, $this->DynamicPositions)) {
+                            $this->DynamicPositions[$uid] = array();
+                            $this->DynamicPositions[$uid][] = 0;
+                        }
+                        $this->DynamicPositions[$uid][0] = $rslt->position();
                     }
-                    $this->DynamicPositions[$uid][0] = $rslt->position();
                 }
 
                 // get position of race laps
