@@ -172,7 +172,7 @@ class UdpPluginServer(object):
                                                   entrylist_section,
                                                   self.__entry_list[entrylist_section],
                                                   verbosity=self.__verbosity)
-                    car_entry.occupy(rslt['DriverName'], rslt['DriverGuid'])
+                    car_entry.occupy(rslt['DriverName'], rslt['DriverGuid'], self.__session)
 
                     # save result to DB
                     field_values = {}
