@@ -1,6 +1,6 @@
-docs/class_hierarchie.dia~
-docs/database.dia~
+docs/*.dia~
 *.pyc
+*.dia.autosave
 
 # automatic generated files
 http/classes/cConfig.php

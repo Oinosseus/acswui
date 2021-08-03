@@ -13,9 +13,9 @@ class Config {
 
     // basic constants
     const DefaultTemplate = "acswui";
-    const LogWarning = TRUE;
-    const LogDebug = TRUE;
-    const RootPassword = '$2y$10$zmAJ0bxLlwGe7PPjXgRKI.vWzfSA82xLIPw1En/g8IiLUdVlMvu2q';
+    const LogWarning = FALSE;
+    const LogDebug = FALSE;
+    const RootPassword = '$2y$10$9/5dZKGsZBnqWaGx.U8GV.KWmOa70LcU70SR/qES8.ay4SJ5iB7ZW';
     const GuestGroup = 'Visitor';
     const Locales = ['de_DE'];
 

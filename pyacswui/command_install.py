@@ -46,12 +46,12 @@ class CommandInstall(Command):
 
         # install work
         self._verbosity.print("initialize data")
-        self.__work_copy_files()
+        #self.__work_copy_files()
 
         installer = InstallerDatabase(self.__db,
                                 self.__server_cfg_json,
                                 self._verbosity)
-        installer.process()
+        #installer.process()
 
         self._verbosity.print("start scanning AC content")
         self.__work_cconfig()
@@ -59,7 +59,7 @@ class CommandInstall(Command):
         installer = InstallerCars(self.__db,
                            self.getGeneralArg("path-srvpkg"),
                            self._verbosity)
-        installer.process()
+        #installer.process()
 
         installer = InstallerTracks(self.__db,
                              self.getGeneralArg("path-srvpkg"),

@@ -85,9 +85,4 @@ abstract class HtmlTemplate {
         if ($this->TemplateName === NULL) return get_class($this);
         else return $this->TemplateName;
     }
-
-
-    public function pageTitle() {
-        return "";
-    }
 }

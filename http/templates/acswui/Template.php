@@ -10,6 +10,7 @@ class Template extends \Core\HtmlTemplate {
     }
 
     public function getHtml () {
+        $content = \Core\HtmlContent::navigatedContent();
 
         // document head
         $html  = "<!DOCTYPE html>\n";
@@ -24,7 +25,7 @@ class Template extends \Core\HtmlTemplate {
         $html .= "    <header>\n";
         $html .= "      Assetto Corsa Server Web User Interface\n";
         $html .= "    </header>\n";
-        $html .= "    <div class=\"Subtitle\">&nbsp;" . $this->pageTitle() . "</div>\n";
+        $html .= "    <div class=\"Subtitle\">&nbsp;" . $content->pageTitle() . "</div>\n";
 
         // main/sub navigation
         $html .= "    <nav><ul class=\"MainMenu\">\n";
@@ -51,7 +52,6 @@ class Template extends \Core\HtmlTemplate {
         $html .= "    </ul></nav>\n";
 
         // content
-        $content = \Core\HtmlContent::navigatedContent();
         if ($content !== NULL) {
             $main_class = $content->id();
             $html .= "    <main class=\"$main_class\">\n";
@@ -64,5 +64,3 @@ class Template extends \Core\HtmlTemplate {
         return $html;
     }
 }
-
-?>

@@ -78,6 +78,7 @@ class TrackLocation extends DbEntry {
 
         $query = "SELECT Id FROM TrackLocations";
         if (!$inculde_deprecated) $query .= " WHERE Deprecated = 0";
+        $query .= " ORDER BY Name ASC";
         $res = \core\Database::fetchRaw($query);
 
         // extract values

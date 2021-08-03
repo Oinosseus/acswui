@@ -221,7 +221,7 @@ abstract class HtmlContent {
     /**
      * @return The (sub) title for the current page
      */
-    public function pageTtitle() {
+    public function pageTitle() {
         return $this->PageTitle;
     }
 

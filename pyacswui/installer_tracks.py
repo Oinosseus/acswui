@@ -125,23 +125,44 @@ class InstallerTracks(object):
 
     def _update_track_info(self, tarck_id, track_names):
 
-        track_location_name = ""
+        def detect_location(track_names):
+            track_location_name = ""
 
-        # extract longest match string from all track names (from the beginning of their names)
-        pos = 0
-        while len(track_names[0]) > pos:
-            char = track_names[0][pos]
-            chars_equal = True
-            for i in range(1, len(track_names)):
-                if len(track_names[i]) <= pos:
-                    char_equal = False
-                elif track_names[i][pos] != char:
-                    chars_equal = False
-            if chars_equal:
-                track_location_name += char
-            else:
-                break
-            pos += 1
+            # extract longest match string from all track names (from the beginning of their names)
+            pos = 0
+            while len(track_names[0]) > pos:
+                char = track_names[0][pos]
+                chars_equal = True
+                for i in range(1, len(track_names)):
+                    if len(track_names[i]) <= pos:
+                        char_equal = False
+                    elif track_names[i][pos] != char:
+                        chars_equal = False
+                if chars_equal:
+                    track_location_name += char
+                else:
+                    break
+                pos += 1
+
+            return track_location_name
+
+
+        # get location name
+        track_location_name = detect_location(track_names)
+        if track_location_name == "":
+            # reverse names
+            for i in range(len(track_names)):
+                track_names[i] = track_names[i][::-1]
+            track_location_name = detect_location(track_names)
+            track_location_name = track_location_name[::-1]
+
+        # cleanup name
+        track_location_name = track_location_name.strip()
+        while track_location_name[0] in ['-']:
+            track_location_name = track_location_name[1:]
+        while track_location_name[-1] in ['-']:
+            track_location_name = track_location_name[:-1]
+
 
         self.__db.updateRow("TrackLocations", tarck_id, {"Name": track_location_name.strip(), "Deprecated":0})
 
