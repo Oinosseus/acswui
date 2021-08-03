@@ -1,0 +1,192 @@
+
+/******************************************************************************
+                                   AvailableBrands
+ ******************************************************************************/
+
+main.AvailableBrands > a {
+    margin: 0.5em 0.5em;
+    background-color: #00000033;
+}
+
+main.AvailableBrands > a img {
+    height: 7em;
+}
+
+
+
+/******************************************************************************
+                                   CarBrand
+ ******************************************************************************/
+
+main.CarBrand #BrandInfo {
+    display: block;
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+main.CarBrand #BrandInfo img {
+    height: 7em;
+}
+
+main.CarBrand #BrandInfo > a {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+main.CarBrand #BrandInfo > a > label{
+    display: None;
+}
+
+main.CarBrand #BrandInfo > label {
+    font-weight: bold;
+    font-size: 5em;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 0.5em;
+}
+
+main.CarBrand #AvailableCars > a {
+    margin: 0.5em 0.5em;
+    background-color: #00000033;
+    display: inline-block;
+}
+
+main.CarBrand #AvailableCars > a img {
+    height: 15em;
+}
+
+
+
+/******************************************************************************
+                                   CarModel
+ ******************************************************************************/
+
+main.CarModel #BrandInfo {
+    display: block;
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+main.CarModel #BrandInfo img {
+    height: 7em;
+}
+
+main.CarModel #BrandInfo > a {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+main.CarModel #BrandInfo > a > label{
+    display: None;
+}
+
+main.CarModel #BrandInfo > label {
+    font-weight: bold;
+    font-size: 5em;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 0.5em;
+}
+
+main.CarModel #AvailableSkins > a {
+    margin: 0.5em 0.5em;
+    background-color: #00000033;
+    display: inline-block;
+}
+
+main.CarModel #AvailableSkins > a img {
+    height: 15em;
+}
+
+
+
+/******************************************************************************
+                                   CarSkin
+ ******************************************************************************/
+
+main.CarSkin #BrandInfo {
+    display: block;
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+main.CarSkin #BrandInfo img {
+    height: 7em;
+}
+
+main.CarSkin #BrandInfo > a {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+main.CarModel #BrandInfo > a > label{
+    CarSkin: None;
+}
+
+main.CarSkin #BrandInfo > label {
+    font-weight: bold;
+    font-size: 5em;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 0.5em;
+}
+
+main.CarSkin #CarInfo {
+    display: block;
+    text-align: center;
+}
+
+main.CarSkin #CarInfo a {
+    display: inline-block;
+    font-size: 2em;
+}
+
+main.CarSkin #SkinInfo #SkinName {
+    display: inline block;
+    font-weight: bold:
+}
+
+main.CarSkin #SkinInfo #SkinNumber {
+    display: inline block;
+    margin-left: 1em;
+    font-weight: normal:
+}
+
+main.CarSkin #SkinInfo #SkinNumber:before {
+    content: "[Number = ";
+}
+
+main.CarSkin #SkinInfo #SkinNumber:after {
+    content: "]";
+}
+
+main.CarSkin #SkinInfo img {
+    display: block;
+    max-width: 100%;
+}
+
+
+
+/******************************************************************************
+                                   AvailableTrackLocations
+ ******************************************************************************/
+
+main.AvailableTrackLocations a.TrackLink {
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+main.AvailableTrackLocations a.TrackLink img {
+    height: 7em;
+}
+
+
+
+/******************************************************************************
+                                   TrackLocation
+ ******************************************************************************/
+
+main.TrackLocation a.TrackLink {
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
+}

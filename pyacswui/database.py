@@ -3,8 +3,7 @@ from .verbosity import Verbosity
 
 class Database(object):
 
-    def __init__(self, host, port, database, user, password, verbosity=0):
-        self.__verbosity = Verbosity(verbosity)
+    def __init__(self, host, port, database, user, password):
 
         self.__db_host = str(host)
         self.__db_port = int(port)
@@ -38,7 +37,6 @@ class Database(object):
         # check if table already exist
         table_exist = False
         query = "SELECT `TABLE_NAME` FROM information_schema.TABLES WHERE table_schema = '%s';" % self.__db_database
-        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
         for r in cursor.fetchall():
@@ -50,7 +48,6 @@ class Database(object):
         if table_exist is False:
 
             query = "CREATE TABLE `" + tblname + "` ( `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT , PRIMARY KEY (`Id`)) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-            self.__verbosity.print("    " + query)
 
             # execute query
             cursor = self.__db_handle.cursor()
@@ -72,7 +69,6 @@ class Database(object):
             primary_index_found = False
             primary_index_correct = False
             query = "SHOW INDEX FROM %s WHERE Key_name = 'PRIMARY';" % tblname
-            self.__verbosity.print("  " + query)
             cursor = self.__db_handle.cursor()
             cursor.execute(query)
             for r in cursor.fetchall():
@@ -88,7 +84,6 @@ class Database(object):
                     query = "ALTER TABLE `" + tblname + "` DROP PRIMARY KEY, ADD PRIMARY KEY(`Id`);"
                 else:
                     query = "ALTER TABLE `" + tblname + "` ADD PRIMARY KEY(`Id`);"
-                self.__verbosity.print("    " + query)
                 # execute query
                 cursor = self.__db_handle.cursor()
                 cursor.execute(query)
@@ -97,7 +92,6 @@ class Database(object):
 
         # alter collation
         query = "ALTER TABLE `" + tblname + "` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
-        self.__verbosity.print("    " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
         cursor.close()
@@ -113,13 +107,11 @@ class Database(object):
 
         # check column info
         query = "SELECT `COLUMN_NAME`, `COLUMN_TYPE`, `COLUMN_DEFAULT`, `EXTRA` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '%s' AND TABLE_NAME = '%s' AND COLUMN_NAME = '%s';" % (self.__db_database, tblname, colname)
-        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
         if cursor.rowcount > 0:
             column_exist = True
             res = cursor.fetchall()[0]
-            self.__verbosity.print("    sql result: COLUMN_NAME=%s, COLUMN_TYPE=%s, COLUMN_DEFAULT=%s, EXTRA=%s" % (res[0], res[1], res[2], res[3]))
             if res[0] != colname:
                 column_needs_change = True
             if coltype is not None and res[1].lower() != coltype.lower():
@@ -147,7 +139,6 @@ class Database(object):
         if column_exist is False:
             # create query
             query = "ALTER TABLE `%s` ADD `%s` %s NOT NULL %s %s;" % (tblname, colname, coltype, coldefault, colextra)
-            self.__verbosity.print("    " + query)
 
             # execute query
             cursor = self.__db_handle.cursor()
@@ -159,7 +150,6 @@ class Database(object):
         elif column_needs_change is True:
             # create query
             query = "ALTER TABLE `%s` CHANGE `%s` `%s` %s NOT NULL %s %s;" % (tblname, colname, colname, coltype, coldefault, colextra)
-            self.__verbosity.print("    " + query)
 
             # execute query
             cursor = self.__db_handle.cursor()
@@ -226,7 +216,6 @@ class Database(object):
         query = "SELECT `Id` FROM `" + tblname + "` WHERE " + where + ";";
 
         # execute query
-        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
         for res in cursor.fetchall():
@@ -234,7 +223,6 @@ class Database(object):
         cursor.close()
 
         # user info
-        self.__verbosity.print("  found IDs:", ret)
         self.__db_handle.commit()
 
         return ret
@@ -242,7 +230,6 @@ class Database(object):
 
     def rawQuery(self, query):
         # execute query
-        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         try:
             cursor.execute(query)
@@ -289,7 +276,6 @@ class Database(object):
         query += ";"
 
         # execute query
-        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         try:
             cursor.execute(query)
@@ -328,7 +314,6 @@ class Database(object):
         query = "INSERT INTO `" + tblname + "` (" + fields + ") VALUES (" + values + ");"
 
         # execute query
-        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
 
@@ -356,7 +341,6 @@ class Database(object):
         query = "UPDATE `" + tblname + "` SET " + set_string + " WHERE `Id` = " + str(id_value) + ";"
 
         # execute query
-        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
         cursor.close()
@@ -371,7 +355,6 @@ class Database(object):
         query = "DELETE FROM `" + tblname + "` WHERE `Id` = " + self.__db_handle.escape(id_value)
 
         # execute query
-        self.__verbosity.print("  " + query)
         cursor = self.__db_handle.cursor()
         cursor.execute(query)
         cursor.close()

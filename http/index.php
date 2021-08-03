@@ -1,13 +1,26 @@
 <?php
-error_reporting(-1);
+
+$duration_start = microtime(TRUE);
+
+// error reporting
+error_reporting(E_ALL);
 if (ini_set('display_errors', '1') === false) {
     echo "ini_set for error display failed!";
     exit(1);
 }
 
-// execution performance
-$acswui_execution_start_date  = date("Y-m-d H:i:s");
-$acswui_execution_start_mtime = microtime(true);
+// autoload of class library
+spl_autoload_register(function($className) {
+    $className = str_replace("\\", DIRECTORY_SEPARATOR, $className);
+
+//     if (class_exists("\\core\\Log", FALSE) && class_exists("\\core\\Config", FALSE)) {
+//         \core\Log::debug("AUTO-INC $className");
+//     }
+
+    $file_path = 'classes/' . $className . '.php';
+
+    include_once $file_path;
+});
 
 // session control
 session_set_cookie_params(0);
@@ -19,207 +32,33 @@ if (   ini_set('session.cookie_lifetime',  '0')  === false
 }
 session_start();
 
+// import namespaces
+use \Core\Config;
+use \Core\Log;
+use \Core\Database;
+use \Core\HtmlTemplate;
 
+// initialize global singletons
+Log::initialize(Config::AbsPathData . "/logs_http");
+Database::initialize(Config::DbHost, Config::DbUser, Config::DbPasswd, Config::DbDatabase);
 
-// =============================
-//  = Check php Compatibility =
-// =============================
-
-// translation
-if (!function_exists("_")) {
-    echo("gettext() is not installed!");
-    exit(1);
-}
-
-// password
-if (!function_exists("password_verify")) {
-    echo("password_verify() is not available (php version may be too low)!");
-    exit(1);
-}
-
-
-
-// =====================
-//  = Include Library =
-// =====================
-
-include("includes.php");
-
-
-
-// =========================
-//  = Fundamental Objects =
-// =========================
-
-$acswuiConfig   = new cConfig();
-$acswuiLog      = new cLog($acswuiConfig->AbsPathData . "/logs_http/");
-$acswuiLog->LogNotice("Execution start at " . $acswui_execution_start_date);
-$acswuiDatabase = new cDatabase();
-$acswuiUser     = new cUser();
-
-// l10n
-$lang = getPreferredClientLanguage();
-if ($lang == "") $acswuiLog->LogWarning("Preferred localization could not be determined!");
-$lang .= ".UTF-8";
-putenv("LANG=$lang");
-putenv("LANGUAGE=$lang");
-putenv("LC_ALL=$lang");
-setlocale(LC_ALL, $lang);
-bindtextdomain("acswui", "./locale");
-textdomain("acswui");
-
-
-
-// ===========================
-//  = Get Content Requested =
-// ===========================
-
-// check if new page is requested
-if (isset($_GET['CONTENT'])) {
-    $_SESSION['CONTENT'] = $_GET['CONTENT'];
-}
-
-// reset session content
-if (!isset($_SESSION['CONTENT'])) {
-    $_SESSION['CONTENT'] = "";
-}
-
-
-
-// ============================
-//  = Create Template Object =
-// ============================
-
-// non-content is requested
-if (isset($_REQUEST['NONCONTENT'])) {
-
-    // unset global template object
-    $acswuiTemplate = Null;
-
-// content is requested
+// Setup template
+$requested_template = Config::DefaultTemplate;
+$template = HtmlTemplate::getTemplate($requested_template);
+if ($template === NULL) {
+    Log::error("Could not load template '$requested_template'!");
 } else {
-
-    // load default template
-    if (! file_exists("templates/" . $acswuiConfig->DefaultTemplate . "/cTemplate" . $acswuiConfig->DefaultTemplate . ".php")) {
-        $acswuiLog->LogError("template '" . $acswuiConfig->DefaultTemplate . "' not found!");
-    }
-    $acswuiLog->LogNotice("include template '" . $acswuiConfig->DefaultTemplate ."'");
-    include("templates/" . $acswuiConfig->DefaultTemplate . "/cTemplate" . $acswuiConfig->DefaultTemplate . ".php");
-    $template_class = "cTemplate" . $acswuiConfig->DefaultTemplate;
-    $acswuiTemplate = new $template_class;
-    $acswuiTemplate->Menus = getMenuArrayFromContentDir();
+    echo $template->getHtml();
 }
 
+// deinitialization of global singletons
+Database::shutdown();
 
-
-// ====================
-//  = Create Content =
-// ====================
-
-// non-content is requested
-if (isset($_REQUEST['NONCONTENT'])) {
-
-    // unset content
-    $acswuiNonConentPage = Null;
-
-    // scan non-content directory
-    foreach (scandir("non-content/") as $file) {
-
-        // ignore non *.php files
-        if (substr($file, strlen($file) - 4, 4) != ".php") continue;
-
-        // find requested non-contents
-        if ($_REQUEST['NONCONTENT'] == substr($file, 0, strlen($file) - 4)) {
-
-            // instantiate non-content class
-            $acswuiLog->LogNotice("Non-Content request '" . $_REQUEST['NONCONTENT'] ."'");
-            include("non-content/$file");
-            $ncc = substr($file, 0, strlen($file) - 4);
-            $acswuiNonConentPage = new $ncc;
-            break;
-        }
-    }
-
-    if ($acswuiNonConentPage == Null) {
-        $acswuiLog->logWarning("Non-Content request not found: '" . $_REQUEST['NONCONTENT'] . "'");
-        header("HTTP/1.0 404 Not Found");
-        exit;
-    }
-
-// content is requested
-} else {
-
-    $menu = NULL;
-    $acswuiContentPage = NULL;
-
-    // create content object from active menu entry
-     $menu = getActiveMenuFromMenuArray($acswuiTemplate->Menus);
-     if (!is_null($menu)) {
-        $acswuiContentPage = new $menu->ClassName;
-        $acswuiContentPage->setMenu($menu);
-        $acswuiLog->LogNotice("Content request '" . $_SESSION['CONTENT'] . "'");
-     }
-
-     // check content requirements
-     if (!is_null($acswuiContentPage)) {
-
-        // check root requirement
-        if ($acswuiContentPage->RequireRoot && !$acswuiUser->IsRoot) {
-            $path = $acswuiContentPage->getRelPath();
-            $menu = $acswuiContentPage->MenuName;
-            $acswuiLog->logError("Non-root user requested $path - $menu");
-            header("HTTP/1.0 403 Forbidden");
-            exit;
-        }
-
-        // check permissions
-        $all_permissioms_available = true;
-        foreach ($acswuiContentPage->RequirePermissions as $p) {
-            if (!$acswuiUser->hasPermission($p)) {
-                $all_permissioms_available = false;
-            }
-        }
-        if (!$all_permissioms_available) {
-            $path = $acswuiContentPage->getRelPath();
-            $menu = $acswuiContentPage->MenuName;
-            $acswuiLog->logError("User denied for $path - $menu");
-            header("HTTP/1.0 403 Forbidden");
-            exit;
-        }
-     }
-
-    // load content
-    if (!is_null($acswuiContentPage)) {
-        $acswuiTemplate->ContentPage = $acswuiContentPage;
-    }
-}
-
-
-
-// ====================
-//  = Content Output =
-// ====================
-
-// non-content is requested
-if (isset($_REQUEST['NONCONTENT'])) {
-
-    // output content
-    if ($acswuiNonConentPage != Null) {
-        echo $acswuiNonConentPage->getContent();
-    }
-
-// content is requested
-} else {
-    echo $acswuiTemplate->getHtml();
-}
-
-
-
-// ======================
-//  = Finish Execution =
-// ======================
-
-$acswuiLog->LogNotice("Execution finished at " . date("Y-m-d H:i:s") . " in " . (microtime(true) - $acswui_execution_start_mtime) . " seconds");
-
+// finish log
+$duration_end = microtime(TRUE);
+$duration_ms = 1e3 * ($duration_end - $duration_start);
+$msg = sprintf("Execution duration: %0.1f ms", $duration_ms);
+Log::debug($msg);
+Log::shutdown();
 
 ?>

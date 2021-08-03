@@ -19,12 +19,11 @@ from pyacswui import CommandPackage, CommandInstall, CommandSrvrun, CommandDbCle
 # ---------------------------------
 
 __helpstring  = "Examples for complete safe setup:\n"
-__helpstring += "./acswui -vv local.ini package\n"
-__helpstring += "./acswui -vv remote.ini install --install-base-data --root-pwd \"mypassword\"\n"
+__helpstring += "./acswui local.ini -vv package\n"
+__helpstring += "./acswui remote.ini -vv install --install-base-data --root-pwd \"mypassword\"\n"
 
 # main arguments
 argparser = argparse.ArgumentParser(prog="acswui", description="Assetto Corsa Server Web User Interface", epilog=__helpstring, formatter_class=argparse.RawTextHelpFormatter)
-argparser.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
 argparsersubs = argparser.add_subparsers(dest='command')
 
 CommandPackage(argparsersubs)

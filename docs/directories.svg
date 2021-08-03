@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="72cm" height="18cm" viewBox="339 259 1422 342" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <rect style="fill: #ffffff" x="380" y="280" width="320" height="320"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="380" y="280" width="320" height="320"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="540" y="443.875">
+      <tspan x="540" y="443.875"></tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="840" y="280" width="920" height="320"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="840" y="280" width="920" height="320"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="1300" y="443.875">
+      <tspan x="1300" y="443.875"></tspan>
+    </text>
+  </g>
+  <g>
+    <path style="fill: #e6e6e6" d="M 405 368 C 405,360 405,360 410,360 C 415,360 415,360 420,360 C 425,360 425,360 425,368 C 425,368 440,368 440,368 C 440,368 440,400 440,400 C 440,400 405,400 405,400 C 405,400 405,376 405,368z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 405 368 C 405,360 405,360 410,360 C 415,360 415,360 420,360 C 425,360 425,360 425,368 C 425,368 440,368 440,368 C 440,368 440,400 440,400 C 440,400 405,400 405,400 C 405,400 405,376 405,368"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" d="M 405 368 C 405,360 405,360 410,360 C 415,360 415,360 420,360 C 425,360 425,360 425,368 C 425,368 440,368 440,368 C 440,368 440,400 440,400 C 440,400 405,400 405,400 C 405,400 405,376 405,368"/>
+    <polygon style="fill: #ffffff" points="405,400 400,372 435,372 440,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="405,400 400,372 435,372 440,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" points="405,400 400,372 435,372 440,400 "/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="420" y="385.875">
+      <tspan x="420" y="385.875"></tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="420" y1="399" x2="420" y2="481"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="420" y1="416" x2="460" y2="416"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="420" y1="432" x2="460" y2="432"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="420" y1="448" x2="460" y2="448"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="420" y1="479.442" x2="419.478" y2="479.442"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="420" y1="464" x2="460" y2="464"/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="460" y="420">
+    <tspan x="460" y="420">contents/*</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="460" y="400">
+    <tspan x="460" y="400">server/*</tspan>
+  </text>
+  <g>
+    <path style="fill: #b7b79d" d="M 340 296.393 L 394.248,296.393 L 394.248,306.419 L 340,306.419 L 340,296.393z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 340 296.393 L 394.248,296.393 L 394.248,306.419 L 340,306.419 L 340,296.393"/>
+    <path style="fill: #c9c9b6" d="M 340 296.393 L 345.752,290.94 L 400,290.94 L 394.248,296.393 L 340,296.393z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 340 296.393 L 345.752,290.94 L 400,290.94 L 394.248,296.393 L 340,296.393"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2.12; stroke: #000000" d="M 391.214 300.957 L 378.197,300.957"/>
+    <path style="fill: #7a7a5a" d="M 394.248 306.419 L 400,300.65 L 400,290.94 L 394.248,296.393 L 394.248,306.419z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 394.248 306.419 L 400,300.65 L 400,290.94 L 394.248,296.393 L 394.248,306.419"/>
+    <path style="fill: #c9c9b6" d="M 340.308 312.778 L 346.359,305.197 L 388.188,305.197 L 382.137,312.778 L 340.308,312.778z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 340.308 312.778 L 346.359,305.197 L 388.188,305.197 L 382.137,312.778 L 340.308,312.778"/>
+    <path style="fill: #7a7a5a" d="M 382.137 314.291 L 388.188,307.932 L 388.188,305.197 L 382.137,312.778 L 382.137,314.291z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 382.137 314.291 L 388.188,307.932 L 388.188,305.197 L 382.137,312.778 L 382.137,314.291"/>
+    <path style="fill: #b7b79d" d="M 340.308 312.778 L 382.137,312.778 L 382.137,314.291 L 340.308,314.291 L 340.308,312.778z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 340.308 312.778 L 382.137,312.778 L 382.137,314.291 L 340.308,314.291 L 340.308,312.778"/>
+    <path style="fill: #000000" d="M 348.179 295.188 L 352.735,290.94 L 391.214,290.94 L 386.983,295.188 L 348.179,295.188z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #000000" d="M 348.179 295.188 L 352.735,290.94 L 391.214,290.94 L 386.983,295.188 L 348.179,295.188"/>
+    <path style="fill: #c9c9b6" d="M 347.872 263.94 L 352.128,260 L 390.624,260 L 386.368,263.94 L 347.872,263.94z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 347.872 263.94 L 352.128,260 L 390.624,260 L 386.368,263.94 L 347.872,263.94"/>
+    <path style="fill: #b7b79d" d="M 347.872 263.94 L 386.675,263.94 L 386.675,294.573 L 347.872,294.573 L 347.872,263.94z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 347.872 263.94 L 386.658,263.94 L 386.658,294.564 L 347.872,294.564 L 347.872,263.94"/>
+    <path style="fill: #ffffff" d="M 351.205 267.872 L 383.333,267.872 L 383.333,291.538 L 351.205,291.538 L 351.205,267.872z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 351.205 267.872 L 383.333,267.872 L 383.333,291.53 L 351.205,291.53 L 351.205,267.872"/>
+    <path style="fill: #7a7a5a" d="M 386.368 294.282 L 390.624,290.034 L 390.624,260 L 386.368,263.94 L 386.368,294.282z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 386.368 294.282 L 390.624,290.034 L 390.624,260 L 386.368,263.94 L 386.368,294.282"/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="420" y="300">
+    <tspan x="420" y="300">Reference machine with AC installation</tspan>
+  </text>
+  <g>
+    <path style="fill: #b7b79d" d="M 820 264.796 L 820,324.411 L 855.236,324.411 L 855.236,264.796 L 820,264.796z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 820 264.796 L 820,324.411 L 855.236,324.411 L 855.236,264.796 L 820,264.796"/>
+    <path style="fill: #c9c9b6" d="M 820 264.796 L 824.775,260 L 860,260 L 855.236,264.796 L 820,264.796z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 820 264.796 L 824.775,260 L 859.768,260"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 859.768 260.242 L 855.236,264.796 L 820,264.796"/>
+    <path style="fill: #c9c9b6" d="M 822.171 268.264 L 838.266,268.264 L 838.266,276.084 L 822.171,276.084 L 822.171,268.264z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #626248" d="M 822.171 268.264 L 838.256,268.264 L 838.256,276.074 L 822.171,276.074 L 822.171,268.264"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.6; stroke: #ecece7" d="M 824.343 272.184 L 835.631,272.184"/>
+    <path style="fill: #7a7a5a" d="M 855.236 324.411 L 860,319.605 L 860,260 L 855.236,264.796 L 855.236,324.411z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 855.236 324.411 L 859.768,319.847"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #494936" d="M 859.768 260.242 L 855.236,264.796 L 855.236,324.411"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.6; stroke: #ecece7" d="M 820.443 320.48 L 855.225,320.48"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.6; stroke: #000000" d="M 820.443 288.722 L 855.225,288.722"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.6; stroke: #494936" d="M 820 320.047 L 855.194,320.047"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.6; stroke: #000000" d="M 820 288.279 L 855.194,288.279"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke: #ecece7" d="M 822.171 275.663 L 822.171,268.264 L 837.823,268.264"/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="880" y="300">
+    <tspan x="880" y="300">Linux server hosting acswui</tspan>
+  </text>
+  <g>
+    <path style="fill: #e6e6e6" d="M 1205 368 C 1205,360 1205,360 1210,360 C 1215,360 1215,360 1220,360 C 1225,360 1225,360 1225,368 C 1225,368 1240,368 1240,368 C 1240,368 1240,400 1240,400 C 1240,400 1205,400 1205,400 C 1205,400 1205,376 1205,368z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 1205 368 C 1205,360 1205,360 1210,360 C 1215,360 1215,360 1220,360 C 1225,360 1225,360 1225,368 C 1225,368 1240,368 1240,368 C 1240,368 1240,400 1240,400 C 1240,400 1205,400 1205,400 C 1205,400 1205,376 1205,368"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" d="M 1205 368 C 1205,360 1205,360 1210,360 C 1215,360 1215,360 1220,360 C 1225,360 1225,360 1225,368 C 1225,368 1240,368 1240,368 C 1240,368 1240,400 1240,400 C 1240,400 1205,400 1205,400 C 1205,400 1205,376 1205,368"/>
+    <polygon style="fill: #ffffff" points="1205,400 1200,372 1235,372 1240,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="1205,400 1200,372 1235,372 1240,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" points="1205,400 1200,372 1235,372 1240,400 "/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="1220" y="385.875">
+      <tspan x="1220" y="385.875"></tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1220" y1="399" x2="1220" y2="501"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1220" y1="420" x2="1260" y2="420"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1220" y1="440" x2="1260" y2="440"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1220" y1="460" x2="1260" y2="460"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1220" y1="480" x2="1260" y2="480"/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1260" y="440">
+    <tspan x="1260" y="440">acswui.py</tspan>
+  </text>
+  <g>
+    <path style="fill: #e6e6e6" d="M 1385 368 C 1385,360 1385,360 1390,360 C 1395,360 1395,360 1400,360 C 1405,360 1405,360 1405,368 C 1405,368 1420,368 1420,368 C 1420,368 1420,400 1420,400 C 1420,400 1385,400 1385,400 C 1385,400 1385,376 1385,368z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 1385 368 C 1385,360 1385,360 1390,360 C 1395,360 1395,360 1400,360 C 1405,360 1405,360 1405,368 C 1405,368 1420,368 1420,368 C 1420,368 1420,400 1420,400 C 1420,400 1385,400 1385,400 C 1385,400 1385,376 1385,368"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" d="M 1385 368 C 1385,360 1385,360 1390,360 C 1395,360 1395,360 1400,360 C 1405,360 1405,360 1405,368 C 1405,368 1420,368 1420,368 C 1420,368 1420,400 1420,400 C 1420,400 1385,400 1385,400 C 1385,400 1385,376 1385,368"/>
+    <polygon style="fill: #ffffff" points="1385,400 1380,372 1415,372 1420,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="1385,400 1380,372 1415,372 1420,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" points="1385,400 1380,372 1415,372 1420,400 "/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="1400" y="385.875">
+      <tspan x="1400" y="385.875"></tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1400" y1="399" x2="1400" y2="501"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1400" y1="420" x2="1440" y2="420"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1400" y1="440" x2="1440" y2="440"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1400" y1="460" x2="1440" y2="460"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1400" y1="480" x2="1440" y2="480"/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1440" y="440">
+    <tspan x="1440" y="440">index.php</tspan>
+  </text>
+  <g>
+    <path style="fill: #e6e6e6" d="M 1025 368 C 1025,360 1025,360 1030,360 C 1035,360 1035,360 1040,360 C 1045,360 1045,360 1045,368 C 1045,368 1060,368 1060,368 C 1060,368 1060,400 1060,400 C 1060,400 1025,400 1025,400 C 1025,400 1025,376 1025,368z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 1025 368 C 1025,360 1025,360 1030,360 C 1035,360 1035,360 1040,360 C 1045,360 1045,360 1045,368 C 1045,368 1060,368 1060,368 C 1060,368 1060,400 1060,400 C 1060,400 1025,400 1025,400 C 1025,400 1025,376 1025,368"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" d="M 1025 368 C 1025,360 1025,360 1030,360 C 1035,360 1035,360 1040,360 C 1045,360 1045,360 1045,368 C 1045,368 1060,368 1060,368 C 1060,368 1060,400 1060,400 C 1060,400 1025,400 1025,400 C 1025,400 1025,376 1025,368"/>
+    <polygon style="fill: #ffffff" points="1025,400 1020,372 1055,372 1060,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="1025,400 1020,372 1055,372 1060,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" points="1025,400 1020,372 1055,372 1060,400 "/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="1040" y="385.875">
+      <tspan x="1040" y="385.875"></tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1040" y1="399" x2="1040" y2="581"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1040" y1="420" x2="1080" y2="420"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1040" y1="460" x2="1080" y2="460"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1040" y1="440" x2="1080" y2="440"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1040" y1="480" x2="1080" y2="480"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1040" y1="500" x2="1080" y2="500"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1040" y1="520" x2="1080" y2="520"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1040" y1="540" x2="1080" y2="540"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1040" y1="560" x2="1080" y2="560"/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1080" y="480">
+    <tspan x="1080" y="480">logs_cron/</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1080" y="500">
+    <tspan x="1080" y="500">logs_http/</tspan>
+  </text>
+  <text font-size="14.2692" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:700" x="460" y="373.238">
+    <tspan x="460" y="373.238">path-ac</tspan>
+  </text>
+  <text font-size="14.2692" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:700" x="1260" y="385.444">
+    <tspan x="1260" y="385.444">path-acswui</tspan>
+  </text>
+  <text font-size="14.2692" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:700" x="1440" y="385.444">
+    <tspan x="1440" y="385.444">path-htdocs</tspan>
+  </text>
+  <text font-size="14.2692" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:700" x="1080" y="385.444">
+    <tspan x="1080" y="385.444">path-data</tspan>
+  </text>
+  <g>
+    <path style="fill: #e6e6e6" d="M 1565 368 C 1565,360 1565,360 1570,360 C 1575,360 1575,360 1580,360 C 1585,360 1585,360 1585,368 C 1585,368 1600,368 1600,368 C 1600,368 1600,400 1600,400 C 1600,400 1565,400 1565,400 C 1565,400 1565,376 1565,368z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 1565 368 C 1565,360 1565,360 1570,360 C 1575,360 1575,360 1580,360 C 1585,360 1585,360 1585,368 C 1585,368 1600,368 1600,368 C 1600,368 1600,400 1600,400 C 1600,400 1565,400 1565,400 C 1565,400 1565,376 1565,368"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" d="M 1565 368 C 1565,360 1565,360 1570,360 C 1575,360 1575,360 1580,360 C 1585,360 1585,360 1585,368 C 1585,368 1600,368 1600,368 C 1600,368 1600,400 1600,400 C 1600,400 1565,400 1565,400 C 1565,400 1565,376 1565,368"/>
+    <polygon style="fill: #ffffff" points="1565,400 1560,372 1595,372 1600,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="1565,400 1560,372 1595,372 1600,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" points="1565,400 1560,372 1595,372 1600,400 "/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="1580" y="385.875">
+      <tspan x="1580" y="385.875"></tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1580" y1="399" x2="1580" y2="521"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1580" y1="420" x2="1620" y2="420"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1580" y1="440" x2="1620" y2="440"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1580" y1="460" x2="1620" y2="460"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1580" y1="480" x2="1620" y2="480"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="1580" y1="500" x2="1620" y2="500"/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1620" y="440">
+    <tspan x="1620" y="440">content/tracks/</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1620" y="420">
+    <tspan x="1620" y="420">content/cars/</tspan>
+  </text>
+  <text font-size="14.2692" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:700" x="1620" y="385.444">
+    <tspan x="1620" y="385.444">path-htdata</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1080" y="460">
+    <tspan x="1080" y="460">logs_acserver/</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1080" y="420">
+    <tspan x="1080" y="420">acserver/</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1260" y="420">
+    <tspan x="1260" y="420">pyacswui/</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1440" y="420">
+    <tspan x="1440" y="420">cron.php</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1620" y="460">
+    <tspan x="1620" y="460">realtime/realtime_*.json</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1080" y="440">
+    <tspan x="1080" y="440">htcache/</tspan>
+  </text>
+  <g>
+    <path style="fill: #e6e6e6" d="M 545 368 C 545,360 545,360 550,360 C 555,360 555,360 560,360 C 565,360 565,360 565,368 C 565,368 580,368 580,368 C 580,368 580,400 580,400 C 580,400 545,400 545,400 C 545,400 545,376 545,368z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 545 368 C 545,360 545,360 550,360 C 555,360 555,360 560,360 C 565,360 565,360 565,368 C 565,368 580,368 580,368 C 580,368 580,400 580,400 C 580,400 545,400 545,400 C 545,400 545,376 545,368"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" d="M 545 368 C 545,360 545,360 550,360 C 555,360 555,360 560,360 C 565,360 565,360 565,368 C 565,368 580,368 580,368 C 580,368 580,400 580,400 C 580,400 545,400 545,400 C 545,400 545,376 545,368"/>
+    <polygon style="fill: #ffffff" points="545,400 540,372 575,372 580,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="545,400 540,372 575,372 580,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" points="545,400 540,372 575,372 580,400 "/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="560" y="385.875">
+      <tspan x="560" y="385.875"></tspan>
+    </text>
+  </g>
+  <text font-size="14.2692" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:700" x="600" y="373.238">
+    <tspan x="600" y="373.238">path-refpkg</tspan>
+  </text>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #ff0000" x1="584" y1="380" x2="848.028" y2="380"/>
+    <polygon style="fill: #ff0000" points="855.528,380 845.528,385 848.028,380 845.528,375 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #ff0000" points="855.528,380 845.528,385 848.028,380 845.528,375 "/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="600" y="420">
+    <tspan x="600" y="420">acserver/</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="600" y="440">
+    <tspan x="600" y="440">htdata/</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="600" y="460">
+    <tspan x="600" y="460">server_cfg.json</tspan>
+  </text>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="560" y1="399" x2="560" y2="501"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="560" y1="420" x2="600" y2="420"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="560" y1="440" x2="600" y2="440"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="560" y1="460" x2="600" y2="460"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="560" y1="480" x2="600" y2="480"/>
+  </g>
+  <g>
+    <path style="fill: #e6e6e6" d="M 865 368 C 865,360 865,360 870,360 C 875,360 875,360 880,360 C 885,360 885,360 885,368 C 885,368 900,368 900,368 C 900,368 900,400 900,400 C 900,400 865,400 865,400 C 865,400 865,376 865,368z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 865 368 C 865,360 865,360 870,360 C 875,360 875,360 880,360 C 885,360 885,360 885,368 C 885,368 900,368 900,368 C 900,368 900,400 900,400 C 900,400 865,400 865,400 C 865,400 865,376 865,368"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" d="M 865 368 C 865,360 865,360 870,360 C 875,360 875,360 880,360 C 885,360 885,360 885,368 C 885,368 900,368 900,368 C 900,368 900,400 900,400 C 900,400 865,400 865,400 C 865,400 865,376 865,368"/>
+    <polygon style="fill: #ffffff" points="865,400 860,372 895,372 900,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="865,400 860,372 895,372 900,400 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" points="865,400 860,372 895,372 900,400 "/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="880" y="385.875">
+      <tspan x="880" y="385.875"></tspan>
+    </text>
+  </g>
+  <text font-size="14.2692" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:700" x="920" y="373.238">
+    <tspan x="920" y="373.238">path-srvpkg</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="920" y="420">
+    <tspan x="920" y="420">acserver/</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="920" y="440">
+    <tspan x="920" y="440">htdata/</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="920" y="460">
+    <tspan x="920" y="460">server_cfg.json</tspan>
+  </text>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="880" y1="399" x2="880" y2="501"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="880" y1="420" x2="920" y2="420"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="880" y1="440" x2="920" y2="440"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="880" y1="460" x2="920" y2="460"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="880" y1="480" x2="920" y2="480"/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1080" y="520">
+    <tspan x="1080" y="520">acswui.ini</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="1080" y="540">
+    <tspan x="1080" y="540">server_cfg.json</tspan>
+  </text>
+</svg>

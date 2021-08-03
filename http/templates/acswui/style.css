@@ -146,6 +146,35 @@ ul.MainMenu ul a:hover {
 
 
 /* -----------------------------------------------------------------------------
+ *                               Debug Output
+ * -----------------------------------------------------------------------------
+ */
+
+div.DebugLog {
+    display: inline-block;
+    background-color: #00000033;
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+div.DebugLog.Debug {
+    color: #738;
+    font-style: italic;
+}
+
+div.DebugLog.Warning {
+    color: #a82;
+}
+
+div.DebugLog.Error {
+    color: #a22;
+    font-weight: bold;
+}
+
+
+
+/* -----------------------------------------------------------------------------
  *                            Html Elements
  * -----------------------------------------------------------------------------
  */
@@ -305,6 +334,48 @@ select[disabled]:focus,
 }
 
 form label {
+    display: block;
+}
+
+
+
+/* -----------------------------------------------------------------------------
+ *                                  Image Links
+ * -----------------------------------------------------------------------------
+ */
+
+a.CarBrandLink,
+a.CarModelLink
+a.CarSkinLink,
+a.TrackLink {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    font-weight: normal;
+    background-color: #00000033;
+}
+
+a.CarBrandLink:hover,
+a.CarModelLink:hover
+a.CarSkinLink:hover,
+a.TrackLink:hover {
+    background-color: var(--color-red-accent);
+}
+
+a.CarBrandLink label,
+a.CarModelLink label,
+a.CarSkinLink label,
+a.TrackLink label {
+    display: block;
+    margin-top: 0.3em;
+    text-decoration: none;
+}
+
+a.CarBrandLink img,
+a.CarModelLink img,
+a.CarSkinLink img,
+a.TrackLink img {
+    margin-bottom: 0.3em;
     display: block;
 }
 

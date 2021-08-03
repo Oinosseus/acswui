@@ -143,6 +143,8 @@ class CommandPackage(Command):
 
             self._copy2acs(path_ac_car, "data.acd")
             self._copy2http(path_ac_car, "ui", "ui_car.json")
+            if not self._copy2http(path_ac_car, "ui", "badge.png"):
+                print("WARNING: No badge for", path_ac_car)
 
             # copy all data/*.ini files
             path_ac_car_data = os.path.join(path_ac_cars, car, "data")
@@ -168,7 +170,7 @@ class CommandPackage(Command):
                     elif self._copy2http(path_ac_car, "skins", skin, "Preview.jpg"):
                         pass
                     else:
-                        print("ERROR: cannot find preview for skin 'cars/%s/skins/%s'" % (car, skin), file=sys.stderr)
+                        print("WARNING: cannot find preview for skin 'cars/%s/skins/%s'" % (car, skin), file=sys.stderr)
 
                     self._copy2http(path_ac_car, "skins", skin, "ui_skin.json")
 

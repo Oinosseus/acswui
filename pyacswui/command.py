@@ -21,13 +21,7 @@ class Command(object):
             self.__argparse.add_argument('inifile', help="path to INI file with configuration definitions")
         self.__argparse.set_defaults(CmdObject=self)
         self.__args = None
-        self.__verbosity = Verbosity(0)
 
-
-
-    @property
-    def Verbosity(self):
-        return self.__verbosity
 
 
     def getGeneralArg(self, arg):
@@ -43,7 +37,6 @@ class Command(object):
 
     def parseArgs(self, args):
         self.__args = args
-        self.__verbosity = Verbosity(self.__args.v)
 
         if self.__require_ini_file:
             cp = configparser.ConfigParser()
