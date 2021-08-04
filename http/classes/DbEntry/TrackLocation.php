@@ -56,15 +56,32 @@ class TrackLocation extends DbEntry {
         $basepath = "";
 
         $preview_path = "";
+        $hover_path = "";
         if (count($tracks)) {
             $track_id = $tracks[0]->id();
             $preview_path = \Core\Config::RelPathHtdata . "/htmlimg/tracks/$track_id.png";
+            $hover_path = \Core\Config::RelPathHtdata . "/htmlimg/tracks/$track_id.hover.png";
         }
 
         $html = "<a class=\"TrackLink\" href=\"index.php?HtmlContent=TrackLocation&Id=$tl_id\">";
         $html .= "<label for=\"$img_id\">$tl_name</label>";
         $html .= "<img src=\"$preview_path\" id=\"$img_id\" alt=\"$tl_name\" title=\"$tl_name\">";
         $html .= "</a>";
+
+        $html .= "<script>";
+        $html .= "var e = document.getElementById('$img_id');";
+
+        # show different hover image
+        $html .= "e.addEventListener('mouseover', function() {";
+        $html .= "this.src='$hover_path';";
+        $html .= "});";
+
+        # show track;
+        $html .= "e.addEventListener('mouseout', function() {";
+        $html .= "this.src='$preview_path';";
+        $html .= "});";
+
+        $html .= "</script>";
 
         return $html;
     }
