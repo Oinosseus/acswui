@@ -15,6 +15,10 @@ class TrackLocation extends \core\HtmlContent {
         if (array_key_exists("Id", $_REQUEST) && $_REQUEST['Id'] != "") {
             $tl = \DbEntry\TrackLocation::fromId($_REQUEST['Id']);
 
+            $html .= "<h1>" . $tl->name() . "</h1>";
+            $html .= _("Location Name") . ": " . $tl->name() . "<br>";
+            $html .= "AC-Directory: content/tracks/" . $tl->track() . "<br>";
+
             $html .= "<div id=\"AvailableTracks\">";
             foreach ($tl->listTracks() as $t) {
                 $html .= $t->htmlImg();
