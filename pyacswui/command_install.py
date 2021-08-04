@@ -46,12 +46,33 @@ class CommandInstall(Command):
 
         # install work
         self._verbosity.print("initialize data")
-        #self.__work_copy_files()
+        self.__work_copy_files()
 
         installer = InstallerDatabase(self.__db,
                                 self.__server_cfg_json,
                                 self._verbosity)
-        #installer.process()
+        installer.process()
+
+        # temporarily needed to fix track location table
+        # this can be deleted later
+        for row in self.__db.fetch("Tracks", "Track", {}, sort_by_cloumn="Track"):
+            track = row['Track']
+            fields = {"Track":track}
+            locations = self.__db.findIds("TrackLocations", fields)
+            if len(locations) == 0:
+                fields.update({"Deprected": 1})
+                self.__db.insertRow("TrackLocations", fields)
+        for row in self.__db.fetch("Tracks", ['Id', 'Track'], {}, sort_by_cloumn="Track"):
+            track_track = row['Track']
+            track_id = row['Id']
+            locations = self.__db.findIds("TrackLocations", {"Track": track_track})
+            if len(locations) > 1:
+                raise NotImplementedError("track " + track)
+            elif len(locations) == 1:
+                location_id = locations[0]
+                self.__db.updateRow("Tracks", track_id, {'Location': location_id})
+
+
 
         self._verbosity.print("start scanning AC content")
         self.__work_cconfig()
@@ -59,7 +80,7 @@ class CommandInstall(Command):
         installer = InstallerCars(self.__db,
                            self.getGeneralArg("path-srvpkg"),
                            self._verbosity)
-        #installer.process()
+        installer.process()
 
         installer = InstallerTracks(self.__db,
                              self.getGeneralArg("path-srvpkg"),
@@ -74,6 +95,7 @@ class CommandInstall(Command):
         if self.getArg("base-data") is True:
             self.__work_install_basics()
         self.__set_chmod()
+
 
 
     def dict2php(self, d):

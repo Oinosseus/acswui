@@ -55,6 +55,7 @@ class TrackLocation extends DbEntry {
         $tracks = $this->listTracks();
         $basepath = "";
 
+        $preview_path = "";
         if (count($tracks)) {
             $track_id = $tracks[0]->id();
             $preview_path = \Core\Config::RelPathHtdata . "/htmlimg/tracks/$track_id.png";

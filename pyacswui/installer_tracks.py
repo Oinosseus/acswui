@@ -43,17 +43,17 @@ class InstallerTracks(object):
     def process(self):
         self._verbosity.print("scanning for tracks")
 
-        ## paths
-        #abspath_data = os.path.abspath(self.__path_srvpkg)
+        # paths
+        abspath_data = os.path.abspath(self.__path_srvpkg)
 
-        ## set all current trakcs to 'deprecated'
-        #self.__db.rawQuery("UPDATE Tracks SET Deprecated=1 WHERE Deprecated=0")
-        #self.__db.rawQuery("UPDATE TrackLocations SET Deprecated=1 WHERE Deprecated=0")
+        # set all current trakcs to 'deprecated'
+        self.__db.rawQuery("UPDATE Tracks SET Deprecated=1 WHERE Deprecated=0")
+        self.__db.rawQuery("UPDATE TrackLocations SET Deprecated=1 WHERE Deprecated=0")
 
 
-        #path_tracks = os.path.join(abspath_data, "htdata", "content", "tracks")
-        #for track in sorted(os.listdir(path_tracks)):
-            #self._scan_track(path_tracks, track)
+        path_tracks = os.path.join(abspath_data, "htdata", "content", "tracks")
+        for track in sorted(os.listdir(path_tracks)):
+            self._scan_track(path_tracks, track)
 
         # generate preview images for \DbEntry\Track::htmlImg()
         self._verbosity.print("generate htmlImg's")
@@ -134,7 +134,7 @@ class InstallerTracks(object):
 
 
 
-    def _update_track_info(self, tarck_id, track_names):
+    def _update_track_info(self, track_location_id, track_names):
 
         def detect_location(track_names):
             track_location_name = ""
@@ -173,9 +173,9 @@ class InstallerTracks(object):
             track_location_name = track_location_name[1:]
         while track_location_name[-1] in ['-']:
             track_location_name = track_location_name[:-1]
+        track_location_name = track_location_name.strip()
 
-
-        self.__db.updateRow("TrackLocations", tarck_id, {"Name": track_location_name.strip(), "Deprecated":0})
+        self.__db.updateRow("TrackLocations", track_location_id, {"Name": track_location_name, "Deprecated": 0})
 
 
 
@@ -290,10 +290,6 @@ class InstallerTracks(object):
         if os.path.isfile(path_outline):
             img_outline = openImg(path_outline)
             img_htmlimg.alpha_composite(img_outline)
-
-        # overlay info text
-        d1 = PIL.ImageDraw.Draw(img_outline)
-        d1.text((10, 10), "Sample text", fill=(255, 0, 0))
 
         # save hover image
         img_htmlimg.save(path_htmlimg_hover, "PNG")

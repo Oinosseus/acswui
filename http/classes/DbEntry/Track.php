@@ -19,7 +19,7 @@ class Track extends DbEntry {
     private $Length = NULL;
     private $Pitboxes = NULL;
 //     private $Drivers = NULL;
-//     private $DrivenLaps = NULL;
+    private $DrivenLaps = NULL;
 //     private $DrivenMeters = NULL;
 //     private $DrivenSeconds = NULL;
 
@@ -54,12 +54,17 @@ class Track extends DbEntry {
         return $this->Config;
     }
 
-//     //! @return Amount of laps turned on this track
-//     public function drivenLaps() {
-//         if ($this->DrivenLaps !== NULL) return $this->DrivenLaps;
-//         $this->updateDriven();
-//         return $this->DrivenLaps;
-//     }
+
+    //! @return Amount of laps turned on this track
+    public function drivenLaps() {
+        if ($this->DrivenLaps === NULL) {
+            $id = $this->id();
+            $res = \Core\Database::fetchRaw("SELECT COUNT(Laps.Id) as DrivenLaps FROM Laps JOIN Sessions ON Laps.Session = Sessions.Id WHERE Sessions.Track = $id");
+            $this->DrivenLaps = $res[0]['DrivenLaps'];
+        }
+        return $this->DrivenLaps;
+    }
+
 
 //     //! @return Amount of driven meters on a track
 //     public function drivenMeters() {
@@ -98,6 +103,7 @@ class Track extends DbEntry {
 //
 //         return $this->Drivers;
 //     }
+
 
 
     /**
