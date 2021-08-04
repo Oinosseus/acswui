@@ -1,5 +1,7 @@
 import json
+import math
 import os
+import PIL
 import re
 
 from .verbosity import Verbosity
@@ -10,10 +12,12 @@ class InstallerTracks(object):
     def __init__(self,
                  database,
                  path_srvpkg,
+                 path_htdata,
                  verbosity=0
                 ):
         self.__db = database
         self.__path_srvpkg = path_srvpkg
+        self.__path_htdata = path_htdata
         self._verbosity = Verbosity(verbosity, self.__class__.__name__)
 
 
@@ -39,17 +43,24 @@ class InstallerTracks(object):
     def process(self):
         self._verbosity.print("scanning for tracks")
 
-        # paths
-        abspath_data = os.path.abspath(self.__path_srvpkg)
+        ## paths
+        #abspath_data = os.path.abspath(self.__path_srvpkg)
 
-        # set all current trakcs to 'deprecated'
-        self.__db.rawQuery("UPDATE Tracks SET Deprecated=1 WHERE Deprecated=0")
-        self.__db.rawQuery("UPDATE TrackLocations SET Deprecated=1 WHERE Deprecated=0")
+        ## set all current trakcs to 'deprecated'
+        #self.__db.rawQuery("UPDATE Tracks SET Deprecated=1 WHERE Deprecated=0")
+        #self.__db.rawQuery("UPDATE TrackLocations SET Deprecated=1 WHERE Deprecated=0")
 
 
-        path_tracks = os.path.join(abspath_data, "htdata", "content", "tracks")
-        for track in sorted(os.listdir(path_tracks)):
-            self._scan_track(path_tracks, track)
+        #path_tracks = os.path.join(abspath_data, "htdata", "content", "tracks")
+        #for track in sorted(os.listdir(path_tracks)):
+            #self._scan_track(path_tracks, track)
+
+        # generate preview images for \DbEntry\Track::htmlImg()
+        self._verbosity.print("generate htmlImg's")
+        query = "SELECT Tracks.Id, TrackLocations.Track, Tracks.Config FROM `Tracks` JOIN TrackLocations ON Tracks.Location = TrackLocations.Id ORDER BY Tracks.Id DESC"
+        res = self.__db.rawQuery(query, return_result=True)
+        for id, track, config in res:
+            self._generateHtmlImgs(id, track, config)
 
 
 
@@ -207,3 +218,82 @@ class InstallerTracks(object):
                 else:
                     break
             return ret
+
+
+
+    def _generateHtmlImgs(self, id, track, config):
+        verb =  Verbosity(self._verbosity)
+        verb.print("generating htmlimg for track id", id, "(", track, config, ")")
+
+        # define size
+        htmlimg_width = 300
+        htmlimg_height = 200
+
+
+        def shrink(img):
+            w, h = img.size
+            if w > htmlimg_width:
+                h = h * htmlimg_width / w
+                w = htmlimg_width
+            if h > htmlimg_height:
+                w = w * htmlimg_height / h
+                h = htmlimg_height
+            w = math.ceil(w)
+            h = math.ceil(h)
+            return img.resize((w, h))
+
+
+        def openImg(path):
+            # basic image as canvas
+            img_canvas = PIL.Image.new( mode = "RGBA", size = (htmlimg_width, htmlimg_height) )
+
+            # open requested image and shrink to max size
+            img_paste = PIL.Image.open(path)
+            img_paste = shrink(img_paste)
+
+            # determine padding
+            pad_x = (htmlimg_width - img_paste.size[0]) // 2
+            pad_y = (htmlimg_height - img_paste.size[1]) // 2
+            img_canvas.paste(img_paste, (pad_x, pad_y))
+
+            return img_canvas
+
+
+
+        # get paths
+        path_track = os.path.join(self.__path_htdata, "content", "tracks", track)
+        path_htmlimg_dir = os.path.join(self.__path_htdata, "htmlimg", "tracks")
+        if not os.path.isdir(path_htmlimg_dir):
+            Verbosity(verb).print("mkdirs " + path_htmlimg_dir)
+            os.makedirs(path_htmlimg_dir)
+        path_htmlimg = os.path.join(path_htmlimg_dir, str(id) + ".png")
+        path_htmlimg_hover = os.path.join(path_htmlimg_dir, str(id) + ".hover.png")
+        if config == "":
+            path_preview = os.path.join(path_track, "ui", "preview.png")
+            path_outline = os.path.join(path_track, "ui", "outline.png")
+        else:
+            path_preview = os.path.join(path_track, "ui", config, "preview.png")
+            path_outline = os.path.join(path_track, "ui", config, "outline.png")
+
+        # create new image
+        img_htmlimg  = PIL.Image.new( mode = "RGBA", size = (htmlimg_width, htmlimg_height) )
+
+        # merge existing preview
+        if os.path.isfile(path_preview):
+            img_preview = openImg(path_preview)
+            img_htmlimg.alpha_composite(img_preview)
+
+        # save as default preview
+        img_htmlimg.save(path_htmlimg, "PNG")
+
+        # merge existing outline
+        if os.path.isfile(path_outline):
+            img_outline = openImg(path_outline)
+            img_htmlimg.alpha_composite(img_outline)
+
+        # overlay info text
+        d1 = PIL.ImageDraw.Draw(img_outline)
+        d1.text((10, 10), "Sample text", fill=(255, 0, 0))
+
+        # save hover image
+        img_htmlimg.save(path_htmlimg_hover, "PNG")

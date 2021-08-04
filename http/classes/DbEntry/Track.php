@@ -121,14 +121,8 @@ class Track extends DbEntry {
         $img_id = "TrackImage$track_id";
 
         // get path
-        $preview_path = $this->previewPath();
-        $outline_path = $this->outlinePath();
-
-        // calculate if outline ratio
-//         $preview_size = getimagesize($preview_path);
-//         $preview_ratio = $preview_size[0] / $preview_size[1];
-//         $outline_size = getimagesize($outline_path);
-//         $outline_ratio = $outline_size[0] / $outline_size[1];
+        $preview_path = \Core\Config::RelPathHtdata . "/htmlimg/tracks/$track_id.png";
+        $hover_path = \Core\Config::RelPathHtdata . "/htmlimg/tracks/$track_id.hover.png";
 
         // title
         $title = $track_name . "\n";
@@ -144,17 +138,9 @@ class Track extends DbEntry {
         $html .= "<script>";
         $html .= "var e = document.getElementById('$img_id');";
 
-        # show outline
+        # show different hover image
         $html .= "e.addEventListener('mouseover', function() {";
-        $html .= "var width = this.width;";
-        $html .= "var height = this.height;";
-        $html .= "this.src='$outline_path';";
-
-        # shrink height or with of outline image depending on ratio
-//         if ($preview_ratio < $outline_ratio)
-            $html .= "this.width = width;";
-//         else
-            $html .= "this.height = height;";
+        $html .= "this.src='$hover_path';";
         $html .= "});";
 
         # show track;

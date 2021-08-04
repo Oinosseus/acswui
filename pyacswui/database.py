@@ -228,7 +228,9 @@ class Database(object):
         return ret
 
 
-    def rawQuery(self, query):
+    def rawQuery(self, query, return_result=False):
+        ret = None
+
         # execute query
         cursor = self.__db_handle.cursor()
         try:
@@ -236,14 +238,15 @@ class Database(object):
         except BaseException as e:
             print("QUERY:", query)
             raise e
-        for res in cursor.fetchall():
-            ret_dict = {}
-            for col in columns_array:
-                ret_dict[col] = res[columns_array.index(col)]
-            ret.append(ret_dict)
+        if return_result:
+            ret = []
+            for res in cursor.fetchall():
+                ret.append(res)
 
         cursor.close()
         self.__db_handle.commit()
+
+        return ret
 
 
 

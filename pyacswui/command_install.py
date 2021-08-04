@@ -63,6 +63,7 @@ class CommandInstall(Command):
 
         installer = InstallerTracks(self.__db,
                              self.getGeneralArg("path-srvpkg"),
+                             self.getGeneralArg("path-htdata"),
                              self._verbosity)
         installer.process()
 

@@ -25,7 +25,7 @@ class Template extends \Core\HtmlTemplate {
         $html .= "    <header>\n";
         $html .= "      Assetto Corsa Server Web User Interface\n";
         $html .= "    </header>\n";
-        $html .= "    <div class=\"Subtitle\">&nbsp;" . $content->pageTitle() . "</div>\n";
+        if ($content) $html .= "    <div class=\"Subtitle\">&nbsp;" . $content->pageTitle() . "</div>\n";
 
         // main/sub navigation
         $html .= "    <nav><ul class=\"MainMenu\">\n";

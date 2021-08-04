@@ -56,17 +56,13 @@ class TrackLocation extends DbEntry {
         $basepath = "";
 
         if (count($tracks)) {
-            $track_config = $tracks[0]->config();
-            if ($track_config !="") {
-                $basepath = \Core\Config::RelPathHtdata . "/content/tracks/$tl_track/ui/$track_config";
-            } else {
-                $basepath = \Core\Config::RelPathHtdata . "/content/tracks/$tl_track/ui";
-            }
+            $track_id = $tracks[0]->id();
+            $preview_path = \Core\Config::RelPathHtdata . "/htmlimg/tracks/$track_id.png";
         }
 
         $html = "<a class=\"TrackLink\" href=\"index.php?HtmlContent=TrackLocation&Id=$tl_id\">";
         $html .= "<label for=\"$img_id\">$tl_name</label>";
-        $html .= "<img src=\"$basepath/preview.png\" id=\"$img_id\" alt=\"$tl_name\" title=\"$tl_name\">";
+        $html .= "<img src=\"$preview_path\" id=\"$img_id\" alt=\"$tl_name\" title=\"$tl_name\">";
         $html .= "</a>";
 
         return $html;
