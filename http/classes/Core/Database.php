@@ -235,7 +235,7 @@ class Database {
      * @param $query_string The SQL query
      * @return Same as mysqli::query(), either FALSE or a mysqli_result object
      */
-    public static function query($query_string, bool $fetch = TRUE) {
+    public static function query($query_string) {
 
         // execute query
         $result = Database::$DbHandle->query($query_string);
