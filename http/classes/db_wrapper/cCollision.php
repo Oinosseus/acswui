@@ -23,7 +23,7 @@ abstract class Collision {
     private $SecondaryCollision = NULL;
 
     // maximum time interval between primary and secondary collision [s]
-    const SecondaryDelta = 3;
+    const SecondaryDelta = 0;
 
     /**
      * @param $id database table row Id
@@ -169,7 +169,7 @@ abstract class Collision {
                     $sectime = new DateTime($sres[0]['Timestamp']);
                     $sectime->add(new DateInterval("PT" . Collision::SecondaryDelta . "S"));
 
-                    if ($this->Timestamp <= $sectime)
+                    if ($this->Timestamp < $sectime)
                         $this->SecondaryCollision = TRUE;
                 }
             }
