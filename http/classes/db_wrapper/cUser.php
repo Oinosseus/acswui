@@ -36,6 +36,7 @@ class User implements JsonSerializable {
     //! @return The color code for this user as string (eg #12ab9f)
     public function color() {
         if ($this->Color === NULL) $this->updateFromDb();
+        if ($this->Color == "") $this->Color = "#000000";
         return $this->Color;
     }
 
