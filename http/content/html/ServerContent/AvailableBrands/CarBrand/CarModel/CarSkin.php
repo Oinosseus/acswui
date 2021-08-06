@@ -8,7 +8,7 @@ class CarSkin extends \core\HtmlContent {
     private $CurrentCar = NULL;
 
     public function __construct() {
-        parent::__construct(_("Car Skin"),  _("Car Skins"));
+        parent::__construct(_("Car Skin"),  _("Car Skin"));
     }
 
     public function getHtml() {
@@ -21,19 +21,31 @@ class CarSkin extends \core\HtmlContent {
             $brand = $skin->car()->brand();
             $html .= "<div id=\"BrandInfo\">";
             $html .= $brand->htmlImg();
-            $html .= "<label>" . $brand->name() . "</label>";
+            $html .= "<label>" . $skin->car()->name() . "</label>";
             $html .= "</div>";
 
-            $car = $skin->car();
-            $html .= "<div id=\"CarInfo\">";
-            $html .= "<a href=\"" . $this->url("CarModel", ['Id'=>$car->id()]) . "\">";
-            $html .= "<label>" . $car->name() . "</label>";
-            $html .= "</a>";
-            $html .= "</div>";
+            $html .= "<h1>" . $skin->name() . "</h1>";
 
-            $html .= "<div id=\"SkinInfo\">";
-            $html .= "<label id=\"SkinName\">" . $skin->name() . "</label>";
-            $html .= "<label id=\"SkinNumber\">" . $skin->number() . "</label>";
+            $html .= "<table id=\"CarSkinInformation\">";
+            $html .= "<caption>" . _("General Info") . "</caption>";
+            $html .= "<tr><th>" . _("Brand") . "</th><td><a href=\"?HtmlContent=CarBrand&Id=" . $skin->car()->brand()->id() . "\">" . $skin->car()->brand()->name() . "</a></td></tr>";
+            $html .= "<tr><th>" . _("Car") . "</th><td><a href=\"?HtmlContent=CarModel&Id=" . $skin->car()->id() . "\">" . $skin->car()->name() . "</a></td></tr>";
+            $html .= "<tr><th>" . _("Name") . "</th><td>" . $skin->name() . "</td></tr>";
+            $html .= "<tr><th>" . _("Number") . "</th><td>" . $skin->number() . "</td></tr>";
+            $html .= "<tr><th>" . _("Team") . "</th><td>" . $skin->team() . "</td></tr>";
+            $html .= "</table>";
+
+            $html .= "<table id=\"CarSkinRevision\">";
+            $html .= "<caption>" . _("Revision Info") . "</caption>";
+            $html .= "<tr><th>" . _("Database Id") . "</th><td>". $skin->id() . "</td></tr>";
+            $path = "content/cars/" . $skin->car()->model() . "/skins/" . $skin->skin();
+            $html .= "<tr><th>AC-Directory</th><td>$path</td></tr>";
+            $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($skin->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
+            $html .= "</table>";
+
+            $html .= "<br id=\"CarSkinImageBreak\">";
+
+            $html .= "<a id=\"SkinImgPreview\" href=\"" . $skin->previewPath() . "\">";
             $html .= "<img src=\"" . $skin->previewPath() . "\" title=\"" . $skin->skin() . "\"\">";
             $html .= "</div>";
 

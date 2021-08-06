@@ -132,7 +132,7 @@ class InstallerCars(object) :
 
 
     def _parse_ui_skin_json(self, ui_skin_json_path):
-        ret = {'Name':"", "Number": 0, 'Steam64GUID': ""}
+        ret = {'Name':"", "Number": 0, 'Steam64GUID': "", "Team": ""}
 
         verb = Verbosity(self._verbosity)
         verb.print("parsing", ui_skin_json_path)
@@ -140,6 +140,7 @@ class InstallerCars(object) :
         REGEX_COMP_UISKIN_SKINNAME = re.compile("\"(?i)skinname\"\s*:\s*\"(.*)\"")
         REGEX_COMP_UISKIN_STEAM64GUID = re.compile("\"Steam64GUID\"\s*:\s*\"([a-zA-Z0-9]*)\"")
         REGEX_COMP_UISKIN_NUMBER = re.compile("\"(?i)number\"\s*:\s*\"([0-9]*)\"")
+        REGEX_COMP_UISKIN_TEAM = re.compile("\"(?i)team\"\s*:\s*\"(.*)\"")
 
         if os.path.isfile(ui_skin_json_path):
             with open(ui_skin_json_path, "r") as f:
@@ -172,6 +173,12 @@ class InstallerCars(object) :
                         if n != "":
                             ret['Number'] = n
                         Verbosity(verb).print("Number", ret['Number'])
+
+                    # Team
+                    match = REGEX_COMP_UISKIN_TEAM.match(line)
+                    if match:
+                        ret['Team'] = match.group(1)
+                        Verbosity(verb).print("Team", ret['Team'])
 
 
         return ret

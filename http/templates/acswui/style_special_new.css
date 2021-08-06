@@ -253,3 +253,24 @@ main.CarModel #CarModelDescription {
 
 main.CarModel #AvailableSkins {
 }
+
+
+
+/******************************************************************************
+                                   CarSkin
+ ******************************************************************************/
+
+main.CarSkin #CarSkinInformation,
+main.CarSkin #CarSkinRevision {
+    display: inline-block;
+    margin-right: 2em;
+}
+
+main.CarSkin a#SkinImgPreview {
+    padding: 1em;
+}
+
+main.CarSkin a#SkinImgPreview img {
+    display: block;
+    max-height: 20em;
+}

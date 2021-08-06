@@ -12,6 +12,7 @@ class CarSkin extends DbEntry {
     private $Name = NULL;
     private $Number = NULL;
     private $Steam64GUID = NULL;
+    private $Deprecated = NULL;
 
 
     /**
@@ -30,6 +31,14 @@ class CarSkin extends DbEntry {
             $this->Car = Car::fromId($car_id);
         }
         return $this->Car;
+    }
+
+
+    //! @return TRUE when this skin is deprecated
+    public function deprecated() {
+        if ($this->Deprecated === NULL)
+            $this->Deprecated = ($this->loadColumn('Deprecated') == 0) ? FALSE : TRUE;
+        return $this->Deprecated;
     }
 
 
@@ -99,6 +108,12 @@ class CarSkin extends DbEntry {
     public function steam64GUID() {
         if ($this->Steam64GUID === NULL) $this->Steam64GUID = $this->loadColumn("Steam64GUID");
         return $this->Steam64GUID;
+    }
+
+
+    //! @return Team name of the skin
+    public function team() {
+        return $this->loadColumn("Team");
     }
 
 }
