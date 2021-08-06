@@ -15,6 +15,7 @@ class Car extends DbEntry {
     private $Deprecated = NULL;
     private $TorqueCurve = NULL;
     private $PowerCurve = NULL;
+    private $Weight = NULL;
 
 
     /**
@@ -125,6 +126,16 @@ class Car extends DbEntry {
     }
 
 
+    //! @return Array of (revolution, power) value pairs
+    public function powerCurve() {
+        if ($this->PowerCurve === NULL) {
+            $this->PowerCurve = json_decode($this->loadColumn("PowerCurve"));
+        }
+
+        return $this->PowerCurve;
+    }
+
+
     /**
      * @param $inculde_deprecated If set to TRUE, also deprectaed skins are listed (Default: False)
      * @return A List of according CarSkin objects
@@ -160,12 +171,12 @@ class Car extends DbEntry {
     }
 
 
-    //! @return Array of (revolution, power) value pairs
-    public function powerCurve() {
-        if ($this->PowerCurve === NULL) {
-            $this->PowerCurve = json_decode($this->loadColumn("PowerCurve"));
+    //! @return The weight of the car in kg
+    public function weight() {
+        if ($this->Weight === NULL) {
+            $this->Weight = (int) $this->loadColumn("Weight");
         }
-
-        return $this->PowerCurve;
+        return $this->Weight;
     }
+
 }

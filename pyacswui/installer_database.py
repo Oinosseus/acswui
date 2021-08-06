@@ -195,6 +195,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnText("Cars", "Description")
         self.__db.appendColumnText("Cars", "TorqueCurve")
         self.__db.appendColumnText("Cars", "PowerCurve")
+        self.__db.appendColumnUInt("Cars", "Weight")
 
         # check table CarSkins
         Verbosity(verb).print("check database table `CarSkins`")

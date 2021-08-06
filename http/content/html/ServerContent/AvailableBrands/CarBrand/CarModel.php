@@ -30,6 +30,7 @@ class CarModel extends \core\HtmlContent {
             $html .= "<caption>" . _("General Info") . "</caption>";
             $html .= "<tr><th>" . _("Brand") . "</th><td><a href=\"?HtmlContent=CarBrand&Id=" . $car->brand()->id() . "\">" . $car->brand()->name() . "</a></td></tr>";
             $html .= "<tr><th>" . _("Name") . "</th><td>" . $car->name() . "</td></tr>";
+            $html .= "<tr><th>" . _("Weight") . "</th><td>" . \Core\HumanValue::format($car->weight(), "kg") . "</td></tr>";
             $html .= "</table>";
 
             $html .= "<table id=\"CarModelRevision\">";

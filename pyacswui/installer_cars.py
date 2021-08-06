@@ -46,9 +46,14 @@ class InstallerCars(object) :
         if car_name == "":
             car_name = car
         car_brand  = ui_car_json["brand"]
-        car_descr = ui_car_json["description"].replace("<br>", "\n")
+        car_descr = ui_car_json["description"]
         car_tcurve = json.dumps(ui_car_json["torqueCurve"])
         car_pcurve = json.dumps(ui_car_json["powerCurve"])
+        car_weight = 0
+        if "specs" in ui_car_json:
+            ui_car_specs = ui_car_json['specs']
+            if 'weight' in ui_car_specs:
+                car_weight = self._parse_car_weight(ui_car_specs['weight'])
 
         # update brand
         res = self.__db.fetch("CarBrands", ['Id'], {'Name':car_brand})
@@ -78,7 +83,8 @@ class InstallerCars(object) :
                         "Deprecated":0,
                         "Description": car_descr,
                         "TorqueCurve": car_tcurve,
-                        "PowerCurve": car_pcurve}
+                        "PowerCurve": car_pcurve,
+                        "Weight": car_weight}
 
         # insert car if not existent
         if len(existing_car_ids) == 0:
@@ -169,3 +175,40 @@ class InstallerCars(object) :
 
 
         return ret
+
+
+
+    def _parse_car_weight(self, weight_string):
+
+        # catch stupid mavericks
+        if weight_string == '--kg': # ferrari_laferrari
+            return 0
+        elif weight_string == '---kg': # mustang_imsa_roush
+            return 0
+
+        weight = None
+
+        # option 1
+        if weight is None:
+            match = re.match("([0-9]*)\s*[kK][gG]", weight_string)
+            if match:
+                weight = int(match.group(1))
+
+        # option 2 (found at ks_ruf_rt12r)
+        if weight is None:
+            match = re.match("([0-9]),([0-9]*)\s*[Kk][gG]", weight_string)
+            if match:
+                weight = int(match.group(1)) * 1e3 + int(match.group(2))
+
+        # option 1 (found at legion_mclaren_f1gtr_longtail)
+        if weight is None:
+            match = re.match("([0-9]*)\*\s*[kK][gG]", weight_string)
+            if match:
+                weight = int(match.group(1))
+
+        # check if weight could be determined
+        if weight is None:
+            raise NotImplementedError("Cannot parse weight '%s'" % str(weight_string))
+
+        # return weight in kg
+        return weight

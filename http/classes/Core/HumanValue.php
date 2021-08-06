@@ -14,16 +14,19 @@ class HumanValue {
     public function __construct($value, $unit="") {
 
         if ($unit === "LAPTIME") {
-            $this->formatLaptime($value, $unit);
+            $this->formatLaptime($value);
 
         } else if ($unit === "s") {
-            $this->formatSeconds($value, $unit);
+            $this->formatSeconds($value);
 
         } else if ($unit === "ms") {
             $this->formatSeconds($value / 1000, "s");
 
         } else if ($unit === "%") {
-            $this->formatPercent($value, $unit);
+            $this->formatPercent($value);
+
+        } else if ($unit === "kg") {
+            $this->formatWeight($value);
 
         } else {
             $this->formatArbitrary($value, $unit);
@@ -42,7 +45,7 @@ class HumanValue {
         return $this->Value . " " . $this->UnitPrefix . $this->Unit;
     }
 
-    private function formatLaptime($laptime_ms, $unit) {
+    private function formatLaptime($laptime_ms) {
         $milliseconds = $laptime_ms % 1000;
         $laptime_ms /= 1000;
         $seconds = $laptime_ms % 60;
@@ -52,7 +55,7 @@ class HumanValue {
         $this->UnitPrefix = "";
     }
 
-    private function formatSeconds(float $value, $unit) {
+    private function formatSeconds(float $value) {
         if ($value >= 3153600e2) {
             $this->Value = sprintf("%d", $value / 3153600e2);
             $this->Unit = "y";
@@ -114,7 +117,8 @@ class HumanValue {
         $this->UnitPrefix = "";
     }
 
-    private function formatPercent(float $value, $unit) {
+
+    private function formatPercent(float $value) {
         if ($value >= 100 || $value == 0) {
             $this->Value = sprintf("%d", $value);
             $this->UnitPrefix = "";
@@ -142,6 +146,17 @@ class HumanValue {
         }
 
     }
+
+
+    private function formatWeight(float $value) {
+        $value *= 1e3;
+        $this->formatArbitrary($value, "g");
+//         if ($this->UnitPrefix == "M") {
+//             $this->Unit = "t";
+//             $this->UnitPrefix = "";
+//         }
+    }
+
 
     private function formatArbitrary(int $value, $unit) {
         if ($value >= 1e12) {
