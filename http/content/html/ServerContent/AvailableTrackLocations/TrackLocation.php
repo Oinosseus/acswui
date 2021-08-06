@@ -16,8 +16,12 @@ class TrackLocation extends \core\HtmlContent {
             $tl = \DbEntry\TrackLocation::fromId($_REQUEST['Id']);
 
             $html .= "<h1>" . $tl->name() . "</h1>";
-            $html .= _("Location Name") . ": " . $tl->name() . "<br>";
-            $html .= "AC-Directory: content/tracks/" . $tl->track() . "<br>";
+
+            $html .= "<table id=\"TrackInfoGeneral\">";
+            $html .= "<caption>" . _("Track Location Info") . "</caption>";
+            $html .= "<tr><th>" . _("Location Name") . "</th><td>" . $tl->name() . "</td></tr>";
+            $html .= "<tr><th>AC-Directory</th><td>content/tracks/" . $tl->track() . "</td></tr>";
+            $html .= "</table>";
 
             $html .= "<div id=\"AvailableTracks\">";
             foreach ($tl->listTracks() as $t) {

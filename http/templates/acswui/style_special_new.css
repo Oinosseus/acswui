@@ -222,3 +222,14 @@ main.Track #TrackDescription {
     padding: 1em;
     margin: 2em 0em;;
 }
+
+
+
+/******************************************************************************
+                                   TrackLocation
+ ******************************************************************************/
+
+main.TrackLocation #TrackInfoGeneral {
+    display: block;
+    margin-bottom: 2em;
+}
