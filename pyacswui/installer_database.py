@@ -176,6 +176,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnTinyInt("Tracks", "Deprecated")
         self.__db.appendColumnString("Tracks", "Version", 30)
         self.__db.appendColumnString("Tracks", "Author", 50)
+        self.__db.appendColumnText("Tracks", "Description")
 
         # check table CarBrands
         Verbosity(verb).print("check database table `CarBrands`")

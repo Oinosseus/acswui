@@ -28,6 +28,7 @@ class Track extends \core\HtmlContent {
             $html .= _("Author") . ": " . $track->author() . "<br>";
             $html .= _("Driven Laps") . ": " . $track->drivenLaps() . "<br>";
             $html .= _("Database Id") . ": $track_id<br>";
+            $html .= _("Description") . ": " . $track->description() . "<br>";
 
             // AC info
             $html .= "AC-Directory: content/tracks/" . $track->location()->track();

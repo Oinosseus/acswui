@@ -86,6 +86,7 @@ class InstallerTracks(object):
             track_pitbxs = self._interpret_pitboxes(self.__parse_json(track_path + "/ui/ui_track.json", "pitboxes", "0"))
             track_version = self.__parse_json(track_path + "/ui/ui_track.json", "version", "")[:30]
             track_author = self.__parse_json(track_path + "/ui/ui_track.json", "author", "")[:50]
+            track_descr = self.__parse_json(track_path + "/ui/ui_track.json", "description", "")
 
             existing_track_ids = self._find_track_ids(track_location_id)
             if len(existing_track_ids) == 0:
@@ -109,6 +110,7 @@ class InstallerTracks(object):
                         track_pitbxs = self._interpret_pitboxes(self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "pitboxes", "0"))
                         track_version = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "version", "")[:30]
                         track_author = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "author", "")[:50]
+                        track_descr = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "description", "")
                         track_names.append(track_name)
 
                         existing_track_ids = self._find_track_ids(track_location_id, track_config)
@@ -119,7 +121,8 @@ class InstallerTracks(object):
                                         "Pitboxes": track_pitbxs,
                                         "Deprecated":0,
                                         "Version": track_version,
-                                        "Author": track_author}
+                                        "Author": track_author,
+                                        "Description": track_descr}
                         if len(existing_track_ids) == 0:
                             self.__db.insertRow("Tracks", table_fields)
                         else:

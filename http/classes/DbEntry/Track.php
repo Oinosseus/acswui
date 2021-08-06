@@ -61,6 +61,12 @@ class Track extends DbEntry {
     }
 
 
+    //! @return Description of the track
+    public function description() {
+        return $this->loadColumn("Description");
+    }
+
+
     //! @return Amount of laps turned on this track
     public function drivenLaps() {
         if ($this->DrivenLaps === NULL) {
