@@ -84,6 +84,7 @@ class InstallerTracks(object):
             track_length = self.__parse_json(track_path + "/ui/ui_track.json", "length", "0")
             track_length = self._interpret_length(track_length)
             track_pitbxs = self._interpret_pitboxes(self.__parse_json(track_path + "/ui/ui_track.json", "pitboxes", "0"))
+            track_version = self.__parse_json(track_path + "/ui/ui_track.json", "version", "")
 
             existing_track_ids = self._find_track_ids(track_location_id)
             if len(existing_track_ids) == 0:
@@ -105,13 +106,21 @@ class InstallerTracks(object):
                         track_length = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "length", "0")
                         track_length = self._interpret_length(track_length)
                         track_pitbxs = self._interpret_pitboxes(self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "pitboxes", "0"))
+                        track_version = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "version", "")
                         track_names.append(track_name)
 
                         existing_track_ids = self._find_track_ids(track_location_id, track_config)
+                        table_fields = {"Location": track_location_id,
+                                        "Config": track_config,
+                                        "Name": track_name,
+                                        "Length": track_length,
+                                        "Pitboxes": track_pitbxs,
+                                        "Deprecated":0,
+                                        "Version": track_version}
                         if len(existing_track_ids) == 0:
-                            self.__db.insertRow("Tracks", {"Location": track_location_id, "Config": track_config, "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs, "Deprecated":0})
+                            self.__db.insertRow("Tracks", table_fields)
                         else:
-                            self.__db.updateRow("Tracks", existing_track_ids[0], {"Location": track_location_id, "Config": track_config, "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs, "Deprecated":0})
+                            self.__db.updateRow("Tracks", existing_track_ids[0], table_fields)
 
             if len(track_names) > 0:
                 self._update_track_info(track_location_id, track_names)

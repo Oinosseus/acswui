@@ -293,6 +293,12 @@ class Track extends DbEntry {
     }
 
 
+    //! @return Version info string of the Track
+    public function version() {
+        return $this->loadColumn("Version");
+    }
+
+
 //     //! @return A floating point Number [0,1] that represents the popularity of the track
 //     public function popularity() {
 //         global $acswuiDatabase;
