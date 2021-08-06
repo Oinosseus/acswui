@@ -24,7 +24,24 @@ class CarModel extends \core\HtmlContent {
             $html .= "<label>" . $brand->name() . "</label>";
             $html .= "</div>";
 
+            $html .= "<h1>" . $car->name() . "</h1>";
 
+            $html .= "<table id=\"CarModelInformation\">";
+            $html .= "<caption>" . _("General Info") . "</caption>";
+            $html .= "<tr><th>" . _("Brand") . "</th><td><a href=\"?HtmlContent=CarBrand&Id=" . $car->brand()->id() . "\">" . $car->brand()->name() . "</a></td></tr>";
+            $html .= "<tr><th>" . _("Name") . "</th><td>" . $car->name() . "</td></tr>";
+            $html .= "</table>";
+
+            $html .= "<table id=\"CarModelRevision\">";
+            $html .= "<caption>" . _("Revision Info") . "</caption>";
+            $html .= "<tr><th>" . _("Database Id") . "</th><td>". $car->id() . "</td></tr>";
+            $html .= "<tr><th>AC-Directory</th><td>content/cars/" . $car->model() . "</td></tr>";
+            $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($car->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
+            $html .= "</table>";
+
+            $html .= "<div id=\"CarModelDescription\">";
+            $html .= nl2br(htmlentities($car->description()));
+            $html .= "</div>";
 
             $html .= "<div id=\"AvailableSkins\">";
             foreach ($car->skins() as $skin) {

@@ -41,6 +41,12 @@ class Car extends DbEntry {
     }
 
 
+    //! @return Description of the car_id
+    public function description() {
+        return $this->loadColumn("Description");
+    }
+
+
     /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.

@@ -233,3 +233,28 @@ main.TrackLocation #TrackInfoGeneral {
     display: block;
     margin-bottom: 2em;
 }
+
+
+
+/******************************************************************************
+                                   CarModel
+ ******************************************************************************/
+
+main.CarModel #CarModelInformation,
+main.CarModel #CarModelRevision {
+    display: inline-block;
+}
+
+main.CarModel #CarModelRevision {
+    margin-left: 2em;
+}
+
+main.CarModel #CarModelDescription {
+    display: block;
+    background-color: var(--color-bg-elements);
+    padding: 1em;
+    margin: 2em 0em;;
+}
+
+main.CarModel #AvailableSkins {
+}

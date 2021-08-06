@@ -3,6 +3,7 @@ import os
 import re
 
 from .verbosity import Verbosity
+from .helper_functions import parse_json
 
 class InstallerCars(object) :
 
@@ -16,23 +17,6 @@ class InstallerCars(object) :
         self.__path_srvpkg = path_srvpkg
         self._verbosity = Verbosity(verbosity, self.__class__.__name__)
 
-
-    def __parse_json(self, json_file, key_name, default_value):
-        ret = default_value
-        key_name = '"' + key_name + '":'
-        if os.path.isfile(json_file):
-            with open(json_file, "r", encoding='utf-8', errors='ignore') as f:
-                for line in f.readlines():
-                    if key_name in line.lower():
-                        ret = line.split(key_name, 1)[1]
-                        ret = ret.strip()
-                        if ret[:1] == '"':
-                            ret = ret[1:].strip()
-                        if ret[-1:] == ',':
-                            ret = ret[:-1].strip()
-                        if ret[-1:] == '"':
-                            ret = ret[:-1]
-        return ret
 
 
     def process(self):
@@ -57,9 +41,12 @@ class InstallerCars(object) :
         verb.print("scanning car", car)
 
         car_path   = os.path.join(path_cars, car)
-        car_name   = self.__parse_json(car_path + "/ui/ui_car.json", "name", car)
-        car_parent = self.__parse_json(car_path + "/ui/ui_car.json", "parent", "")
-        car_brand  = self.__parse_json(car_path + "/ui/ui_car.json", "brand", "")
+        ui_car_json = parse_json(car_path + "/ui/ui_car.json", ['name', 'brand', 'description'])
+        car_name   = ui_car_json["name"]
+        if car_name == "":
+            car_name = car
+        car_brand  = ui_car_json["brand"]
+        car_descr = ui_car_json["description"].replace("<br>", "\n")
 
         # update brand
         res = self.__db.fetch("CarBrands", ['Id'], {'Name':car_brand})
@@ -82,9 +69,16 @@ class InstallerCars(object) :
         # get IDs of existing cars (should be exactly one car)
         existing_car_ids = self.__db.findIds("Cars", {"Car": car})
 
+        table_fields = {"Car": car,
+                        "Name": car_name,
+                        "Parent": 0,
+                        "Brand": car_brand_id,
+                        "Deprecated":0,
+                        "Description": car_descr}
+
         # insert car if not existent
         if len(existing_car_ids) == 0:
-            self.__db.insertRow("Cars", {"Car": car, "Name": car_name, "Parent": 0, "Brand": car_brand_id, "Deprecated":0})
+            self.__db.insertRow("Cars", table_fields)
             existing_car_ids = self.__db.findIds("Cars", {"Car": car})
             Verbosity(verb).print("added as new car")
 
@@ -95,7 +89,7 @@ class InstallerCars(object) :
 
         # update all existing cars
         for eci in existing_car_ids:
-            self.__db.updateRow("Cars", eci, {"Car": car, "Name": car_name, "Parent": 0, "Brand": car_brand_id, "Deprecated":0})
+            self.__db.updateRow("Cars", eci, table_fields)
 
             # insert not existing skins
             added_skins = 0
