@@ -224,6 +224,13 @@ table tr td, table tr th {
     padding: 5px 10px;
 }
 
+table caption {
+    background-color: var(--color-red-accent);
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    border-radius:  1em 1em 0em 0em;
+}
 
 
 

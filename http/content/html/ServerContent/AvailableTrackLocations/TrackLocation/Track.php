@@ -17,26 +17,36 @@ class Track extends \core\HtmlContent {
             $track_id = $track->id();
             $loc_id = $track->location()->id();
 
-            $html .= "<h1>" . _("Track Info") . "</h1>";
+            $html .= "<h1>" . $track->name() . "</h1>";
 
-            // Track Info
-            $html .= _("Location Name") . ": <a href=\"?HtmlContent=TrackLocation&Id=$loc_id\">" . $track->location()->name() . "</a><br>";
-            $html .= _("Track Name") . ": " . $track->name() . "<br>";
-            $html .= _("Length") . ": " . \Core\HumanValue::format($track->length(), "m") . "<br>";
-            $html .= _("Pits") . ": " . $track->pitboxes() . "<br>";
-            $html .= _("Version") . ": " . $track->version() . "<br>";
-            $html .= _("Author") . ": " . $track->author() . "<br>";
-            $html .= _("Driven Laps") . ": " . $track->drivenLaps() . "<br>";
-            $html .= _("Database Id") . ": $track_id<br>";
-            $html .= _("Description") . ": " . $track->description() . "<br>";
+            $html .= "<table id=\"TrackInfoGeneral\">";
+            $html .= "<caption>" . _("General Info") . "</caption>";
+            $html .= "<tr><th>" . _("Location Name") . "</th><td><a href=\"?HtmlContent=TrackLocation&Id=$loc_id\">" . $track->location()->name() . "</a></td></tr>";
+            $html .= "<tr><th>" . _("Track Name") . "</th><td>" . $track->name() . "</td></tr>";
+            $html .= "<tr><th>" . _("Length") . "</th><td>" . \Core\HumanValue::format($track->length(), "m") . "</td></tr>";
+            $html .= "<tr><th>" . _("Pits") . "</th><td>" . $track->pitboxes() . "</td></tr>";
+            $html .= "<tr><th>" . _("Driven Laps") . "</th><td>" . $track->drivenLaps() . "</td></tr>";
+            $html .= "</table>";
 
-            // AC info
-            $html .= "AC-Directory: content/tracks/" . $track->location()->track();
-            if ($track->config() != "") $html .= "/" . $track->config();
-            $html .= "<br>";
+            $html .= "<table id=\"TrackInfoRevision\">";
+            $html .= "<caption>" . _("Revision Info") . "</caption>";
+            $html .= "<tr><th>" . _("Version") . "</th><td>" . $track->version() . "</td></tr>";
+            $html .= "<tr><th>" . _("Author") . "</th><td>" . $track->author() . "</td></tr>";
+            $html .= "<tr><th>" . _("Database Id") . "</th><td>$track_id</td></tr>";
+            $html .= "<tr><th>AC-Directory</th><td>content/tracks/" . $track->location()->track() .(($track->config() != "") ? "/" . $track->config() : "") . "</td></tr>";
+            $html .= "</table>";
 
+            $html .= "<div id=\"TrackDescription\">";
+            $html .= nl2br(htmlentities($track->description()));
+            $html .= "</div>";
+
+            $html .= "<a id=\"TrackImgPreview\" href=\"" . $track->previewPath() . "\">";
             $html .= "<img src=\"" . $track->previewPath() . "\">";
+            $html .= "</a>";
+
+            $html .= "<a id=\"TrackImgOutline\" href=\"" . $track->outlinePath() . "\">";
             $html .= "<img src=\"" . $track->outlinePath() . "\">";
+            $html .= "</a>";
 
             $html .= "<h1>" . _("Lap Records") . "</h1>";
             $html .= "<h2>GT3</h2>";
