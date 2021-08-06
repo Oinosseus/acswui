@@ -13,6 +13,8 @@ class Car extends DbEntry {
     private $Brand = NULL;
     private $Skins = NULL;
     private $Deprecated = NULL;
+    private $TorqueCurve = NULL;
+    private $PowerCurve = NULL;
 
 
     /**
@@ -145,5 +147,25 @@ class Car extends DbEntry {
         }
 
         return $this->Skins;
+    }
+
+
+    //! @return Array of (revolution, torque) value pairs
+    public function torqueCurve() {
+        if ($this->TorqueCurve === NULL) {
+            $this->TorqueCurve = json_decode($this->loadColumn("TorqueCurve"));
+        }
+
+        return $this->TorqueCurve;
+    }
+
+
+    //! @return Array of (revolution, power) value pairs
+    public function powerCurve() {
+        if ($this->PowerCurve === NULL) {
+            $this->PowerCurve = json_decode($this->loadColumn("PowerCurve"));
+        }
+
+        return $this->PowerCurve;
     }
 }

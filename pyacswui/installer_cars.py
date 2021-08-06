@@ -41,12 +41,14 @@ class InstallerCars(object) :
         verb.print("scanning car", car)
 
         car_path   = os.path.join(path_cars, car)
-        ui_car_json = parse_json(car_path + "/ui/ui_car.json", ['name', 'brand', 'description'])
+        ui_car_json = parse_json(car_path + "/ui/ui_car.json", ['name', 'brand', 'description', 'powerCurve', 'torqueCurve'])
         car_name   = ui_car_json["name"]
         if car_name == "":
             car_name = car
         car_brand  = ui_car_json["brand"]
         car_descr = ui_car_json["description"].replace("<br>", "\n")
+        car_tcurve = json.dumps(ui_car_json["torqueCurve"])
+        car_pcurve = json.dumps(ui_car_json["powerCurve"])
 
         # update brand
         res = self.__db.fetch("CarBrands", ['Id'], {'Name':car_brand})
@@ -74,7 +76,9 @@ class InstallerCars(object) :
                         "Parent": 0,
                         "Brand": car_brand_id,
                         "Deprecated":0,
-                        "Description": car_descr}
+                        "Description": car_descr,
+                        "TorqueCurve": car_tcurve,
+                        "PowerCurve": car_pcurve}
 
         # insert car if not existent
         if len(existing_car_ids) == 0:

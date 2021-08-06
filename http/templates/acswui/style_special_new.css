@@ -200,10 +200,7 @@ main.TrackLocation a.TrackLink {
 main.Track #TrackInfoGeneral,
 main.Track #TrackInfoRevision {
     display: inline-block;
-}
-
-main.Track #TrackInfoRevision {
-    margin-left: 2em;
+    margin-right: 2em;
 }
 
 main.Track a#TrackImgPreview,
@@ -241,12 +238,10 @@ main.TrackLocation #TrackInfoGeneral {
  ******************************************************************************/
 
 main.CarModel #CarModelInformation,
-main.CarModel #CarModelRevision {
+main.CarModel #CarModelRevision,
+main.CarModel #CarModelCurveTbl {
     display: inline-block;
-}
-
-main.CarModel #CarModelRevision {
-    margin-left: 2em;
+    margin-right: 2em;
 }
 
 main.CarModel #CarModelDescription {
