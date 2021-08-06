@@ -18,6 +18,7 @@ class Track extends DbEntry {
     private $Name = NULL;
     private $Length = NULL;
     private $Pitboxes = NULL;
+    private $Deprecated = NULL;
 //     private $Drivers = NULL;
     private $DrivenLaps = NULL;
 //     private $DrivenMeters = NULL;
@@ -58,6 +59,14 @@ class Track extends DbEntry {
     public function config() {
         if ($this->Config === NULL) $this->Config = $this->loadColumn("Config");
         return $this->Config;
+    }
+
+
+    //! @return TRUE when this track is deprected
+    public function deprecated() {
+        if ($this->Deprecated === NULL)
+            $this->Deprecated = ($this->loadColumn('Deprecated') == 0) ? FALSE : TRUE;
+        return $this->Deprecated;
     }
 
 
