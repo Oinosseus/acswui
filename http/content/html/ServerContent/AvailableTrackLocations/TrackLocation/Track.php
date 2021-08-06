@@ -25,6 +25,7 @@ class Track extends \core\HtmlContent {
             $html .= _("Length") . ": " . \Core\HumanValue::format($track->length(), "m") . "<br>";
             $html .= _("Pits") . ": " . $track->pitboxes() . "<br>";
             $html .= _("Version") . ": " . $track->version() . "<br>";
+            $html .= _("Author") . ": " . $track->author() . "<br>";
             $html .= _("Driven Laps") . ": " . $track->drivenLaps() . "<br>";
             $html .= _("Database Id") . ": $track_id<br>";
 

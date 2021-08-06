@@ -84,7 +84,8 @@ class InstallerTracks(object):
             track_length = self.__parse_json(track_path + "/ui/ui_track.json", "length", "0")
             track_length = self._interpret_length(track_length)
             track_pitbxs = self._interpret_pitboxes(self.__parse_json(track_path + "/ui/ui_track.json", "pitboxes", "0"))
-            track_version = self.__parse_json(track_path + "/ui/ui_track.json", "version", "")
+            track_version = self.__parse_json(track_path + "/ui/ui_track.json", "version", "")[:30]
+            track_author = self.__parse_json(track_path + "/ui/ui_track.json", "author", "")[:50]
 
             existing_track_ids = self._find_track_ids(track_location_id)
             if len(existing_track_ids) == 0:
@@ -106,7 +107,8 @@ class InstallerTracks(object):
                         track_length = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "length", "0")
                         track_length = self._interpret_length(track_length)
                         track_pitbxs = self._interpret_pitboxes(self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "pitboxes", "0"))
-                        track_version = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "version", "")
+                        track_version = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "version", "")[:30]
+                        track_author = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "author", "")[:50]
                         track_names.append(track_name)
 
                         existing_track_ids = self._find_track_ids(track_location_id, track_config)
@@ -116,7 +118,8 @@ class InstallerTracks(object):
                                         "Length": track_length,
                                         "Pitboxes": track_pitbxs,
                                         "Deprecated":0,
-                                        "Version": track_version}
+                                        "Version": track_version,
+                                        "Author": track_author}
                         if len(existing_track_ids) == 0:
                             self.__db.insertRow("Tracks", table_fields)
                         else:

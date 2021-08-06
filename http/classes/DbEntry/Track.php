@@ -36,6 +36,12 @@ class Track extends DbEntry {
     }
 
 
+    //! @return The name of the author of this mod
+    public function author() {
+        return $this->loadColumn("Author");
+    }
+
+
     /**
      * Compares to Track objects by their name (case insensitive)
      * This is intended for usort() of arrays with Track objects
