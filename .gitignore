@@ -3,6 +3,6 @@ docs/*.dia~
 *.dia.autosave
 
 # automatic generated files
-http/classes/cConfig.php
+http/classes/Core/Config.php
 http/server_cfg.json
 http/locale/*/LC_MESSAGES/*.mo
