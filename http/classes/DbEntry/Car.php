@@ -111,6 +111,28 @@ class Car extends DbEntry {
     }
 
 
+    //! @return An svg image xml string
+    public function htmlTorquePowerSvg() {
+        $svg = new \Svg\XYChart("", "CarModelTorquePowerChart");
+
+        $yax_trq = new \Svg\YAxisLeft();
+        $svg->addYAxis($yax_trq);
+
+        $yax_pwr = new \Svg\YAxisRight();
+        $svg->addYAxis($yax_pwr);
+
+        $data = $this->torqueCurve();
+        $plot = new \Svg\DataPlot($data, "Torque", "PlotTorque");
+        $yax_trq->addPlot($plot);
+
+        $data = $this->powerCurve();
+        $plot = new \Svg\DataPlot($data, "Power", "PlotPower");
+        $yax_pwr->addPlot($plot);
+
+        return $svg->drawHtml("Torque / Power Chart", "CarModelTorquePowerChart", 1, 10);
+    }
+
+
 
     //! @return model name of the car
     public function model() {

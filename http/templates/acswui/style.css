@@ -392,8 +392,47 @@ a.TrackLink img {
  *                                  SVG Charts
  * -----------------------------------------------------------------------------
  */
+div.SvgChart {
+    margin: 1em;
+}
 
-svg.chart {
+div.SvgChart label {
+    background-color: var(--color-red-accent);
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    border-radius:  1em 1em 0em 0em;
+    display: block;
+    margin-bottom: 0.1em;
+}
+
+div.SvgChart svg {
+    background-color: #00000033;
+}
+
+div.SvgChart svg g#Axis polyline {
+    stroke: #ffffff;
+    fill: none;
+    stroke-width: 2em;
+}
+
+div.SvgChart svg g#Plots polyline.PlotLine {
+    stroke: #000000;
+    fill: none;
+    stroke-width: 1em;
+}
+
+div.SvgChart svg g#Plots polyline.PlotBackground {
+    stroke: none;
+    fill: #00000011;
+}
+
+div.SvgChart svg defs marker#AxisArrow {
+    stroke: #ffffff;
+    fill: #ffffff;
+}
+
+/*svg.chart {
     margin-top: 15px;
     margin-bottom: 15px;
     margin-left: auto;
@@ -401,37 +440,35 @@ svg.chart {
     display: block;
     padding: 20px 10px;
     background-color: var(--color-chart-bg);
-/*     box-shadow: var(--color-chart-bg) 0px 0px 10px; */
     width: 80%;
-}
+}*/
 
-svg.chart g#axes polyline {
+/*svg.chart g#axes polyline {
     stroke: var(--color-chart-axis);
     fill: none;
-}
+}*/
 
-svg.chart marker#axis_arrow {
+/*svg.chart marker#axis_arrow {
     fill: var(--color-chart-axis);
     stroke: var(--color-chart-axis);
-}
+}*/
 
-svg.chart g#axes text {
+/*svg.chart g#axes text {
     fill: var(--color-chart-axis);
-}
+}*/
 
-svg.chart g#grid polyline {
+/*svg.chart g#grid polyline {
     stroke-dasharray:1%, 1%;
     stroke: var(--color-chart-grid);
     fill: none;
-}
+}*/
 
-svg.chart g#plots polyline {
-/*     stroke: #0a0; */
+/*svg.chart g#plots polyline {
     stroke-width: 2;
     fill: none;
-}
+}*/
 
-svg.chart g#plots polyline:hover,
+/*svg.chart g#plots polyline:hover,
 svg.chart g#plots polyline.highlight {
     stroke-width: 3;
-}
+}*/
