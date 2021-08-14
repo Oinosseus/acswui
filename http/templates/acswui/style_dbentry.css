@@ -1,0 +1,68 @@
+/* -----------------------------------------------------------------------------
+ *                                  Car
+ * -----------------------------------------------------------------------------
+ */
+
+
+div.CarTorquePowerChart svg g.Axes g.YAxisTorque g.Grid polyline {
+    stroke: #ffff00;
+}
+
+div.CarTorquePowerChart svg g.Axes g.YAxisTorque,
+div.CarTorquePowerChart svg g.Axes g.YAxisTorque g.Ticktext text {
+    stroke: #ffff00;
+    fill: #ffff00;
+}
+
+div.CarTorquePowerChart svg g.Plots g.PlotTorque polyline.PlotLine {
+    stroke: #ffff00;
+    fill: none;
+/*     stroke-width: 1em; */
+}
+
+div.CarTorquePowerChart svg g.Plots g.PlotTorque polyline.PlotBackground {
+    stroke: none;
+    fill: #ffff000a;
+}
+
+div.CarTorquePowerChart svg g.Axes g.YAxisTorque g.Grid {
+    display: none;
+}
+
+div.CarTorquePowerChart svg g.Axes g.YAxisTorque:hover g.Grid {
+    display: block;
+}
+
+
+
+
+div.CarTorquePowerChart svg g.Axes g.YAxisPower g.Grid {
+    display: none;
+}
+
+div.CarTorquePowerChart svg g.Axes g.YAxisPower:hover g.Grid {
+    display: block;
+}
+
+
+div.CarTorquePowerChart svg g.Axes g.YAxisPower g.Grid polyline {
+    stroke: #bb0000;
+}
+
+div.CarTorquePowerChart svg g.Plots g.PlotPower polyline.PlotLine {
+    stroke: #aa0000;
+    fill: none;
+/*     stroke-width: 1em; */
+}
+
+div.CarTorquePowerChart svg g.Plots g.PlotPower polyline.PlotBackground {
+    stroke: none;
+    fill: #aa000020;
+}
+
+div.CarTorquePowerChart svg g.Axes g.YAxisPower,
+div.CarTorquePowerChart svg g.Axes g.YAxisPower g.Ticktext text {
+    stroke: #aa0000;
+    fill: #aa0000;
+}
+

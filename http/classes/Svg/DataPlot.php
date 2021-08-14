@@ -7,7 +7,7 @@ class DataPlot {
 
     private $DataPairs = NULL;
     private $Label = NULL;
-    private $HtmlId = NULL;
+    private $ExtraClass = NULL;
 
     private $XMin = NULL;
     private $XMax = NULL;
@@ -15,17 +15,21 @@ class DataPlot {
     private $YMax = NULL;
 
 
-    public function __construct(array $data_pairs,
-                            string $label,
-                            string $html_id) {
+    /**
+     * @param $data_pair An array of data point elements. Each datapoint element itself is an array of two float values. [[x, y]]
+     * @param $label An arbitrary label for the plot
+     * @param $extra_class Class name that shall be assigned (additionally to 'DataPlot')
+     */
+    public function __construct(array $data_pairs, string $label, string $extra_class) {
+
         $this->DataPairs = $data_pairs;
         $this->Label = $label;
-        $this->HtmlId = $html_id;
+        $this->ExtraClass = $extra_class;
 
         // determine min/max values
         foreach ($this->DataPairs as $dp) {
-            $x = round($dp[0]);
-            $y = round($dp[1]);
+            $x = (float) $dp[0];
+            $y = (float) $dp[1];
 
             if ($this->XMin === NULL || $x < $this->XMin) $this->XMin = $x;
             if ($this->XMax === NULL || $x > $this->XMax) $this->XMax = $x;
@@ -33,6 +37,11 @@ class DataPlot {
             if ($this->YMax === NULL || $y > $this->YMax) $this->YMax = $y;
         }
 
+    }
+
+
+    public function __toString() {
+        return "DataPlot[" . $this->Label . "]";
     }
 
 
@@ -48,16 +57,14 @@ class DataPlot {
     }
 
 
-    public function drawXml(int $scale_x=1, int $scale_y=1) {
-        $id = $this->HtmlId;
-        $xml = "<g id=\"$id\">";
+    public function drawXml(float $scale_x, float $scale_y) {
+        $id = $this->ExtraClass;
+        $xml = "<g class=\"DataPlot $id\">";
 
         # line
         $points_line = "";
         foreach ($this->DataPairs as $dp) {
-            $points_line .= sprintf("%d,%d ",
-                               round($dp[0] * $scale_x),
-                               round(-1 * $dp[1] * $scale_y));
+            $points_line .= sprintf("%s,%s ", round($dp[0] * $scale_x), round(-1 * $dp[1] * $scale_y));
         }
 
         # background

@@ -113,23 +113,35 @@ class Car extends DbEntry {
 
     //! @return An svg image xml string
     public function htmlTorquePowerSvg() {
-        $svg = new \Svg\XYChart("", "CarModelTorquePowerChart");
+        $svg = new \Svg\XYChart();
 
-        $yax_trq = new \Svg\YAxisLeft();
+        // torque axis
+        $yax_trq = new \Svg\YAxis("YAxisTorque", _("Torque") . " [Nm]");
+        $yax_trq->setYTick(50);
+        $yax_trq->setSideLeft();
         $svg->addYAxis($yax_trq);
 
-        $yax_pwr = new \Svg\YAxisRight();
-        $svg->addYAxis($yax_pwr);
-
+        // torque plot
         $data = $this->torqueCurve();
         $plot = new \Svg\DataPlot($data, "Torque", "PlotTorque");
         $yax_trq->addPlot($plot);
 
+        // power axis
+        $yax_pwr = new \Svg\YAxis("YAxisPower", _("Power") . " kW");
+        $yax_pwr->setSideRight();
+        $yax_pwr->setYTick(50);
+        $svg->addYAxis($yax_pwr);
+
+        // power plot
         $data = $this->powerCurve();
         $plot = new \Svg\DataPlot($data, "Power", "PlotPower");
         $yax_pwr->addPlot($plot);
 
-        return $svg->drawHtml("Torque / Power Chart", "CarModelTorquePowerChart", 1, 10);
+        $ax_x = new \Svg\XAxis("XAxisRevolutions", _("Revolutions") . " [RPM]");
+        $ax_x->setXTick(1000);
+        $svg->setXAxis($ax_x);
+
+        return $svg->drawHtml("Torque / Power Chart", "CarTorquePowerChart", 0.1, 1);
     }
 
 

@@ -98,32 +98,13 @@ main.CarModel #AvailableSkins > a img {
     height: 15em;
 }
 
+
+
 main.CarModel div#CarModelTorquePowerChart {
     width: 40em;
     display: inline-block;
 }
 
-main.CarModel div#CarModelTorquePowerChart svg g#Plots g#PlotTorque polyline.PlotLine {
-    stroke: #ffff00;
-    fill: none;
-    stroke-width: 3em;
-}
-
-main.CarModel div#CarModelTorquePowerChart svg g#Plots g#PlotTorque polyline.PlotBackground {
-    stroke: none;
-    fill: #ffff000a;
-}
-
-main.CarModel div#CarModelTorquePowerChart svg g#Plots g#PlotPower polyline.PlotLine {
-    stroke: #aa0000;
-    fill: none;
-    stroke-width: 3em;
-}
-
-main.CarModel div#CarModelTorquePowerChart svg g#Plots g#PlotPower polyline.PlotBackground {
-    stroke: none;
-    fill: #aa00000a;
-}
 
 
 /******************************************************************************

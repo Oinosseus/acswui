@@ -19,7 +19,8 @@ class Template extends \Core\HtmlTemplate {
         $html .= "    <meta charset=\"utf-8\">\n";
         $html .= "    <title>acswui</title>\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style.css\">\n";
-        $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_special_new.css\">\n";
+        $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_dbentry.css\">\n";
+        $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_content.css\">\n";
         $html .= "  </head>\n";
         $html .= "  <body>\n";
         $html .= "    <header>\n";
@@ -58,6 +59,8 @@ class Template extends \Core\HtmlTemplate {
             $html .= $content->html();
             $html .= "    </main>\n";
         }
+
+        // done
         $html .= "  </body>\n";
         $html .= "</html>\n";
 

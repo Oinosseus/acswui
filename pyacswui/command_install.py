@@ -347,6 +347,15 @@ class CommandInstall(Command):
         for locale in sorted(os.listdir(path_locales)):
             locales.append("'%s'" % locale)
 
+        # logging
+        log_warning = "FALSE"
+        if self.getGeneralArg('log-warning').lower() == "true":
+            log_warning = "TRUE"
+        log_debug = "FALSE"
+        if self.getGeneralArg('log-debug').lower() == "true":
+            log_debug = "TRUE"
+
+
 
         with open(os.path.join(abspath_htdocs, "classes" , "Core", "Config.php"), "w") as f:
             f.write("<?php\n")
@@ -364,8 +373,8 @@ class CommandInstall(Command):
             f.write("\n")
             f.write("    // basic constants\n")
             f.write("    const DefaultTemplate = \"%s\";\n" % self.getArg('default-template'))
-            f.write("    const LogWarning = FALSE;\n")
-            f.write("    const LogDebug = FALSE;\n")
+            f.write("    const LogWarning = %s;\n" % log_warning)
+            f.write("    const LogDebug = %s;\n" % log_debug)
             f.write("    const RootPassword = '%s';\n" % http_root_password)
             f.write("    const GuestGroup = '%s';\n" % self.getArg('guest-group'))
             f.write("    const Locales = [%s];\n" % ", ".join(locales))
