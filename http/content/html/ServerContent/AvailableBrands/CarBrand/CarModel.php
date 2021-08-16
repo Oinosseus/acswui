@@ -44,6 +44,10 @@ class CarModel extends \core\HtmlContent {
             $html .= $car->htmlTorquePowerSvg();
             $html .= "</div>";
 
+            $html .= "<div id=\"CarModelDescription\">";
+            $html .= $car->description();
+            $html .= "</div>";
+
             $html .= "<div id=\"AvailableSkins\">";
             foreach ($car->skins() as $skin) {
                 $skin_name = $skin->skin();
