@@ -9,7 +9,8 @@ div.CarTorquePowerChart svg g.Axes g.YAxisTorque g.Grid polyline {
 }
 
 div.CarTorquePowerChart svg g.Axes g.YAxisTorque,
-div.CarTorquePowerChart svg g.Axes g.YAxisTorque g.Ticktext text {
+div.CarTorquePowerChart svg g.Axes g.YAxisTorque g.Ticktext text,
+div.CarTorquePowerChart svg g.Axes g.YAxisTorque text.YAxisLabel {
     stroke: #ffff00;
     fill: #ffff00;
 }
@@ -61,7 +62,8 @@ div.CarTorquePowerChart svg g.Plots g.PlotPower polyline.PlotBackground {
 }
 
 div.CarTorquePowerChart svg g.Axes g.YAxisPower,
-div.CarTorquePowerChart svg g.Axes g.YAxisPower g.Ticktext text {
+div.CarTorquePowerChart svg g.Axes g.YAxisPower g.Ticktext text,
+div.CarTorquePowerChart svg g.Axes g.YAxisPower text.YAxisLabel {
     stroke: #aa0000;
     fill: #aa0000;
 }
