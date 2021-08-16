@@ -114,74 +114,28 @@ class InstallerCars(object) :
 
         # read ui_skin.json
         ui_skin_json_path = os.path.join(path_car_skins, skin, "ui_skin.json")
-        ui_skin_dict = self._parse_ui_skin_json(ui_skin_json_path)
+        if os.path.isfile(ui_skin_json_path):
+            ui_skin_dict = parse_json(ui_skin_json_path, ['skinname', 'Steam64GUID', 'number', 'team'])
+        else:
+            ui_skin_dict = {'skinname':"", 'Steam64GUID':"", 'number':"", 'team':""}
+        ui_skin_db_fields = {}
+        ui_skin_db_fields['Name'] = ui_skin_dict['skinname']
+        ui_skin_db_fields['Steam64GUID'] = ui_skin_dict['Steam64GUID']
+        ui_skin_db_fields['Team'] = ui_skin_dict['team']
+        ui_skin_db_fields['Number'] = str(ui_skin_dict['number'])[:20]
 
         # update database
         existing_car_skins = self.__db.findIds("CarSkins", {"Car": existing_car_id, "Skin": skin})
         if len(existing_car_skins) == 0:
             fields = {"Car": existing_car_id, "Skin": skin, "Deprecated":0}
-            fields.update(ui_skin_dict)
+            fields.update(ui_skin_db_fields)
             self.__db.insertRow("CarSkins", fields)
             added_skins += 1
         else:
             for skin_id in existing_car_skins:
                 fields = {"Deprecated":0}
-                fields.update(ui_skin_dict)
+                fields.update(ui_skin_db_fields)
                 self.__db.updateRow("CarSkins", skin_id, fields)
-
-
-
-    def _parse_ui_skin_json(self, ui_skin_json_path):
-        ret = {'Name':"", "Number": 0, 'Steam64GUID': "", "Team": ""}
-
-        verb = Verbosity(self._verbosity)
-        verb.print("parsing", ui_skin_json_path)
-
-        REGEX_COMP_UISKIN_SKINNAME = re.compile("\"(?i)skinname\"\s*:\s*\"(.*)\"")
-        REGEX_COMP_UISKIN_STEAM64GUID = re.compile("\"Steam64GUID\"\s*:\s*\"([a-zA-Z0-9]*)\"")
-        REGEX_COMP_UISKIN_NUMBER = re.compile("\"(?i)number\"\s*:\s*\"([0-9]*)\"")
-        REGEX_COMP_UISKIN_TEAM = re.compile("\"(?i)team\"\s*:\s*\"(.*)\"")
-
-        if os.path.isfile(ui_skin_json_path):
-            with open(ui_skin_json_path, "r") as f:
-
-                try:
-                    lines = f.readlines()
-                except UnicodeDecodeError as err:
-                    print("WARNING: Cannot parse '" + ui_skin_json_path + "'\nBecause of " + str(err))
-                    lines = []
-
-                for line in lines:
-                    line = line.strip()
-
-                    # Name
-                    match = REGEX_COMP_UISKIN_SKINNAME.match(line)
-                    if match:
-                        ret['Name'] = match.group(1)
-                        Verbosity(verb).print("Name", ret['Name'])
-
-                    # Steam64GUID
-                    match = REGEX_COMP_UISKIN_STEAM64GUID.match(line)
-                    if match:
-                        ret['Steam64GUID'] = match.group(1)
-                        Verbosity(verb).print("Steam64GUID", ret['Steam64GUID'])
-
-                    # Number
-                    match = REGEX_COMP_UISKIN_NUMBER.match(line)
-                    if match:
-                        n = match.group(1)
-                        if n != "":
-                            ret['Number'] = n
-                        Verbosity(verb).print("Number", ret['Number'])
-
-                    # Team
-                    match = REGEX_COMP_UISKIN_TEAM.match(line)
-                    if match:
-                        ret['Team'] = match.group(1)
-                        Verbosity(verb).print("Team", ret['Team'])
-
-
-        return ret
 
 
 

@@ -4,23 +4,40 @@ import json
 def parse_json(file_path, expected_keys=[]):
 
     ret_dict = {}
+    json_dict = {}
 
     # try to parse json directly
     could_parse_json = False
     with open(file_path, "rb") as f:
 
         f_content = f.read()
+
+        # decode
         try:
-            json_dict = json.loads(f_content, strict=False)
+            f_content_utf8 = f_content.decode('utf-8')
+        except UnicodeDecodeError as e:
+            try:
+                f_content_utf8 = f_content.decode('iso-8859-15')
+            except BaseException as e:
+                print(e)
+                raise NotImplementedError("Cannot parse '%s'" % file_path)
+
+        # parse json
+        try:
+            json_dict = json.loads(f_content_utf8, strict=False)
             ret_dict = json_dict
             could_parse_json = True
-        except UnicodeDecodeError as e:
-            print(e)
-            print("WARNING: Cannot correctly parse car data from JSON", file_path)
-            could_parse_json = False
+        except json.decoder.JSONDecodeError as e:
+            try:
+                json_dict = json.loads(f_content, strict=False)
+                ret_dict = json_dict
+                could_parse_json = True
+            except BaseException as e:
+                print(e)
 
     # try parse manually
     if not could_parse_json:
+        print("WARNING: Cannot correctly parse car data from JSON", file_path)
         with open(file_path, "r", encoding='utf-8', errors='ignore') as f:
             for line in f.readlines():
                 for key in expected_keys:

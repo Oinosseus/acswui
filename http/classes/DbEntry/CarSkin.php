@@ -81,7 +81,7 @@ class CarSkin extends DbEntry {
 
     //! @return The start number of this skin
     public function number() {
-        if ($this->Number === NULL) $this->Number = (int) $this->loadColumn("Number");
+        if ($this->Number === NULL) $this->Number = $this->loadColumn("Number");
         return $this->Number;
     }
 
