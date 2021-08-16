@@ -9,7 +9,6 @@ def parse_json(file_path, expected_keys=[]):
     could_parse_json = False
     with open(file_path, "rb") as f:
 
-        #try:
         f_content = f.read()
         try:
             json_dict = json.loads(f_content, strict=False)
@@ -26,9 +25,9 @@ def parse_json(file_path, expected_keys=[]):
             for line in f.readlines():
                 for key in expected_keys:
 
-                    match = re.match("\s*\"" + key + "\":.*", line)
+                    match = re.match("\s*\"" + key + "\":\s*[\"]?(.*)", line)
                     if match:
-                        value = line.split(key, 1)[1]
+                        value = match.group(1) # line.split(key, 1)[1]
                         value = value.strip()
                         if value[:1] == '"':
                             value = value[1:].strip()
