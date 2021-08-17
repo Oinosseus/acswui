@@ -281,3 +281,18 @@ main.CarSkin a#SkinImgPreview img {
     display: block;
     max-height: 20em;
 }
+
+
+
+/******************************************************************************
+                                   AvailableCarClasses
+ ******************************************************************************/
+
+main.AvailableCarClasses > a {
+    margin: 0.5em 0.5em;
+    background-color: #00000033;
+}
+
+main.AvailableCarClasses > a img {
+    height: 7em;
+}

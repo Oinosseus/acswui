@@ -1,10 +1,9 @@
 import json
-import math
 import os
-import PIL
 import re
 
 from .verbosity import Verbosity
+from .helper_functions import generateHtmlImg
 
 class InstallerTracks(object):
 
@@ -236,53 +235,13 @@ class InstallerTracks(object):
 
 
 
-    def _generateHtmlImgs(self, id, track, config):
+    def _generateHtmlImgs(self, track_id, track, config):
         verb =  Verbosity(self._verbosity)
-        verb.print("generating htmlimg for track id", id, "(", track, config, ")")
-
-        # define size
-        htmlimg_width = 300
-        htmlimg_height = 200
-
-
-        def shrink(img):
-            w, h = img.size
-            if w > htmlimg_width:
-                h = h * htmlimg_width / w
-                w = htmlimg_width
-            if h > htmlimg_height:
-                w = w * htmlimg_height / h
-                h = htmlimg_height
-            w = math.ceil(w)
-            h = math.ceil(h)
-            return img.resize((w, h))
-
-
-        def openImg(path):
-            # basic image as canvas
-            img_canvas = PIL.Image.new( mode = "RGBA", size = (htmlimg_width, htmlimg_height) )
-
-            # open requested image and shrink to max size
-            img_paste = PIL.Image.open(path)
-            img_paste = shrink(img_paste)
-
-            # determine padding
-            pad_x = (htmlimg_width - img_paste.size[0]) // 2
-            pad_y = (htmlimg_height - img_paste.size[1]) // 2
-            img_canvas.paste(img_paste, (pad_x, pad_y))
-
-            return img_canvas
-
-
+        verb.print("generating htmlimg for track id", track_id, " (", track, config, ")")
 
         # get paths
         path_track = os.path.join(self.__path_htdata, "content", "tracks", track)
         path_htmlimg_dir = os.path.join(self.__path_htdata, "htmlimg", "tracks")
-        if not os.path.isdir(path_htmlimg_dir):
-            Verbosity(verb).print("mkdirs " + path_htmlimg_dir)
-            os.makedirs(path_htmlimg_dir)
-        path_htmlimg = os.path.join(path_htmlimg_dir, str(id) + ".png")
-        path_htmlimg_hover = os.path.join(path_htmlimg_dir, str(id) + ".hover.png")
         if config == "":
             path_preview = os.path.join(path_track, "ui", "preview.png")
             path_outline = os.path.join(path_track, "ui", "outline.png")
@@ -290,21 +249,4 @@ class InstallerTracks(object):
             path_preview = os.path.join(path_track, "ui", config, "preview.png")
             path_outline = os.path.join(path_track, "ui", config, "outline.png")
 
-        # create new image
-        img_htmlimg  = PIL.Image.new( mode = "RGBA", size = (htmlimg_width, htmlimg_height) )
-
-        # merge existing preview
-        if os.path.isfile(path_preview):
-            img_preview = openImg(path_preview)
-            img_htmlimg.alpha_composite(img_preview)
-
-        # save as default preview
-        img_htmlimg.save(path_htmlimg, "PNG")
-
-        # merge existing outline
-        if os.path.isfile(path_outline):
-            img_outline = openImg(path_outline)
-            img_htmlimg.alpha_composite(img_outline)
-
-        # save hover image
-        img_htmlimg.save(path_htmlimg_hover, "PNG")
+        generateHtmlImg(path_preview, path_outline, path_htmlimg_dir, track_id)

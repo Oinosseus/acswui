@@ -3,7 +3,8 @@ import os
 import re
 
 from .verbosity import Verbosity
-from .helper_functions import parse_json
+from .helper_functions import parse_json, generateHtmlImg
+
 
 class InstallerCars(object) :
 
@@ -11,10 +12,12 @@ class InstallerCars(object) :
     def __init__(self,
                  database,
                  path_srvpkg,
+                 path_htdata,
                  verbosity=0
                 ):
         self.__db = database
         self.__path_srvpkg = path_srvpkg
+        self.__path_htdata = path_htdata
         self._verbosity = Verbosity(verbosity, self.__class__.__name__)
 
 
@@ -33,6 +36,13 @@ class InstallerCars(object) :
         path_cars = os.path.join(abspath_data, "htdata", "content", "cars")
         for car in sorted(os.listdir(path_cars)):
             self._scan_car(path_cars, car)
+
+        # generate preview images for \DbEntry\ClarSkin::htmlImg()
+        self._verbosity.print("generate htmlImg's")
+        query = "SELECT CarSkins.Id, CarSkins.Skin, Cars.Car FROM `CarSkins` JOIN Cars ON Cars.Id = CarSkins.Car ORDER BY CarSkins.Id DESC"
+        res = self.__db.rawQuery(query, return_result=True)
+        for skin_id, skin_name, car_model in res:
+            self._generateHtmlImgs(skin_id, skin_name, car_model)
 
 
 
@@ -173,3 +183,17 @@ class InstallerCars(object) :
 
         # return weight in kg
         return weight
+
+
+
+    def _generateHtmlImgs(self, skin_id, skin_name, car_model):
+        verb =  Verbosity(self._verbosity)
+        verb.print("generating htmlimg for skin id", skin_id, "(", car_model, skin_name, ")")
+
+        # get paths
+        path_car = os.path.join(self.__path_htdata, "content", "cars", car_model)
+        path_preview = os.path.join(path_car, "skins", skin_name, "preview.jpg")
+        path_brand = os.path.join(path_car, "ui", "badge.png")
+        path_htmlimg_dir = os.path.join(self.__path_htdata, "htmlimg", "car_skins")
+
+        generateHtmlImg(path_preview, path_brand, path_htmlimg_dir, skin_id)

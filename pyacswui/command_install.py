@@ -78,8 +78,9 @@ class CommandInstall(Command):
         self.__work_cconfig()
 
         installer = InstallerCars(self.__db,
-                           self.getGeneralArg("path-srvpkg"),
-                           self._verbosity)
+                                  self.getGeneralArg("path-srvpkg"),
+                                  self.getGeneralArg("path-htdata"),
+                                  self._verbosity)
         installer.process()
 
         installer = InstallerTracks(self.__db,

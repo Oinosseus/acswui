@@ -94,20 +94,37 @@ class Car extends DbEntry {
 
         // try to find first available CarSkin
         $skins = $this->skins();
-        $path = NULL;
+        $preview_path = NULL;
+        $hover_path = NULL;
         if (count($skins)) {
-            $skin = $skins[0]->skin();
-            $path = \Core\Config::RelPathHtdata . "/content/cars/$car_model/skins/$skin/preview.jpg";
+            $skin = $skins[0];
+            $preview_path = \Core\Config::RelPathHtdata . "/htmlimg/car_skins/" . $skin->id() . ".png";
+            $hover_path = \Core\Config::RelPathHtdata . "/htmlimg/car_skins/" . $skin->id() . ".hover.png";
         }
 
         $html = "<a class=\"CarModelLink\" href=\"index.php?HtmlContent=CarModel&Id=$car_id\">";
         $html .= "<label for=\"$img_id\">$car_name</label>";
-        if ($path !== NULL) {
-            $html .= "<img src=\"$path\" id=\"$img_id\" alt=\"$car_name\" title=\"$car_name\">";
+        if ($preview_path !== NULL) {
+            $html .= "<img src=\"$preview_path\" id=\"$img_id\" alt=\"$car_name\" title=\"$car_name\">";
         } else {
             $html .= "<br>No skin for " . $this . " found!<br>";
         }
         $html .= "</a>";
+
+        $html .= "<script>";
+        $html .= "var e = document.getElementById('$img_id');";
+
+        # show different hover image
+        $html .= "e.addEventListener('mouseover', function() {";
+        $html .= "this.src='$hover_path';";
+        $html .= "});";
+
+        # show track;
+        $html .= "e.addEventListener('mouseout', function() {";
+        $html .= "this.src='$preview_path';";
+        $html .= "});";
+
+        $html .= "</script>";
 
         return $html;
     }
