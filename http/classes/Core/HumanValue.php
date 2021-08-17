@@ -158,7 +158,7 @@ class HumanValue {
     }
 
 
-    private function formatArbitrary(int $value, $unit) {
+    private function formatArbitrary(float $value, $unit) {
         if ($value >= 1e12) {
             $this->Value = sprintf("%.0f", $value / 1e9);
             $this->UnitPrefix = "G";
@@ -209,8 +209,8 @@ class HumanValue {
             $this->UnitPrefix = "k";
             $this->Unit = $unit;
 
-        } else if ($value >= 0) {
-            $this->Value = sprintf("%d", $value);
+        } else if ($value >= 1) {
+            $this->Value = sprintf("%.2f", $value);
             $this->UnitPrefix = "";
             $this->Unit = $unit;
 

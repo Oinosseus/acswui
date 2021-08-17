@@ -13,7 +13,9 @@ class Car extends DbEntry {
     private $Brand = NULL;
     private $Skins = NULL;
     private $Deprecated = NULL;
+    private $Torque = NULL;
     private $TorqueCurve = NULL;
+    private $Power = NULL;
     private $PowerCurve = NULL;
     private $Weight = NULL;
 
@@ -160,6 +162,19 @@ class Car extends DbEntry {
     }
 
 
+    //! @return Maximum power in [W]
+    public function power() {
+        if ($this->Power === NULL) {
+            $this->Power = 0;
+            foreach ($this->powerCurve() as [$rpm, $pwr]) {
+                $pwr *= 1000;
+                if ($pwr > $this->Power) $this->Power = $pwr;
+            }
+        }
+        return $this->Power;
+    }
+
+
     //! @return Array of (revolution, power) value pairs
     public function powerCurve() {
         if ($this->PowerCurve === NULL) {
@@ -192,6 +207,18 @@ class Car extends DbEntry {
         }
 
         return $this->Skins;
+    }
+
+
+    //! @return Maximum torque in [Nm]
+    public function torque() {
+        if ($this->Torque === NULL) {
+            $this->Torque = 0;
+            foreach ($this->torqueCurve() as [$rpm, $trq]) {
+                if ($trq > $this->Torque) $this->Torque = $trq;
+            }
+        }
+        return $this->Torque;
     }
 
 
