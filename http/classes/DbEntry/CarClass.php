@@ -76,7 +76,7 @@ class CarClass extends DbEntry {
             $query .= " WHERE CarClassesMap.CarClass=" . $this->id();
             $query .= " ORDER BY Cars.Name ASC";
             foreach (\Core\Database::fetchRaw($query) as $row) {
-                $this->Cars[] = new Car($row['Id']);
+                $this->Cars[] = Car::fromId($row['Id']);
             }
         }
 
@@ -124,6 +124,17 @@ class CarClass extends DbEntry {
     public function description() {
         return $this->loadColumn("Description");
     }
+
+
+    /**
+     * Retrieve an existing object from database.
+     * This function is cached and returns for same IDs the same object.
+     * @return An object by its database Id
+     */
+    public static function fromId(int $id) {
+        return parent::getCachedObject("CarClasses", "CarClass", $id);
+    }
+
 
 //     private function getCarMapId($car) {
 //         global $acswuiDatabase, $acswuiLog;
@@ -188,7 +199,7 @@ class CarClass extends DbEntry {
         $ret = array();
         $res = \Core\Database::fetch("CarClasses", ['Id'], [], "Name");
         foreach ($res as $row) {
-            $ret[] = new CarClass($row['Id']);
+            $ret[] = CarClass::fromId($row['Id']);
         }
         return $ret;
     }

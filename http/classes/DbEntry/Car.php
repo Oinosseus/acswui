@@ -102,7 +102,7 @@ class Car extends DbEntry {
             $hover_path = \Core\Config::RelPathHtdata . "/htmlimg/car_skins/" . $skin->id() . ".hover.png";
         }
 
-        $html = "<a class=\"CarModelLink\" href=\"index.php?HtmlContent=CarModel&Id=$car_id\">";
+        $html = "<a class=\"CarModelLink\" href=\"" . $this->htmlUrl() . "\">";
         $html .= "<label for=\"$img_id\">$car_name</label>";
         if ($preview_path !== NULL) {
             $html .= "<img src=\"$preview_path\" id=\"$img_id\" alt=\"$car_name\" title=\"$car_name\">";
@@ -127,6 +127,12 @@ class Car extends DbEntry {
         $html .= "</script>";
 
         return $html;
+    }
+
+
+    //! @return The URL to the HTML view page for this car
+    public function htmlUrl() {
+        return "index.php?HtmlContent=CarModel&Id=" . $this->id();
     }
 
 

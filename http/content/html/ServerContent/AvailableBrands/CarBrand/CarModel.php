@@ -66,5 +66,3 @@ class CarModel extends \core\HtmlContent {
         return $html;
     }
 }
-
-?>
