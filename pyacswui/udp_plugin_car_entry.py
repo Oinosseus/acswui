@@ -129,13 +129,13 @@ class UdpPluginCarEntry(object):
         self.__driver_id = None
         res = self.__db.fetch("Users", "Id", {'Steam64GUID': self.__driver_guid})
         if len(res) == 0:
-            self.__driver_id = self.__db.insertRow("Users", {'Login': self.__driver_name,
+            self.__driver_id = self.__db.insertRow("Users", {'Name': self.__driver_name,
                                                              'Steam64GUID': driver_guid,
                                                              'Password': "",
                                                              'CurrentSession': session.Id})
         elif len(res) == 1:
             self.__driver_id = res[0]['Id']
-            self.__db.updateRow("Users", self.__driver_id, {"Login": self.__driver_name,
+            self.__db.updateRow("Users", self.__driver_id, {"Name": self.__driver_name,
                                                             "CurrentSession": session.Id})
         else:
             raise ValueError("Database table 'Users' is ambigous")
