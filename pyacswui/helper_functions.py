@@ -85,7 +85,7 @@ def generateHtmlImg(src_img_path, src_img_hover, dst_dir, db_id):
             h = htmlimg_height
         w = math.ceil(w)
         h = math.ceil(h)
-        return img.resize((w, h))
+        return img.resize((w, h), resample=PIL.Image.ANTIALIAS)
 
 
     def openImg(path):
