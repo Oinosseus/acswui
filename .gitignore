@@ -6,3 +6,4 @@ docs/*.dia~
 http/classes/Core/Config.php
 http/server_cfg.json
 http/locale/*/LC_MESSAGES/*.mo
+http/classes/SteamOpenID/*

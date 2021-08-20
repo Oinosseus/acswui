@@ -217,8 +217,7 @@ class InstallerDatabase(object):
         # check table users
         Verbosity(verb).print("check database table `Users`")
         self.__db.appendTable("Users")
-        self.__db.appendColumnString("Users", "Login", 50)
-        self.__db.appendColumnString("Users", "Password", 100)
+        self.__db.appendColumnString("Users", "Name", 50)
         self.__db.appendColumnString("Users", "Steam64GUID", 50)
         self.__db.appendColumnString("Users", "Color", 10)
         self.__db.appendColumnTinyInt("Users", "Privacy")

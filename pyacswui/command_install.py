@@ -72,6 +72,10 @@ class CommandInstall(Command):
                 location_id = locations[0]
                 self.__db.updateRow("Tracks", track_id, {'Location': location_id})
 
+        # temporarily needed to fix Users.Name column
+        # this can be deleted later
+        for row in self.__db.fetch("Users", ["Id", "Login"], {}, sort_by_cloumn="Id"):
+            self.__db.updateRow("Users", row['Id'], {'Name': row['Login']})
 
 
         self._verbosity.print("start scanning AC content")
