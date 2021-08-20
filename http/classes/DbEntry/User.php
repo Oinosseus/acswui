@@ -7,28 +7,26 @@ namespace DbEntry;
  */
 class User extends DbEntry { #implements JsonSerializable {
 
-    private $Password = NULL;
     private $Steam64GUID = NULL;
     private $Color = NULL;
     private $Privacy = NULL;
     private $Locale = NULL;
 
     private static $UserList = NULL;
-    private static $DriverList = NULL;
+    private static $CurrentLoggedUser = NULL;
 
 
     /**
      * @param $id Database table id
      */
-    private function __construct($id) {
+    protected function __construct($id) {
         parent::__construct("Users", $id);
     }
 
 
     //! @return The User object of the currently logged in user (can be NULL)
     public static function currentLogged() {
-        //! @todo Implement User Login
-        return NULL;
+        return User::$CurrentLoggedUser;
     }
 
 
@@ -39,6 +37,42 @@ class User extends DbEntry { #implements JsonSerializable {
             if ($this->Color == "") $this->Color = "#000000";
         }
         return $this->Color;
+    }
+
+
+    //! Tries to login a user (should be called once from index page)
+    public static function initialize() {
+
+        // response from Steam OpenID
+        $client = new \SteamOpenID\SteamOpenID(User::steamOpenIDReturnTo());
+        if ($client->hasResponse()) {
+            $steam64guid = NULL;
+            try {
+                $steam64guid = $client->validate();
+            } catch (Exception $e) {
+                \Core\Log::warning($e->getMessage());
+            }
+
+            if ($steam64guid) {
+                $res = \Core\Database::fetch("Users", ["Id"], ["Steam64GUID"=>$steam64guid]);
+                if (count($res) > 1) {
+                    \Core\Log::warning("Multiple users with Steam64GUI '$steam64guid'!");
+                } else if (count($res) == 1) {
+                    User::$CurrentLoggedUser = User::fromId($res[0]['Id']);
+                    $_SESSION['CurrentLoggedUserId'] = User::$CurrentLoggedUser->id();
+                    return;
+                }
+            }
+        }
+
+        // try login from session
+        if (array_key_exists('CurrentLoggedUserId', $_SESSION) && $_SESSION['CurrentLoggedUserId']) {
+            User::$CurrentLoggedUser = User::fromId($_SESSION['CurrentLoggedUserId']);
+            return;
+        }
+
+        // login failed
+        $_SESSION['CurrentLoggedUserId'] = NULL;
     }
 
 
@@ -57,6 +91,22 @@ class User extends DbEntry { #implements JsonSerializable {
      */
     public static function fromId(int $id) {
         return parent::getCachedObject("Users", "User", $id);
+    }
+
+
+    //! @return The html code with the login link or the login information
+    public static function htmlLogin() {
+        $html = "<div class=\"UserLogin\">";
+
+        if (User::currentLogged()) {
+            $html .= _("Logged in as") . " <strong>" . User::currentLogged()->name() . "</strong>";
+        } else {
+            $soid = new \SteamOpenID\SteamOpenID(User::steamOpenIDReturnTo());
+            $html .= "Login with <a href=\"" . $soid->getAuthUrl() . "\"><img src=\"https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_01.png\"></a>";
+        }
+
+        $html .= "</div>";
+        return $html;
     }
 
 
@@ -148,6 +198,13 @@ class User extends DbEntry { #implements JsonSerializable {
     public function steam64GUID() {
         if ($this->Steam64GUID === NULL) $this->Steam64GUID = $this->loadColumn('Steam64GUID');
         return $this->Steam64GUID;
+    }
+
+
+    private static function steamOpenIDReturnTo() {
+        $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "") ? "https://" : "http://";
+        $url .= $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
+        return $url;
     }
 
 

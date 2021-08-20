@@ -9,7 +9,11 @@ class UserProfile extends \core\HtmlContent {
     }
 
     public function getHtml() {
-        return "User Profile Content";
+        $html = "";
+
+        $html .= \DbEntry\User::htmlLogin();
+
+        return $html;
     }
 }
 

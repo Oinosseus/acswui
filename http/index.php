@@ -3,7 +3,7 @@
 $duration_start = microtime(TRUE);
 
 // error reporting
-error_reporting(E_ALL);
+error_reporting(E_ALL | E_STRICT);
 if (ini_set('display_errors', '1') === false) {
     echo "ini_set for error display failed!";
     exit(1);
@@ -32,33 +32,31 @@ if (   ini_set('session.cookie_lifetime',  '0')  === false
 }
 session_start();
 
-// import namespaces
-use \Core\Config;
-use \Core\Log;
-use \Core\Database;
-use \Core\HtmlTemplate;
-
 // initialize global singletons
-Log::initialize(Config::AbsPathData . "/logs_http");
-Database::initialize(Config::DbHost, Config::DbUser, Config::DbPasswd, Config::DbDatabase);
+\Core\Log::initialize(\Core\Config::AbsPathData . "/logs_http");
+\Core\Database::initialize(\Core\Config::DbHost,
+                           \Core\Config::DbUser,
+                           \Core\Config::DbPasswd,
+                           \Core\Config::DbDatabase);
+\DbEntry\User::initialize();
 
 // Setup template
-$requested_template = Config::DefaultTemplate;
-$template = HtmlTemplate::getTemplate($requested_template);
+$requested_template = \Core\Config::DefaultTemplate;
+$template = \Core\HtmlTemplate::getTemplate($requested_template);
 if ($template === NULL) {
-    Log::error("Could not load template '$requested_template'!");
+    \Core\Log::error("Could not load template '$requested_template'!");
 } else {
     echo $template->getHtml();
 }
 
 // deinitialization of global singletons
-Database::shutdown();
+\Core\Database::shutdown();
 
 // finish log
 $duration_end = microtime(TRUE);
 $duration_ms = 1e3 * ($duration_end - $duration_start);
 $msg = sprintf("Execution duration: %0.1f ms", $duration_ms);
-Log::debug($msg);
-Log::shutdown();
+\Core\Log::debug($msg);
+\Core\Log::shutdown();
 
 ?>
