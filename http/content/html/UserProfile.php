@@ -11,7 +11,7 @@ class UserProfile extends \core\HtmlContent {
     public function getHtml() {
         $html = "";
 
-        $html .= \DbEntry\User::htmlLogin();
+        $html .= \Core\LoginManager::htmlLogin();
 
         return $html;
     }
