@@ -157,9 +157,18 @@ class CommandInstall(Command):
         path_htdocs_src = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "http")
         self.copytree(path_htdocs_src, path_htdocs)
 
+        # SteamOpenID
+        path_php_steam_openid =  os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "submodules", "php-steam-openid", "src")
+        path_htdocs_clases = os.path.join(path_htdocs, "classes")
+        Verbosity(verb).print("copy php-steam-openid")
+        self.copytree(path_php_steam_openid, path_htdocs_clases)
+
+
 
         #######
         # data
+
+        Verbosity(verb).print("copy data")
 
         # cfg
         path_data = os.path.abspath(self.getGeneralArg("path-data"))
