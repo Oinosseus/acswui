@@ -1,0 +1,3 @@
+[submodule "submodules/php-steam-openid"]
+	path = submodules/php-steam-openid
+	url = https://github.com/fisuku/php-steam-openid.git
