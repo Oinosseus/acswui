@@ -36,6 +36,7 @@ class CarClass extends \core\HtmlContent {
         $html .= "<th>" . _("Power") . "</th>";
         $html .= "<th>" . _("Weight") . "</th>";
         $html .= "<th>" . _("Specific Power") . "</th>";
+        $html .= "<th>" . _("Harmonized Power") . "</th>";
         $html .= "</tr>";
 
         foreach ($cc->cars() as $car) {
@@ -46,6 +47,7 @@ class CarClass extends \core\HtmlContent {
             $html .= "<td>" . \Core\HumanValue::format($car->power(), "W") . "</td>";
             $html .= "<td>" . \Core\HumanValue::format($car->weight(), "kg") . "</td>";
             $html .= "<td>" . \Core\HumanValue::format(1e3 * $car->weight() / $car->power(), "g/W") . "</td>";
+            $html .= "<td>" . \Core\HumanValue::format(1e3 * $car->weight() / $car->harmonizedPower(), "g/W") . "</td>";
 
             $html .= "</tr>";
         }

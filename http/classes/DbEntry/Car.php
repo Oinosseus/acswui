@@ -17,6 +17,7 @@ class Car extends DbEntry {
     private $TorqueCurve = NULL;
     private $Power = NULL;
     private $PowerCurve = NULL;
+    private $PowerHarmonized = NULL;
     private $Weight = NULL;
 
 
@@ -62,27 +63,65 @@ class Car extends DbEntry {
     }
 
 
-    /**
-     * @param $inculde_deprecated If set to TRUE, also deprectaed items are listed (Default: False)
-     * @return An array of all available Car objects, ordered by name
-     */
-    public static function listCars($inculde_deprecated=FALSE) {
 
-        // query db
-        $where = array();
-        if ($inculde_deprecated !== TRUE) $where['Deprecated'] = 0;
-        $res = \core\Database::fetch("Cars", ["Id"], $where);
+    //! @return calculating power [W], averaged from peak torque revolutions to peap power revolutions
+    public function harmonizedPower() {
 
-        // extract values
-        $carlist = array();
-        foreach ($res as $row) {
-            $id = (int) $row['Id'];
-            $carlist[] = Car::fromId($id);
+        if ($this->PowerHarmonized === NULL) {
+            $this->PowerHarmonized = 0;
+
+            // determine rpm at peak torque and peak power
+            $peak_torque = 0;
+            $rpm_peak_torque = 0;
+            foreach ($this->torqueCurve() as [$rpm, $trq]) {
+                if ($trq > $peak_torque) {
+                    $peak_torque = $trq;
+                    $rpm_peak_torque = $rpm;
+                }
+            }
+
+            // determine rpm at peak torque and peak power
+            $peak_power = 0;
+            $rpm_peak_power = 0;
+            foreach ($this->powerCurve() as [$rpm, $pwr]) {
+                if ($pwr > $peak_power) {
+                    $peak_power = $pwr;
+                    $rpm_peak_power = $rpm;
+                }
+            }
+
+            // expect that peak of torque is always before peak of power
+            if ($rpm_peak_torque > $rpm_peak_power) {
+                \Core\Log::error("Calculating harmonizedPower() does not work for " . $this);
+            }
+
+            // calculate harmonized average power by segmented integration
+            $last_rpm = 0;
+            $last_pwr = 0;
+            $first_rpm = NULL;
+            foreach ($this->powerCurve() as [$rpm, $pwr]) {
+                if ($rpm >= $rpm_peak_torque) {
+                    if ($first_rpm === NULL) $first_rpm = $last_rpm;
+                    $segment_rpm = $rpm - $last_rpm;
+                    $this->PowerHarmonized +=  $segment_rpm * $last_pwr; // square since last rpm
+                    $this->PowerHarmonized += $segment_rpm * ($pwr - $last_pwr) / 2;  // triangle section
+                }
+
+                $last_rpm = $rpm;
+                $last_pwr = $pwr;
+                if ($rpm > $rpm_peak_power) break;
+            }
+            $this->PowerHarmonized /= $last_rpm - $first_rpm;
+
+//             echo "Peak Torque = $peak_torque @$rpm_peak_torque<br>";
+//             echo "Peak Power = $peak_power @$rpm_peak_power<br>";
+//             echo "Harmonized Power = " . $this->PowerHarmonized . " @($first_rpm to $last_rpm)<br>";
+
+            $this->PowerHarmonized *= 1e3;
         }
 
-        return $carlist;
+        return $this->PowerHarmonized;
     }
-
 
     //! @return Html img tag containing preview image
     public function htmlImg() {
@@ -169,6 +208,27 @@ class Car extends DbEntry {
         return $svg->drawHtml("Torque / Power Chart", "CarTorquePowerChart", 0.1, 1);
     }
 
+
+    /**
+     * @param $inculde_deprecated If set to TRUE, also deprectaed items are listed (Default: False)
+     * @return An array of all available Car objects, ordered by name
+     */
+    public static function listCars($inculde_deprecated=FALSE) {
+
+        // query db
+        $where = array();
+        if ($inculde_deprecated !== TRUE) $where['Deprecated'] = 0;
+        $res = \core\Database::fetch("Cars", ["Id"], $where);
+
+        // extract values
+        $carlist = array();
+        foreach ($res as $row) {
+            $id = (int) $row['Id'];
+            $carlist[] = Car::fromId($id);
+        }
+
+        return $carlist;
+    }
 
 
     //! @return model name of the car

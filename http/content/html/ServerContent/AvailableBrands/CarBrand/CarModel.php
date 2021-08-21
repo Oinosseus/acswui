@@ -34,6 +34,7 @@ class CarModel extends \core\HtmlContent {
             $html .= "<tr><th>" . _("Torque") . "</th><td>" . \Core\HumanValue::format($car->torque(), "Nm") . "</td></tr>";
             $html .= "<tr><th>" . _("Power") . "</th><td>" . \Core\HumanValue::format($car->power(), "W") . "</td></tr>";
             $html .= "<tr><th>" . _("Specific Power") . "</th><td>" . \Core\HumanValue::format(1e3 * $car->weight() / $car->power(), "g/W") . "</td></tr>";
+            $html .= "<tr><th>" . _("Harmonized Power") . "</th><td>" . \Core\HumanValue::format(1e3 * $car->weight() / $car->harmonizedPower(), "g/W") . "</td></tr>";
             $html .= "</table>";
 
             $html .= "<table id=\"CarModelRevision\">";
