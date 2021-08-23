@@ -278,6 +278,7 @@ class Car extends DbEntry {
         if ($this->Skins == NULL) {
 
             $query = "SELECT Id FROM CarSkins WHERE Car = " . $this->id();
+            if ($inculde_deprecated !== TRUE) $query .= " AND Deprecated = 0";
 
             $res = \core\Database::fetchRaw($query);
 

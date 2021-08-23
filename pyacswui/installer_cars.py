@@ -112,7 +112,6 @@ class InstallerCars(object) :
             self.__db.updateRow("Cars", eci, table_fields)
 
             # insert not existing skins
-            added_skins = 0
             for skin in car_skins:
                 self._scan_carskins(eci, path_car_skins, skin)
 
@@ -140,7 +139,6 @@ class InstallerCars(object) :
             fields = {"Car": existing_car_id, "Skin": skin, "Deprecated":0}
             fields.update(ui_skin_db_fields)
             self.__db.insertRow("CarSkins", fields)
-            added_skins += 1
         else:
             for skin_id in existing_car_skins:
                 fields = {"Deprecated":0}
