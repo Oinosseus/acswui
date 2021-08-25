@@ -25,6 +25,7 @@ class User extends DbEntry { #implements JsonSerializable {
 
     //! @return The color code for this user as string (eg #12ab9f)
     public function color() {
+        if ($this->id() === 0) return "#000000";
         if ($this->Color === NULL) {
             $this->Color = $this->loadColumn("Color");
             if ($this->Color == "") $this->Color = "#000000";
@@ -37,6 +38,7 @@ class User extends DbEntry { #implements JsonSerializable {
      * @return The username that shall be displayed on HTML output (depending on privacy settings)
      */
     public function name() {
+        if ($this->id() === 0) return "root";
         return ($this->privacyFulfilled()) ? $this->loadColumn("Name") : "***";
     }
 
@@ -53,6 +55,7 @@ class User extends DbEntry { #implements JsonSerializable {
 
     //! @return The preferred locale of the user
     public function locale() {
+        if ($this->id() === 0) return "";
         if ($this->Locale === NULL) {
             $this->Locale = $this->loadColumn('Locale');
         }
@@ -104,12 +107,13 @@ class User extends DbEntry { #implements JsonSerializable {
 
     /**
      * Following values are possible:
-     * 0 (Private): Absolute privacy (not showing any personal information to public
-     * 1 (Community): Only show personal information to logged in users
-     * 2 (Public): Allow anyone to see personal information
+     * -1 (Private): Absolute privacy (not showing any personal information to public
+     * 0 (Community): Only show personal information to logged in users
+     * 1 (Public): Allow anyone to see personal information
      * @return The privacy level for this user
      */
     public function privacy() {
+        if ($this->id() === 0) return 0;
         if ($this->Privacy == NULL) $this->Privacy = (int) $this->loadColumn("Privacy");
         return $this->Privacy;
     }
@@ -118,12 +122,15 @@ class User extends DbEntry { #implements JsonSerializable {
     //! @return TRUE if the requsted privacy level is currenlty fulfuilled
     public function privacyFulfilled() {
 
-        $current_user = \Core\LoginManager::loggedUser();
+        // root user
+        if ($this->id() === 0) return TRUE;
+
+        $current_user = \Core\UserManager::loggedUser();
         $privacy = $this->privacy();
 
         if ($current_user && $current_user->id() == $this->id()) {
             return TRUE;
-        } else if ($privacy > 2) {
+        } else if ($privacy > 0) {
             return TRUE;
         } else if ($privacy == 0 && $current_user) {
             return TRUE;
@@ -135,6 +142,7 @@ class User extends DbEntry { #implements JsonSerializable {
 
     //! @return The Steam64GUID of the user
     public function steam64GUID() {
+        if ($this->id() === 0) return 0;
         if ($this->Steam64GUID === NULL) $this->Steam64GUID = $this->loadColumn('Steam64GUID');
         return $this->Steam64GUID;
     }

@@ -11,6 +11,7 @@ class Template extends \Core\HtmlTemplate {
 
     public function getHtml () {
         $content = \Core\HtmlContent::navigatedContent();
+        $current_user = \Core\UserManager::loggedUser();
 
         // document head
         $html  = "<!DOCTYPE html>\n";
@@ -23,6 +24,14 @@ class Template extends \Core\HtmlTemplate {
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_content.css\">\n";
         $html .= "  </head>\n";
         $html .= "  <body>\n";
+
+        $html .= "<div id=\"UserBox\">";
+//         if ($current_user === NULL) {
+            $html .= \Core\UserManager::htmlLogInOut();
+//         } else {
+//         }
+        $html .= "</div>";
+
         $html .= "    <header>\n";
         $html .= "      Assetto Corsa Server Web User Interface\n";
         $html .= "    </header>\n";

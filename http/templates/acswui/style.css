@@ -40,6 +40,12 @@ header {
   text-align: center;
 }
 
+div#UserBox {
+  position: absolute;
+  right: 1em;
+  top: 2em;
+}
+
 div.Subtitle {
   margin-top: 2px;
   width: 100%;

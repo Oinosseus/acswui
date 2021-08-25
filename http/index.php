@@ -38,7 +38,7 @@ session_start();
                            \Core\Config::DbUser,
                            \Core\Config::DbPasswd,
                            \Core\Config::DbDatabase);
-\Core\LoginManager::initialize();
+\Core\UserManager::initialize();
 
 // Setup template
 $requested_template = \Core\Config::DefaultTemplate;
