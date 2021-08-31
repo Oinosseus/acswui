@@ -18,7 +18,8 @@ class CommandInstall(Command):
         Command.__init__(self, argparser, "install", "Server-Installer -  install http from server package")
 
         self.add_argument('--root-password', help="Password for root user")
-        self.add_argument('--guest-group', default="Visitor", help="Group name of visitors that are not logged in")
+        self.add_argument('--guest-group', default="Guests", help="Group name of visitors that are not logged in")
+        self.add_argument('--driver-group', default="Drivers", help="Group name for users that are logged in")
         self.add_argument('--default-template', default="acswui", help="Default template for http")
         self.add_argument('--base-data', action="store_true", help="install basic http data (default groups, etc.)")
         self.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
@@ -391,6 +392,7 @@ class CommandInstall(Command):
             f.write("    const LogDebug = %s;\n" % log_debug)
             f.write("    const RootPassword = '%s';\n" % http_root_password)
             f.write("    const GuestGroup = '%s';\n" % self.getArg('guest-group'))
+            f.write("    const DriverGroup = '%s';\n" % self.getArg('driver-group'))
             f.write("    const Locales = [%s];\n" % ", ".join(locales))
             f.write("\n")
             f.write("    // database constants\n")
