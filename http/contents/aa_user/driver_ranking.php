@@ -183,6 +183,10 @@ class driver_ranking extends cContentPage {
         $mean = DriverRanking::initCharacteristics();
         $position = 0;
         $last_skipped_by_privacy = FALSE;
+        $mean_count = 0;
+        $mean_shown_66 = FALSE;
+        $mean_shown_33 = FALSE;
+        $mean_shown_0 = FALSE;
         foreach ($driver_rank_list as $drv_rnk) {
             $user_id = $drv_rnk->user()->id();
             $position += 1;
@@ -191,6 +195,21 @@ class driver_ranking extends cContentPage {
                 foreach (array_keys($mean[$group]) as $value) {
                     $mean[$group][$value] += $drv_rnk->getScore($group, $value);
                 }
+            }
+
+            // mean values
+            ++$mean_count;
+            if (!$mean_shown_66 && $drv_rnk->getScore() < (0.66 * $driver_rank_list[0]->getScore())) {
+                $html .= $this->meanValueRow($driver_rank_list, $mean, $mean_count);
+                $mean_shown_66 = TRUE;
+            }
+            if (!$mean_shown_33 && $drv_rnk->getScore() < (0.33 * $driver_rank_list[0]->getScore())) {
+                $html .= $this->meanValueRow($driver_rank_list, $mean, $mean_count);
+                $mean_shown_33 = TRUE;
+            }
+            if (!$mean_shown_0 && $drv_rnk->getScore() < 0) {
+                $html .= $this->meanValueRow($driver_rank_list, $mean, $mean_count);
+                $mean_shown_0 = TRUE;
             }
 
             // ensure privacy
@@ -210,31 +229,13 @@ class driver_ranking extends cContentPage {
                 $last_skipped_by_privacy = FALSE;
 
             } else if ($last_skipped_by_privacy == FALSE) {
-                $html .= "<tr><td>...</td></tr>";
+                $html .= "<tr><td class=\"HiddenCell\">...</td></tr>";
                 $last_skipped_by_privacy = TRUE;
             }
         }
 
-        // mean value row
-        if (count($driver_rank_list) > 0) {
-            foreach (array_keys($mean) as $group) {
-                foreach (array_keys($mean[$group]) as $value) {
-                    $mean[$group][$value] /= count($driver_rank_list);
-                }
-            }
-        }
-        $html .= "<tr>";
-        $html .= "<td colspan=\"2\"><small><i>" . _("Mean Value") . "</i></small></td>";
-        foreach (['XP', 'SX', 'SF'] as $group) {
-            $title = "";
-            $mean_value = 0;
-            foreach (array_keys($mean[$group]) as $value) {
-                $title .= "$value=" . sprintf("%0.1f", $mean[$group][$value]) . "\n";
-                $mean_value += $mean[$group][$value];
-            }
-            $html .= "<td><span title=\"$title\"><small><i>" . sprintf("%0.0f", $mean_value) . "</i></small></span></td>";
-        }
-        $html .= "</tr>";
+        // final mean value
+        $html .= $this->meanValueRow($driver_rank_list, $mean, count($driver_rank_list));
 
         $html .= "</table>";
 
@@ -378,6 +379,34 @@ class driver_ranking extends cContentPage {
             $html .= sprintf("%0.0f</span>", $val_ct + $val_ce + $val_cc);
 
         }
+
+        return $html;
+    }
+
+
+    private function meanValueRow($driver_rank_list, $mean, $mean_count) {
+        $html = "";
+
+        // mean value row
+        if (count($driver_rank_list) > 0) {
+            foreach (array_keys($mean) as $group) {
+                foreach (array_keys($mean[$group]) as $value) {
+                    $mean[$group][$value] /= $mean_count;
+                }
+            }
+        }
+        $html .= "<tr><td class=\"HiddenCell\"></td>";
+        $html .= "<td><small><i>" . _("Mean Value") . "</i></small></td>";
+        foreach (['XP', 'SX', 'SF'] as $group) {
+            $title = "";
+            $mean_value = 0;
+            foreach (array_keys($mean[$group]) as $value) {
+                $title .= "$value=" . sprintf("%0.1f", $mean[$group][$value]) . "\n";
+                $mean_value += $mean[$group][$value];
+            }
+            $html .= "<td><span title=\"$title\"><small><i>" . sprintf("%0.0f", $mean_value) . "</i></small></span></td>";
+        }
+        $html .= "</tr>";
 
         return $html;
     }

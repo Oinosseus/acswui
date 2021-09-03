@@ -195,6 +195,10 @@ table tr td, table tr th {
     padding: 5px 10px;
 }
 
+table td.HiddenCell {
+    background-color: transparent;
+}
+
 
 
 
