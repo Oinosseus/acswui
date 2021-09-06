@@ -183,7 +183,6 @@ class driver_ranking extends cContentPage {
         $mean = DriverRanking::initCharacteristics();
         $position = 0;
         $last_skipped_by_privacy = FALSE;
-        $mean_count = 0;
         $mean_shown_66 = FALSE;
         $mean_shown_33 = FALSE;
         $mean_shown_0 = FALSE;
@@ -195,21 +194,6 @@ class driver_ranking extends cContentPage {
                 foreach (array_keys($mean[$group]) as $value) {
                     $mean[$group][$value] += $drv_rnk->getScore($group, $value);
                 }
-            }
-
-            // mean values
-            ++$mean_count;
-            if (!$mean_shown_66 && $drv_rnk->getScore() < (0.66 * $driver_rank_list[0]->getScore())) {
-                $html .= $this->meanValueRow($driver_rank_list, $mean, $mean_count);
-                $mean_shown_66 = TRUE;
-            }
-            if (!$mean_shown_33 && $drv_rnk->getScore() < (0.33 * $driver_rank_list[0]->getScore())) {
-                $html .= $this->meanValueRow($driver_rank_list, $mean, $mean_count);
-                $mean_shown_33 = TRUE;
-            }
-            if (!$mean_shown_0 && $drv_rnk->getScore() < 0) {
-                $html .= $this->meanValueRow($driver_rank_list, $mean, $mean_count);
-                $mean_shown_0 = TRUE;
             }
 
             // ensure privacy
@@ -231,6 +215,20 @@ class driver_ranking extends cContentPage {
             } else if ($last_skipped_by_privacy == FALSE) {
                 $html .= "<tr><td class=\"HiddenCell\">...</td></tr>";
                 $last_skipped_by_privacy = TRUE;
+            }
+
+            // mean values
+            if (!$mean_shown_66 && $drv_rnk->getScore() < (0.66 * $driver_rank_list[0]->getScore())) {
+                $html .= $this->meanValueRow($driver_rank_list, $mean, $position);
+                $mean_shown_66 = TRUE;
+            }
+            if (!$mean_shown_33 && $drv_rnk->getScore() < (0.33 * $driver_rank_list[0]->getScore())) {
+                $html .= $this->meanValueRow($driver_rank_list, $mean, $position);
+                $mean_shown_33 = TRUE;
+            }
+            if (!$mean_shown_0 && $drv_rnk->getScore() < 0) {
+                $html .= $this->meanValueRow($driver_rank_list, $mean, $position);
+                $mean_shown_0 = TRUE;
             }
         }
 
