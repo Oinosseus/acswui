@@ -273,7 +273,7 @@ class Database {
 
         // create set of fields
         $set = "";
-        foreach ($this->columns($table) as $col) {
+        foreach (Database::columns($table) as $col) {
 
             // Ignore 'Id' field
             if ($col == "Id") continue;
