@@ -43,7 +43,7 @@ abstract class DbEntry {
      * @param $tablename The name of the parenting table (must be set correctly)
      * @parem $id The Id of the table row (NULL for entries to be created new)
      */
-    public function __construct(string $tablename, int $id = NULL) {
+    protected function __construct(string $tablename, int $id = NULL) {
         $this->TableName = $tablename;
         $this->Id = $id;
     }
@@ -52,6 +52,35 @@ abstract class DbEntry {
     //! @return The string representation of the table (just info, no serialization)
     public function __toString() {
         return $this->TableName . "[Id=" . $this->Id . "]";
+    }
+
+
+    /**
+     * Deleting an object from the database.
+     * This is not public, since not every derived class wants to provide this (e.g Laps)
+     * When a derived class wants to offer object deletion it shall implement a public function which calls this method.
+     *
+     * The object remains with all its current data.
+     * Only the id() is reset.
+     * A call to storeColumns() will create a new entry in the database.
+     */
+    protected function deleteFromDb() {
+
+        // ensure to have all current column values loaded
+        foreach ($this->tableColumns() as $c) {
+            $this->loadColumn($c);
+            break;
+        }
+
+        // delete from DB
+        \Core\Database::delete($this->tableName(), $this->Id);
+
+        // clear cache
+        //! @todo This might be improved by only popping the affected entry from the cache array
+        DbEntry::$ColumnNames = array();
+
+        // set item into a new-item-state
+        $this->Id = NULL;
     }
 
 
@@ -107,17 +136,18 @@ abstract class DbEntry {
             if ($this->TableName === NULL) Log::error("No correct tablename given!");
             $tname = $this->TableName;
 
-            // check id
-            if ($this->Id == NULL) Log::error("Cannot read column values of new table entry!");
-            $id = $this->Id;
+            // catch new entry
+            if ($this->Id == NULL) {
+                return "";
+            }
 
             // get column names
             $columns = $this->tableColumns();
 
             // get column values
-            $res = Database::fetch($tname, $columns, ['Id'=>$id]);
+            $res = Database::fetch($tname, $columns, ['Id'=>$this->Id]);
             if (count($res) !== 1) {
-                Log::error("Cannot find $tname.Id=" . $id);
+                Log::error("Cannot find $tname.Id=" . $this->Id);
                 return array();
             }
 
@@ -135,7 +165,15 @@ abstract class DbEntry {
      * If the entry already exists it is updated.
      * @param $column_values An associative array with the new column values
      */
-    public function storeColumns(array $column_values) {
+    protected function storeColumns(array $column_values) {
+
+        // ensure to have ColumnValues initialized
+        if ($this->ColumnValues === NULL) {
+            foreach ($column_values as $c=>$v) {
+                $this->loadColumn($c);
+                break;
+            }
+        }
 
         // check tablename
         if ($this->TableName == NULL) Log::error("No correct tablename given!");
@@ -149,7 +187,7 @@ abstract class DbEntry {
         }
 
         // update column cache
-        foreach ($this->ColumnValues as $cname => $cval) {
+        foreach ($this->tableColumns() as $cname) {
             if (array_key_exists($cname, $column_values)) {
                 $this->ColumnValues[$cname] = $column_values[$cname];
             }
@@ -158,7 +196,7 @@ abstract class DbEntry {
 
 
     //! @return An array with the column names of the table
-    public function tableColumns() {
+    protected function tableColumns() {
 
         // check tablename
         if ($this->TableName === NULL) Log::error("No correct tablename given!");
@@ -174,7 +212,7 @@ abstract class DbEntry {
 
 
     //! @return The name of the database table
-    public function tableName() {
+    protected function tableName() {
         if ($this->TableName === NULL) Log::error("No correct tablename given!");
         return $this->TableName;
     }

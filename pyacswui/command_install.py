@@ -96,6 +96,8 @@ class CommandInstall(Command):
 
         installer = None
 
+        self.__work_database_data()
+
         self._verbosity.print("post processing")
         self.__work_translations()
         if self.getArg("base-data") is True:
@@ -533,3 +535,17 @@ class CommandInstall(Command):
                 cmd = ["chgrp", self.getGeneralArg("http-guid"), os.path.join(abspath_acswui, "pyacswui", script)]
                 Verbosity(verb).print(" ".join(cmd))
                 subprocess.run(cmd)
+
+
+
+    def __work_database_data(self):
+        verb = Verbosity(self._verbosity)
+        verb.print("Write Database Data")
+
+        # default groups
+        groups = []
+        groups.append(self.getArg('driver-group'))
+        groups.append(self.getArg('guest-group'))
+        for g in groups:
+            if len(self.__db.fetch("Groups", ['Id'], {'Name':g})) == 0:
+                self.__db.insertRow("Groups", {"Name":g})

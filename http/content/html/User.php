@@ -13,14 +13,14 @@ class User extends \core\HtmlContent {
 
         $current_user = \Core\UserManager::loggedUser();
 
-        $html .= \Core\UserManager::htmlLogInOut();
-
         // root login
-        $html .= "<br>";
-        $html .= "<form action=\"index.php?UserManager=RootLogin\" method=\"post\">";
-        $html .= "<input type=\"password\" name=\"RootPassword\">";
-        $html .= "<button type=\"submit\">" . _("Login as Root") . "</button>";
-        $html .= "</form>";
+        if ($current_user === NULL) {
+            $html .= "<br>";
+            $html .= "<form action=\"index.php?UserManager=RootLogin\" method=\"post\">";
+            $html .= "<input type=\"password\" name=\"RootPassword\">";
+            $html .= "<button type=\"submit\">" . _("Login as Root") . "</button>";
+            $html .= "</form>";
+        }
 
         return $html;
     }
