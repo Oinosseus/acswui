@@ -11,6 +11,8 @@ class User extends DbEntry { #implements JsonSerializable {
     private $Color = NULL;
     private $Privacy = NULL;
     private $Locale = NULL;
+    private $Groups = NULL;
+    private $Permissions = NULL;
 
     private static $UserList = NULL;
 
@@ -50,6 +52,19 @@ class User extends DbEntry { #implements JsonSerializable {
      */
     public static function fromId(int $id) {
         return parent::getCachedObject("Users", "User", $id);
+    }
+
+
+    //! @return A list of Group objects where the user is member in
+    public function groups() {
+        if ($this->Groups === NULL) {
+            $this->Groups = array();
+            $res = \Core\Database::fetch("UserGroupMap", ['Group'], ['User'=>$this->id()]);
+            foreach ($res as $row) {
+                $this->Groups[] = \DbEntry\Group::fromId($row['Group']);
+            }
+        }
+        return $this->Groups;
     }
 
 
@@ -102,6 +117,25 @@ class User extends DbEntry { #implements JsonSerializable {
 
         \Core\Database::update("Users", $this->id(), ['Privacy'=>$privacy]);
         $this->Privacy = $privacy;
+    }
+
+
+    //! @return TRUE if this user has a certain permission (else FALSE)
+    public function permitted(string $permission) {
+
+        // root has all permissions
+        if ($this->id() == 0 && $this->name() == "root") return TRUE;
+
+        // check granted permissions of user
+        if ($this->Permissions === NULL) {
+            $this->Permissions = array();
+            foreach ($this->groups() as $g) {
+                foreach ($g->grantedPermissions() as $p) {
+                    $this->Permissions[] = $p;
+                }
+            }
+        }
+        return in_array($permission, $this->Permissions);
     }
 
 

@@ -33,6 +33,9 @@ abstract class HtmlContent {
     //! storage of child items
     private $ChildItemsList = NULL;
 
+    //! Defines if the current content can be shown
+    private $IsPermitted = TRUE;
+
 
     /**
      *
@@ -62,7 +65,6 @@ abstract class HtmlContent {
         if ($this->ChildItemsList === NULL) {
             $this->ChildItemsList = array();
             $path = $this->HierarchicalContentPath . "/" . $this->id();
-//             echo "HERE: $path<br>";
             if (is_dir("content/html/$path")) {
                 foreach (scandir("content/html/$path", SCANDIR_SORT_ASCENDING) as $entry) {
                     // skip hidden files, directories and non-php files
@@ -76,11 +78,13 @@ abstract class HtmlContent {
                     include_once $content_inc;
                     $content_class = "\\Content\\Html\\$classname";
                     $content_object = new $content_class();
-                    $content_object->HierarchicalContentPath = $path;
-                    $content_object->childContents();
+                    if ($content_object->permitted()) {
+                        $content_object->HierarchicalContentPath = $path;
+                        $content_object->childContents();
 
-                    if ($content_object->IsNavigated) $this->IsNavigated = TRUE;
-                    $this->ChildItemsList[] = $content_object;
+                        if ($content_object->IsNavigated) $this->IsNavigated = TRUE;
+                        $this->ChildItemsList[] = $content_object;
+                    }
                 }
             }
         }
@@ -94,7 +98,15 @@ abstract class HtmlContent {
 
     //! @return The HTML string of the content
     public function html() {
-        $html = $this->getHtml();
+        $html = "";
+
+        if ($this->permitted())
+            $html .= $this->getHtml();
+
+        if (!$this->permitted()) {
+            $html = "403 Not Permitted!";
+        }
+
         return $html;
     }
 
@@ -144,10 +156,12 @@ abstract class HtmlContent {
                 include_once $content_inc;
                 $content_class = "\\content\\html\\$classname";
                 $content_object = new $content_class();
-                $content_object->HierarchicalContentPath = "";
-                $content_object->childContents();
+                if ($content_object->permitted()) {
+                    $content_object->HierarchicalContentPath = "";
+                    $content_object->childContents();
 
-                HtmlContent::$RootItemsList[] = $content_object;
+                    HtmlContent::$RootItemsList[] = $content_object;
+                }
             }
 
         }
@@ -223,6 +237,23 @@ abstract class HtmlContent {
      */
     public function pageTitle() {
         return $this->PageTitle;
+    }
+
+
+    //! @return TRUE if current user is permitted to view this content
+    public function permitted() {
+        return $this->IsPermitted;
+    }
+
+
+
+    /**
+     * Require for the content that the current user has a certain permission.
+     * If the user does not have the permission, a 403 page is shown
+     * @param $permission The required permission
+     */
+    protected function requirePermission(string $permission) {
+        $this->IsPermitted &= \Core\UserManager::permitted($permission);
     }
 
 

@@ -6,6 +6,7 @@ class GroupManagement extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("Group Management"), _("Group Management"));
+        $this->requirePermission("Admin_Group_Management");
     }
 
     public function getHtml() {

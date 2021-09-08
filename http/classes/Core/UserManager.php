@@ -90,6 +90,31 @@ class UserManager {
     }
 
 
+    //! @return TRUE if the requested permission is granted to the current user (else FALSE)
+    public static function permitted(string $permission) {
+
+        // sanity check
+        if (!in_array($permission, \DbEntry\Group::listPermissions())) {
+            \Core\Log::error("Unknown permission: '$permission'!");
+            return FALSE;
+        }
+
+        // get current logged user
+        $user = UserManager::loggedUser();
+        if ($user === NULL) {  // unlogged user
+            $group = \DbEntry\Group::fromName(\Core\Config::GuestGroup);
+            if ($group === NULL) return FALSE;
+            return $group->grants($permission);
+
+        } else {  // logged user
+            return $user->permitted($permission);
+        }
+
+        \Core\Log::error("Script executionh should never end up here :-(");
+        return FALSE;
+    }
+
+
     private static function steamOpenIDReturnTo() {
         $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "") ? "https://" : "http://";
         $url .= $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];

@@ -44,16 +44,36 @@ class Group extends DbEntry {
     }
 
 
-    //! @return TRUE if the requested permission is set for the group, in any other case FALSE
-    public function grants(string $permission) {
+    /**
+     * Retrieve an existing object from database.
+     * This function is cached and returns for same Name the same object.
+     * @return An object by requested name of the group
+     */
+    public static function fromName(string $group_name) {
+        //! @todo This could be cached to save loop iterations when many groups are present (which I do not expect)
+        foreach (Group::listGroups() as $g) {
+            if ($g->name() == $group_name) return $g;
+        }
+        \Core\Log::error("Unknown group '$group_name'!");
+        return NULL;
+    }
+
+
+    //! @return A string list containing all granted permissions for this group
+    public function grantedPermissions() {
         if ($this->GrantedPermissions === NULL) {
             $this->GrantedPermissions = array();
             foreach (Group::listPermissions() as $p) {
                 if ($this->loadColumn($p) == 1) $this->GrantedPermissions[] = $p;
             }
         }
+        return $this->GrantedPermissions;
+    }
 
-        return in_array($permission, $this->GrantedPermissions);
+
+    //! @return TRUE if the requested permission is set for the group, in any other case FALSE
+    public function grants(string $permission) {
+        return in_array($permission, $this->grantedPermissions());
     }
 
 
