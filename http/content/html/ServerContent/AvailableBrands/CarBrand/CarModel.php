@@ -9,6 +9,7 @@ class CarModel extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("Car Model"),  _("Car Model"));
+        $this->requirePermission("ViewServerContent_Cars");
     }
 
     public function getHtml() {

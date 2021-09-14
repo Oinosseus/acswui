@@ -6,6 +6,7 @@ class Track extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("Track"),  _("Track"));
+        $this->requirePermission("ViewServerContent_Tracks");
     }
 
     public function getHtml() {

@@ -6,6 +6,7 @@ class UserProfile extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("Profile"),  _("User Profile"));
+        $this->requirePermission("ViewUsers");
     }
 
     public function getHtml() {

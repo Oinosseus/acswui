@@ -228,6 +228,13 @@ class InstallerDatabase(object):
         Verbosity(verb).print("check database table `Groups`")
         self.__db.appendTable("Groups")
         self.__db.appendColumnString("Groups", "Name", 50)
+        self.__db.appendColumnTinyInt("Groups", "Admin_Group_Management")
+        self.__db.appendColumnTinyInt("Groups", "Admin_User_Management")
+        self.__db.appendColumnTinyInt("Groups", "ViewServerContent")
+        self.__db.appendColumnTinyInt("Groups", "ViewServerContent_Tracks")
+        self.__db.appendColumnTinyInt("Groups", "ViewServerContent_Cars")
+        self.__db.appendColumnTinyInt("Groups", "ViewServerContent_CarClasses")
+        self.__db.appendColumnTinyInt("Groups", "ViewUsers")
 
         # check table UserGroupMap
         Verbosity(verb).print("check database table `UserGroupMap`")

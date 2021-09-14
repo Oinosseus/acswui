@@ -7,6 +7,7 @@ class CarBrand extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("Car Brand"),  _("Car Brand"));
+        $this->requirePermission("ViewServerContent_Cars");
     }
 
 
