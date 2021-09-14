@@ -142,7 +142,7 @@ class Group extends DbEntry {
      */
     public function removeUser(User $user) {
 
-        $res = \Core\Database::fetch("UserGroupMap", ['Id'], ['User'=>$user->id()]);
+        $res = \Core\Database::fetch("UserGroupMap", ['Id'], ['User'=>$user->id(), 'Group'=>$this->id()]);
         foreach ($res as $row) {
             \Core\Database::delete("UserGroupMap", $row['Id']);
         }
