@@ -21,6 +21,21 @@ class Group extends DbEntry {
     }
 
 
+    /**
+     * Add a user to this group.
+     * Ignored if the user is already in this group
+     * @param $user The user to be added
+     */
+    public function addUser(User $user) {
+
+        // check if user is already in the group
+        $res = \Core\Database::fetch("UserGroupMap", ['Id'], ['User'=>$user->id(), 'Group'=>$this->id()]);
+        if (count($res) == 0) {
+            \Core\Database::insert("UserGroupMap", ['User'=>$user->id(), 'Group'=>$this->id()]);
+        }
+    }
+
+
     //! Delete this group from database
     public function delete() {
 
@@ -117,6 +132,20 @@ class Group extends DbEntry {
     public static function new() {
         Group::$GroupsList = NULL;
         return new Group(NULL);
+    }
+
+
+    /**
+     * Remove a user from this group.
+     * Ignored if the user is not member of  this group
+     * @param $user The user to be removed
+     */
+    public function removeUser(User $user) {
+
+        $res = \Core\Database::fetch("UserGroupMap", ['Id'], ['User'=>$user->id()]);
+        foreach ($res as $row) {
+            \Core\Database::delete("UserGroupMap", $row['Id']);
+        }
     }
 
 
