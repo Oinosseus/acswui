@@ -2,7 +2,7 @@
 
 namespace Content\Html;
 
-class Home extends \core\HtmlContent {
+class A_Home extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("Home"),  "");

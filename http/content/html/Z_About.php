@@ -2,7 +2,7 @@
 
 namespace Content\Html;
 
-class About extends \core\HtmlContent {
+class Z_About extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("About"), _("About the ACswui System"));

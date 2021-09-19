@@ -2,7 +2,7 @@
 
 namespace Content\Html;
 
-class User extends \core\HtmlContent {
+class B_User extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("User"),  _("User Options"));
