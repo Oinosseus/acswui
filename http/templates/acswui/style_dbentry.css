@@ -26,6 +26,16 @@ div.CarTorquePowerChart svg g.Plots g.PlotTorque polyline.PlotBackground {
     fill: #ffff000a;
 }
 
+div.CarTorquePowerChart svg g.Plots g.PlotRestrictedTorque polyline.PlotLine {
+    stroke: #ffff00;
+    fill: none;
+    stroke-width: 0.2em;
+}
+
+div.CarTorquePowerChart svg g.Plots g.PlotRestrictedTorque polyline.PlotBackground {
+    display: none;
+}
+
 div.CarTorquePowerChart svg g.Axes g.YAxisTorque g.Grid {
     display: none;
 }
@@ -59,6 +69,16 @@ div.CarTorquePowerChart svg g.Plots g.PlotPower polyline.PlotLine {
 div.CarTorquePowerChart svg g.Plots g.PlotPower polyline.PlotBackground {
     stroke: none;
     fill: #aa000020;
+}
+
+div.CarTorquePowerChart svg g.Plots g.PlotRestrictedPower polyline.PlotLine {
+    stroke: #aa0000;
+    fill: none;
+    stroke-width: 0.2em;
+}
+
+div.CarTorquePowerChart svg g.Plots g.PlotRestrictedPower polyline.PlotBackground {
+    display: none;
 }
 
 div.CarTorquePowerChart svg g.Axes g.YAxisPower,

@@ -37,7 +37,8 @@ class HumanValue {
 
     //! @return A string well formatted from the given value and unit
     public static function format($value, $unit="") {
-        return (new HumanValue($value, $unit))->string();
+        $hv = new HumanValue($value, $unit);
+        return $hv->string();
     }
 
     //! @return A string well formatted from the given value and unit
@@ -214,6 +215,13 @@ class HumanValue {
             $this->UnitPrefix = "";
             $this->Unit = $unit;
 
+        } else if ($value == 0) {
+            $this->Value = "0";
+            $this->UnitPrefix = "";
+            $this->Unit = $unit;
+
+        } else {
+            \Core\Log::error("Not implemented value '$value'!");
         }
     }
 

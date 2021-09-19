@@ -11,8 +11,8 @@ class CarClass extends DbEntry {
     private $Cars = NULL;
 //     private $Description = NULL;
 
-//     private $BallastMap = NULL;
-//     private $RestrictorMap = NULL;
+    private $BallastMap = NULL;
+    private $RestrictorMap = NULL;
 //     private $OccupationMap = NULL;
 
     /**
@@ -41,28 +41,30 @@ class CarClass extends DbEntry {
 //         $this->Cars[] = $car;
 //     }
 
-//     /**
-//      * @param $car The requeted Car object
-//      * @return The necessary ballast for a certain car in the class
-//      */
-//     public function ballast($car) {
-//         global $acswuiDatabase;
-//
-//         if ($this->BallastMap !== NULL) return $this->BallastMap[$car->id()];
-//
-//         $this->BallastMap = array();
-//         foreach ($acswuiDatabase->fetch_2d_array("CarClassesMap", ['Car', 'Ballast'], ['CarClass'=>$this->Id]) as $row) {
-//             $this->BallastMap[$row['Car']] = $row['Ballast'];
-//         }
-//
-//         // catch rare situation
-//         if (!array_key_exists($car->id(), $this->BallastMap)) {
-//             global $acswuiLog;
-//             $acswuiLog->logError("Cannot find car ID" . $car->id() . " in car class ID" . $this->Id . "!");
-//         }
-//
-//         return $this->BallastMap[$car->id()];
-//     }
+
+    /**
+     * @param $car The requeted Car object
+     * @return The necessary ballast for a certain car in the class
+     */
+    public function ballast($car) {
+        global $acswuiDatabase;
+
+        if ($this->BallastMap === NULL) {
+
+            $this->BallastMap = array();
+            foreach (\Core\Database::fetch("CarClassesMap", ['Car', 'Ballast'], ['CarClass'=>$this->id()]) as $row) {
+                $this->BallastMap[$row['Car']] = $row['Ballast'];
+            }
+
+            // catch rare situation
+            if (!array_key_exists($car->id(), $this->BallastMap)) {
+                \Core\Log::error("Cannot find car ID" . $car->id() . " in car class ID" . $this->Id . "!");
+            }
+        }
+
+        return $this->BallastMap[$car->id()];
+    }
+
 
     //! @return A list of Car objects (ordered by car name)
     public function cars() {
@@ -146,6 +148,14 @@ class CarClass extends DbEntry {
 //         return $res[0]['Id'];
 //     }
 
+
+    /**
+     * @param $car The requeted Car object
+     * @return The harmonized Power/Weight respecting Ballast and Restrictor [g/W]
+     */
+    public function harmonizedPowerRatio($car) {
+        return 1e3 * $this->weight($car) / $car->harmonizedPower($this->restrictor($car));
+    }
 
 
     //! @return Html img tag containing preview image
@@ -352,71 +362,68 @@ class CarClass extends DbEntry {
 //         $this->Name = $new_name;
 //     }
 
-//     /**
-//      * @param $car The requeted Car object
-//      * @return The necessary restrictor for a certain car in the class
-//      */
-//     public function restrictor($car) {
-//         global $acswuiDatabase;
-//
-//         if ($this->RestrictorMap !== NULL) return $this->RestrictorMap[$car->id()];
-//
-//         $this->RestrictorMap = array();
-//         foreach ($acswuiDatabase->fetch_2d_array("CarClassesMap", ['Car', 'Restrictor'], ['CarClass'=>$this->Id]) as $row) {
-//             $this->RestrictorMap[$row['Car']] = $row['Restrictor'];
-//         }
-//
-//         // catch rare situation
-//         if (!array_key_exists($car->id(), $this->RestrictorMap)) {
-//             global $acswuiLog;
-//             $acswuiLog->logError("Cannot find car ID" . $car->id() . " in car class ID" . $this->Id . "!");
-//         }
-//
-//         return $this->RestrictorMap[$car->id()];
-//     }
+    /**
+     * @param $car The requeted Car object
+     * @return The necessary restrictor for a certain car in the class
+     */
+    public function restrictor($car) {
+
+        if ($this->RestrictorMap === NULL) {
+
+            $this->RestrictorMap = array();
+            foreach (\Core\Database::fetch("CarClassesMap", ['Car', 'Restrictor'], ['CarClass'=>$this->id()]) as $row) {
+                $this->RestrictorMap[$row['Car']] = $row['Restrictor'];
+            }
+
+            // catch rare situation
+            if (!array_key_exists($car->id(), $this->RestrictorMap)) {
+                \Core\Log::error("Cannot find car ID" . $car->id() . " in car class ID" . $this->id() . "!");
+            }
+        }
+
+        return $this->RestrictorMap[$car->id()];
+    }
 
 
-//     /**
-//      * Set A new ballast value for a cetain car in the class
-//      * @param $car The requested Car object
-//      * @param $ballast The new ballast value (0...9999)
-//      */
-//     public function setBallast(Car $car, int $ballast) {
-//         global $acswuiDatabase;
-//         global $acswuiLog;
-//
-//         // invalidate cache
-//         $this->BallastMap = NULL;
-//
-//         if ($ballast < 0 || $ballast > 9999) {
-//             $acswuiLog->logError("Invalid ballast value: " . $ballast);
-//             return;
-//         }
-//
-//         $map_id = $this->getCarMapId($car);
-//         $acswuiDatabase->update_row("CarClassesMap", $map_id, ['Ballast'=>$ballast]);
-//     }
+    /**
+     * Set A new ballast value for a cetain car in the class
+     * @param $car The requested Car object
+     * @param $ballast The new ballast value (0...9999)
+     */
+    public function setBallast(Car $car, int $ballast) {
 
-//     /**
-//      * Set A new restrictor value for a cetain car in the class
-//      * @param $car The requested Car object
-//      * @param $restrictor The new restrictor value (0...100)
-//      */
-//     public function setRestrictor(Car $car, int $restrictor) {
-//         global $acswuiDatabase;
-//         global $acswuiLog;
-//
-//         // invalidate cache
-//         $this->BallastMap = NULL;
-//
-//         if ($restrictor < 0 || $restrictor > 100) {
-//             $acswuiLog->logError("Invalid restrictor value: " . $restrictor);
-//             return;
-//         }
-//
-//         $map_id = $this->getCarMapId($car);
-//         $acswuiDatabase->update_row("CarClassesMap", $map_id, ['Restrictor'=>$restrictor]);
-//     }
+        // invalidate cache
+        $this->BallastMap = NULL;
+
+        if ($ballast < 0 || $ballast > 9999) {
+            \Core\Log::error("Invalid ballast value: " . $ballast);
+            return;
+        }
+
+        $query = "UPDATE CarClassesMap SET Ballast = $ballast WHERE CarClass = " . $this->id() . " AND Car = " . $car->id();
+        \Core\Database::query($query);
+    }
+
+
+    /**
+     * Set A new restrictor value for a cetain car in the class
+     * @param $car The requested Car object
+     * @param $restrictor The new restrictor value (0...100)
+     */
+    public function setRestrictor(Car $car, int $restrictor) {
+
+        // invalidate cache
+        $this->RestrictorMap = NULL;
+
+        if ($restrictor < 0 || $restrictor > 100) {
+            \Core\Log::error("Invalid restrictor value: " . $restrictor);
+            return;
+        }
+
+        $query = "UPDATE CarClassesMap SET Restrictor = $restrictor WHERE CarClass = " . $this->id() . " AND Car = " . $car->id();
+        \Core\Database::query($query);
+    }
+
 
 //     /**
 //      * Set A new description for the CarClass
@@ -474,6 +481,15 @@ class CarClass extends DbEntry {
 //         }
 //         return FALSE;
 //     }
+
+
+    /**
+     * @param $car The requeted Car object
+     * @return The weight of the car within the class (including ballast)
+     */
+    public function weight($car) {
+        return $car->weight() + $this->ballast($car);
+    }
 }
 
 ?>

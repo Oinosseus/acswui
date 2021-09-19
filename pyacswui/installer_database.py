@@ -234,6 +234,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnTinyInt("Groups", "ViewServerContent_Tracks")
         self.__db.appendColumnTinyInt("Groups", "ViewServerContent_Cars")
         self.__db.appendColumnTinyInt("Groups", "ViewServerContent_CarClasses")
+        self.__db.appendColumnTinyInt("Groups", "CarClass_Edit")
         self.__db.appendColumnTinyInt("Groups", "ViewUsers")
 
         # check table UserGroupMap

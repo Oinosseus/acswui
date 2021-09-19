@@ -19,6 +19,11 @@ class CarModel extends \core\HtmlContent {
         if (array_key_exists("Id", $_REQUEST) && $_REQUEST['Id'] != "") {
             $car = \DbEntry\Car::fromId($_REQUEST['Id']);
 
+            $restrictor = 0;
+            if (array_key_exists("Restrictor", $_REQUEST) && $_REQUEST['Restrictor'] != "") {
+                $restrictor = (int) $_REQUEST['Restrictor'];
+            }
+
             $brand = $car->brand();
             $html .= "<div id=\"BrandInfo\">";
             $html .= $brand->htmlImg();
@@ -46,7 +51,7 @@ class CarModel extends \core\HtmlContent {
             $html .= "</table>";
 
             $html .= "<div id=\"CarModelTorquePowerChart\">";
-            $html .= $car->htmlTorquePowerSvg();
+            $html .= $car->htmlTorquePowerSvg($restrictor);
             $html .= "</div>";
 
             $html .= "<div id=\"CarModelDescription\">";

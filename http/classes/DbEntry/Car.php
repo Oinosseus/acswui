@@ -19,6 +19,7 @@ class Car extends DbEntry {
     private $PowerCurve = NULL;
     private $PowerHarmonized = NULL;
     private $Weight = NULL;
+    private $MaxRpm = NULL;
 
 
     /**
@@ -64,16 +65,23 @@ class Car extends DbEntry {
 
 
 
-    //! @return calculating power [W], averaged from peak torque revolutions to peap power revolutions
-    public function harmonizedPower() {
+    /**
+     * @param $restrictor An optional applied restrictor
+     * @return calculating power [W], averaged from peak torque revolutions to peap power revolutions
+     */
+    public function harmonizedPower(int $restrictor = 0) {
 
         if ($this->PowerHarmonized === NULL) {
-            $this->PowerHarmonized = 0;
+            $this->PowerHarmonized = array();
+        }
+
+        if (!array_key_exists($restrictor, $this->PowerHarmonized)) {
+            $this->PowerHarmonized[$restrictor] = 0;
 
             // determine rpm at peak torque and peak power
             $peak_torque = 0;
             $rpm_peak_torque = 0;
-            foreach ($this->torqueCurve() as [$rpm, $trq]) {
+            foreach ($this->torqueCurve($restrictor) as [$rpm, $trq]) {
                 if ($trq > $peak_torque) {
                     $peak_torque = $trq;
                     $rpm_peak_torque = $rpm;
@@ -83,7 +91,7 @@ class Car extends DbEntry {
             // determine rpm at peak torque and peak power
             $peak_power = 0;
             $rpm_peak_power = 0;
-            foreach ($this->powerCurve() as [$rpm, $pwr]) {
+            foreach ($this->powerCurve($restrictor) as [$rpm, $pwr]) {
                 if ($pwr > $peak_power) {
                     $peak_power = $pwr;
                     $rpm_peak_power = $rpm;
@@ -99,32 +107,35 @@ class Car extends DbEntry {
             $last_rpm = 0;
             $last_pwr = 0;
             $first_rpm = NULL;
-            foreach ($this->powerCurve() as [$rpm, $pwr]) {
+            foreach ($this->powerCurve($restrictor) as [$rpm, $pwr]) {
                 if ($rpm >= $rpm_peak_torque) {
                     if ($first_rpm === NULL) $first_rpm = $last_rpm;
                     $segment_rpm = $rpm - $last_rpm;
-                    $this->PowerHarmonized +=  $segment_rpm * $last_pwr; // square since last rpm
-                    $this->PowerHarmonized += $segment_rpm * ($pwr - $last_pwr) / 2;  // triangle section
+                    $this->PowerHarmonized[$restrictor] +=  $segment_rpm * $last_pwr; // square since last rpm
+                    $this->PowerHarmonized[$restrictor] += $segment_rpm * ($pwr - $last_pwr) / 2;  // triangle section
                 }
 
                 $last_rpm = $rpm;
                 $last_pwr = $pwr;
                 if ($rpm > $rpm_peak_power) break;
             }
-            $this->PowerHarmonized /= $last_rpm - $first_rpm;
+            $this->PowerHarmonized[$restrictor] /= $last_rpm - $first_rpm;
 
 //             echo "Peak Torque = $peak_torque @$rpm_peak_torque<br>";
 //             echo "Peak Power = $peak_power @$rpm_peak_power<br>";
-//             echo "Harmonized Power = " . $this->PowerHarmonized . " @($first_rpm to $last_rpm)<br>";
+//             echo "Harmonized Power = " . $this->PowerHarmonized[$restrictor] . " @($first_rpm to $last_rpm)<br>";
 
-            $this->PowerHarmonized *= 1e3;
+            $this->PowerHarmonized[$restrictor] *= 1e3;
         }
 
-        return $this->PowerHarmonized;
+        return $this->PowerHarmonized[$restrictor];
     }
 
-    //! @return Html img tag containing preview image
-    public function htmlImg() {
+    /**
+     * @param $restrictor Current restrictor level (optional)
+     * @return Html img tag containing preview image
+     */
+    public function htmlImg(int $restrictor = NULL) {
 
         $car_id = $this->id();
         $car_name = $this->name();
@@ -141,7 +152,7 @@ class Car extends DbEntry {
             $hover_path = \Core\Config::RelPathHtdata . "/htmlimg/car_skins/" . $skin->id() . ".hover.png";
         }
 
-        $html = "<a class=\"CarModelLink\" href=\"" . $this->htmlUrl() . "\">";
+        $html = "<a class=\"CarModelLink\" href=\"" . $this->htmlUrl($restrictor) . "\">";
         $html .= "<label for=\"$img_id\">$car_name</label>";
         if ($preview_path !== NULL) {
             $html .= "<img src=\"$preview_path\" id=\"$img_id\" alt=\"$car_name\" title=\"$car_name\">";
@@ -169,14 +180,23 @@ class Car extends DbEntry {
     }
 
 
-    //! @return The URL to the HTML view page for this car
-    public function htmlUrl() {
-        return "index.php?HtmlContent=CarModel&Id=" . $this->id();
+    /**
+     * @param $restrictor Current restrictor level (optional)
+     * @return The URL to the HTML view page for this car
+     */
+    public function htmlUrl(int $restrictor = NULL) {
+        $url = "index.php?HtmlContent=CarModel&Id=" . $this->id();
+        if ($restrictor !== NULL)
+            $url .= "&Restrictor=$restrictor";
+        return $url;
     }
 
 
-    //! @return An svg image xml string
-    public function htmlTorquePowerSvg() {
+    /**
+     * @param $restrictor Current restrictor level
+     * @return An svg image xml string
+     */
+    public function htmlTorquePowerSvg(int $restrictor = 0) {
         $svg = new \Svg\XYChart();
 
         // torque axis
@@ -190,6 +210,10 @@ class Car extends DbEntry {
         $plot = new \Svg\DataPlot($data, "Torque", "PlotTorque");
         $yax_trq->addPlot($plot);
 
+        $data = $this->torqueCurve($restrictor);
+        $plot = new \Svg\DataPlot($data, "Torque", "PlotRestrictedTorque");
+        $yax_trq->addPlot($plot);
+
         // power axis
         $yax_pwr = new \Svg\YAxis("YAxisPower", _("Power") . " kW");
         $yax_pwr->setSideRight();
@@ -199,6 +223,10 @@ class Car extends DbEntry {
         // power plot
         $data = $this->powerCurve();
         $plot = new \Svg\DataPlot($data, "Power", "PlotPower");
+        $yax_pwr->addPlot($plot);
+
+        $data = $this->powerCurve($restrictor);
+        $plot = new \Svg\DataPlot($data, "Power", "PlotRestrictedPower");
         $yax_pwr->addPlot($plot);
 
         $ax_x = new \Svg\XAxis("XAxisRevolutions", _("Revolutions") . " [RPM]");
@@ -231,6 +259,25 @@ class Car extends DbEntry {
     }
 
 
+    //! @return The maximum RPM of this car (can be NULL
+    public function maxRpm() {
+        if ($this->MaxRpm === NULL) {
+
+            foreach ($this->powerCurve() as [$rpm, $power]) {
+                if ($this->MaxRpm === NULL || $rpm > $this->MaxRpm)
+                        $this->MaxRpm = $rpm;
+            }
+
+            foreach ($this->torqueCurve() as [$rpm, $power]) {
+                if ($this->MaxRpm === NULL || $rpm > $this->MaxRpm)
+                    $this->MaxRpm = $rpm;
+            }
+        }
+
+        return $this->MaxRpm;
+    }
+
+
     //! @return model name of the car
     public function model() {
         if ($this->Model === NULL) $this->Model = $this->loadColumn("Car");
@@ -258,13 +305,28 @@ class Car extends DbEntry {
     }
 
 
-    //! @return Array of (revolution, power) value pairs
-    public function powerCurve() {
+    /**
+     * @param $restrictor Current restrictor level
+     * @return Array of (revolution, power) value pairs
+     */
+    public function powerCurve(int $restrictor = 0) {
+
+        // cache torqwue with no restrictor
         if ($this->PowerCurve === NULL) {
-            $this->PowerCurve = json_decode($this->loadColumn("PowerCurve"));
+            $this->PowerCurve = array();
+            $this->PowerCurve[0] = json_decode($this->loadColumn("PowerCurve"));
         }
 
-        return $this->PowerCurve;
+        // determine restricted torque
+        if (!array_key_exists($restrictor, $this->PowerCurve)) {
+            $this->PowerCurve[$restrictor] = array();
+            foreach($this->PowerCurve[0] as [$rpm, $pwr]) {
+                $pwr *= $this->restrictorFactor($restrictor, $rpm);
+                $this->PowerCurve[$restrictor][] = [$rpm, $pwr];
+            }
+        }
+
+        return $this->PowerCurve[$restrictor];
     }
 
 
@@ -306,13 +368,28 @@ class Car extends DbEntry {
     }
 
 
-    //! @return Array of (revolution, torque) value pairs
-    public function torqueCurve() {
+    /**
+     * @param $restrictor Current restrictor level
+     * @return Array of (revolution, torque) value pairs
+     */
+    public function torqueCurve(int $restrictor = 0) {
+
+        // cache torqwue with no restrictor
         if ($this->TorqueCurve === NULL) {
-            $this->TorqueCurve = json_decode($this->loadColumn("TorqueCurve"));
+            $this->TorqueCurve = array();
+            $this->TorqueCurve[0] = json_decode($this->loadColumn("TorqueCurve"));
         }
 
-        return $this->TorqueCurve;
+        // determine restricted torque
+        if (!array_key_exists($restrictor, $this->TorqueCurve)) {
+            $this->TorqueCurve[$restrictor] = array();
+            foreach($this->TorqueCurve[0] as [$rpm, $trq]) {
+                $trq *= $this->restrictorFactor($restrictor, $rpm);
+                $this->TorqueCurve[$restrictor][] = [$rpm, $trq];
+            }
+        }
+
+        return $this->TorqueCurve[$restrictor];
     }
 
 
@@ -322,6 +399,29 @@ class Car extends DbEntry {
             $this->Weight = (int) $this->loadColumn("Weight");
         }
         return $this->Weight;
+    }
+
+
+    /**
+     * Calculates a factor that reduces power/torque because of an restricor.
+     * @param $restrictor The restrictor in [%]
+     * @param $rpm revolution per minute
+     */
+    public function restrictorFactor(int $restrictor, int $rpm) {
+
+        if ($restrictor < 0 || $restrictor > 100) {
+            \Core\Log::error("Invalid restrictor value '$restrictor'!");
+        }
+
+        $restrictor *= 0.3;
+
+        if ($this->maxRpm() !== NULL) {
+            $restrictor *= exp($rpm / $this->maxRpm() - 1.0);
+        }
+
+        $restrictor = 1.0 - $restrictor / 100.0;
+
+        return $restrictor;
     }
 
 }
