@@ -19,7 +19,7 @@ class CarBrand extends \core\HtmlContent {
             $brand = \DbEntry\CarBrand::fromId($_REQUEST['Id']);
 
             $html .= "<div id=\"BrandInfo\">";
-            $html .= $brand->htmlImg();
+            $html .= $brand->html(FALSE, FALSE, TRUE);
             $html .= "<label>" . $brand->name() . "</label>";
             $html .= "</div>";
 
@@ -27,7 +27,7 @@ class CarBrand extends \core\HtmlContent {
             foreach ($brand->listCars() as $car) {
                 $car_id = $car->id();
                 $car_name = $car->name();
-                $html .= $car->htmlImg();
+                $html .= $car->html();
             }
             $html .= "</div>";
 

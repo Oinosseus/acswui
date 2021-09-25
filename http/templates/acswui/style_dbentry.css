@@ -1,3 +1,25 @@
+
+div.DbEntryHtml {
+    display: inline-block;
+    margin: 0.5em 0.5em;
+    background-color: var(--color-bg-elements);
+}
+
+div.DbEntryHtml label {
+    display: block;
+}
+
+div.DbEntryHtml img {
+    display: block;
+    height: 7em;
+}
+
+div.DbEntryHtml a {
+    text-decoration: none;
+}
+
+
+
 /* -----------------------------------------------------------------------------
  *                                  Car
  * -----------------------------------------------------------------------------

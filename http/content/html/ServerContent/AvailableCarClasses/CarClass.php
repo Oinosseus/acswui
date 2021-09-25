@@ -7,19 +7,17 @@ class CarClass extends \core\HtmlContent {
     private $CurrentBrand = NULL;
     private $CurrentCar = NULL;
     private $CanEdit = FALSE;
+    private $CarClass = NULL;
+
 
     public function __construct() {
         parent::__construct(_("Car Class"),  _("Car CarClass"));
         $this->requirePermission("ViewServerContent_CarClasses");
     }
 
+
     public function getHtml() {
         $this->CanEdit = \Core\UserManager::permitted("CarClass_Edit");
-        $html  = '';
-
-        if (!array_key_exists("Id", $_REQUEST) && $_REQUEST['Id'] != "") {
-            \Core\Log::warning("No Id parameter given!");
-        }
 
         // save carclass
         if ($this->CanEdit && array_key_exists("SaveCarClass", $_POST)) {
@@ -44,20 +42,70 @@ class CarClass extends \core\HtmlContent {
             }
         }
 
-        // retrieve requests
-        $cc = \DbEntry\CarClass::fromId($_REQUEST['Id']);
+        // add cars
+        if ($this->CanEdit && array_key_exists("SaveAddedCars", $_POST)) {
+            $cc = \DbEntry\CarClass::fromId($_POST['SaveAddedCars']);
+            foreach (\DbEntry\Car::listCars() as $car) {
+                $key = "Car" . $car->id() . "Add";
+                if (array_key_exists($key, $_POST)) {
+                    $cc->addCar($car);
+                }
+            }
+        }
 
-        $html .= "<h1>" . $cc->name() . "</h1>";
+        // get requested carclass
+        if (!array_key_exists("Id", $_REQUEST) && $_REQUEST['Id'] != "") {
+            \Core\Log::warning("No Id parameter given!");
+            return "";
+        }
+        $this->CarClass = \DbEntry\CarClass::fromId($_REQUEST['Id']);
+
+        // show content
+        if ($this->CanEdit && array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "AddCars") {
+            return $this->showAddCars();
+        } else {
+            return $this->showCarClassOverview();
+        }
+    }
+
+
+    private function showAddCars() {
+        if ($this->CanEdit !== TRUE) return "";
+        $html = "";
+
+        $html .= "<form action=\"" . $this->url(['Id'=>$this->CarClass->id()]) . "\" method=\"post\">";
+        $html .= "<input type=\"hidden\" name=\"SaveAddedCars\" value=\"" . $this->CarClass->id() . "\">";
+        foreach (\DbEntry\CarBrand::listBrands() as $brand) {
+            $html .= "<h1>" . $brand->name() . "</h1>";
+            foreach ($brand->listCars() as $car) {
+                $car_img = $car->html($this->CarClass, FALSE, TRUE, TRUE);
+                $valid = $this->CarClass->validCar($car);
+                $html .= $this->newHtmlContentCheckbox("Car" . $car->id() . "Add", $car_img, $valid, $valid);
+            }
+        }
+        $html .= "<br><button>" . _("Add Cars") . "</button>";
+        $html .= "</form>";
+
+        return $html;
+    }
+
+
+    private function showCarClassOverview() {
+        $html  = '';
+
+
+        // retrieve requests
+        $html .= "<h1>" . $this->CarClass->name() . "</h1>";
 
         $html .= "<div id=\"CarClassDescription\">";
-        $html .= $cc->description();
+        $html .= $this->CarClass->description();
         $html .= "</div>";
 
         $html .= "<h2>" . _("Technical Data") . "</h2>";
 
         if ($this->CanEdit) {
             $html .= "<form method=\"post\">";
-            $html .= "<input type=\"hidden\" name=\"SaveCarClass\" value=\"" . $cc->id() . "\">";
+            $html .= "<input type=\"hidden\" name=\"SaveCarClass\" value=\"" . $this->CarClass->id() . "\">";
         }
 
         $html .= "<table id=\"CarClassCars\">";
@@ -71,23 +119,23 @@ class CarClass extends \core\HtmlContent {
         $html .= "<th>" . _("Harmonized Power") . "</th>";
         $html .= "</tr>";
 
-        foreach ($cc->cars() as $car) {
+        foreach ($this->CarClass->cars() as $car) {
             $html .= "<tr>";
 
-            $html .= "<td><a href=\"" . $car->htmlUrl($cc->restrictor($car)) . "\">" . $car->name() . "</a></td>";
+            $html .= "<td><a href=\"" . $car->htmlUrl($this->CarClass) . "\">" . $car->name() . "</a></td>";
             $html .= "<td>" . \Core\HumanValue::format($car->torque(), "Nm") . "</td>";
             $html .= "<td>" . \Core\HumanValue::format($car->power(), "W") . "</td>";
             $html .= "<td>" . \Core\HumanValue::format($car->weight(), "kg") . "</td>";
 
             if ($this->CanEdit) {
-                $html .= "<td><input type=\"number\" name=\"Car" . $car->id() . "Ballast\" value=\"" . $cc->ballast($car) . "\" min=\"0\" max=\"1000\"></td>";
-                $html .= "<td><input type=\"number\" name=\"Car" . $car->id() . "Restrictor\" value=\"" . $cc->restrictor($car) . "\" min=\"0\" max=\"100\"></td>";
+                $html .= "<td><input type=\"number\" name=\"Car" . $car->id() . "Ballast\" value=\"" . $this->CarClass->ballast($car) . "\" min=\"0\" max=\"1000\"></td>";
+                $html .= "<td><input type=\"number\" name=\"Car" . $car->id() . "Restrictor\" value=\"" . $this->CarClass->restrictor($car) . "\" min=\"0\" max=\"100\"></td>";
             } else {
-                $html .= "<td>" . \Core\HumanValue::format($cc->ballast($car), "kg") . "</td>";
-                $html .= "<td>" . \Core\HumanValue::format($cc->restrictor($car), "%") . "</td>";
+                $html .= "<td>" . \Core\HumanValue::format($this->CarClass->ballast($car), "kg") . "</td>";
+                $html .= "<td>" . \Core\HumanValue::format($this->CarClass->restrictor($car), "%") . "</td>";
             }
 
-            $html .= "<td>" . \Core\HumanValue::format($cc->harmonizedPowerRatio($car), "g/W") . "</td>";
+            $html .= "<td>" . \Core\HumanValue::format($this->CarClass->harmonizedPowerRatio($car), "g/W") . "</td>";
 
             if ($this->CanEdit) {
                 $html .= "<td>" . $this->newHtmlTableRowDeleteCheckbox("Car" . $car->id() . "Delete") . "</td>";
@@ -95,6 +143,7 @@ class CarClass extends \core\HtmlContent {
 
             $html .= "</tr>";
         }
+
         $html .= "</table>";
 
         if ($this->CanEdit) {
@@ -104,8 +153,14 @@ class CarClass extends \core\HtmlContent {
 
 
         $html .= "<h2>" . _("Cars Overview") . "</h2>";
-        foreach ($cc->cars() as $car) {
-            $html .= $car->htmlImg($cc->restrictor($car));
+        foreach ($this->CarClass->cars() as $car) {
+            $html .= $car->html($this->CarClass);
+        }
+
+
+        if ($this->CanEdit) {
+            $html .= "<br>";
+            $html .= "<a href=\"" . $this->url(['Id'=>$this->CarClass->id(), 'Action'=>'AddCars']) . "\">" . _("Add Cars") . "</a>";
         }
 
 

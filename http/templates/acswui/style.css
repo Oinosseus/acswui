@@ -353,52 +353,6 @@ form label {
 
 
 /* -----------------------------------------------------------------------------
- *                                  Image Links
- * -----------------------------------------------------------------------------
- */
-
-a.CarBrandLink,
-a.CarModelLink
-a.CarSkinLink,
-a.TrackLink,
-a.CarClassLink {
-    display: inline-block;
-    text-align: center;
-    text-decoration: none;
-    font-weight: normal;
-    background-color: #00000033;
-}
-
-a.CarBrandLink:hover,
-a.CarModelLink:hover
-a.CarSkinLink:hover,
-a.TrackLink:hover,
-a.CarClassLink:hover {
-    background-color: var(--color-red-accent);
-}
-
-a.CarBrandLink label,
-a.CarModelLink label,
-a.CarSkinLink label,
-a.TrackLink label,
-a.CarClassLink label {
-    display: block;
-    margin-top: 0.3em;
-    text-decoration: none;
-}
-
-a.CarBrandLink img,
-a.CarModelLink img,
-a.CarSkinLink img,
-a.TrackLink img,
-a.CarClassLink img {
-    margin-bottom: 0.3em;
-    display: block;
-}
-
-
-
-/* -----------------------------------------------------------------------------
  *                                  SVG Charts
  * -----------------------------------------------------------------------------
  */
@@ -446,11 +400,6 @@ div.SvgChart svg g.Plots polyline.PlotBackground {
     stroke: none;
     fill: #00000011;
 }
-
-/*div.SvgChart svg defs marker#AxisArrow {
-    stroke: #ffffff;
-    fill: #ffffff;
-}*/
 
 div.SvgChart svg g.Axes g.Ticktext text {
     fill: #ffffff;

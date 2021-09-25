@@ -24,22 +24,21 @@ class CarClass extends DbEntry {
     }
 
 
-//     /**
-//      * Add a new car to the car class
-//      * @param $car The new Car object
-//      */
-//     public function addCar(Car $car) {
-//         global $acswuiDatabase;
-//         global $acswuiLog;
-//
-//         $res = $acswuiDatabase->fetch_2d_array("CarClassesMap", ['Id'], ['Car'=>$car->id(), 'CarClass'=>$this->Id]);
-//         if (count($res) !== 0) {
-//             $acswuiLog->logWarning("Ignoring adding existing car map Car::Id=" . $car->id() . ", CarClass::Id=" . $this->Id);
-//             return;
-//         }
-//         $acswuiDatabase->insert_row("CarClassesMap", ['Car'=>$car->id(), 'CarClass'=>$this->Id]);
-//         $this->Cars[] = $car;
-//     }
+    /**
+     * Add a new car to the car class
+     * @param $car The new Car object
+     */
+    public function addCar(Car $car) {
+
+        $res = \Core\Database::fetch("CarClassesMap", ['Id'], ['Car'=>$car->id(), 'CarClass'=>$this->id()]);
+        if (count($res) !== 0) {
+            \Core\Log::warning("Ignoring adding existing car map Car::Id=" . $car->id() . ", CarClass::Id=" . $this->id());
+            return;
+        }
+        \Core\Database::insert("CarClassesMap", ['Car'=>$car->id(), 'CarClass'=>$this->id()]);
+
+        if ($this->Cars !== NULL) $this->Cars[] = $car;
+    }
 
 
     /**
@@ -47,9 +46,8 @@ class CarClass extends DbEntry {
      * @return The necessary ballast for a certain car in the class
      */
     public function ballast($car) {
-        global $acswuiDatabase;
 
-        if ($this->BallastMap === NULL) {
+        if ($this->BallastMap === NULL || !array_key_exists($car->id(), $this->BallastMap)) {
 
             $this->BallastMap = array();
             foreach (\Core\Database::fetch("CarClassesMap", ['Car', 'Ballast'], ['CarClass'=>$this->id()]) as $row) {
@@ -84,6 +82,7 @@ class CarClass extends DbEntry {
 
         return $this->Cars;
     }
+
 
 //     private function clearCache() {
 //         $this->Name = NULL;
@@ -158,8 +157,13 @@ class CarClass extends DbEntry {
     }
 
 
-    //! @return Html img tag containing preview image
-    public function htmlImg() {
+    /**
+     * @param $include_link Include a link
+     * @param $show_label Include a label
+     * @param $show_img Include a preview image
+     * @return Html content for this object
+     */
+    public function html(bool $include_link = TRUE, bool $show_label = TRUE, bool $show_img = TRUE) {
 
         // try to find first available CarSkin
         $cars = $this->cars();
@@ -176,30 +180,21 @@ class CarClass extends DbEntry {
         }
 
         $img_id = "CarClass" . $this->id();
-        $html = "<a class=\"CarClassLink\" href=\"index.php?HtmlContent=CarClass&Id=" . $this->id() . "\">";
-        $html .= "<label for=\"$img_id\">" . $this->name() . "</label>";
-        if ($preview_path !== NULL) {
-            $html .= "<img src=\"$preview_path\" id=\"$img_id\" alt=\"". $this->name() . "\" title=\"" . $this->name() . "\">";
-        } else {
-            $html .= "<br>No car skin for " . $this . " found!<br>";
+        $html = "";
+
+        if ($show_label) $html .= "<label for=\"$img_id\">" . $this->name() . "</label>";
+
+        if ($show_img) {
+            if ($preview_path !== NULL) {
+                $html .= "<img class=\"HoverPreviewImage\" src=\"$preview_path\" id=\"$img_id\" alt=\"". $this->name() . "\" title=\"" . $this->name() . "\">";
+            } else {
+                $html .= "<br>No car skin for " . $this . " found!<br>";
+            }
         }
-        $html .= "</a>";
 
-        $html .= "<script>";
-        $html .= "var e = document.getElementById('$img_id');";
+        if ($include_link) $html = "<a href=\"index.php?HtmlContent=CarClass&Id=" . $this->id() . "\">$html</a>";
 
-        # show different hover image
-        $html .= "e.addEventListener('mouseover', function() {";
-        $html .= "this.src='$hover_path';";
-        $html .= "});";
-
-        # show track;
-        $html .= "e.addEventListener('mouseout', function() {";
-        $html .= "this.src='$preview_path';";
-        $html .= "});";
-
-        $html .= "</script>";
-
+        $html = "<div class=\"DbEntryHtml\">$html</div>";
         return $html;
     }
 
@@ -346,7 +341,7 @@ class CarClass extends DbEntry {
      */
     public function restrictor($car) {
 
-        if ($this->RestrictorMap === NULL) {
+        if ($this->RestrictorMap === NULL || !array_key_exists($car->id(), $this->RestrictorMap)) {
 
             $this->RestrictorMap = array();
             foreach (\Core\Database::fetch("CarClassesMap", ['Car', 'Restrictor'], ['CarClass'=>$this->id()]) as $row) {
@@ -418,20 +413,17 @@ class CarClass extends DbEntry {
 //     }
 
 
-//     /**
-//      * Check if a certain Car is contained in this CarClass
-//      * @return True if the requested car object is part of this car class
-//      */
-//     public function validCar(Car $car) {
-//         foreach ($this->cars() as $c) {
-//
-//             // check car
-//             if ($c->id() != $car->id()) continue;
-//
-//             return TRUE;
-//         }
-//         return FALSE;
-//     }
+    /**
+     * Check if a certain Car is contained in this CarClass
+     * @return True if the requested car object is part of this car class
+     */
+    public function validCar(Car $car) {
+        foreach ($this->cars() as $c) {
+            if ($c->id() != $car->id()) continue;
+            return TRUE;
+        }
+        return FALSE;
+    }
 
 
 //     /**

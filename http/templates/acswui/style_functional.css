@@ -43,3 +43,32 @@ label.HtmlContentDeleteCheckbox.Checked div.UnDeleteRowIcon {
 label.HtmlContentDeleteCheckbox input[type="checkbox"] {
     display: none;
 }
+
+
+
+/* -----------------------------------------------------------------------------
+ *                            Html Content Checkbox
+ * -----------------------------------------------------------------------------
+ *
+ * See \Core\HtmlContent::newHtmlContentCheckbox()
+ */
+
+div.HtmlContentCheckbox {
+    display: inline-block;
+    background-color: var(--color-bg-elements);
+    margin-right: 1em;
+    margin-bottom: 1em;
+}
+
+div.HtmlContentCheckbox input[type="checkbox"] {
+    display: none;
+}
+
+div.HtmlContentCheckbox label {
+    display: block;
+    padding: 0.1em 0.5em;
+}
+
+div.HtmlContentCheckbox input[type="checkbox"]:checked ~ label {
+    background-color: var(--color-red-accent);
+}

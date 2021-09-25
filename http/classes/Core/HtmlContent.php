@@ -36,6 +36,9 @@ abstract class HtmlContent {
     //! Defines if the current content can be shown
     private $IsPermitted = TRUE;
 
+    // HtmlID for newHtmlContentCheckbox()
+    private $HtmlContentCheckbox = 0;
+
 
     /**
      *
@@ -198,6 +201,32 @@ abstract class HtmlContent {
     }
 
 
+
+    /**
+     * Generate a new checkbox input with a custom content
+     * @param $var_name The nam for the $_REQUEST variable
+     * @param $content The HTML content for the checkbox
+     * @param $checked Default checkbox state
+     * @param $disabled Disable the checkbox
+     */
+    public function newHtmlContentCheckbox(string $var_name, string $content, bool $checked=FALSE, bool $disabled=FALSE) {
+        $html = "";
+        $checked = ($checked) ? "checked" : "";
+        $disabled = ($disabled) ? "disabled" : "";
+
+        ++$this->HtmlContentCheckbox;
+        $id = "HtmlContentCheckbox" . $this->HtmlContentCheckbox;
+
+        $html .= "<div class=\"HtmlContentCheckbox\">";
+        $html .= "<input type=\"checkbox\" name=\"$var_name\" id=\"$id\" $checked $disabled>";
+        $html .= "<label for=\"$id\">$content</label>";
+        $html .= "</div>";
+
+        return $html;
+    }
+
+
+
     /**
      * Generates the HTML string for a new form element
      * The generated element will contain all necessary variables to allow navigation to current content
@@ -277,7 +306,7 @@ abstract class HtmlContent {
 
 
     //! @return URL to this Content item
-    public function url(string $content = NULL, array $get_vars = array()) {
+    public function url(array $get_vars = array(), string $content = NULL) {
         $url = HtmlContent::BASESCRIPT;
 
         if ($content === NULL) {

@@ -27,7 +27,7 @@ class TrackLocation extends \core\HtmlContent {
 
             $html .= "<div id=\"AvailableTracks\">";
             foreach ($tl->listTracks() as $t) {
-                $html .= $t->htmlImg();
+                $html .= $t->html();
             }
             $html .= "</div>";
 

@@ -13,7 +13,7 @@ class AvailableBrands extends \core\HtmlContent {
         $html = "";
 
         foreach (\DbEntry\CarBrand::listBrands() as $brand) {
-            $html .= $brand->htmlImg();
+            $html .= $brand->html();
         }
 
         return $html;

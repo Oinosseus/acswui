@@ -78,8 +78,13 @@ class CarBrand extends DbEntry {
     }
 
 
-    //! @return Html img tag containing preview image
-    public function htmlImg() {
+    /**
+     * @param $include_link Include a link
+     * @param $show_label Include a label
+     * @param $show_img Include a preview image
+     * @return Html content for this object
+     */
+    public function html(bool $include_link = TRUE, bool $show_label = TRUE, bool $show_img = TRUE) {
 
         $brand_name = $this->name();
         $brand_id = $this->id();
@@ -88,11 +93,13 @@ class CarBrand extends DbEntry {
         $img_id = "CarBrand$brand_id";
         $path = \Core\Config::RelPathHtdata . "/content/cars/$car_model/ui/badge.png";
 
-        $html = "<a class=\"CarBrandLink\" href=\"index.php?HtmlContent=CarBrand&Id=$brand_id\">";
-        $html .= "<label for=\"$img_id\">$brand_name</label>";
-        $html .= "<img src=\"$path\" id=\"$img_id\" alt=\"$brand_name\" title=\"$brand_name\">";
-        $html .= "</a>";
+        $html = "";
 
+        if ($show_label) $html .= "<label for=\"$img_id\">$brand_name</label>";
+        if ($show_img) $html .= "<img src=\"$path\" id=\"$img_id\" alt=\"$brand_name\" title=\"$brand_name\">";
+        if ($include_link) $html = "<a href=\"index.php?HtmlContent=CarBrand&Id=$brand_id\">$html</a>";
+
+        $html = "<div class=\"DbEntryHtml\">$html</div>";
         return $html;
     }
 

@@ -52,34 +52,30 @@ class CarSkin extends DbEntry {
     }
 
 
-    //! @return Html img tag containing preview image
-    public function htmlImg() {
+    /**
+     * @param $include_link Include a link
+     * @param $show_label Include a label
+     * @param $show_img Include a preview image
+     * @return Html content for this object
+     */
+    public function html(bool $include_link = TRUE, bool $show_label = TRUE, bool $show_img = TRUE) {
 
         $skin_name = $this->name();
         $skin_id = $this->id();
         $preview_path = \Core\Config::RelPathHtdata . "/htmlimg/car_skins/$skin_id.png";
         $hover_path = \Core\Config::RelPathHtdata . "/htmlimg/car_skins/$skin_id.hover.png";
 
-        $html = "<a class=\"CarSkinLink\" href=\"index.php?HtmlContent=CarSkin&Id=$skin_id\">";
-        $html .= "<label for=\"CarSkin$skin_id\">$skin_name</label>";
-        $html .= "<img src=\"$preview_path\" id=\"CarSkin$skin_id\" alt=\"$skin_name\" title=\"Skin: $skin_name\">";
-        $html .= "</a>";
+        $html = "";
 
-        $html .= "<script>";
-        $html .= "var e = document.getElementById('CarSkin$skin_id');";
+        if ($show_label) $html .= "<label for=\"CarSkin$skin_id\">$skin_name</label>";
 
-        # show different hover image
-        $html .= "e.addEventListener('mouseover', function() {";
-        $html .= "this.src='$hover_path';";
-        $html .= "});";
+        if ($show_img) $html .= "<img class=\"HoverPreviewImage\" src=\"$preview_path\" id=\"CarSkin$skin_id\" alt=\"$skin_name\" title=\"Skin: $skin_name\">";
 
-        # show track;
-        $html .= "e.addEventListener('mouseout', function() {";
-        $html .= "this.src='$preview_path';";
-        $html .= "});";
+        if ($include_link) {
+            $html = "<a href=\"index.php?HtmlContent=CarSkin&Id=$skin_id\">$html</a>";
+        }
 
-        $html .= "</script>";
-
+        $html = "<div class=\"DbEntryHtml\">$html</div>";
         return $html;
     }
 

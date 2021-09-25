@@ -131,11 +131,15 @@ class Car extends DbEntry {
         return $this->PowerHarmonized[$restrictor];
     }
 
+
     /**
-     * @param $restrictor Current restrictor level (optional)
-     * @return Html img tag containing preview image
+     * @param $carclass A carclass for which this car is linked (optional)
+     * @param $include_link Include a link
+     * @param $show_label Include a label
+     * @param $show_img Include a preview image
+     * @return Html content for this object
      */
-    public function htmlImg(int $restrictor = NULL) {
+    public function html(\DbEntry\CarClass $carclass = NULL, bool $include_link = TRUE, bool $show_label = TRUE, bool $show_img = TRUE) {
 
         $car_id = $this->id();
         $car_name = $this->name();
@@ -152,42 +156,39 @@ class Car extends DbEntry {
             $hover_path = \Core\Config::RelPathHtdata . "/htmlimg/car_skins/" . $skin->id() . ".hover.png";
         }
 
-        $html = "<a class=\"CarModelLink\" href=\"" . $this->htmlUrl($restrictor) . "\">";
-        $html .= "<label for=\"$img_id\">$car_name</label>";
-        if ($preview_path !== NULL) {
-            $html .= "<img src=\"$preview_path\" id=\"$img_id\" alt=\"$car_name\" title=\"$car_name\">";
-        } else {
-            $html .= "<br>No skin for " . $this . " found!<br>";
+        $html = "";
+
+        if ($show_label) $html .= "<label for=\"$img_id\">$car_name</label>";
+
+        if ($show_img) {
+            if ($preview_path !== NULL) {
+                $html .= "<img class=\"HoverPreviewImage\" src=\"$preview_path\" id=\"$img_id\" alt=\"$car_name\" title=\"$car_name\">";
+            } else {
+                $html .= "<br>No skin for " . $this . " found!<br>";
+            }
+            }
+
+        if ($include_link) {
+            $html = "<a href=\"" . $this->htmlUrl($carclass) . "\">$html</a>";
         }
-        $html .= "</a>";
 
-        $html .= "<script>";
-        $html .= "var e = document.getElementById('$img_id');";
-
-        # show different hover image
-        $html .= "e.addEventListener('mouseover', function() {";
-        $html .= "this.src='$hover_path';";
-        $html .= "});";
-
-        # show track;
-        $html .= "e.addEventListener('mouseout', function() {";
-        $html .= "this.src='$preview_path';";
-        $html .= "});";
-
-        $html .= "</script>";
+        $html = "<div class=\"DbEntryHtml\">$html</div>";
 
         return $html;
     }
 
 
     /**
-     * @param $restrictor Current restrictor level (optional)
+     * @param $carclass A carclass for which this car is linked (optional)
      * @return The URL to the HTML view page for this car
      */
-    public function htmlUrl(int $restrictor = NULL) {
+    public function htmlUrl(\DbEntry\CarClass $carclass = NULL) {
+
         $url = "index.php?HtmlContent=CarModel&Id=" . $this->id();
-        if ($restrictor !== NULL)
+        if ($carclass !== NULL) {
+            $restrictor = $carclass->restrictor($this);
             $url .= "&Restrictor=$restrictor";
+        }
         return $url;
     }
 

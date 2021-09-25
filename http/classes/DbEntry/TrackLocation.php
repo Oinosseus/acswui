@@ -42,9 +42,13 @@ class TrackLocation extends DbEntry {
     }
 
 
-    //! @return Html img tag containing preview image
-    public function htmlImg() {
-        $html = "";
+    /**
+     * @param $include_link Include a link
+     * @param $show_label Include a label
+     * @param $show_img Include a preview image
+     * @return Html content for this object
+     */
+    public function html(bool $include_link = TRUE, bool $show_label = TRUE, bool $show_img = TRUE) {
 
         $tl_id = $this->id();
         $tl_track = $this->track();
@@ -63,26 +67,12 @@ class TrackLocation extends DbEntry {
             $hover_path = \Core\Config::RelPathHtdata . "/htmlimg/tracks/$track_id.hover.png";
         }
 
-        $html = "<a class=\"TrackLink\" href=\"index.php?HtmlContent=TrackLocation&Id=$tl_id\">";
-        $html .= "<label for=\"$img_id\">$tl_name</label>";
-        $html .= "<img src=\"$preview_path\" id=\"$img_id\" alt=\"$tl_name\" title=\"$tl_name\">";
-        $html .= "</a>";
+        $html = "";
+        if ($show_label) $html .= "<label for=\"$img_id\">$tl_name</label>";
+        if ($show_img) $html .= "<img class=\"HoverPreviewImage\" src=\"$preview_path\" id=\"$img_id\" alt=\"$tl_name\" title=\"$tl_name\">";
+        if ($include_link) $html = "<a href=\"index.php?HtmlContent=TrackLocation&Id=$tl_id\">$html</a>";
 
-        $html .= "<script>";
-        $html .= "var e = document.getElementById('$img_id');";
-
-        # show different hover image
-        $html .= "e.addEventListener('mouseover', function() {";
-        $html .= "this.src='$hover_path';";
-        $html .= "});";
-
-        # show track;
-        $html .= "e.addEventListener('mouseout', function() {";
-        $html .= "this.src='$preview_path';";
-        $html .= "});";
-
-        $html .= "</script>";
-
+        $html = "<div class=\"DbEntryHtml\">$html</div>";
         return $html;
     }
 

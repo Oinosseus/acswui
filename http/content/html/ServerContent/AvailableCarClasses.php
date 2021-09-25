@@ -13,7 +13,7 @@ class AvailableCarClasses extends \core\HtmlContent {
         $html = "";
 
         foreach (\DbEntry\CarClass::listClasses() as $cc) {
-            $html .= $cc->htmlImg();
+            $html .= $cc->html();
         }
 
         return $html;

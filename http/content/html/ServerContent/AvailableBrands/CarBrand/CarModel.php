@@ -26,7 +26,7 @@ class CarModel extends \core\HtmlContent {
 
             $brand = $car->brand();
             $html .= "<div id=\"BrandInfo\">";
-            $html .= $brand->htmlImg();
+            $html .= $brand->html(FALSE, FALSE, TRUE);
             $html .= "<label>" . $brand->name() . "</label>";
             $html .= "</div>";
 
@@ -61,7 +61,7 @@ class CarModel extends \core\HtmlContent {
             $html .= "<div id=\"AvailableSkins\">";
             foreach ($car->skins() as $skin) {
                 $skin_name = $skin->skin();
-                $html .= $skin->htmlImg();
+                $html .= $skin->html();
             }
             $html .= "</div>";
 

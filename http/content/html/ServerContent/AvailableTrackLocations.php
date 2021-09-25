@@ -13,7 +13,7 @@ class AvailableTrackLocations extends \core\HtmlContent {
         $html = "";
 
         foreach (\DbEntry\TrackLocation::listLocations() as $tl) {
-            $html .= $tl->htmlImg();
+            $html .= $tl->html();
         }
 
         return $html;

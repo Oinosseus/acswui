@@ -21,7 +21,7 @@ class CarSkin extends \core\HtmlContent {
 
             $brand = $skin->car()->brand();
             $html .= "<div id=\"BrandInfo\">";
-            $html .= $brand->htmlImg();
+            $html .= $brand->html();
             $html .= "<label>" . $skin->car()->name() . "</label>";
             $html .= "</div>";
 
