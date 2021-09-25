@@ -21,10 +21,18 @@ class CarClass extends \core\HtmlContent {
             \Core\Log::warning("No Id parameter given!");
         }
 
-        // save car
+        // save carclass
         if ($this->CanEdit && array_key_exists("SaveCarClass", $_POST)) {
             $cc = \DbEntry\CarClass::fromId($_POST['SaveCarClass']);
             foreach ($cc->cars() as $car) {
+
+                // delete car from class
+                $key = "Car" . $car->id() . "Delete";
+                if (array_key_exists($key, $_POST)) {
+                    $cc->removeCar($car);
+                    continue;
+                }
+
 
                 // save ballast
                 $key = "Car" . $car->id() . "Ballast";
@@ -70,6 +78,7 @@ class CarClass extends \core\HtmlContent {
             $html .= "<td>" . \Core\HumanValue::format($car->torque(), "Nm") . "</td>";
             $html .= "<td>" . \Core\HumanValue::format($car->power(), "W") . "</td>";
             $html .= "<td>" . \Core\HumanValue::format($car->weight(), "kg") . "</td>";
+
             if ($this->CanEdit) {
                 $html .= "<td><input type=\"number\" name=\"Car" . $car->id() . "Ballast\" value=\"" . $cc->ballast($car) . "\" min=\"0\" max=\"1000\"></td>";
                 $html .= "<td><input type=\"number\" name=\"Car" . $car->id() . "Restrictor\" value=\"" . $cc->restrictor($car) . "\" min=\"0\" max=\"100\"></td>";
@@ -77,7 +86,12 @@ class CarClass extends \core\HtmlContent {
                 $html .= "<td>" . \Core\HumanValue::format($cc->ballast($car), "kg") . "</td>";
                 $html .= "<td>" . \Core\HumanValue::format($cc->restrictor($car), "%") . "</td>";
             }
+
             $html .= "<td>" . \Core\HumanValue::format($cc->harmonizedPowerRatio($car), "g/W") . "</td>";
+
+            if ($this->CanEdit) {
+                $html .= "<td>" . $this->newHtmlTableRowDeleteCheckbox("Car" . $car->id() . "Delete") . "</td>";
+            }
 
             $html .= "</tr>";
         }

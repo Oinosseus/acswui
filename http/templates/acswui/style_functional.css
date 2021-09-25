@@ -1,0 +1,45 @@
+/* -----------------------------------------------------------------------------
+ *                             Table Row Delete
+ * -----------------------------------------------------------------------------
+ *
+ * See \Core\HtmlContent::newHtmlTableRowDeleteCheckbox()
+ */
+
+table tr.RowWillBeDeleted {
+    background-color: var(--color-red-accent);
+}
+
+table tr.RowWillBeDeleted td {
+    background-color: none;
+    color: #a44;
+}
+
+label.HtmlContentDeleteCheckbox {
+    color: #a44;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+label.HtmlContentDeleteCheckbox div.DeleteRowIcon {
+    display: block;
+}
+
+label.HtmlContentDeleteCheckbox div.UnDeleteRowIcon {
+    display: none;
+}
+
+label.HtmlContentDeleteCheckbox.Checked  {
+    color: #4a4;
+}
+
+label.HtmlContentDeleteCheckbox.Checked div.DeleteRowIcon {
+    display: none;
+}
+
+label.HtmlContentDeleteCheckbox.Checked div.UnDeleteRowIcon {
+    display: block;
+}
+
+label.HtmlContentDeleteCheckbox input[type="checkbox"] {
+    display: none;
+}

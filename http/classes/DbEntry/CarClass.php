@@ -316,41 +316,19 @@ class CarClass extends DbEntry {
 //         $this->clearCache();
 //     }
 
-//     /**
-//      * Remove a car from the car class
-//      * @param $car The Car object to be removed
-//      */
-//     public function removeCar(Car $car) {
-//         global $acswuiDatabase;
-//
-//         // release seat occupations
-//         $query = "SELECT CarClassOccupationMap.Id FROM CarClassOccupationMap ";
-//         $query .= "INNER JOIN CarSkins ON CarSkins.Id = CarClassOccupationMap.CarSkin ";
-//         $query .= "WHERE CarClassOccupationMap.CarClass = " . $this->Id . " AND CarSkins.Car = " . $car->id();
-//         $res = $acswuiDatabase->query($query);
-//         if ($res === FALSE) {
-//             global $acswuiLog;
-//
-//             $msg = "Could not remove seat occupations for CarClass ID";
-//             $msg .= $this->id();
-//             $msg .= " for Car ID" . $car->id();
-//             $msg .= "!";
-//
-//             $acswuiLog->logError($msg);
-//             return;
-//         } else {
-//             foreach ($res->fetch_all(MYSQLI_ASSOC) as $row) {
-//                 $acswuiDatabase->delete_row("CarClassOccupationMap", $row['Id']);
-//             }
-//         }
-//
-//         // release car mapping
-//         $res = $acswuiDatabase->fetch_2d_array("CarClassesMap", ['Id'], ['Car'=>$car->id(), 'CarClass'=>$this->Id]);
-//         $map_id = $this->getCarMapId($car);
-//         $acswuiDatabase->delete_row("CarClassesMap", $map_id);
-//
-//         $this->clearCache();
-//     }
+    /**
+     * Remove a car from the car class
+     * @param $car The Car object to be removed
+     */
+    public function removeCar(Car $car) {
+
+        // remove car
+        $query = "DELETE FROM CarClassesMap WHERE CarClass = " . $this->id() . " AND Car = " . $car->id();
+        \Core\Database::query($query);
+
+        // clear cache
+        $this->Cars = NULL;
+    }
 
 //     /**
 //      * Change the name of the car class

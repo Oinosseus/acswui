@@ -54,6 +54,14 @@ abstract class HtmlTemplate {
     }
 
 
+    //! @return an array of scripts that need to be loaded with a template
+    public function listScripts() {
+        $l = array();
+        $l[] = "js/general.js";
+        return $l;
+    }
+
+
     //! @return A list of all available Template objects
     public static function listTemplates() {
 

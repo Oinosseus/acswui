@@ -225,6 +225,25 @@ abstract class HtmlContent {
 
 
     /**
+     * Generates a checkbox element to indicate if a table row shall be deleted (or not).
+     * This must be placed within a <tr><td> construct.
+     * When the row shall be deleted, the parenting <tr> element gets the CSS class 'RowWillBeDeleted' assigned
+     * @param $var_name A custom name for the checkbox element (will be available as $_REQUEST variable on form submission)
+     */
+    public function newHtmlTableRowDeleteCheckbox(string $var_name) {
+        $html = "";
+
+        $html .= "<label class=\"HtmlContentDeleteCheckbox\">";
+        $html .= "<div class=\"DeleteRowIcon\" title=\"" . _("Delete Row Entry") . "\">&#x2612;</div>";
+        $html .= "<div class=\"UnDeleteRowIcon\" title=\"" . _("Not Delete Row Entry") . "\">&#x267b;</div>";
+        $html .= "<input type=\"checkbox\" name=\"$var_name\" onClick=\"toggleTableRowDelete(this)\">";
+        $html .= "</label>";
+
+        return $html;
+    }
+
+
+    /**
      * @return A list of parenting Content class names (to generate a hierarchical navigation menu)
      */
     public function parentClasses() {
