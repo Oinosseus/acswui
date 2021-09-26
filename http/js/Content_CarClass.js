@@ -1,5 +1,5 @@
 
-function allowEditCarClassName() {
+function enableEditCarClassName() {
 
     // remove edit button
     var btn = document.getElementById('EnableEditCarClassNameButton');
@@ -17,9 +17,35 @@ function allowEditCarClassName() {
     inp.select()
 }
 
+
+
+function enableEditCarClassDescription() {
+
+    // remove edit button
+    var btn = document.getElementById('EnableEditCarClassDescriptionButton');
+    btn.parentNode.removeChild(btn);
+
+    // remove html description
+    var dsc = document.getElementById('CarClassDescriptionHtml');
+    dsc.parentNode.removeChild(dsc);
+
+    // display textarea
+    var txt = document.getElementById('CarClassDescriptionMarkdown');
+    txt.style.display = "block";
+}
+
+
+
+// Main()
 document.addEventListener('DOMContentLoaded', function () {
-    var btn = document.getElementById('EnableEditCarClassNameButton');
-    if (btn) {
-        btn.addEventListener('click', allowEditCarClassName);
+
+    var btn1 = document.getElementById('EnableEditCarClassNameButton');
+    if (btn1) {
+        btn1.addEventListener('click', enableEditCarClassName);
+    }
+
+    var btn2 = document.getElementById('EnableEditCarClassDescriptionButton');
+    if (btn2) {
+        btn2.addEventListener('click', enableEditCarClassDescription);
     }
 })

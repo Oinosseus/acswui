@@ -30,6 +30,12 @@ class CarClass extends \core\HtmlContent {
                 $cc->rename($_POST[$key]);
             }
 
+            // save description
+            $key = "CarClassDescription";
+            if (array_key_exists($key, $_POST)) {
+                $cc->setDescription($_POST[$key]);
+            }
+
             foreach ($cc->cars() as $car) {
 
                 // delete car from class
@@ -114,9 +120,15 @@ class CarClass extends \core\HtmlContent {
         $html .= "</h1>";
 
         // description
-        $html .= "<div id=\"CarClassDescription\">";
-        $html .= $this->CarClass->description();
+        $html .= "<div id=\"CarClassDescriptionHtml\" style=\"display:inline-block;\">";
+        $html .= $this->parseMarkdown($this->CarClass->description());
         $html .= "</div>";
+        if ($this->CanEdit) {
+            $html .= " <div style=\"display: inline-block; cursor: pointer;\" id=\"EnableEditCarClassDescriptionButton\">&#x270e;</div>";
+            $html .= "<textarea id=\"CarClassDescriptionMarkdown\" style=\"display:none;\" name=\"CarClassDescription\">";
+            $html .= $this->CarClass->description();
+            $html .= "</textarea>";
+        }
 
         $html .= "<h2>" . _("Technical Data") . "</h2>";
 

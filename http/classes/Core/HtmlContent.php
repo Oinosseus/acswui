@@ -300,6 +300,25 @@ abstract class HtmlContent {
 
 
     /**
+     * Parses a markdown coded string into HTML
+     * @param $markdown A string with markdown markup
+     * @return a html string
+     */
+    public function parseMarkdown(string $markdown) {
+
+        $search = array();
+        $replace = array();
+
+        // link [Beschriftung des Hyperlinks](https://de.wikipedia.org/ "Titel, der beim Überfahren mit der Maus angezeigt wird")
+        $search[] = '/\[([^\]]+)\]\(([^)"]+)\"([^"]+)\"\)/';
+        $replace[] = '<a href="${2}" title="${3}">${1}</a>';
+
+        $html = preg_replace($search, $replace, $markdown);
+        return $html;
+    }
+
+
+    /**
      * @return The (sub) title for the current page
      */
     public function pageTitle() {

@@ -399,19 +399,16 @@ class CarClass extends DbEntry {
     }
 
 
-//     /**
-//      * Set A new description for the CarClass
-//      * @param $description The new description
-//      */
-//     public function setDescription(string $description) {
-//         global $acswuiDatabase;
-//
-//         $fields = array();
-//         $fields['Description'] = $description;
-//         $acswuiDatabase->update_row("CarClasses", $this->Id, $fields);
-//
-//         $this->Description = $description;
-//     }
+    /**
+     * Set A new description for the CarClass
+     * @param $description The new description
+     */
+    public function setDescription(string $description) {
+        $fields = array();
+        $fields['Description'] = $description;
+        \Core\Database::update("CarClasses", $this->id(), $fields);
+        $this->Description = $description;
+    }
 
 
     /**
