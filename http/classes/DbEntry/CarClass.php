@@ -95,16 +95,15 @@ class CarClass extends DbEntry {
 //         CarClass::$CarClassesList = NULL;
 //     }
 
-//     /**
-//      * Create a new car class in the database
-//      * @param $name An arbitrary name for the new class
-//      * @return The CarClass object of the new class
-//      */
-//     public static function createNew($name) {
-//         global $acswuiDatabase;
-//         $id = $acswuiDatabase->insert_row("CarClasses", ['Name'=>$name]);
-//         return new CarClass($id);
-//     }
+    /**
+     * Create a new car class in the database
+     * @param $name An arbitrary name for the new class
+     * @return The CarClass object of the new class
+     */
+    public static function createNew($name) {
+        $id = \Core\Database::insert("CarClasses", ['Name'=>$name]);
+        return CarClass::fromId($id);
+    }
 
 //     //! Delete this car class from the database
 //     public function delete() {
