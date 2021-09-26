@@ -105,19 +105,18 @@ class CarClass extends DbEntry {
         return CarClass::fromId($id);
     }
 
-//     //! Delete this car class from the database
-//     public function delete() {
-//         global $acswuiDatabase;
-//
-//         // delete maps
-//         $res = $acswuiDatabase->fetch_2d_array("CarClassesMap", ['Id'], ['CarClass'=>$this->Id]);
-//         foreach ($res as $row) {
-//             $acswuiDatabase->delete_row("CarClassesMap", $row['Id']);
-//         }
-//
-//         // delete car class
-//         $acswuiDatabase->delete_row("CarClasses", $this->Id);
-//     }
+
+    //! Delete this car class from the database
+    public function delete() {
+        // delete maps
+        $res = \Core\Database::fetch("CarClassesMap", ['Id'], ['CarClass'=>$this->id()]);
+        foreach ($res as $row) {
+            \Core\Database::delete("CarClassesMap", $row['Id']);
+        }
+
+        // delete car class
+        $this->deleteFromDb();
+    }
 
 
     //! @return Description of the CarClass

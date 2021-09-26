@@ -48,4 +48,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btn2) {
         btn2.addEventListener('click', enableEditCarClassDescription);
     }
+
+    var btn3 = document.getElementById('DeleteCarClassButton');
+    if (btn3) {
+        btn3.addEventListener('click', function() {
+            if (window.confirm("Sure to delete carclass?")) {
+                btn3.parentNode.submit();
+            }
+        })
+    }
 })

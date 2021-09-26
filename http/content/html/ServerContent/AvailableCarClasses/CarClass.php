@@ -20,6 +20,13 @@ class CarClass extends \core\HtmlContent {
     public function getHtml() {
         $this->CanEdit = \Core\UserManager::permitted("CarClass_Edit");
 
+        // delete carclass
+        if ($this->CanEdit && array_key_exists("DeleteCarClass", $_POST)) {
+            $cc = \DbEntry\CarClass::fromId($_POST['DeleteCarClass']);
+            $cc->delete();
+            return _("Car Class Deleted");
+        }
+
         // save carclass
         if ($this->CanEdit && array_key_exists("SaveCarClass", $_POST)) {
             $cc = \DbEntry\CarClass::fromId($_POST['SaveCarClass']);
@@ -182,9 +189,20 @@ class CarClass extends \core\HtmlContent {
         }
 
 
+        // add cars
         if ($this->CanEdit) {
             $html .= "<br>";
             $html .= "<a href=\"" . $this->url(['Id'=>$this->CarClass->id(), 'Action'=>'AddCars']) . "\">" . _("Add Cars") . "</a>";
+        }
+
+
+        // delete car class
+        if ($this->CanEdit) {
+            $html .= "<br><br><br><br>";
+            $html .= "<form method=\"post\">";
+            $html .= "<input type=\"hidden\" name=\"DeleteCarClass\" value=\"" . $this->CarClass->id() . "\">";
+            $html .= "<button type=\"button\" id=\"DeleteCarClassButton\">" . _("Delete Car Class") . "</button>";
+            $html .= "</form>";
         }
 
 
