@@ -325,15 +325,16 @@ class CarClass extends DbEntry {
         $this->Cars = NULL;
     }
 
-//     /**
-//      * Change the name of the car class
-//      * @param $new_name The new name of the car class
-//      */
-//     public function rename($new_name) {
-//         global $acswuiDatabase;
-//         $acswuiDatabase->update_row("CarClasses", $this->Id, ["Name"=>$new_name]);
-//         $this->Name = $new_name;
-//     }
+
+    /**
+     * Change the name of the car class
+     * @param $new_name The new name of the car class
+     */
+    public function rename($new_name) {
+        \Core\Database::update("CarClasses", $this->id(), ["Name"=>$new_name]);
+        $this->Name = $new_name;
+    }
+
 
     /**
      * @param $car The requeted Car object

@@ -58,6 +58,14 @@ abstract class HtmlTemplate {
     public function listScripts() {
         $l = array();
         $l[] = "js/general.js";
+
+        // scripts requested by content
+        $content = \Core\HtmlContent::navigatedContent();
+        if ($content !== NULL) {
+            foreach ($content->listScripts() as $s)
+                $l[] = $s;
+        }
+
         return $l;
     }
 

@@ -13,6 +13,7 @@ class CarClass extends \core\HtmlContent {
     public function __construct() {
         parent::__construct(_("Car Class"),  _("Car CarClass"));
         $this->requirePermission("ViewServerContent_CarClasses");
+        $this->addScript("Content_CarClass.js");
     }
 
 
@@ -22,6 +23,13 @@ class CarClass extends \core\HtmlContent {
         // save carclass
         if ($this->CanEdit && array_key_exists("SaveCarClass", $_POST)) {
             $cc = \DbEntry\CarClass::fromId($_POST['SaveCarClass']);
+
+            // save name
+            $key = "CarClassName";
+            if (array_key_exists($key, $_POST)) {
+                $cc->rename($_POST[$key]);
+            }
+
             foreach ($cc->cars() as $car) {
 
                 // delete car from class
@@ -30,7 +38,6 @@ class CarClass extends \core\HtmlContent {
                     $cc->removeCar($car);
                     continue;
                 }
-
 
                 // save ballast
                 $key = "Car" . $car->id() . "Ballast";
@@ -93,20 +100,25 @@ class CarClass extends \core\HtmlContent {
     private function showCarClassOverview() {
         $html  = '';
 
+        if ($this->CanEdit) {
+            $html .= "<form method=\"post\">";
+            $html .= "<input type=\"hidden\" name=\"SaveCarClass\" value=\"" . $this->CarClass->id() . "\">";
+        }
 
-        // retrieve requests
-        $html .= "<h1>" . $this->CarClass->name() . "</h1>";
+        // name
+        $html .= "<h1>";
+        $html .= "<div style=\"display: inline-block;\" id=\"LabelCarClassName\">" . $this->CarClass->name() . "</div>";
+        if ($this->CanEdit) {
+            $html .= " <div style=\"display: inline-block; cursor: pointer;\" id=\"EnableEditCarClassNameButton\">&#x270e;</div>";
+        }
+        $html .= "</h1>";
 
+        // description
         $html .= "<div id=\"CarClassDescription\">";
         $html .= $this->CarClass->description();
         $html .= "</div>";
 
         $html .= "<h2>" . _("Technical Data") . "</h2>";
-
-        if ($this->CanEdit) {
-            $html .= "<form method=\"post\">";
-            $html .= "<input type=\"hidden\" name=\"SaveCarClass\" value=\"" . $this->CarClass->id() . "\">";
-        }
 
         $html .= "<table id=\"CarClassCars\">";
         $html .= "<tr>";

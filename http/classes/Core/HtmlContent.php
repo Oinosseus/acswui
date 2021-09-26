@@ -39,6 +39,9 @@ abstract class HtmlContent {
     // HtmlID for newHtmlContentCheckbox()
     private $HtmlContentCheckbox = 0;
 
+    // A list of scripts that are requested by derived content class
+    private $ContentScripts = array();
+
 
     /**
      *
@@ -60,6 +63,16 @@ abstract class HtmlContent {
 
     public function __toString() {
         return get_class($this);
+    }
+
+
+    /**
+     * This must be only called in the constructor of the derived class
+     * @param $filename The name of the script file (no paths)
+     */
+    protected function addScript($filename) {
+        if (!in_array($filename, $this->ContentScripts))
+            $this->ContentScripts[] = "js/" . $filename;
     }
 
 
@@ -170,6 +183,12 @@ abstract class HtmlContent {
         }
 
         return HtmlContent::$RootItemsList;
+    }
+
+
+    //! @return a list of scripts requested to be included (intended to be used by \Core\HtmlTemplate::listScripts()
+    public function listScripts() {
+        return $this->ContentScripts;
     }
 
 
