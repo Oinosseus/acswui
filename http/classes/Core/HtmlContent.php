@@ -22,7 +22,7 @@ abstract class HtmlContent {
     private static $RootItemsList = NULL;
 
     //! The path relative from content/html/ directory
-    private static $HierarchicalContentPath = NULL;
+    private $HierarchicalContentPath = NULL;
 
     //! The name of the page that shall be shown in subtitle
     private $PageTitle = NULL;
