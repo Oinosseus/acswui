@@ -286,6 +286,19 @@ class ServerPreset {
     }
 
 
+    //! @return A new ServerPreset object or NULL if not existent
+    public static function fromId(int $id) {
+        global $acswuiDatabase;
+
+        $res = $acswuiDatabase->fetch_2d_array("ServerPresets", ['Id'], ['Id'=>$id]);
+        if (count($res) == 1) {
+            return new ServerPreset($id);
+        }
+
+        return NULL;
+    }
+
+
     /**
      * @param $list_restricted When TRUE, also restricted presets are listed
      * @return A list of all available ServerPreset objects

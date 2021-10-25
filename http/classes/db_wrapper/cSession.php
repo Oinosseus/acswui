@@ -548,12 +548,7 @@ class Session {
         // save slot (db can have higher id than currently available
         $slot = (int) $res[0]['ServerSlot'];
         $this->ServerSlot = ($slot < count($acswuiConfig->ServerSlots)) ? new ServerSlot($slot) : NULL;
-
-        if ($res[0]['ServerPreset'] == 0)
-            $this->ServerPreset = NULL;
-        else
-            $this->ServerPreset = new ServerPreset($res[0]['ServerPreset']);
-
+        $this->ServerPreset = ServerPreset::fromId($res[0]['ServerPreset']);
         $this->CarClass = new CarClass($res[0]['CarClass']);
     }
 
