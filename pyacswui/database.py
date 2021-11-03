@@ -194,6 +194,21 @@ class Database(object):
         self.__appendColumn(tblname, colname, "TIMESTAMP", "CURRENT_TIMESTAMP")
 
 
+    def columns(self, tablename):
+        ret = []
+
+        query = "SHOW COLUMNS FROM `%s`;" % tablename
+
+        # execute query
+        cursor = self.__db_handle.cursor()
+        cursor.execute(query)
+        for res in cursor.fetchall():
+            ret.append(res[0])
+        cursor.close()
+
+        return ret;
+
+
     def findIds(self, tblname, where_dict):
         """
             Returns a list of IDs of all rows that match the where_dict dictionary

@@ -1,8 +1,9 @@
 import json
 import math
 import os.path
-import re
 import PIL
+import re
+import shutil
 
 def parse_json(file_path, expected_keys=[]):
 
@@ -114,17 +115,33 @@ def generateHtmlImg(src_img_path, src_img_hover, dst_dir, db_id):
     img_htmlimg  = PIL.Image.new( mode = "RGBA", size = (htmlimg_width, htmlimg_height) )
 
     # merge existing preview
+    img_preview = None
     if os.path.isfile(src_img_path):
-        img_preview = openImg(src_img_path)
-        img_htmlimg.alpha_composite(img_preview)
+        try:
+            img_preview = openImg(src_img_path)
+        except PIL.UnidentifiedImageError:
+            print("WARNING: Pillow cannot read image file", src_img_path)
+        if img_preview is not None:
+            img_htmlimg.alpha_composite(img_preview)
 
     # save as default preview
     img_htmlimg.save(path_htmlimg, "PNG")
 
     # merge existing outline
+    img_outline = None
     if os.path.isfile(src_img_hover):
-        img_outline = openImg(src_img_hover)
-        img_htmlimg.alpha_composite(img_outline)
+        try:
+            img_outline = openImg(src_img_hover)
+        except PIL.UnidentifiedImageError:
+            print("WARNING: Pillow cannot read image file", src_img_hover)
+        if img_outline is not None:
+            img_htmlimg.alpha_composite(img_outline)
 
     # save hover image
     img_htmlimg.save(path_htmlimg_hover, "PNG")
+
+    # fallback solution if pillow cannot open preview image
+    if img_preview is None and os.path.isfile(src_img_path):
+        shutil.copyfile(src_img_path, path_htmlimg)
+    if img_outline is None and os.path.isfile(src_img_hover):
+        shutil.copyfile(src_img_hover, path_htmlimg_hover)

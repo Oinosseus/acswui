@@ -56,27 +56,29 @@ class CommandInstall(Command):
 
         # temporarily needed to fix track location table
         # this can be deleted later
-        for row in self.__db.fetch("Tracks", "Track", {}, sort_by_cloumn="Track"):
-            track = row['Track']
-            fields = {"Track":track}
-            locations = self.__db.findIds("TrackLocations", fields)
-            if len(locations) == 0:
-                fields.update({"Deprected": 1})
-                self.__db.insertRow("TrackLocations", fields)
-        for row in self.__db.fetch("Tracks", ['Id', 'Track'], {}, sort_by_cloumn="Track"):
-            track_track = row['Track']
-            track_id = row['Id']
-            locations = self.__db.findIds("TrackLocations", {"Track": track_track})
-            if len(locations) > 1:
-                raise NotImplementedError("track " + track)
-            elif len(locations) == 1:
-                location_id = locations[0]
-                self.__db.updateRow("Tracks", track_id, {'Location': location_id})
+        if "Track" in self.__db.columns("Tracks"):
+            for row in self.__db.fetch("Tracks", "Track", {}, sort_by_cloumn="Track"):
+                track = row['Track']
+                fields = {"Track":track}
+                locations = self.__db.findIds("TrackLocations", fields)
+                if len(locations) == 0:
+                    fields.update({"Deprecated": 1})
+                    self.__db.insertRow("TrackLocations", fields)
+            for row in self.__db.fetch("Tracks", ['Id', 'Track'], {}, sort_by_cloumn="Track"):
+                track_track = row['Track']
+                track_id = row['Id']
+                locations = self.__db.findIds("TrackLocations", {"Track": track_track})
+                if len(locations) > 1:
+                    raise NotImplementedError("track " + track)
+                elif len(locations) == 1:
+                    location_id = locations[0]
+                    self.__db.updateRow("Tracks", track_id, {'Location': location_id})
 
         # temporarily needed to fix Users.Name column
         # this can be deleted later
-        for row in self.__db.fetch("Users", ["Id", "Login"], {}, sort_by_cloumn="Id"):
-            self.__db.updateRow("Users", row['Id'], {'Name': row['Login']})
+        if "Login" in self.__db.columns("Users"):
+            for row in self.__db.fetch("Users", ["Id", "Login"], {}, sort_by_cloumn="Id"):
+                self.__db.updateRow("Users", row['Id'], {'Name': row['Login']})
 
 
         self._verbosity.print("start scanning AC content")

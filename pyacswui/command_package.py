@@ -12,6 +12,7 @@ class CommandPackage(Command):
 
     def __init__(self, argparser):
         Command.__init__(self, argparser, "package", "Server-Packager - prepare assetto corsa file to be transferred to the linux server")
+        self.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
 
 
 
@@ -74,6 +75,7 @@ class CommandPackage(Command):
 
 
     def process(self):
+        self._verbosity = Verbosity(self.getArg("v"), self.__class__.__name__)
 
         # check refpkg directory
         path_refpkg = os.path.abspath(self.getGeneralArg("path-refpkg"))
@@ -88,7 +90,7 @@ class CommandPackage(Command):
 
 
     def __create_server_cfg_json(self):
-        self.Verbosity.print("create server_cfg.json")
+        self._verbosity.print("create server_cfg.json")
 
         # read template
         with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "server_cfg.json"), "r") as f:
@@ -127,8 +129,8 @@ class CommandPackage(Command):
             4. copy all car skins preview images from path_ac to path_http
             5. copy ui_skin.json for all skins to http directory
         """
-        self.Verbosity.print("Scanning cars")
-        verb2 = Verbosity(self.Verbosity)
+        self._verbosity.print("Scanning cars")
+        verb2 = Verbosity(self._verbosity)
 
         path_ac_cars = self._pathAC("content", "cars")
         for car in sorted(os.listdir(path_ac_cars)):
@@ -184,8 +186,8 @@ class CommandPackage(Command):
             4. copy preview.png from path_ac to path_http
             5. copy surfaces.ini, outline.png and preview.png of track configurations
         """
-        self.Verbosity.print("Scanning tracks")
-        verb2 = Verbosity(self.Verbosity)
+        self._verbosity.print("Scanning tracks")
+        verb2 = Verbosity(self._verbosity)
 
         path_ac_tracks = self._pathAC("content", "tracks")
         for track in os.listdir(path_ac_tracks):
@@ -219,7 +221,7 @@ class CommandPackage(Command):
 
     def __scan_server(self):
 
-        self.Verbosity.print("Scanning Server Files")
+        self._verbosity.print("Scanning Server Files")
 
         # acServer binary
         src_file = self._pathAC(os.path.join("server", "acServer"))
