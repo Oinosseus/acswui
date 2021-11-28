@@ -383,7 +383,7 @@ class CarClass {
         // invalidate cache
         $this->BallastMap = NULL;
 
-        if ($ballast < 0 || $ballast > 9999) {
+        if ($ballast < -9999 || $ballast > 9999) {
             $acswuiLog->logError("Invalid ballast value: " . $ballast);
             return;
         }

@@ -175,7 +175,7 @@ class aa_carclass_management extends cContentPage {
                 $car_id = $car->id();
                 $html .= "<tr $rowclass>";
                 $html .= "<td>" . $car->name() . $car->htmlImg($car->id(), 300) . "</td>";
-                $html .= "<td><input type=\"number\"   name=\"BALLAST_$car_id\" min=\"0\" max=\"9999\" step=\"1\" size=\"5\" value=\"$ballast\"> kg</td>";
+                $html .= "<td><input type=\"number\"   name=\"BALLAST_$car_id\" min=\"-9999\" max=\"9999\" step=\"1\" size=\"5\" value=\"$ballast\"> kg</td>";
                 $html .= "<td><input type=\"number\"   name=\"RESTRICTOR_$car_id\" max=\"100\" min=\"0\" step=\"1\" size=\"3\" value=\"$restrictor\"> &percnt;</td>";
                 $html .= "<td><button type=\"submit\"  name=\"DELETE_CAR\" value=\"$car_id\" >" . _("delete") . "</button></td>";
                 $html .= "</tr>";
