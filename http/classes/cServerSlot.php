@@ -236,7 +236,7 @@ class ServerSlot {
 
         // section SERVER
         $section = $preset->getSection("SERVER");
-        $this->writeServerCfgSection($fd, $section);
+        $this->writeServerCfgSection($fd, $section, $carclass);
         $car_models = array();
         foreach ($carclass->cars() as $car) {
             $car_models[] = $car->model();
@@ -248,35 +248,35 @@ class ServerSlot {
 
         // section FTP
         $section = $preset->getSection("FTP");
-        $this->writeServerCfgSection($fd, $section);
+        $this->writeServerCfgSection($fd, $section, $carclass);
 
         // section BOOKING
         $section = $preset->getSection("BOOKING");
         if ($section->currentValue("TIME") != 0)
-            $this->writeServerCfgSection($fd, $section);
+            $this->writeServerCfgSection($fd, $section, $carclass);
 
         // section PRACTICE
         $section = $preset->getSection("PRACTICE");
         if ($section->currentValue("TIME") != 0)
-            $this->writeServerCfgSection($fd, $section);
+            $this->writeServerCfgSection($fd, $section, $carclass);
 
         // section QUALIFY
         $section = $preset->getSection("QUALIFY");
         if ($section->currentValue("TIME") != 0)
-            $this->writeServerCfgSection($fd, $section);
+            $this->writeServerCfgSection($fd, $section, $carclass);
 
         // section RACE
         $section = $preset->getSection("RACE");
         if ($section->currentValue("TIME") != 0 || $section->currentValue("LAPS") != 0)
-            $this->writeServerCfgSection($fd, $section);
+            $this->writeServerCfgSection($fd, $section, $carclass);
 
         // section DYNAMIC_TRACK
         $section = $preset->getSection("DYNAMIC_TRACK");
-        $this->writeServerCfgSection($fd, $section);
+        $this->writeServerCfgSection($fd, $section, $carclass);
 
         // section WEATHER_0
         $section = $preset->getSection("WEATHER_0");
-        $this->writeServerCfgSection($fd, $section);
+        $this->writeServerCfgSection($fd, $section, $carclass);
 
         // section ACSWUI
         fwrite($fd, "[ACSWUI]\n");
@@ -291,7 +291,7 @@ class ServerSlot {
     }
 
 
-    private function writeServerCfgSection($fd, $section) {
+    private function writeServerCfgSection($fd, $section, $carclass) {
         global $acswuiConfig;
 
         $sectag = $section->tag();
@@ -315,6 +315,11 @@ class ServerSlot {
                     fwrite($welcome_fd, $value);
                     fclose($welcome_fd);
                     $value = $welcome_path;
+                }
+
+                // catch allowed tyres from car class
+                if ($sectag == "SERVER" && $key == "LEGAL_TYRES" && $carclass->allowedTyres() != "") {
+                    $value = $carclass->allowedTyres();
                 }
 
                 fwrite($fd, "$key=$value\n");

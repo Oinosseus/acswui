@@ -9,6 +9,7 @@ class CarClass {
     private $Name = NULL;
     private $Cars = NULL;
     private $Description = NULL;
+    private $AllowedTyres = NULL;
 
     private $BallastMap = NULL;
     private $RestrictorMap = NULL;
@@ -43,6 +44,24 @@ class CarClass {
         $acswuiDatabase->insert_row("CarClassesMap", ['Car'=>$car->id(), 'CarClass'=>$this->Id]);
         $this->Cars[] = $car;
     }
+
+
+    //! @return A String that defines the allowed tyres for this car class
+    public function allowedTyres() {
+        global $acswuiDatabase, $acswuiLog;
+
+        if ($this->AllowedTyres === NULL) {
+            $res = $acswuiDatabase->fetch_2d_array("CarClasses", ['AllowedTyres'], ['Id'=>$this->Id]);
+            if (count($res) !== 1) {
+                $acswuiLog->logError("Cannot find CarClasses.Id=" . $this->Id);
+                return;
+            }
+            $this->AllowedTyres = $res[0]['AllowedTyres'];
+        }
+
+        return $this->AllowedTyres;
+    }
+
 
     /**
      * @param $car The requeted Car object
@@ -368,6 +387,23 @@ class CarClass {
         }
 
         return $this->RestrictorMap[$car->id()];
+    }
+
+
+    /**
+     * Set the allowed tyres for this car class
+     * @param $allowed_tyres A string with the allowed tyres
+     */
+    public function setAllowedTyres(string $allowed_tyres) {
+        global $acswuiDatabase;
+
+        $allowed_tyres = trim($allowed_tyres);
+
+        $fields = array();
+        $fields['AllowedTyres'] = $allowed_tyres;
+        $acswuiDatabase->update_row("CarClasses", $this->Id, $fields);
+
+        $this->AllowedTyres = $allowed_tyres;
     }
 
 

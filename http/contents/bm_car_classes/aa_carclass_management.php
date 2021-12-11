@@ -65,6 +65,7 @@ class aa_carclass_management extends cContentPage {
                 // save name
                 $this->CurrentCarClass->rename($_POST['CARCLASS_NAME']);
                 $this->CurrentCarClass->setDescription($_POST['CARCLASS_DESCRIPTION']);
+                $this->CurrentCarClass->setAllowedTyres($_POST['CARCLASS_ALLOWED_TYRES']);
 
                 // save ballast/restrictor
                 foreach ($this->CurrentCarClass->cars() as $car) {
@@ -134,6 +135,7 @@ class aa_carclass_management extends cContentPage {
             $id = $this->CurrentCarClass->id();
             $name = $this->CurrentCarClass->name();
             $description = $this->CurrentCarClass->description();
+            $allowed_tyres = $this->CurrentCarClass->allowedTyres();
 
             $html .= "<input type=\"hidden\" name=\"CARCLASS_ID\" value=\"$id\">";
 
@@ -141,6 +143,7 @@ class aa_carclass_management extends cContentPage {
 
             # class name, description
             $html .= "Name: <input type=\"text\" name=\"CARCLASS_NAME\" value=\"$name\" /><br>";
+            $html .= "Allowed Tyres: <input type=\"text\" name=\"CARCLASS_ALLOWED_TYRES\" value=\"$allowed_tyres\" /><br>";
             $html .= "<textarea name=\"CARCLASS_DESCRIPTION\">$description</textarea><br>";
             $html .= "<button type=\"submit\" name=\"ACTION\" value=\"SAVE\">" . _("Save Car Class") . "</button> ";
 

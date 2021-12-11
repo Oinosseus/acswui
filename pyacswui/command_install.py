@@ -426,6 +426,7 @@ class CommandInstall(Command):
         self.__db.appendTable("CarClasses")
         self.__db.appendColumnString("CarClasses", 'Name', 50)
         self.__db.appendColumnText("CarClasses", "Description")
+        self.__db.appendColumnString("CarClasses", 'AllowedTyres', 50)
 
         # check table CarClassesMap
         Verbosity(self.Verbosity).print("check database table `CarClassesMap`")
