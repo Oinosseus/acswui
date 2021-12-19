@@ -92,7 +92,7 @@ class Group extends DbEntry {
     }
 
 
-    //! @return A list of all available groups (ordered by name)
+    //! @return A list of all available group objects (ordered by name)
     public static function listGroups() {
 
         if (Group::$GroupsList === NULL) {

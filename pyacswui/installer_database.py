@@ -58,23 +58,14 @@ class InstallerDatabase(object):
         Verbosity(verb).print("check database table `ServerPresets`")
         self.__db.appendTable("ServerPresets")
         self.__db.appendColumnString("ServerPresets", "Name", 60)
-        self.__db.appendColumnInt("ServerPresets", "Restricted")
+        self.__db.appendColumnUInt("ServerPresets", "Parent")
+        self.__db.appendColumnJson("ServerPresets", "ParameterData")
 
-        for section in self.__server_cfg_json:
-            for fieldset in self.__server_cfg_json[section]:
-                for tag in self.__server_cfg_json[section][fieldset]:
-                    tag_dict = self.__server_cfg_json[section][fieldset][tag]
-                    db_col_name = tag_dict['DB_COLUMN_NAME']
+        # ServerPresetDerivers
+        self.__db.appendTable("ServerPresetDerivers", ["ServerPreset", "Group"])
 
-                    if tag_dict['TYPE'] == "string":
-                        self.__db.appendColumnString("ServerPresets", db_col_name, tag_dict['SIZE'])
-                    elif tag_dict['TYPE'] in ["int", "enum"]:
-                        self.__db.appendColumnInt("ServerPresets", db_col_name)
-                    elif tag_dict['TYPE'] == "text":
-                        self.__db.appendColumnText("ServerPresets", db_col_name)
-                    else:
-                        print("db_col_name =", db_col_name)
-                        raise NotImplementedError("Unknown field TYPE '%s'" % tag_dict['TYPE'])
+        # ServerPresetUsers
+        self.__db.appendTable("ServerPresetUsers", ["ServerPreset", "Group"])
 
 
 
@@ -236,6 +227,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnTinyInt("Groups", "ViewServerContent_CarClasses")
         self.__db.appendColumnTinyInt("Groups", "CarClass_Edit")
         self.__db.appendColumnTinyInt("Groups", "ViewUsers")
+        self.__db.appendColumnTinyInt("Groups", "ServerSettings_View")
 
         # check table UserGroupMap
         Verbosity(verb).print("check database table `UserGroupMap`")

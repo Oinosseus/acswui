@@ -263,7 +263,7 @@ abstract class HtmlContent {
             $html .= "<form method=\"GET\" action=\"" . HtmlContent::BASESCRIPT . "\" $id>";
             $html .= "<input type=\"hidden\" name=\"HtmlContent\" value=\"" . $this->id() . "\">";
         } else if ($method == "POST") {
-            $html .= "<form method=\"GET\" action=\"" . $this->url() . "\" $id>";
+            $html .= "<form method=\"POST\" action=\"" . $this->url($_GET) . "\" $id>";
         } else {
             \Core\Log::error("Undefined method '$method'!");
         }
@@ -354,6 +354,7 @@ abstract class HtmlContent {
         }
 
         foreach ($get_vars as $key => $val) {
+            if ($key == "HtmlContent") continue;
             $url .= "&$key=$val";
         }
 

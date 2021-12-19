@@ -425,3 +425,13 @@ div.SvgChart svg g.Axes g.Grid polyline {
     stroke-dasharray: 0.5%,0.8%;
     stroke-width: 0.1em;
 }
+
+
+/* ----------------------------------------------------------------------------
+ *                                General Styles
+ * ----------------------------------------------------------------------------
+ */
+
+.monospace {
+    font-family: monospace;
+}

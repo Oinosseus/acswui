@@ -1,0 +1,103 @@
+div.ParameterCollection {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 2em;
+    margin-bottom: 2em;
+}
+
+div.ParameterCollectionContainerLabel {
+    display: block;
+
+    font-weight: bold;
+    background-color: var(--color-red-accent);
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+
+    padding: 0.1em 0.1em;
+    text-align: center;;
+}
+
+
+div.ParameterCollectionContainer {
+    border-left: 0.1em solid var(--color-red-accent);
+    border-bottom: 0.1em solid var(--color-red-accent);
+    border-right: 0.1em solid var(--color-red-accent);
+    padding: 0.1em;
+}
+
+
+div.ParameterContainer {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+}
+
+div.ParameterCollectionSubLabel {
+    grid-column: 1 / span 5;
+
+    font-weight: bold;
+    background-color: var(--color-red-accent);
+    padding: 0.1em 0.1em;
+    text-align: center;;
+    margin-top: 0.5em;
+}
+
+
+
+
+div.ParameterLabel,
+div.ParameterValue,
+div.ParameterUnit,
+div.ParameterDerivedCheckbox {
+    padding: 0.1em 0.2em;
+    background-color: var(--color-bg-elements);
+    margin-right: 0.2em;
+    margin-top: 0.2em;
+}
+
+div.ParameterLabel {
+    font-weight: bold;
+}
+
+div.ParameterValue {
+    text-align: center;
+}
+
+div.ParameterInheritedValue {
+    font-style: italic;
+}
+
+div.ParameterLastColumn {
+    margin-right: 0;
+}
+
+
+
+.ParameterDerivedCheckbox input[type="checkbox"] {
+    display: none;
+}
+
+.ParameterDerivedCheckbox div {
+    background-color: transparent;
+    font-family: monospace;
+    border-radius: 0.3em;
+    font-size: 1.5em;
+}
+
+.ParameterDerivedCheckbox input[type="checkbox"] + label div.Checked {
+    display: none;
+/*     background-color: var(--color-green-accent); */
+}
+
+.ParameterDerivedCheckbox input[type="checkbox"] + label div.UnChecked {
+    display: block;
+/*     background-color: var(--color-red-accent); */
+}
+
+.ParameterDerivedCheckbox input[type="checkbox"]:checked + label div.Checked {
+    display: block;
+}
+
+.ParameterDerivedCheckbox input[type="checkbox"]:checked + label div.UnChecked {
+    display: none;
+}
+

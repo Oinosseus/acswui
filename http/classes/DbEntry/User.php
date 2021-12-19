@@ -27,7 +27,7 @@ class User extends DbEntry { #implements JsonSerializable {
 
     //! @return The color code for this user as string (eg #12ab9f)
     public function color() {
-        if ($this->id() === 0) return "#000000";
+        if ($this->isRoot()) return "#000000";
         if ($this->Color === NULL) {
             $this->Color = $this->loadColumn("Color");
             if ($this->Color == "") $this->Color = "#000000";
@@ -40,7 +40,7 @@ class User extends DbEntry { #implements JsonSerializable {
      * @return The username that shall be displayed on HTML output (depending on privacy settings)
      */
     public function name() {
-        if ($this->id() === 0) return "root";
+        if ($this->isRoot()) return "root";
         return ($this->privacyFulfilled()) ? $this->loadColumn("Name") : "***";
     }
 
@@ -57,7 +57,10 @@ class User extends DbEntry { #implements JsonSerializable {
 
     //! @return A list of Group objects where the user is member in
     public function groups() {
-        if ($this->Groups === NULL) {
+        if ($this->isRoot()) {
+            return Group::listGroups();
+
+        } else if ($this->Groups === NULL) {
             $this->Groups = array();
             $res = \Core\Database::fetch("UserGroupMap", ['Group'], ['User'=>$this->id()]);
             foreach ($res as $row) {
@@ -68,9 +71,15 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    //! @return True, if this represents the root user, else False
+    public function isRoot() {
+        return $this->id() === 0;
+    }
+
+
     //! @return The preferred locale of the user
     public function locale() {
-        if ($this->id() === 0) return "";
+        if ($this->isRoot()) return "";
         if ($this->Locale === NULL) {
             $this->Locale = $this->loadColumn('Locale');
         }
@@ -147,7 +156,7 @@ class User extends DbEntry { #implements JsonSerializable {
      * @return The privacy level for this user
      */
     public function privacy() {
-        if ($this->id() === 0) return 0;
+        if ($this->isRoot()) return 0;
         if ($this->Privacy == NULL) $this->Privacy = (int) $this->loadColumn("Privacy");
         return $this->Privacy;
     }
@@ -157,7 +166,7 @@ class User extends DbEntry { #implements JsonSerializable {
     public function privacyFulfilled() {
 
         // root user
-        if ($this->id() === 0) return TRUE;
+        if ($this->isRoot()) return TRUE;
 
         $current_user = \Core\UserManager::loggedUser();
         $privacy = $this->privacy();
@@ -176,7 +185,7 @@ class User extends DbEntry { #implements JsonSerializable {
 
     //! @return The Steam64GUID of the user
     public function steam64GUID() {
-        if ($this->id() === 0) return 0;
+        if ($this->isRoot()) return 0;
         if ($this->Steam64GUID === NULL) $this->Steam64GUID = $this->loadColumn('Steam64GUID');
         return $this->Steam64GUID;
     }

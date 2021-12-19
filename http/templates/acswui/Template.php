@@ -23,6 +23,7 @@ class Template extends \Core\HtmlTemplate {
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_dbentry.css\">\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_content.css\">\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_functional.css\">\n";
+        $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_parameter.css\">\n";
         foreach ($this->listScripts() as $s) $html .= "<script src=\"$s\"></script>";
         $html .= "  </head>\n";
         $html .= "  <body>\n";

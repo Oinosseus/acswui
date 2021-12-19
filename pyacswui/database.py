@@ -28,10 +28,13 @@ class Database(object):
 
 
 
-    def appendTable(self, tblname):
+    def appendTable(self, tblname, primary_keys_list=['Id']):
         """
             Create table if not existent.
-            A column 'Id' is created and used as index with auto increment.
+            primary_keys_list is a list of strings that define multiple primary keys (of type UINT)
+
+            If primary_keys_list contains only one key, it will be set to AUTO_INCREMENT.
+            For multiple primary_keys_list AUTO_INCREMENT is not used.
         """
 
         # check if table already exist
@@ -44,10 +47,23 @@ class Database(object):
                 table_exist = True
         cursor.close()
 
+        # list of primary keys
+        query_primary_keys = []
+        for col in primary_keys_list:
+            query_primary_keys.append("`" + col + "`")
+        query_primary_keys = " , ".join(query_primary_keys)
+
         # create query
         if table_exist is False:
 
-            query = "CREATE TABLE `" + tblname + "` ( `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT , PRIMARY KEY (`Id`)) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+            query_colum_definitions = []
+            for col in primary_keys_list:
+                query_colum_definitions.append("`" + col + "` INT NOT NULL")
+            query_colum_definitions = " , ".join(query_colum_definitions)
+            if len(primary_keys_list) == 1:
+                query_colum_definitions += " AUTO_INCREMENT"
+
+            query = "CREATE TABLE `" + tblname + "` ( " + query_colum_definitions + " , PRIMARY KEY (" + query_primary_keys + ")) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 
             # execute query
             cursor = self.__db_handle.cursor()
@@ -58,45 +74,72 @@ class Database(object):
         # table already exist
         else:
 
-            # ensure that Id is unsigned int
-            query = "ALTER TABLE `" + tblname + "` CHANGE `Id` `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT;"
-            cursor = self.__db_handle.cursor()
-            cursor.execute(query)
-            cursor.close()
-            self.__db_handle.commit()
+            # ensure index columns do exist
+            if len(primary_keys_list) > 1:
+
+                # remove AUTO_INCREMENT for all columns
+                ai_remove_queries = []
+                query = "SHOW COLUMNS FROM `%s`;" % tblname
+                cursor = self.__db_handle.cursor()
+                cursor.execute(query)
+                for r in cursor.fetchall():
+                    if "auto_increment" in r[5].lower():
+                        default = "" if r[4] is None else r[4]
+                        ai_remove_queries.append("ALTER TABLE `" + tblname + "` CHANGE `" + r[0] + "` `" + r[0] + "` " + r[1] + " NOT NULL " + default + ";")
+                cursor.close()
+                for query in ai_remove_queries:
+                    cursor = self.__db_handle.cursor()
+                    cursor.execute(query)
+                    cursor.close()
+                    self.__db_handle.commit()
+
+                # append primary keys as columns
+                for col in primary_keys_list:
+                    self.appendColumnUInt(tblname, col)
+
+            else:
+
+                # insert primary key as AUTO_INCREMENT column
+                primary_key = primary_keys_list[0]
+                query = "ALTER TABLE `" + tblname + "` CHANGE `" + primary_key + "` `" + primary_key + "` INT UNSIGNED NOT NULL AUTO_INCREMENT;"
+                cursor = self.__db_handle.cursor()
+                cursor.execute(query)
+                cursor.close()
+                self.__db_handle.commit()
 
             # check index
-            primary_index_found = False
-            primary_index_correct = False
+            any_primary_found = False
+            primary_keys_missing = [col for col in primary_keys_list]
             query = "SHOW INDEX FROM %s WHERE Key_name = 'PRIMARY';" % tblname
             cursor = self.__db_handle.cursor()
             cursor.execute(query)
             for r in cursor.fetchall():
                 if r[2].lower() == "primary":
                     primary_index_found = True
-                    if r[4] == "Id":
-                        primary_index_correct = True
+                    col = r[4]
+                    if col in primary_keys_missing:
+                        primary_keys_missing.pop(primary_keys_missing.index(col))
             cursor.close()
             self.__db_handle.commit()
 
-            if primary_index_correct is False:
+            if len(primary_keys_missing) > 0:
+
                 if primary_index_found is True:
-                    query = "ALTER TABLE `" + tblname + "` DROP PRIMARY KEY, ADD PRIMARY KEY(`Id`);"
+                    query = "ALTER TABLE `" + tblname + "` DROP PRIMARY KEY, ADD PRIMARY KEY(" + query_primary_keys + ");"
                 else:
-                    query = "ALTER TABLE `" + tblname + "` ADD PRIMARY KEY(`Id`);"
+                    query = "ALTER TABLE `" + tblname + "` ADD PRIMARY KEY(" + query_primary_keys + ");"
                 # execute query
                 cursor = self.__db_handle.cursor()
                 cursor.execute(query)
                 cursor.close()
                 self.__db_handle.commit()
 
-        # alter collation
-        query = "ALTER TABLE `" + tblname + "` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
-        cursor = self.__db_handle.cursor()
-        cursor.execute(query)
-        cursor.close()
-        self.__db_handle.commit()
-
+        ## alter collation
+        #query = "ALTER TABLE `" + tblname + "` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+        #cursor = self.__db_handle.cursor()
+        #cursor.execute(query)
+        #cursor.close()
+        #self.__db_handle.commit()
 
 
     def __appendColumn(self, tblname, colname, coltype, coldefault = None, colextra = None):
@@ -192,6 +235,9 @@ class Database(object):
 
     def appendColumnCurrentTimestamp(self, tblname, colname):
         self.__appendColumn(tblname, colname, "TIMESTAMP", "CURRENT_TIMESTAMP")
+
+    def appendColumnJson(self, tblname, colname):
+        self.__appendColumn(tblname, colname, "json", "")
 
 
     def columns(self, tablename):

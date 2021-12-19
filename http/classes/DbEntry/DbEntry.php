@@ -88,7 +88,7 @@ abstract class DbEntry {
      * Construct an object from exising database table Id
      * This method is cached. Request the same ID again will return the same object.
      *
-     * This intented to be used by inherited classes by implementing this function:
+     * This is intented to be used by inherited classes by implementing this function:
      *     public static function fromId(int $id) {
      *         return parent::getCachedObject("DbTableName", "InheritedClassName", $id);
      *     }
