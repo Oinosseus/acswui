@@ -68,9 +68,25 @@ final class Collection extends Deriveable {
         } else {
 
             $html .= "<div class=\"ParameterCollection\">";
-            $html .= "<h1>" . $this->label() . " [" . $this->keySnake() . "]</h1>";
+
+            $h = 6 - $this->maxChildLevels();
+            if ($h < 1) $h = 1;
+            $html .= "<h$h>" . $this->label() . " [" . $this->keySnake() . "]</h$h>";
+            $html .= "<small>" . $this->description() . "</small>";
 
             //! @todo list direct parameters
+            $html .= "<div class=\"ParameterCollectionContainerLabel\">" . $this->label() . "</div>";
+            $html .= "<div class=\"ParameterCollectionContainer\">";
+            $html .= "<div class=\"ParameterContainer\">";
+            foreach ($this->children() as $parameter) {
+                if (!($parameter instanceof Parameter)) continue;
+                if ($parameter->accessability() < 1) continue;
+                $html .= $this->getHtmlParameter($parameter);
+            }
+            $html .= "</div>";
+            $html .= "</div>";
+            $html .= "<br>";
+
 
             foreach ($this->children() as $collection) {
                 if (!($collection instanceof Collection)) continue;
@@ -97,7 +113,10 @@ final class Collection extends Deriveable {
         $html .= "<div class=\"ParameterLabel\">" . $param->label() . "</div>";
 
         // value
-        $html .= "<div class=\"ParameterValue\">";
+        $param_value_span = 1;
+        if ($param->unit() == "") ++$param_value_span;
+        if ($param->base() == NULL || $param->accessability() < 2) ++$param_value_span;
+        $html .= "<div class=\"ParameterValueSpan$param_value_span\">";
         if ($param->accessability() == 2) {  // editable input
             $visible = ($param->inheritValue()) ? "style=\"display: none;\"" : "";
             $html .= "<div id=\"ParameterValueInput_$key_snake\" $visible>" . $param->getHtmlInput() . "</div>";
@@ -109,19 +128,21 @@ final class Collection extends Deriveable {
         $html .= "</div>";
 
         // unit
-        $html .= "<div class=\"ParameterUnit\">" . $param->unit() . "</div>";
+        if ($param->unit() !== "") {
+            $html .= "<div class=\"ParameterUnit\">" . $param->unit() . "</div>";
+        }
 
         // inheritance
-        $checked = $param->inheritValue() ? "checked" : "";
-        $html .= "<div class=\"ParameterDerivedCheckbox\">";
         if ($param->base() !== NULL && $param->accessability() == 2) {
+            $html .= "<div class=\"ParameterDerivedCheckbox\">";
+            $checked = $param->inheritValue() ? "checked" : "";
             $html .= "<input type=\"checkbox\" id=\"ParameterInheritValueCheckbox_$key_snake\" name=\"ParameterInheritValueCheckbox_$key_snake\" $checked onclick=\"toggleParameterInheritance('$key_snake')\">";
             $html .= "<label for=\"ParameterInheritValueCheckbox_$key_snake\">";
-            $html .= "<div class=\"Checked\" title=\"" . _("Derive value from base parameter") . "\">&#x2261;</div>";
-            $html .= "<div class=\"UnChecked\" title=\"" . _("Define value locally") . "\">&#x2260;</div>";
+            $html .= "<div class=\"Checked\" title=\"" . _("Derive value from base parameter") . "\">&#x26af;</div>";
+            $html .= "<div class=\"UnChecked\" title=\"" . _("Define value locally") . "\">&#x26ae;</div>";
             $html .= "</label>";
+            $html .= "</div>";
         }
-        $html .= "</div>";
 
         // accessability
         $derived_accessability = ($param->base() !== NULL) ? $param->base()->derivedAccessability() : 2;

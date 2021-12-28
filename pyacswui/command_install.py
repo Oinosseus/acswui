@@ -247,6 +247,11 @@ class CommandInstall(Command):
         path_data_servercfg = os.path.join(path_data, "server_cfg.json")
         shutil.copy(path_srvpkg_servercfg, path_data_servercfg)
 
+        # server slots
+        path_data_server_slots = os.path.join(path_data, "server_slots")
+        self.mkdirs(path_data_server_slots)
+
+
 
         #############
         # acswui.ini
@@ -310,48 +315,6 @@ class CommandInstall(Command):
         abspath_htdata = os.path.abspath(self.getGeneralArg('path-htdata'))
         abspath_acswui_py = os.path.abspath(os.path.join(abspath_acswui, "acswui.py"))
 
-        # server slots
-        server_slot_list = []
-        slot_nr = 0
-        while True:
-            slot_dict = self.getIniSection("SERVER_SLOT_" + str(slot_nr))
-            if slot_dict is None:
-                break
-            slot_php_array = [];
-
-            for section in self.__server_cfg_json:
-                for fieldset in self.__server_cfg_json[section]:
-                    for tag in self.__server_cfg_json[section][fieldset]:
-                        tag_dict = self.__server_cfg_json[section][fieldset][tag]
-                        db_col_name = tag_dict['DB_COLUMN_NAME']
-
-                        # check for fixed values
-                        if db_col_name in slot_dict:
-                            slot_php_array.append("'%s'=>\"%s\"" % (db_col_name, slot_dict[db_col_name]))
-
-            slot_php_array = "[" + (", ".join(slot_php_array)) + "]";
-            server_slot_list.append(slot_php_array)
-            slot_nr += 1
-        server_slots = ",\n                                 ".join(server_slot_list)
-
-        # fixed server settings
-        fixed_server_settings = []
-        for section in self.__server_cfg_json:
-            for fieldset in self.__server_cfg_json[section]:
-                for tag in self.__server_cfg_json[section][fieldset]:
-                    tag_dict = self.__server_cfg_json[section][fieldset][tag]
-                    db_col_name = tag_dict['DB_COLUMN_NAME']
-
-                    # check for fixed values
-                    try:
-                        val = self.getIniSection("FIXED_SERVER_SETTINGS")[db_col_name]
-                    except KeyError as e:
-                        val = None
-
-                    if val is not None:
-                        fixed_server_settings.append("\"%s\"=>\"%s\"" % (db_col_name, val))
-        fixed_server_settings = ",".join(fixed_server_settings)
-
         # driver ranking
         driver_ranking = {"XP":{}, "SX":{}, "SF":{}, "DEF":{}}
         driver_ranking_from_ini = self.getIniSection("DRIVER_RANKING")
@@ -407,8 +370,7 @@ class CommandInstall(Command):
             f.write("    const DbPasswd = \"%s\";\n" % self.getGeneralArg('db-password'))
             f.write("\n")
             f.write("    // server_cfg\n")
-            f.write("    const FixedServerConfig = array(%s);\n" % fixed_server_settings)
-            f.write("    const ServerSlots = array(%s);\n" % server_slots)
+            f.write("    const ServerSlotAmount = %d;\n" % int(self.getGeneralArg('server-slot-amount')))
             f.write("\n")
             f.write("    // discord webhooks\n")
             f.write("    const DWhManSrvStrtUrl = \"%s\";\n" % self.getIniSection("DISCORD_WEBHOOKS")['MANUAL_SERVER_START_URL'])
@@ -522,6 +484,7 @@ class CommandInstall(Command):
         paths.append(os.path.join(abspath_data, "acserver"))
         paths.append(os.path.join(abspath_data, "acserver", "cfg"))
         paths.append(os.path.join(abspath_data, "acserver", "results"))
+        paths.append(os.path.join(abspath_data, "server_slots"))
         paths.append(os.path.join(abspath_htdata, "realtime"))
         for path in paths:
             cmd = ["chmod", "-R", "g+w", path]
@@ -537,6 +500,11 @@ class CommandInstall(Command):
                 cmd = ["chgrp", self.getGeneralArg("http-guid"), os.path.join(abspath_acswui, "pyacswui", script)]
                 Verbosity(verb).print(" ".join(cmd))
                 subprocess.run(cmd)
+
+        # make preview images writeable for user
+        cmd = ["chmod", "-R", "u+w", abspath_htdata]
+        Verbosity(verb).print(" ".join(cmd))
+        subprocess.run(cmd)
 
 
 

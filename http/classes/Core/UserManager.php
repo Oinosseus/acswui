@@ -9,6 +9,14 @@ class UserManager {
     private function __construct() {}
 
 
+    //! @return TRUE if root user is currently logged in
+    public static function loggedIsRoot() {
+        $user = UserManager::loggedUser();
+        if ($user !== NULL) return $user->isRoot();
+        return FALSE;
+    }
+
+
     //! @return The User object of the currently logged in user (can be NULL)
     public static function loggedUser() {
         return UserManager::$CurrentLoggedUser;

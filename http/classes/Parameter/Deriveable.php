@@ -72,7 +72,7 @@ abstract class Deriveable {
         // announce to parent
         } else {
             // append child
-            if ($parent->child($this->key()) !== NULL) {
+            if (array_key_exists($this->key(), $parent->Children)) {
                 \Core\Log::error("Collection '" . $parent->key() . "' already contains a child with key='" . $this->key() . "'!");
             } else {
                 $parent->Children[$this->key()] = $this;
@@ -112,9 +112,21 @@ abstract class Deriveable {
     }
 
 
-    //! @return A child object with a specific key (NULL if not found)
-    public function child(string $key) {
-        return (array_key_exists($key, $this->Children)) ? $this->Children[$key] : NULL;
+    /**
+     * @param $keys One or many keys that identify the requested child (multiple parameters to get childs of childs)
+     * @return A child object with a specific key (NULL if not found)
+     */
+    public function child(...$keys) {
+        $child = $this;
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $child->Children)) {
+                $child = $child->Children[$key];
+            } else {
+                \Core\Log::debug("Cannot find key '$key' in '" . $child->keySnake() . "'");
+                $child = NULL;
+            }
+        }
+        return $child;
     }
 
 
@@ -176,15 +188,15 @@ abstract class Deriveable {
         // set new accessability
         if ($access !== NULL) {
             if ($access < 0) {
-                \Core\Log::warning("Limiting requested access '$access' to 0");
+//                 \Core\Log::warning("Limiting requested access '$access' to 0");
                 $access = 0;
             }
             if ($access > 2) {
-                \Core\Log::warning("Limiting requested access '$access' to 2");
+//                 \Core\Log::warning("Limiting requested access '$access' to 2");
                 $access = 2;
             }
             if (($this->Base !== NULL) && ($access > $this->Base->derivedAccessability())) {
-                \Core\Log::warning("Limiting requested access '$access' to " . $this->Base->derivedAccessability());
+//                 \Core\Log::warning("Limiting requested access '$access' to " . $this->Base->derivedAccessability());
                 $access = $this->Base->derivedAccessability();
             }
             $this->DerivedAccessability = $access;
@@ -199,6 +211,58 @@ abstract class Deriveable {
     //! @return The description of this parameter
     public function description() {
         return ($this->Base === NULL) ? $this->Description : $this->Base->description();
+    }
+
+
+    //! @return A HTML formed string that shows the parent->child tree structure
+    public function getHtmlTree() {
+        $html = "";
+        $html .= "<div class=\"monospace\">";
+
+        $html .= "&#x257b;[" . $this->key() . "] <strong>". $this->label() . "</strong>";
+        $html .= " <small>(";
+        $html .= "maxChildLevels=" . $this->maxChildLevels();
+        $html .= ", accessability=" . $this->accessability();
+        $html .= ")</small><br>";
+
+        $html .= $this->getHtmlTreeRecursor();
+
+        $html .= "</div>";
+        return $html;
+    }
+
+
+    private function getHtmlTreeRecursor(string $indent = "") {
+        $html = "";
+
+        for ($child_index=0; $child_index < count($this->children()); ++$child_index) {
+            $child = $this->children()[$child_index];
+
+            if ($child_index == (count($this->children()) -  1)) {
+                if (count($child->children())) $prechars = "&#x2517;&#x2578;";
+                else $prechars = "&#x2516;&#x2574;";
+            } else {
+                if (count($child->children())) $prechars = "&#x2523;&#x2578;";
+                else $prechars = "&#x2520;&#x2574;";
+            }
+
+            $html .= $indent . $prechars . "[" . $child->key() . "] <strong>". $child->label() . "</strong>";
+            $html .= " <small>(";
+            $html .= "maxChildLevels=" . $child->maxChildLevels();
+            $html .= ", accessability=" . $child->accessability();
+            if ($child instanceof Parameter) $html .= ", value=" . $child->value();
+            $html .= ")</small><br>";
+
+            $next_indent = $indent;
+            if ($child_index == (count($this->children()) -  1))
+                $next_indent .= "&nbsp;&nbsp;";
+            else
+                $next_indent .= "&#x2503;&nbsp;";
+
+            $html .= $child->getHtmlTreeRecursor($next_indent);
+        }
+
+        return $html;
     }
 
 

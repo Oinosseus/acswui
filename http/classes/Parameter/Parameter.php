@@ -81,14 +81,13 @@ abstract class Parameter extends Deriveable {
     }
 
 
-    //! Set a new value for the parameter
-//     abstract public function setValueFlat($new_value);
-
-
     //! This function will check for HTTP POST/GEST form data and store the data into the collection
     public function storeHttpRequest() {
         parent::storeHttpRequest();
         $key_snake = $this->keySnake();
+
+        // my inherit value
+        $this->InheritValue = (array_key_exists("ParameterInheritValueCheckbox_$key_snake", $_REQUEST)) ? TRUE : FALSE;
 
         // my value
         if (array_key_exists("ParameterValue_$key_snake", $_REQUEST)) {
@@ -96,13 +95,11 @@ abstract class Parameter extends Deriveable {
             $this->setValue($val);
         }
 
-        // my inherit value
-        $this->InheritValue = (array_key_exists("ParameterInheritValueCheckbox_$key_snake", $_REQUEST)) ? TRUE : FALSE;
     }
 
 
     public function value() {
-        if ($this->inheritValue() || ($this->derivedAccessability() !== 2)) {
+        if ($this->inheritValue() || ($this->accessability() !== 2)) {
             return $this->base()->value();
         } else {
             return $this->Value;

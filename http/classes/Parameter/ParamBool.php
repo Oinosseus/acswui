@@ -30,6 +30,6 @@ final class ParamBool extends Parameter {
 
 
     final public function value2Label($value) {
-        return ($value && TRUE) ? "&#x2714;" : "&#x2718;";
+        return ($value && TRUE) ? "&#x2611;" : "&#x2610;";
     }
 }

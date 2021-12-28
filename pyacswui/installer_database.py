@@ -53,13 +53,12 @@ class InstallerDatabase(object):
         self.__db.appendColumnString("CronJobs", "Status", 50)
         self.__db.appendColumnUInt("CronJobs", "LastSession")
 
-
         # check table ServerPresets
         Verbosity(verb).print("check database table `ServerPresets`")
         self.__db.appendTable("ServerPresets")
         self.__db.appendColumnString("ServerPresets", "Name", 60)
         self.__db.appendColumnUInt("ServerPresets", "Parent")
-        self.__db.appendColumnJson("ServerPresets", "ParameterData")
+        self.__db.appendColumnText("ServerPresets", "ParameterData")
 
         # ServerPresetDerivers
         self.__db.appendTable("ServerPresetDerivers", ["ServerPreset", "Group"])
@@ -227,7 +226,10 @@ class InstallerDatabase(object):
         self.__db.appendColumnTinyInt("Groups", "ViewServerContent_CarClasses")
         self.__db.appendColumnTinyInt("Groups", "CarClass_Edit")
         self.__db.appendColumnTinyInt("Groups", "ViewUsers")
-        self.__db.appendColumnTinyInt("Groups", "ServerSettings_View")
+        self.__db.appendColumnTinyInt("Groups", "Settings_View")
+        self.__db.appendColumnTinyInt("Groups", "Settings_Presets_View")
+        self.__db.appendColumnTinyInt("Groups", "Settings_Slots_View")
+        self.__db.appendColumnTinyInt("Groups", "Settings_Slots_Edit")
 
         # check table UserGroupMap
         Verbosity(verb).print("check database table `UserGroupMap`")

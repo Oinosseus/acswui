@@ -45,7 +45,9 @@ div.ParameterCollectionSubLabel {
 
 
 div.ParameterLabel,
-div.ParameterValue,
+div.ParameterValueSpan1,
+div.ParameterValueSpan2,
+div.ParameterValueSpan3,
 div.ParameterUnit,
 div.ParameterDerivedCheckbox {
     padding: 0.1em 0.2em;
@@ -58,8 +60,18 @@ div.ParameterLabel {
     font-weight: bold;
 }
 
-div.ParameterValue {
+div.ParameterValueSpan1,
+div.ParameterValueSpan2,
+div.ParameterValueSpan3 {
     text-align: center;
+}
+
+div.ParameterValueSpan2 {
+    grid-column: span 2;
+}
+
+div.ParameterValueSpan3 {
+    grid-column: span 3;
 }
 
 div.ParameterInheritedValue {

@@ -124,3 +124,53 @@ main.CarSkin a#SkinImgPreview img {
     display: block;
     max-height: 20em;
 }
+
+
+
+/******************************************************************************
+                                   ServerPresets
+ ******************************************************************************/
+
+main.ServerPresets table#PresetManagementTable {
+    border-spacing: 0.1em;
+}
+
+main.ServerPresets table#PresetManagementTable tr td {
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+}
+
+main.ServerPresets table#PresetManagementTable tr td:first-child {
+    font-family: monospace;
+    text-align: left;
+}
+
+main.ServerPresets table#PresetManagementTable tr.CurrentPreset td:first-child {
+/*     font-weight: bold; */
+    color: var(--color-red-accent);
+}
+
+
+
+/******************************************************************************
+                                   ServerSlots
+ ******************************************************************************/
+
+main.ServerSlots table#SlotManagementTable {
+    border-spacing: 0.1em;
+}
+
+main.ServerSlots table#SlotManagementTable tr td {
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+}
+
+main.ServerSlots table#SlotManagementTable tr td:first-child {
+    font-family: monospace;
+    text-align: left;
+}
+
+main.ServerSlots table#SlotManagementTable tr.CurrentSlot td:first-child {
+/*     font-weight: bold; */
+    color: var(--color-red-accent);
+}

@@ -236,9 +236,6 @@ class Database(object):
     def appendColumnCurrentTimestamp(self, tblname, colname):
         self.__appendColumn(tblname, colname, "TIMESTAMP", "CURRENT_TIMESTAMP")
 
-    def appendColumnJson(self, tblname, colname):
-        self.__appendColumn(tblname, colname, "json", "")
-
 
     def columns(self, tablename):
         ret = []
