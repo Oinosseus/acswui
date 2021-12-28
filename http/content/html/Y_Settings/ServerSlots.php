@@ -21,7 +21,7 @@ class ServerSlots extends \core\HtmlContent {
         $this->EditPermission = \Core\UserManager::loggedUser()->permitted("Settings_Slots_Edit");
 
         // retrieve requested slot
-        if (array_key_exists('ServerSlot', $_REQUEST) && $this->EditPermission) {
+        if (array_key_exists('ServerSlot', $_REQUEST)) {
             $this->CurrentSlot = \Core\ServerSlot::fromId($_REQUEST['ServerSlot']);
         }
         if (array_key_exists('Action', $_REQUEST)) {

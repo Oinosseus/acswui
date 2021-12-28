@@ -21,7 +21,7 @@ abstract class Parameter extends Deriveable {
      */
     public function dataArrayImport(array $data) {
         $da = parent::dataArrayImport($data);
-        if (array_key_exists('VA', $data) && $this->derivedAccessability() == 2) $this->setValue($data['VA']);
+        if (array_key_exists('VA', $data) && $this->accessability() == 2) $this->setValue($data['VA']);
         if (array_key_exists('IV', $data)) $this->inheritValue($data['IV']);
     }
 

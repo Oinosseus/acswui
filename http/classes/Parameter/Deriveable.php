@@ -250,7 +250,10 @@ abstract class Deriveable {
             $html .= " <small>(";
             $html .= "maxChildLevels=" . $child->maxChildLevels();
             $html .= ", accessability=" . $child->accessability();
-            if ($child instanceof Parameter) $html .= ", value=" . $child->value();
+            if ($child instanceof Parameter) {
+                $html .= ", inherit=" . $child->inheritValue();
+                $html .= ", value=" . $child->value();
+            }
             $html .= ")</small><br>";
 
             $next_indent = $indent;
