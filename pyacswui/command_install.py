@@ -229,6 +229,8 @@ class CommandInstall(Command):
         if not os.path.isdir(path_htcache):
             Verbosity(Verbosity(verb)).print("mkdirs " + path_htcache)
             self.mkdirs(path_htcache)
+        path_htdocs_src = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "http")
+        shutil.copy(os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "docs", "slot_ports_optimized.svg"), os.path.join(path_htcache, "slot_ports_optimized.svg"))
 
         # acserver binaries
         path_srvpkg_acserver = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver")

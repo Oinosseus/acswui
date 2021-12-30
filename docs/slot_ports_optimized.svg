@@ -1,0 +1,137 @@
+<svg id="ServerSlotPortsSvg" width="447.41mm" height="172.61mm" version="1.1" viewBox="0 0 447.41 172.61" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <marker id="Arrow2Lstart" overflow="visible" orient="auto">
+   <path transform="matrix(1.1,0,0,1.1,1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="Arrow2Lend" overflow="visible" orient="auto">
+   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="InfiniteLineStart" overflow="visible" orient="auto">
+   <g transform="translate(-13)" fill="context-stroke">
+    <circle cx="3" r=".8"/>
+    <circle cx="6.5" r=".8"/>
+    <circle cx="10" r=".8"/>
+   </g>
+  </marker>
+  <marker id="InfiniteLineStart-93" overflow="visible" orient="auto">
+   <g transform="translate(-13)" fill="context-stroke">
+    <circle cx="3" r=".8"/>
+    <circle cx="6.5" r=".8"/>
+    <circle cx="10" r=".8"/>
+   </g>
+  </marker>
+  <marker id="Arrow2Lend-8" overflow="visible" orient="auto">
+   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="InfiniteLineStart-93-4" overflow="visible" orient="auto">
+   <g transform="translate(-13)" fill="context-stroke">
+    <circle cx="3" r=".8"/>
+    <circle cx="6.5" r=".8"/>
+    <circle cx="10" r=".8"/>
+   </g>
+  </marker>
+  <marker id="Arrow2Lend-8-9" overflow="visible" orient="auto">
+   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="Arrow2Lstart-7" overflow="visible" orient="auto">
+   <path transform="matrix(1.1,0,0,1.1,1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="InfiniteLineStart-3" overflow="visible" orient="auto">
+   <g transform="translate(-13)" fill="context-stroke">
+    <circle cx="3" r=".8"/>
+    <circle cx="6.5" r=".8"/>
+    <circle cx="10" r=".8"/>
+   </g>
+  </marker>
+  <marker id="Arrow2Lend-89" overflow="visible" orient="auto">
+   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="Arrow2Lstart-7-3" overflow="visible" orient="auto">
+   <path transform="matrix(1.1,0,0,1.1,1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="InfiniteLineStart-3-3" overflow="visible" orient="auto">
+   <g transform="translate(-13)" fill="context-stroke">
+    <circle cx="3" r=".8"/>
+    <circle cx="6.5" r=".8"/>
+    <circle cx="10" r=".8"/>
+   </g>
+  </marker>
+  <marker id="Arrow2Lend-89-8" overflow="visible" orient="auto">
+   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="Arrow2Lstart-7-7" overflow="visible" orient="auto">
+   <path transform="matrix(1.1,0,0,1.1,1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="InfiniteLineStart-3-4" overflow="visible" orient="auto">
+   <g transform="translate(-13)" fill="context-stroke">
+    <circle cx="3" r=".8"/>
+    <circle cx="6.5" r=".8"/>
+    <circle cx="10" r=".8"/>
+   </g>
+  </marker>
+  <marker id="Arrow2Lend-89-9" overflow="visible" orient="auto">
+   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="Arrow2Lstart-7-7-4" overflow="visible" orient="auto">
+   <path transform="matrix(1.1,0,0,1.1,1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="InfiniteLineStart-3-4-5" overflow="visible" orient="auto">
+   <g transform="translate(-13)" fill="context-stroke">
+    <circle cx="3" r=".8"/>
+    <circle cx="6.5" r=".8"/>
+    <circle cx="10" r=".8"/>
+   </g>
+  </marker>
+  <marker id="Arrow2Lend-89-9-2" overflow="visible" orient="auto">
+   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="Arrow2Lstart-7-7-4-7" overflow="visible" orient="auto">
+   <path transform="matrix(1.1,0,0,1.1,1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="InfiniteLineStart-3-4-5-5" overflow="visible" orient="auto">
+   <g transform="translate(-13)" fill="context-stroke">
+    <circle cx="3" r=".8"/>
+    <circle cx="6.5" r=".8"/>
+    <circle cx="10" r=".8"/>
+   </g>
+  </marker>
+  <marker id="Arrow2Lend-89-9-2-8" overflow="visible" orient="auto">
+   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+ </defs>
+ <g id="Base" transform="translate(-27.162 -82.586)">
+  <rect x="27.293" y="82.717" width="52.917" height="52.917" fill="#dcddd8" stroke="#3b7112" stroke-linejoin="round" stroke-width=".26213"/>
+  <text x="32.982712" y="112.93775" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="32.982712" y="112.93775" stroke-width=".26458">acServer</tspan></text>
+  <rect x="421.52" y="82.717" width="52.917" height="52.917" fill="#dcddd8" stroke="#3b7112" stroke-linejoin="round" stroke-width=".26213"/>
+  <text x="430.48038" y="105.27157" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="430.48038" y="105.27157">ACswui</tspan><tspan x="430.48038" y="118.50069">plugin</tspan></text>
+  <text transform="translate(21.874 82.59)" x="391.71075" y="21.294067" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" text-align="end" text-anchor="end" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsAcswuiUdpL" x="391.71075" y="21.294067" stroke-width=".26458" text-align="end" text-anchor="end">UDP_L = 88888</tspan></text>
+  <text transform="translate(21.874 82.59)" x="63.627403" y="39.814899" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsAcServerUdpR" x="63.627403" y="39.814899" stroke-width=".26458">UDP_R = 88888</tspan></text>
+  <g fill="none" stroke="#000" stroke-miterlimit="2">
+   <path d="m146.36 207.07-66.146-66.146" marker-end="url(#Arrow2Lend-89-9)" marker-mid="url(#InfiniteLineStart-3-4)" marker-start="url(#Arrow2Lstart-7-7)"/>
+   <path d="m127.83 209.72-68.792-68.792" marker-end="url(#Arrow2Lend-89-9-2)" marker-mid="url(#InfiniteLineStart-3-4-5)" marker-start="url(#Arrow2Lstart-7-7-4)"/>
+   <path d="m109.31 212.36-71.437-71.438" marker-end="url(#Arrow2Lend-89-9-2-8)" marker-mid="url(#InfiniteLineStart-3-4-5-5)" marker-start="url(#Arrow2Lstart-7-7-4-7)"/>
+  </g>
+  <g font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" text-anchor="end" word-spacing="0px">
+   <text transform="rotate(45)" x="233.07274" y="41.061802" text-align="end" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsAcserverUdp" x="233.07274" y="41.061802" stroke-width=".26458">UDP = 88888</tspan></text>
+   <text transform="rotate(45)" x="218.10564" y="56.028896" text-align="end" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsAcserverTcp" x="218.10564" y="56.028896" stroke-width=".26458">TCP = 88888</tspan></text>
+   <text transform="rotate(45)" x="206.88033" y="70.995987" text-align="end" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsAcserverHttp" x="206.88033" y="70.995987" stroke-width=".26458">HTTP = 88888</tspan></text>
+  </g>
+  <ellipse cx="151.65" cy="233.53" rx="58.208" ry="21.167" fill="#fff" stroke="#000" stroke-linejoin="round"/>
+  <text x="169.50914" y="237.24025" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" text-align="end" text-anchor="end" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="169.50914" y="237.24025" stroke-width=".26458">Internet</tspan></text>
+ </g>
+ <g id="WithoutRP" transform="translate(-5.288 .0036776)">
+  <path d="m63.621 26.586h328.09" fill="none" marker-end="url(#Arrow2Lend-8-9)" marker-mid="url(#InfiniteLineStart-93-4)" marker-start="url(#Arrow2Lstart)" stroke="#000" stroke-miterlimit="2"/>
+ </g>
+ <g id="WithRP" transform="translate(-5.288 .0036776)">
+  <text x="193.27324" y="21.294067" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" text-align="end" text-anchor="end" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsRpUdpL" x="193.27324" y="21.294067" stroke-width=".26458" text-align="end" text-anchor="end">UDP_L = 88888</tspan></text>
+  <path d="m63.627 26.586h132.29" fill="none" marker-end="url(#Arrow2Lend)" marker-mid="url(#InfiniteLineStart)" marker-start="url(#Arrow2Lstart)" stroke="#000" stroke-miterlimit="2"/>
+  <text x="259.41907" y="39.814899" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsRpUdpR" x="259.41907" y="39.814899" stroke-width=".26458">UDP_R = 88888</tspan></text>
+  <path d="m259.42 26.586h132.29" fill="none" marker-end="url(#Arrow2Lend-8)" marker-mid="url(#InfiniteLineStart-93)" marker-start="url(#Arrow2Lstart)" stroke="#000" stroke-miterlimit="2"/>
+  <rect transform="translate(-21.874 -82.59)" x="223.08" y="82.717" width="52.917" height="52.917" fill="#dcddd8" stroke="#3b7112" stroke-linejoin="round" stroke-width=".26213"/>
+  <text x="209.86403" y="22.810776" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="209.86403" y="22.810776">Real</tspan><tspan x="209.86403" y="36.039902">Penalty</tspan></text>
+  <path d="m140.36 124.48 66.146-66.146" fill="none" marker-end="url(#Arrow2Lend-89)" marker-mid="url(#InfiniteLineStart-3)" marker-start="url(#Arrow2Lstart-7)" stroke="#000" stroke-miterlimit="2"/>
+  <path d="m166.81 129.77 71.438-71.437" fill="none" marker-end="url(#Arrow2Lend-89-8)" marker-mid="url(#InfiniteLineStart-3-3)" marker-start="url(#Arrow2Lstart-7-3)" stroke="#000" stroke-miterlimit="2"/>
+  <text transform="rotate(-45)" x="106.64055" y="207.8486" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" text-align="end" text-anchor="end" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsRpUdp" x="106.64055" y="207.8486" stroke-width=".26458">UDP = 88888</tspan></text>
+  <text transform="rotate(-45)" x="87.931679" y="185.39796" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" text-align="end" text-anchor="end" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsRpTcp" x="87.931679" y="185.39796" stroke-width=".26458">TCP = 88888</tspan></text>
+ </g>
+</svg>

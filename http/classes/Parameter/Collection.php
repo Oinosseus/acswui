@@ -10,15 +10,14 @@ final class Collection extends Deriveable {
 
         if ($this->maxChildLevels() == 0) {
             $html .= "<div class=\"ParameterCollection\">";
-            $html .= "<div class=\"ParameterCollectionContainerLabel\">" . $this->label() . "</div>";
+            $html .= "<div class=\"ParameterCollectionContainerLabel\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
             $html .= "</div>";
 
         } else if ($this->maxChildLevels() == 1) {
 
             $html .= "<div class=\"ParameterCollection\">";
-            $html .= "<div class=\"ParameterCollectionContainerLabel\">" . $this->label() . "</div>";
+            $html .= "<div class=\"ParameterCollectionContainerLabel\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
             $html .= "<div class=\"ParameterCollectionContainer\">";
-            $html .= "<small>" . $this->description() . "</small>";
 
             // list direct parameter children
             $html .= "<div class=\"ParameterContainer\">";
@@ -36,9 +35,8 @@ final class Collection extends Deriveable {
         } else if ($this->maxChildLevels() == 2) {
 
             $html .= "<div class=\"ParameterCollection\">";
-            $html .= "<div class=\"ParameterCollectionContainerLabel\">" . $this->label() . "</div>";
+            $html .= "<div class=\"ParameterCollectionContainerLabel\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
             $html .= "<div class=\"ParameterCollectionContainer\">";
-            $html .= "<small>" . $this->description() . "</small>";
 
             // list direct parameter children
             $html .= "<div class=\"ParameterContainer\">";
@@ -51,7 +49,7 @@ final class Collection extends Deriveable {
             // list collection children
             foreach ($this->children() as $collection) {
                 if (!($collection instanceof Collection)) continue;
-                $html .= "<div class=\"ParameterCollectionSubLabel\">" . $collection->label() . "</div>";
+                $html .= "<div class=\"ParameterCollectionSubLabel\" title=\"" . $collection->description() . "\">" . $collection->label() . "</div>";
                 $html .= "<div class=\"ParameterContainer\">";
                 foreach ($collection->children() as $parameter) {
                     if (!($parameter instanceof Parameter)) continue;
@@ -75,7 +73,7 @@ final class Collection extends Deriveable {
             $html .= "<small>" . $this->description() . "</small>";
 
             //! @todo list direct parameters
-            $html .= "<div class=\"ParameterCollectionContainerLabel\">" . $this->label() . "</div>";
+            $html .= "<div class=\"ParameterCollectionContainerLabel\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
             $html .= "<div class=\"ParameterCollectionContainer\">";
             $html .= "<div class=\"ParameterContainer\">";
             foreach ($this->children() as $parameter) {
@@ -110,7 +108,7 @@ final class Collection extends Deriveable {
         $key_snake = $param->keySnake();
 
         // parameter label
-        $html .= "<div class=\"ParameterLabel\">" . $param->label() . "</div>";
+        $html .= "<div class=\"ParameterLabel\" title=\"" . $param->description() . "\">" . $param->label() . "</div>";
 
         // value
         $param_value_span = 1;
@@ -119,11 +117,11 @@ final class Collection extends Deriveable {
         $html .= "<div class=\"ParameterValueSpan$param_value_span\">";
         if ($param->accessability() == 2) {  // editable input
             $visible = ($param->inheritValue()) ? "style=\"display: none;\"" : "";
-            $html .= "<div id=\"ParameterValueInput_$key_snake\" $visible>" . $param->getHtmlInput() . "</div>";
+            $html .= "<div id=\"ParameterValueInput_$key_snake\" title=\"" . $param->description() . "\" $visible>" . $param->getHtmlInput() . "</div>";
         }
         if ($param->base() !== NULL) {  // inherited value
             $visible = ($param->inheritValue()) ? "" : "style=\"display: none;\"";
-            $html .= "<div class=\"ParameterInheritedValue\" id=\"ParameterValueInherited_$key_snake\" $visible>" . $param->base()->valueLabel() . "</div>";
+            $html .= "<div class=\"ParameterInheritedValue\" id=\"ParameterValueInherited_$key_snake\" title=\"" . $param->description() . "\" $visible>" . $param->base()->valueLabel() . "</div>";
         }
         $html .= "</div>";
 

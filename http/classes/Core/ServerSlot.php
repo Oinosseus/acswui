@@ -77,19 +77,31 @@ class ServerSlot {
 
             } else {
                 $root_collection = new \Parameter\Collection(NULL, NULL, "ServerSlot", _("Server Slot"), _("Collection of server slot settings"));
-                $p = new \Parameter\ParamString(NULL, $root_collection, "Name", _("Name"), _("An arbitrary name for the Server Slot"), "", "");
-                $pc = $root_collection;
+                $p = new \Parameter\ParamString(NULL, $root_collection, "Name", _("Name"), _("An arbitrary name for the server slot (recommended to be unique)"), "", "");
+
+
+                ////////////
+                // acServer
+
+                $pc = new \Parameter\Collection(NULL, $root_collection, "AcServer", _("acServer"), _("Settings for the actual acServer"));
 
                 // ports
-                $coll = new \Parameter\Collection(NULL, $pc, "AcPorts", _("AC Ports"), _("Internet protocol port numbers for the AC server"));
-                $p = new \Parameter\ParamInt(NULL, $coll, "UDP", "UDP", _("UDP port number: open this port on your server's firewall"), "", 9600);
-                $p->setMin(1023);
+                $coll = new \Parameter\Collection(NULL, $pc, "PortsInet", _("Internet Ports"), _("Internet protocol port numbers for the AC server"));
+                $p = new \Parameter\ParamInt(NULL, $coll, "UDP", "UDP", _("UDP port number: open this port on your server's firewall"), "", 9101);
+                $p->setMin(1024);
                 $p->setMax(65535);
-                $p = new \Parameter\ParamInt(NULL, $coll, "TCP", "TCP", _("TCP port number: open this port on your server's firewall"), "", 9600);
-                $p->setMin(1023);
+                $p = new \Parameter\ParamInt(NULL, $coll, "TCP", "TCP", _("TCP port number: open this port on your server's firewall"), "", 9101);
+                $p->setMin(1024);
                 $p->setMax(65535);
-                $p = new \Parameter\ParamInt(NULL, $coll, "HTTP", "HTTP", _("Lobby port number: open these ports (both UDP and TCP) on your server's firewall"), "", 8081);
-                $p->setMin(1023);
+                $p = new \Parameter\ParamInt(NULL, $coll, "HTTP", "HTTP", _("Lobby port number: open these ports (both UDP and TCP) on your server's firewall"), "", 9100);
+                $p->setMin(1024);
+                $p->setMax(65535);
+
+                // plugin ports
+                $coll = new \Parameter\Collection(NULL, $pc, "PortsPlugin", _("Plugin Ports"), _("UDP plugin port settings"));
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "UDP_R", "UDP_R", _("Remote UDP port for external plugins"), "", 9102);
+                $p->setMin(1024);
                 $p->setMax(65535);
 
                 // performance
@@ -103,6 +115,54 @@ class ServerSlot {
                 $p = new \Parameter\ParamInt(NULL, $coll, "MaxClients", _("Max Clients"), _("Max number of clients"), "", 25);
                 $p->setMin(1);
                 $p->setMax(999);
+
+
+                ////////////////
+                // Real Penalty
+
+                $pc = new \Parameter\Collection(NULL, $root_collection, "RP", _("Real Penalty Plugin"), _("Settings for the Real Penalty plugin"));
+
+                // genral
+                $coll = new \Parameter\Collection(NULL, $pc, "General", _("General Settings"), _("General settings for Real Penalty"));
+
+                $p = new \Parameter\ParamBool(NULL, $coll, "Enable", _("Enable RP"), _("Wheather to use Real Penalty for this slot or not"), "", FALSE);
+
+                $p = new \Parameter\ParamString(NULL, $coll, "ProductKey", _("Product Key"), _("Personal key, received after the Patreon subscription: https://www.patreon.com/DavideBolognesi"), "", "");
+
+                $p = new \Parameter\ParamString(NULL, $coll, "AdminPwd", _("Admin Passwort"), _("Password only for app 'Real Penalty - admin'"), "", "");
+
+                // plugin ports
+                $coll = new \Parameter\Collection(NULL, $pc, "PortsPlugin", _("Plugin Ports"), _("UDP plugin port settings"));
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "UDP_L", "UDP_L", _("Local UDP port to communicate with the acServer"), "", 9103);
+                $p->setMin(1024);
+                $p->setMax(65535);
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "UDP_R", "UDP_R", _("Remote UDP port for additional plugins"), "", 9104);
+                $p->setMin(1024);
+                $p->setMax(65535);
+
+                // internet ports
+                $coll = new \Parameter\Collection(NULL, $pc, "PortsInet", _("Internet Ports"), _("Port settings open to the internet"));
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "UDP", "UDP", _("UDP to communicate with RP client app"), "", 9105);
+                $p->setMin(1024);
+                $p->setMax(65535);
+
+
+                /////////////////
+                // ACswui Plugin
+
+                $pc = new \Parameter\Collection(NULL, $root_collection, "ACswui", _("ACswui Plugin"), _("Settings for the ACswui plugin"));
+
+                // plugin ports
+                $coll = new \Parameter\Collection(NULL, $pc, "PortsPlugin", _("Plugin Ports"), _("UDP plugin port settings"));
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "UDP_L", "UDP_L", _("Local UDP port to communicate with the acServer"), "", 9106);
+                $p->setMin(1024);
+                $p->setMax(65535);
+
+
 
                 // set all deriveable and visible
                 function __adjust_derived_collection($collection) {
