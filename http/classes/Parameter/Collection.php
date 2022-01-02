@@ -5,12 +5,32 @@ namespace Parameter;
 final class Collection extends Deriveable {
 
 
+
+    //! @return TRUE if this collection (or any child collection)contains any accessable parameters
+    public function containsAccessableParameters() {
+        //! @todo check if this function is expensive (due to hierarchical/recursive iterations)
+
+        foreach ($this->children() as $child) {
+            if ($child instanceof Parameter) {
+                if ($child->accessability() > 0) return TRUE;
+            } else if ($child instanceof Collection) {
+                if ($child->containsAccessableParameters()) return TRUE;
+            } else {
+                \Core\Log::error("Unexpected type!");
+            }
+        }
+
+        return FALSE;
+    }
+
+
     /**
      * Create an HTML string with all parameter settings as form elements
      * @param $hide_accessability_controls When TRUE (default FALSE), the constrols for derived accessability are hidden (intended for collections that shall not be derived)
+     * @param $read_only When set to TRUE (default FALSE), inputs for editing are ommitted (when TRUE, $hide_accessability_controls is automatically TRUE)
      * @return An HTML string
      */
-    public function getHtml(bool $hide_accessability_controls = FALSE) {
+    public function getHtml(bool $hide_accessability_controls = FALSE, bool $read_only = FALSE) {
         $html = "";
 
 
@@ -21,52 +41,57 @@ final class Collection extends Deriveable {
 
         } else if ($this->maxChildLevels() == 1) {
 
-            $html .= "<div class=\"ParameterCollection\">";
-            $html .= "<div class=\"ParameterCollectionContainerLabel\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
-            $html .= "<div class=\"ParameterCollectionContainer\">";
+//             if ($this->containsAccessableParameters()) {  // maybe if this is called at a low-level collection, you always want to see at least something
+                $html .= "<div class=\"ParameterCollection\">";
+                $html .= "<div class=\"ParameterCollectionContainerLabel\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
+                $html .= "<div class=\"ParameterCollectionContainer\">";
 
-            // list direct parameter children
-            $html .= "<div class=\"ParameterContainer\">";
-            foreach ($this->children() as $parameter) {
-                if (!($parameter instanceof Parameter)) continue;
-                if ($parameter->accessability() < 1) continue;
-                $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls);
-            }
-            $html .= "</div>";
+                // list direct parameter children
+                $html .= "<div class=\"ParameterContainer\">";
+                foreach ($this->children() as $parameter) {
+                    if (!($parameter instanceof Parameter)) continue;
+                    if ($parameter->accessability() < 1) continue;
+                    $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
+                }
+                $html .= "</div>";
 
-            $html .= "</div>";
-            $html .= "</div>";
+                $html .= "</div>";
+                $html .= "</div>";
+//             }
 
 
         } else if ($this->maxChildLevels() == 2) {
 
-            $html .= "<div class=\"ParameterCollection\">";
-            $html .= "<div class=\"ParameterCollectionContainerLabel\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
-            $html .= "<div class=\"ParameterCollectionContainer\">";
+            if ($this->containsAccessableParameters()) {
+                $html .= "<div class=\"ParameterCollection\">";
+                $html .= "<div class=\"ParameterCollectionContainerLabel\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
+                $html .= "<div class=\"ParameterCollectionContainer\">";
 
-            // list direct parameter children
-            $html .= "<div class=\"ParameterContainer\">";
-            foreach ($this->children() as $parameter) {
-                if (!($parameter instanceof Parameter)) continue;
-                $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls);
-            }
-            $html .= "</div>";
-
-            // list collection children
-            foreach ($this->children() as $collection) {
-                if (!($collection instanceof Collection)) continue;
-                $html .= "<div class=\"ParameterCollectionSubLabel\" title=\"" . $collection->description() . "\">" . $collection->label() . "</div>";
+                // list direct parameter children
                 $html .= "<div class=\"ParameterContainer\">";
-                foreach ($collection->children() as $parameter) {
+                foreach ($this->children() as $parameter) {
                     if (!($parameter instanceof Parameter)) continue;
-                    if ($parameter->accessability() < 1) continue;
-                    $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls);
+                    $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
                 }
                 $html .= "</div>";
-            }
 
-            $html .= "</div>";
-            $html .= "</div>";
+                // list collection children
+                foreach ($this->children() as $collection) {
+                    if (!($collection instanceof Collection)) continue;
+                    if (!$collection->containsAccessableParameters()) continue;  // hide collections with only invisible children
+                    $html .= "<div class=\"ParameterCollectionSubLabel\" title=\"" . $collection->description() . "\">" . $collection->label() . "</div>";
+                    $html .= "<div class=\"ParameterContainer\">";
+                    foreach ($collection->children() as $parameter) {
+                        if (!($parameter instanceof Parameter)) continue;
+                        if ($parameter->accessability() < 1) continue;
+                        $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
+                    }
+                    $html .= "</div>";
+                }
+
+                $html .= "</div>";
+                $html .= "</div>";
+            }
 
 
         } else {
@@ -85,7 +110,7 @@ final class Collection extends Deriveable {
             foreach ($this->children() as $parameter) {
                 if (!($parameter instanceof Parameter)) continue;
                 if ($parameter->accessability() < 1) continue;
-                $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls);
+                $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
             }
             $html .= "</div>";
             $html .= "</div>";
@@ -94,7 +119,7 @@ final class Collection extends Deriveable {
 
             foreach ($this->children() as $collection) {
                 if (!($collection instanceof Collection)) continue;
-                $html .= $collection->getHtml($hide_accessability_controls);
+                $html .= $collection->getHtml($hide_accessability_controls, $read_only);
             }
             $html .= "</div>";
         }
@@ -104,7 +129,7 @@ final class Collection extends Deriveable {
     }
 
 
-    private function getHtmlParameter(Parameter $param, bool $hide_accessability_controls) {
+    private function getHtmlParameter(Parameter $param, bool $hide_accessability_controls, bool $read_only = FALSE) {
         $html = "";
 
         // skip invisible items
@@ -114,21 +139,25 @@ final class Collection extends Deriveable {
         $key_snake = $param->keySnake();
 
         // parameter label
-        $html .= "<div class=\"ParameterLabel\" title=\"" . $param->description() . "\">" . $param->label() . "</div>";
+        $html .= "<div class=\"ParameterLabel\" title=\"[" . $param->keySnake() . "]\">" . $param->label() . "</div>";
 
         // value
         $param_value_span = 1;
         if ($param->unit() == "") ++$param_value_span;
         if ($param->base() == NULL || $param->accessability() < 2) ++$param_value_span;
-        if ($hide_accessability_controls) ++$param_value_span;
+        if ($hide_accessability_controls || $read_only) ++$param_value_span;
         $html .= "<div class=\"ParameterValueSpan$param_value_span\">";
-        if ($param->accessability() == 2) {  // editable input
-            $visible = ($param->inheritValue()) ? "style=\"display: none;\"" : "";
-            $html .= "<div id=\"ParameterValueInput_$key_snake\" title=\"" . $param->description() . "\" $visible>" . $param->getHtmlInput() . "</div>";
-        }
-        if ($param->base() !== NULL) {  // inherited value
-            $visible = ($param->inheritValue()) ? "" : "style=\"display: none;\"";
-            $html .= "<div class=\"ParameterInheritedValue\" id=\"ParameterValueInherited_$key_snake\" title=\"" . $param->description() . "\" $visible>" . $param->base()->valueLabel() . "</div>";
+        if ($read_only) {
+            $html .= "<div id=\"ParameterValueInput_$key_snake\" title=\"" . $param->description() . "\">" . $param->valueLabel() . "</div>";
+        } else {
+            if ($param->accessability() == 2) {  // editable input
+                $visible = ($param->inheritValue()) ? "style=\"display: none;\"" : "";
+                $html .= "<div id=\"ParameterValueInput_$key_snake\" title=\"" . $param->description() . "\" $visible>" . $param->getHtmlInput() . "</div>";
+            }
+            if ($param->base() !== NULL) {  // inherited value
+                $visible = ($param->inheritValue()) ? "" : "style=\"display: none;\"";
+                $html .= "<div class=\"ParameterInheritedValue\" id=\"ParameterValueInherited_$key_snake\" title=\"" . $param->description() . "\" $visible>" . $param->base()->valueLabel() . "</div>";
+            }
         }
         $html .= "</div>";
 
@@ -141,7 +170,8 @@ final class Collection extends Deriveable {
         if ($param->base() !== NULL && $param->accessability() == 2) {
             $html .= "<div class=\"ParameterDerivedCheckbox\">";
             $checked = $param->inheritValue() ? "checked" : "";
-            $html .= "<input type=\"checkbox\" id=\"ParameterInheritValueCheckbox_$key_snake\" name=\"ParameterInheritValueCheckbox_$key_snake\" $checked onclick=\"toggleParameterInheritance('$key_snake')\">";
+            $disabled = ($read_only) ? "disabled" : "";
+            $html .= "<input type=\"checkbox\" id=\"ParameterInheritValueCheckbox_$key_snake\" name=\"ParameterInheritValueCheckbox_$key_snake\" $checked onclick=\"toggleParameterInheritance('$key_snake')\" $disabled>";
             $html .= "<label for=\"ParameterInheritValueCheckbox_$key_snake\">";
             $html .= "<div class=\"Checked\" title=\"" . _("Value currently inherited from from base parameter") . "\">&#x26af;</div>";
             $html .= "<div class=\"UnChecked\" title=\"" . _("Value currently defined locally") . "\">&#x26ae;</div>";
@@ -150,7 +180,7 @@ final class Collection extends Deriveable {
         }
 
         // accessability
-        if (!$hide_accessability_controls) {
+        if (!$hide_accessability_controls && !$read_only) {
             $derived_accessability = ($param->base() !== NULL) ? $param->base()->derivedAccessability() : 2;
             $html .= "<div class=\"ParameterDerivedCheckbox\" onclick=\"toggleParameterAccessability('$key_snake', $derived_accessability)\">";
             $display = ($param->derivedAccessability() != 0) ? "style=\"display:none;\"" : "";

@@ -31,6 +31,41 @@ class ServerPreset extends DbEntry {
     }
 
 
+    //! Delete this preset from the database
+    public function delete() {
+
+        // remove children
+        foreach ($this->children() as $child) {
+            $child->delete();
+        }
+
+        // remove from parents child list
+        $parent = $this->parent();
+        if ($parent !== NULL && $parent->ChildPresets !== NULL) {
+            $new_parent_child_list = array();
+            foreach ($parent->ChildPresets as $child) {
+                if ($child->id() !== $this->id()) $new_parent_child_list[] = $child;
+            }
+            $parent->ChildPresets = $new_parent_child_list;
+        }
+
+        // delete from database
+        $this->deleteFromDb();
+    }
+
+
+    /**
+     * Create a new preset, which is derived from a parent.
+     * @param $parent The parenting preset which shall be derived
+     * @return A new ServerPreset object
+     */
+    public static function derive(ServerPreset $parent) {
+        $new_id = \Core\Database::insert("ServerPresets", ['Name'=>"New Preset", 'Parent'=>$parent->id()]);
+        $new_preset = ServerPreset::fromId($new_id);
+        return $new_preset;
+    }
+
+
     //! @return A ServerPreset object, retreived from database by ID ($id=0 will return a non editable default preset)
     public static function fromId(int $id) {
 
@@ -48,80 +83,6 @@ class ServerPreset extends DbEntry {
 
         return $sp;
     }
-
-
-    //! @return TRUE, when the preset is deriveable by the user $user
-    public function isDeriveable(User $user) {
-
-        if ($user === NULL) return FALSE;
-        if ($user->isRoot()) return TRUE;
-
-        // scan for allowed deriveable presets
-        $query_where = "";
-        foreach ($user->groups() as $group) {
-            if (strlen($query_where) > 0) $query_where .= " OR ";
-            $query_where .= "`Group`=" . $group->id();
-        }
-        $query = "SELECT DISTINCT ServerPreset FROM ServerPresetDerivers WHERE ServerPreset=" . $this->id() . " AND ($query_where);";
-        $res = \Core\Database::fetchRaw($query);
-        return count($res) == 1;
-    }
-
-
-//     //! @return An array of the first ServerPreset objects that are in the child hierarchy and are deriveable by the current logged user
-//     private function listChildDeriveable() {
-//     }
-//
-//
-//     //! @return An array of ServerPreset objects (top-level parents) that can be derived by the current user group
-//     public function listTopDeriveable() {
-//
-//         $current_user = \Core\UserManager::loggedUser();
-//         $sp = array();
-//
-//         if ($current_user == NULL) {
-//             // nothing for unlogged users
-//
-//         } else if ($current_user->isRoot()) {
-//             // top level preset for root users
-//             $sp[] = ServerPreset::fromId(0);
-//
-//         } else {
-//
-//             if (count($current_user->groups()) > 0) {
-//
-//
-//                 $top_level_preset = ServerPreset::fromId(0);
-//
-//
-//                 // scan for allowed deriveable presets
-//                 $query_where = "";
-//                 foreach ($current_user->groups() as $group) {
-//                     if (strlen($query_where) > 0) $query_where .= " OR ";
-//                     $query_where .= "`Group`=" . $group->id();
-//                 }
-//                 $query = "SELECT DISTINCT ServerPreset FROM ServerPresetDerivers WHERE $query_where ORDER BY ServerPreset;";
-//                 $res = \Core\Database::fetchRaw($query);
-//                 $deriveable_presets = array();
-//                 foreach ($res as $row) {
-//                     $deriveable_presets [] = ServerPreset::fromId($row['ServerPreset']);
-//                 };
-//
-//                 // remove presets, where parent is already in list
-//                 for ($i=0; $i < count($deriveable_presets); ++$i) {
-//                     if ($deriveable_presets[$i] !== NULL) {
-//                         // set entry to NULL if parent preset is already in the list
-//                         $parent_preset = $deriveable_presets[$i]->parent();
-//                         if (in_array($parent_preset, $deriveable_presets)) {
-//                             $deriveable_presets[$i] = NULL;
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//
-//         return $sp;
-//     }
 
 
     //! @return The name of the preset
@@ -146,15 +107,7 @@ class ServerPreset extends DbEntry {
             // create collection
             } else {
                 $this->ParameterCollection = new \Parameter\Collection(NULL, NULL, "Root", _("Root"), _("Collection of server preset settings"));
-
-//                 $c1p1 = new \Parameter\ParamBool(NULL, $this->ParameterCollection, "C1P1", "Parameter 1", "First Parameter", "°C", TRUE);
-//                 $c1p2 = new \Parameter\ParamBool(NULL, $this->ParameterCollection, "C1P2", "Parameter 2", "Second Parameter", "km", FALSE);
-//                 $c1c1 = new \Parameter\Collection(NULL, $this->ParameterCollection, "C1C1", "Empty Collection", "Just for testing");
-//                 $c1p3 = new \Parameter\ParamString(NULL, $this->ParameterCollection, "C1P3", "Parameter 3", "Third Parameter", "", "S;H;L");
-//
-//                 $p = new \Parameter\ParamInt(NULL, $this->ParameterCollection, "C1P4", "ParamInt", "Integer Parameter", "Laps", 3);
-//                 $p->setMin(0);
-//                 $p->setMax(100);
+                $p = new \Parameter\ParamString(NULL, $this->ParameterCollection, "Name", _("Name"), _("Name of the preset"), "", "");
 
 
                 // ------------------------------------------------------------
@@ -173,7 +126,7 @@ class ServerPreset extends DbEntry {
                 // practice
                 $coll = new \Parameter\Collection(NULL, $coll_group, "Practice", _("Practice"), _("Settings for Practice Session"));
                 $p = new \Parameter\ParamString(NULL, $coll, "Name", _("Name"), _("Name of the session"), "", "Practice");
-                $p = new \Parameter\ParamInt(NULL, $coll, "Time", _("Time"), _("Duration of session in Minutes"), "min", 30);
+                $p = new \Parameter\ParamInt(NULL, $coll, "Time", _("Time"), _("Duration of session in Minutes"), "Min", 30);
                 $p->setMin(0);
                 $p->setMax(999);
                 $p = new \Parameter\ParamEnum(NULL, $coll, "IsOpen", _("Is Open"), _("Either Session can be joined"));
@@ -184,7 +137,7 @@ class ServerPreset extends DbEntry {
                 // qualifying
                 $coll = new \Parameter\Collection(NULL, $coll_group, "Qualifying", _("Qualifying"), _("Settings for Qualifying Session"));
                 $p = new \Parameter\ParamString(NULL, $coll, "Name", _("Name"), _("Name of the session"), "", "Qualifying");
-                $p = new \Parameter\ParamInt(NULL, $coll, "Time", _("Time"), _("Duration of session in Minutes"), "min", 30);
+                $p = new \Parameter\ParamInt(NULL, $coll, "Time", _("Time"), _("Duration of session in Minutes"), "Min", 30);
                 $p->setMin(0);
                 $p->setMax(999);
                 $p = new \Parameter\ParamEnum(NULL, $coll, "IsOpen", _("Is Open"), _("Either Session can be joined"));
@@ -198,7 +151,7 @@ class ServerPreset extends DbEntry {
                 $p = new \Parameter\ParamInt(NULL, $coll, "Laps", _("Laps"), _("Amount of Laps for the race"), "Laps", 0);
                 $p->setMin(0);
                 $p->setMax(999);
-                $p = new \Parameter\ParamInt(NULL, $coll, "Time", _("Time"), _("Amount of Minutes for the race"), "Laps", 0);
+                $p = new \Parameter\ParamInt(NULL, $coll, "Time", _("Time"), _("Amount of Minutes for the race (only if Laps=0)"), "Min", 0);
                 $p->setMin(0);
                 $p->setMax(999);
                 $p = new \Parameter\ParamInt(NULL, $coll, "WaitTime", _("Wait Time"), _("Seconds before start of the Session"), "s", 0);
@@ -207,6 +160,7 @@ class ServerPreset extends DbEntry {
                 $p = new \Parameter\ParamEnum(NULL, $coll, "IsOpen", _("Is Open"), _("Either Session can be joined"));
                 new \Parameter\EnumItem($p, 0, _("No Join"));
                 new \Parameter\EnumItem($p, 1, _("Free Join"));
+                new \Parameter\EnumItem($p, 2, _("Join 20s"));
                 $p->setValue(1);
 
 
@@ -334,7 +288,8 @@ class ServerPreset extends DbEntry {
 
     //! @return The parenting ServerPreset object (can be NULL)
     public function parent() {
-        if ($this->id() === 0) return NULL;
+        if ($this->id() === NULL) return NULL;
+        else if ($this->id() === 0) return NULL;
         else return ServerPreset::fromId($this->loadColumn("Parent"));
     }
 
@@ -343,8 +298,16 @@ class ServerPreset extends DbEntry {
     public function save() {
         if ($this->id() == 0) return;
 
+        $column_data = array();
+
+        // name, slot-id
+        $column_data['Name'] = $this->parameterCollection()->child("Name")->valueLabel();
+
+        // parameter data
         $data_array = $this->parameterCollection()->dataArrayExport();
         $data_json = json_encode($data_array);
-        $this->storeColumns(['ParameterData'=>$data_json]);
+        $column_data['ParameterData'] = $data_json;
+
+        $this->storeColumns($column_data);
     }
 }

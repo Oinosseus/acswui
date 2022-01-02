@@ -5,6 +5,7 @@ namespace Content\Html;
 class ServerPresets extends \core\HtmlContent {
 
     private $CurrentPreset = NULL;
+    private $CanEdit = False;
 
 
     public function __construct() {
@@ -14,12 +15,13 @@ class ServerPresets extends \core\HtmlContent {
 
 
     public function getHtml() {
+        $this->CanEdit = \Core\UserManager::loggedUser()->permitted("Settings_Presets_Edit");
         $html = "";
 
         // get requested preset
-        if (array_key_exists('ServerPreset', $_REQUEST)) {
-            $preset = \DbEntry\ServerPreset::fromId($_REQUEST['ServerPreset']);
-            if ($preset !== NULL && $preset->isDeriveable(\Core\UserManager::loggedUser())) {
+        if (array_key_exists('ServerPreset', $_GET)) {
+            $preset = \DbEntry\ServerPreset::fromId($_GET['ServerPreset']);
+            if ($preset !== NULL) {
                 $this->CurrentPreset = $preset;
             }
         }
@@ -31,15 +33,11 @@ class ServerPresets extends \core\HtmlContent {
             if ($_POST['Action'] == "SavePreset" && $this->CurrentPreset !== NULL) {
 
                 // prevent editing root preset
-                if ($current_user === NULL) {
-                    \Core\Log::warning("Prevent editing preset '" . $this->CurrentPreset->id() . "' from not logged user");
-                } else if ($this->CurrentPreset->parent() === NULL && !$current_user->isRoot()) {
-                    \Core\Log::warning("Prevent editing preset '" . $this->CurrentPreset->id() . "' from not user '" . $current_user->id() . "'");
-                } else if (!$this->CurrentPreset->parent()->isDeriveable($current_user)) {
-                    \Core\Log::warning("Prevent editing preset '" . $this->CurrentPreset->id() . "' from not user '" . $current_user->id() . "'");
-                } else {
+                if ($this->CanEdit) {
                     $this->CurrentPreset->parameterCollection()->storeHttpRequest();
                     $this->CurrentPreset->save();
+                } else {
+                    \Core\Log::warning("Prevent editing preset '" . $this->CurrentPreset->id() . "' from user '" . $current_user->id() . "'");
                 }
 
             } else if ($_POST['Action'] == "SaveManagementTable") {
@@ -55,20 +53,22 @@ class ServerPresets extends \core\HtmlContent {
                     }
                 }
                 check_delete(\DbEntry\ServerPreset::fromId(0)->children());
+
+                // it can happen that the current preset has been deleted
+                $this->CurrentPreset = NULL;
             }
-        }
+
 
         // create new derived preset
-        if (array_key_exists('DeriveServerPreset', $_GET)) {
+        } else if (array_key_exists('DeriveServerPreset', $_GET)) {
             $parent_preset = \DbEntry\ServerPreset::fromId($_GET['DeriveServerPreset']);
             if ($parent_preset !== NULL) {
                 $current_user = \Core\UserManager::loggedUser();
-                if ($current_user === NULL) {
-                    \Core\Log::warning("Prevent from creating a new preset, derived from '$parent_preset' for unlogged user.");
-                } else if (!$parent_preset->isDeriveable($current_user)) {
-                    \Core\Log::warning("Prevent from creating a new preset, derived from '$parent_preset' for user '$current_user'.");
+                if ($this->CanEdit) {
+                    $this->CurrentPreset = NULL;
+                    \DbEntry\ServerPreset::derive($parent_preset);
                 } else {
-                    $this->CurrentPreset = \DbEntry\ServerPreset::derive($parent_preset);
+                    \Core\Log::warning("Prevent from creating a new preset, derived from '$parent_preset' for user '$current_user'.");
                 }
             }
         }
@@ -92,12 +92,18 @@ class ServerPresets extends \core\HtmlContent {
         $html = "<h1>" . $preset->name() . "</h1>";
         $html .= $this->newHtmlForm("POST");
         $pc = $this->CurrentPreset->parameterCollection();
-        $html .= $pc->getHtml();
+
+        if ($this->CurrentPreset->parent() === NULL || !$this->CanEdit) {
+            $html .= $pc->getHtml(FALSE, TRUE);
+        } else {
+            $html .= $pc->getHtml();
+        }
+
         $html .= "<br><br>";
         $html .= "<button type=\"submit\" name=\"Action\" value=\"SavePreset\">" . _("Save Preset") . "</button>";
         $html .= "</form>";
 
-        $html .= $pc->getHtmlTree();
+//         $html .= $pc->getHtmlTree();
 
         return $html;
     }
@@ -108,7 +114,7 @@ class ServerPresets extends \core\HtmlContent {
 
         $html .= "<h1>" . _("Preset Management") . "</h1>";
 
-        $html .= $this->newHtmlForm("POST");
+        $html .= $this->newHtmlForm("POST", "ServerPresetManagementForm");
         $html .= "<table id=\"PresetManagementTable\">";
         $html .= "<tr>";
         $html .= "<th>"  . _("Server Preset") . "</th>";
@@ -121,10 +127,11 @@ class ServerPresets extends \core\HtmlContent {
         $html .= "<tr $class_current_preset>";
         $html .= "<td><a href=\"" . $this->url(['ServerPreset'=>$root_preset->id()]) . "\">" . $root_preset->name() . "</a></td>";
         $html .= "<td></td>";
-        if ($root_preset->isDeriveable(\Core\UserManager::loggedUser()))
-            $html .= "<td><a href=\"" . $this->url(['DeriveServerPreset'=>$root_preset->id()]) . "\" title=\"" . _("Create new derived Preset") . "\">&#x21e9;</a></td>";
-        else
-            $html .= "<td></td>";
+        $html .= "<td>";
+        if ($this->CanEdit) {
+            $html .= "<a href=\"" . $this->url(['DeriveServerPreset'=>$root_preset->id()]) . "\" title=\"" . _("Create new derived Preset") . "\">&#x21e9;</a>";
+        }
+        $html .= "</td>";
         $html .= "</tr>";
 
         // all other presets
@@ -132,7 +139,7 @@ class ServerPresets extends \core\HtmlContent {
 
         $html .= "</table>";
         $html .= "<br><br>";
-        $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveManagementTable\">" . _("Apply Deleted Presets") . "</button>";
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveManagementTable\" form=\"ServerPresetManagementForm\">" . _("Save Preset Management") . "</button>";
         $html .= "</form>";
 
         return $html;
@@ -144,6 +151,7 @@ class ServerPresets extends \core\HtmlContent {
 
         for ($child_index=0; $child_index < count($parent->children()); ++$child_index) {
             $child = $parent->children()[$child_index];
+            $child_id = $child->id();
 
             if ($child_index == (count($parent->children()) -  1)) {
                 if (count($child->children())) $prechars = "&#x2517;&#x2578;";
@@ -153,14 +161,13 @@ class ServerPresets extends \core\HtmlContent {
                 else $prechars = "&#x2520;&#x2574;";
             }
 
-            $is_deriveable = $child->isDeriveable(\Core\UserManager::loggedUser());
             $class_current_preset = ($this->CurrentPreset && $this->CurrentPreset->id() == $child->id()) ? "class=\"CurrentPreset\"" : "";
 
             $html .= "<tr $class_current_preset>";
             $html .= "<td>" . $indent . $prechars . "<a href=\"" . $this->url(['ServerPreset'=>$child->id()]) . "\">" . $child->name() . "</a></td>";
             $html .= "<td>" . $this->newHtmlTableRowDeleteCheckbox("DeleteServerPreset" . $child->id()) . "</td>";
             $html .= "<td>";
-            if ($is_deriveable) $html .= "<a href=\"" . $this->url(['DeriveServerPreset'=>$child->id()]) . "\" title=\"" . _("Create new derived Preset") . "\">&#x21e9;</a>";
+            if ($this->CanEdit) $html .= "<a href=\"" . $this->url(['DeriveServerPreset'=>$child->id()]) . "\" title=\"" . _("Create new derived Preset") . "\">&#x21e9;</a>";
             $html .= "</td>";
             $html .= "</tr>";
 

@@ -60,12 +60,6 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt("ServerPresets", "Parent")
         self.__db.appendColumnText("ServerPresets", "ParameterData")
 
-        # ServerPresetDerivers
-        self.__db.appendTable("ServerPresetDerivers", ["ServerPreset", "Group"])
-
-        # ServerPresetUsers
-        self.__db.appendTable("ServerPresetUsers", ["ServerPreset", "Group"])
-
 
 
     def _tables_mustard(self):
@@ -228,6 +222,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnTinyInt("Groups", "ViewUsers")
         self.__db.appendColumnTinyInt("Groups", "Settings_View")
         self.__db.appendColumnTinyInt("Groups", "Settings_Presets_View")
+        self.__db.appendColumnTinyInt("Groups", "Settings_Presets_Edit")
         self.__db.appendColumnTinyInt("Groups", "Settings_Slots_View")
         self.__db.appendColumnTinyInt("Groups", "Settings_Slots_Edit")
         self.__db.appendColumnTinyInt("Groups", "Sessions_View")

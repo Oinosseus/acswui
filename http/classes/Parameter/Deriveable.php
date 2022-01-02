@@ -214,7 +214,7 @@ abstract class Deriveable {
     }
 
 
-    //! @return A HTML formed string that shows the parent->child tree structure
+    //! @return A HTML formed string that shows the parent->child tree structure (this is intended for debugging)
     public function getHtmlTree() {
         $html = "";
         $html .= "<div class=\"monospace\">";
