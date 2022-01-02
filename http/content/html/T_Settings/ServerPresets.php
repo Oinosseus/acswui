@@ -96,7 +96,7 @@ class ServerPresets extends \core\HtmlContent {
         if ($this->CurrentPreset->parent() === NULL || !$this->CanEdit) {
             $html .= $pc->getHtml(FALSE, TRUE);
         } else {
-            $html .= $pc->getHtml();
+            $html .= $pc->getHtml(count($preset->children()) == 0);
         }
 
         $html .= "<br><br>";

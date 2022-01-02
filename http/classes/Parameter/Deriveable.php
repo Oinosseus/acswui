@@ -339,7 +339,7 @@ abstract class Deriveable {
         // accessability
         $key = $this->key();
         if (array_key_exists("ParameterAccessability_$key", $_REQUEST)) {
-            $this->derivedAccessability($_REQUEST["ParameterAccessability_$key$key"]);
+            $this->derivedAccessability($_REQUEST["ParameterAccessability_$key"]);
         }
 
         // store http request for children
