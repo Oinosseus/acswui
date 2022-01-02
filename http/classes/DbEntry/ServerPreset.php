@@ -87,7 +87,7 @@ class ServerPreset extends DbEntry {
 
     //! @return The name of the preset
     public function name() {
-        if ($this->id() === 0) return _("Default");
+        if ($this->id() === 0) return _("Factory Default");
         else return $this->loadColumn("Name");
     }
 
