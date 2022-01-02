@@ -16,7 +16,7 @@ class NoCarEntryError(BaseException):
 class UdpPluginServer(object):
 
     def __init__(self,
-                 acswui_info,
+                 server_slot, server_preset, car_class,
                  port_server, port_plugin,
                  database,
                  entry_list_path,
@@ -30,7 +30,9 @@ class UdpPluginServer(object):
         self.__PROCESS_TIME = 0.1 # seconds
 
         self.__verbosity = Verbosity(verbosity)
-        self.__acswui_info = acswui_info
+        self.__server_slot = int(server_slot)
+        self.__server_preset = int(server_preset)
+        self.__car_class = int(car_class)
         self.__session = None
         self.__entries = []
         self.__database = database
@@ -91,7 +93,7 @@ class UdpPluginServer(object):
         if prot == 50:
 
             # set new session object
-            self.__session = UdpPluginSession(self.__acswui_info, self.__database, pkt, self.__session, self.__verbosity)
+            self.__session = UdpPluginSession(self.__server_slot, self.__server_preset, self.__car_class, self.__database, pkt, self.__session, self.__verbosity)
 
             # enable realtime update
             self.enable_realtime_report()
@@ -99,7 +101,7 @@ class UdpPluginServer(object):
         # ACSP_SESSION_INFO
         elif prot == 59:
             if self.__session is None:
-                self.__session = UdpPluginSession(self.__acswui_info, self.__database, pkt, self.__session, self.__verbosity)
+                self.__session = UdpPluginSession(self.__server_slot, self.__server_preset, self.__car_class, self.__database, pkt, self.__session, self.__verbosity)
             else:
                 self.__session.update(pkt)
 

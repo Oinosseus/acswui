@@ -15,84 +15,127 @@ class CommandSrvrun(Command):
     def __init__(self, argparser):
         Command.__init__(self, argparser, "srvrun", "run the ac server")
         self.add_argument('--slot', help="Server slot number")
+        self.add_argument('--real-penalty', action='store_true', help="Set this flag to lunch the real penalty plugin")
+        self.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
 
 
     def process(self):
+        self._verbosity = Verbosity(self.getArg("v"), self.__class__.__name__)
 
-        # setup database
-        self.Verbosity.print("Setup Database")
-        db = Database(host=self.getGeneralArg("db-host"),
-                      port=self.getGeneralArg("db-port"),
-                      database=self.getGeneralArg("db-database"),
-                      user=self.getGeneralArg("db-user"),
-                      password=self.getGeneralArg("db-password"),
-                      verbosity=Verbosity(Verbosity(self.Verbosity))
-                      )
+        slot_str = str(self.getArg("slot"))
 
-        # paths
-        path_data_acserver = os.path.join(self.getGeneralArg("path-data"), "acserver")
-        path_realtime_json = os.path.join(self.getGeneralArg("path-htdata"), "realtime", self.getArg("slot") + ".json")
-        path_entry_list = os.path.join(path_data_acserver, "cfg", "entry_list_" + self.getArg("slot") + ".ini")
-        path_server_cfg = os.path.join(path_data_acserver, "cfg", "server_cfg_" + self.getArg("slot") + ".ini")
-        path_log_acserver = os.path.join(self.getGeneralArg("path-data"), "logs_acserver", "srvrun_" + self.getArg("slot") + ".log")
 
-        # read server config
-        self.Verbosity.print("Read config files")
-        server_cfg = ConfigParser()
-        server_cfg.read(path_server_cfg)
 
-        # setup UDP Plugin
-        self.Verbosity.print("Setup UDP plugin server")
-        acswui_info = server_cfg['ACSWUI']
-        udpp_port_server = server_cfg['SERVER']['UDP_PLUGIN_LOCAL_PORT']
-        udpp_cfg = server_cfg['SERVER']['UDP_PLUGIN_ADDRESS'].split(":")
-        udpp_addr = udpp_cfg[0]
-        udpp_port_plugin = udpp_cfg[1]
-        udpp = UdpPluginServer(acswui_info,
-                               udpp_port_server, udpp_port_plugin, db,
-                               path_entry_list,
-                               path_data_acserver,
-                               path_realtime_json,
-                               verbosity=self.Verbosity)
-        udpp.process() # run once just to ensure that it does not crash immediately
+        # prepare real penalty UDP plugin as separate process
+        self._verbosity.print("starting real penalty plugin")
+        path_rp = os.path.abspath(os.path.join(self.getGeneralArg("path-data"), "real_penalty", slot_str))
+        rp_cmd = []
+        rp_cmd.append(os.path.join(path_rp, "ac_penalty"))
 
-        # start ac server as separate process
-        self.Verbosity.print("Start AC server")
-        acs_cmd = []
-        acs_cmd.append(os.path.join(path_data_acserver, "acServer" + self.getArg("slot")))
-        acs_cmd.append("-c")
-        acs_cmd.append(path_server_cfg)
-        acs_cmd.append("-e")
-        acs_cmd.append(path_entry_list)
-        acs_cmd.append(">")
+
+
+        # prepare ACswui UDP plugin as separate process
+        self._verbosity.print("starting ACswui plugin")
+        path_acswui = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        path_acswui_udpp_ini = os.path.abspath(os.path.join(self.getGeneralArg("path-data"), "acswui_udp_plugin", "acswui_udp_plugin_" + slot_str + ".ini"))
+        path_log_acswuiudpp = os.path.join(self.getGeneralArg("path-data"), "logs_srvrun", "slot_" + slot_str + ".acswui_udp_plugin.log")
+        acswui_udpp_cmd = []
+        acswui_udpp_cmd.append(os.path.join(path_acswui, "acswui.py"))
+        acswui_udpp_cmd.append("udpplugin")
+        acswui_udpp_cmd.append("-" + ("v"*self._verbosity.level()))
+        acswui_udpp_cmd.append(path_acswui_udpp_ini)
         try:
-            stdout = open(path_log_acserver, "w")
+            stdout_log_acswuiplugin = open(path_log_acswuiudpp, "w")
         except ArgumentException as e:
-            stdout = DEVNULL
-        acs_cmd.append("&")
-        acs_proc = Popen(acs_cmd, cwd=path_data_acserver, stdout=stdout, stderr=stdout)
-        #acs_proc = Popen(acs_cmd, stdout=stdout, stderr=stdout)
+            stdout_log_acswuiplugin = DEVNULL
 
-        # export PID
-        with open(os.path.join(path_data_acserver, "acServer" + self.getArg("slot") + ".pid"), "w") as pidfile:
-            pidfile.write(str(acs_proc.pid))
 
-        # run server
-        self.Verbosity.print("Processing ...")
+        # prepare ac server as separate process
+        self._verbosity.print("Start AC server")
+        path_data_acserver = os.path.join(self.getGeneralArg("path-data"), "acserver")
+        path_entry_list = os.path.join(path_data_acserver, "cfg", "entry_list_" + slot_str + ".ini")
+        path_server_cfg = os.path.join(path_data_acserver, "cfg", "server_cfg_" + slot_str + ".ini")
+        path_log_acserver = os.path.join(self.getGeneralArg("path-data"), "logs_srvrun", "slot_" + slot_str + ".acServer.log")
+        acserver_cmd = []
+        acserver_cmd.append(os.path.join(path_data_acserver, "acServer" + slot_str))
+        acserver_cmd.append("-c")
+        acserver_cmd.append(path_server_cfg)
+        acserver_cmd.append("-e")
+        acserver_cmd.append(path_entry_list)
+        acserver_cmd.append(">")
+        try:
+            stdout_log_acserver = open(path_log_acserver, "w")
+        except ArgumentException as e:
+            stdout_log_acserver = DEVNULL
+        acserver_cmd.append("&")
+
+
+        # lunch processes
+        if self.getArg("real-penalty"):
+            rp_proc = Popen(rp_cmd, cwd=path_rp, stdout=DEVNULL, stderr=DEVNULL)
+        acswui_udpp_proc = Popen(acswui_udpp_cmd, cwd=path_acswui, stdout=stdout_log_acswuiplugin, stderr=stdout_log_acswuiplugin)
+        acserver_proc = Popen(acserver_cmd, cwd=path_data_acserver, stdout=stdout_log_acserver, stderr=stdout_log_acserver)
+        with open(os.path.join(path_data_acserver, "acServer" + slot_str + ".pid"), "w") as pidfile:
+            pidfile.write(str(acserver_proc.pid))
+
+
+        # monitor processes
+        # tear down all if any of them has finished processing
+        self._verbosity.print("monitoring ...")
         while True:
             sys.stdout.flush()
 
-            # process server
-            try:
-                udpp.process()
-            except BaseException as e:
-                self.Verbosity.print("Received Exception:", str(e))
-                acs_proc.terminate()
-                acs_proc.wait(timeout=5.0)
-                raise e
+            # quit parsing when RP plugin is stopped
+            if self.getArg("real-penalty"):
+                ret = rp_proc.poll()
+                if ret is not None:
+                    self._verbosity.print("Real Penalty plugin has finished with returncode", ret)
+                    break
+
+
+            # quit parsing when acswui plugin is stopped
+            ret = acswui_udpp_proc.poll()
+            if ret is not None:
+                self._verbosity.print("ACswui UDP plugin has finished with returncode", ret)
+                break
+
 
             # quit parsing when acServer is stopped
-            ret = acs_proc.poll()
+            ret = acserver_proc.poll()
             if ret is not None:
-                self.Verbosity.print("AC server has finished with returncode", ret)
+                self._verbosity.print("AC server has finished with returncode", ret)
                 break
+
+
+        # friendly ask to finish processing
+        if self.getArg("real-penalty"):
+            if rp_proc.poll() is None:
+                rp_proc.terminate()
+        if acswui_udpp_proc.poll() is None:
+            acswui_udpp_proc.terminate()
+        if acserver_proc.poll() is None:
+            acserver_proc.terminate()
+
+
+        # allow some time to shutdown processes
+        time_start = time.time()
+        while True:
+            if (time.time() - time_start) > 5:
+                break;
+            if rp_proc.poll() is None and acswui_udpp_proc.poll() is None:
+                if self.getArg("real-penalty"):
+                    if acserver_proc.poll() is None:
+                        break
+                else:
+                    break
+
+
+        # kill processing
+        if self.getArg("real-penalty"):
+            if rp_proc.poll() is None:
+                rp_proc.kill()
+        if acswui_udpp_proc.poll() is None:
+            acswui_udpp_proc.kill()
+        if acserver_proc.poll() is None:
+            acserver_proc.kill()
+

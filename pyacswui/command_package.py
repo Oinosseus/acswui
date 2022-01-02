@@ -82,42 +82,10 @@ class CommandPackage(Command):
         if not os.path.isdir(path_refpkg):
             raise NotImplementedError("Cannot find path-refpkg: " + path_refpkg)
 
-        self.__create_server_cfg_json()
         self.__scan_cars()
         self.__scan_tracks()
         self.__scan_server()
-
-
-
-    def __create_server_cfg_json(self):
-        self._verbosity.print("create server_cfg.json")
-
-        # read template
-        with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "server_cfg.json"), "r") as f:
-            json_string = f.read()
-        server_cfg_json = json.loads(json_string)
-
-        # append database column names,
-        # append curent value
-        for section in server_cfg_json:
-            for fieldset in server_cfg_json[section]:
-                for tag in server_cfg_json[section][fieldset]:
-                    tag_dict = server_cfg_json[section][fieldset][tag]
-                    tag_dict['DB_COLUMN_NAME'] = section + "_" + tag
-                    tag_dict['CURRENT'] = tag_dict['DEFAULT']
-
-        # scan for weather enums
-        json_enum = server_cfg_json["WEATHER_0"]['Weather']["GRAPHICS"]['ENUMS']
-        weather_path = os.path.join(self.getGeneralArg('path-ac'), "content", "weather")
-        weather_index = 0
-        for w in sorted(os.listdir(weather_path)):
-            if w[:1] != "." and os.path.isdir(os.path.join(weather_path, w)):
-                json_enum.append({"VALUE":weather_index, "TEXT":w})
-                weather_index += 1
-
-        # dump to output directory
-        with open(self._pathRefPkg("server_cfg.json"), "w") as f:
-            json.dump(server_cfg_json, f, indent=4)
+        self.__scan_weathers()
 
 
 
@@ -230,3 +198,28 @@ class CommandPackage(Command):
 
         # surfaces.ini
         src_file = self._copy2acs("system", "data", "surfaces.ini")
+
+
+
+    def __scan_weathers(self):
+        """
+            Copy weather (needed for real penalty)
+        """
+        self._verbosity.print("Scanning weathers")
+        verb2 = Verbosity(self._verbosity)
+
+        path_ac_weather = self._pathAC("content", "weather")
+        for weather in os.listdir(path_ac_weather):
+
+            path_weather = os.path.join(path_ac_weather, weather)
+
+            # skip all non-directories or hidden items
+            if weather[:1] == "." or not os.path.isdir(os.path.join(path_ac_weather, weather)):
+                continue
+
+            # user info
+            verb2.print(weather)
+
+            # copy files
+            for weather_file in os.listdir(os.path.join(path_ac_weather, weather)):
+                self._copy2acs("content", "weather", weather, weather_file)

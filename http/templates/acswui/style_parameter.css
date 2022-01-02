@@ -8,7 +8,8 @@ div.ParameterCollection {
 div.ParameterCollectionContainerLabel {
     display: block;
 
-    font-weight: bold;
+    font-weight: bolder;
+    font-size: 1.1em;
     background-color: var(--color-red-accent);
     border-top-left-radius: 0.5em;
     border-top-right-radius: 0.5em;
@@ -48,6 +49,7 @@ div.ParameterLabel,
 div.ParameterValueSpan1,
 div.ParameterValueSpan2,
 div.ParameterValueSpan3,
+div.ParameterValueSpan4,
 div.ParameterUnit,
 div.ParameterDerivedCheckbox {
     padding: 0.1em 0.2em;
@@ -62,7 +64,8 @@ div.ParameterLabel {
 
 div.ParameterValueSpan1,
 div.ParameterValueSpan2,
-div.ParameterValueSpan3 {
+div.ParameterValueSpan3,
+div.ParameterValueSpan4 {
     text-align: center;
 }
 
@@ -71,6 +74,10 @@ div.ParameterValueSpan2 {
 }
 
 div.ParameterValueSpan3 {
+    grid-column: span 3;
+}
+
+div.ParameterValueSpan4 {
     grid-column: span 3;
 }
 

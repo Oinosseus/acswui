@@ -4,7 +4,13 @@ namespace Parameter;
 
 final class Collection extends Deriveable {
 
-    public function getHtml() {
+
+    /**
+     * Create an HTML string with all parameter settings as form elements
+     * @param $hide_accessability_controls When TRUE (default FALSE), the constrols for derived accessability are hidden (intended for collections that shall not be derived)
+     * @return An HTML string
+     */
+    public function getHtml(bool $hide_accessability_controls = FALSE) {
         $html = "";
 
 
@@ -24,7 +30,7 @@ final class Collection extends Deriveable {
             foreach ($this->children() as $parameter) {
                 if (!($parameter instanceof Parameter)) continue;
                 if ($parameter->accessability() < 1) continue;
-                $html .= $this->getHtmlParameter($parameter);
+                $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls);
             }
             $html .= "</div>";
 
@@ -42,7 +48,7 @@ final class Collection extends Deriveable {
             $html .= "<div class=\"ParameterContainer\">";
             foreach ($this->children() as $parameter) {
                 if (!($parameter instanceof Parameter)) continue;
-                $html .= $this->getHtmlParameter($parameter);
+                $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls);
             }
             $html .= "</div>";
 
@@ -54,7 +60,7 @@ final class Collection extends Deriveable {
                 foreach ($collection->children() as $parameter) {
                     if (!($parameter instanceof Parameter)) continue;
                     if ($parameter->accessability() < 1) continue;
-                    $html .= $this->getHtmlParameter($parameter);
+                    $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls);
                 }
                 $html .= "</div>";
             }
@@ -79,7 +85,7 @@ final class Collection extends Deriveable {
             foreach ($this->children() as $parameter) {
                 if (!($parameter instanceof Parameter)) continue;
                 if ($parameter->accessability() < 1) continue;
-                $html .= $this->getHtmlParameter($parameter);
+                $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls);
             }
             $html .= "</div>";
             $html .= "</div>";
@@ -88,7 +94,7 @@ final class Collection extends Deriveable {
 
             foreach ($this->children() as $collection) {
                 if (!($collection instanceof Collection)) continue;
-                $html .= $collection->getHtml();
+                $html .= $collection->getHtml($hide_accessability_controls);
             }
             $html .= "</div>";
         }
@@ -98,7 +104,7 @@ final class Collection extends Deriveable {
     }
 
 
-    private function getHtmlParameter(Parameter $param) {
+    private function getHtmlParameter(Parameter $param, bool $hide_accessability_controls) {
         $html = "";
 
         // skip invisible items
@@ -114,6 +120,7 @@ final class Collection extends Deriveable {
         $param_value_span = 1;
         if ($param->unit() == "") ++$param_value_span;
         if ($param->base() == NULL || $param->accessability() < 2) ++$param_value_span;
+        if ($hide_accessability_controls) ++$param_value_span;
         $html .= "<div class=\"ParameterValueSpan$param_value_span\">";
         if ($param->accessability() == 2) {  // editable input
             $visible = ($param->inheritValue()) ? "style=\"display: none;\"" : "";
@@ -136,23 +143,25 @@ final class Collection extends Deriveable {
             $checked = $param->inheritValue() ? "checked" : "";
             $html .= "<input type=\"checkbox\" id=\"ParameterInheritValueCheckbox_$key_snake\" name=\"ParameterInheritValueCheckbox_$key_snake\" $checked onclick=\"toggleParameterInheritance('$key_snake')\">";
             $html .= "<label for=\"ParameterInheritValueCheckbox_$key_snake\">";
-            $html .= "<div class=\"Checked\" title=\"" . _("Derive value from base parameter") . "\">&#x26af;</div>";
-            $html .= "<div class=\"UnChecked\" title=\"" . _("Define value locally") . "\">&#x26ae;</div>";
+            $html .= "<div class=\"Checked\" title=\"" . _("Value currently inherited from from base parameter") . "\">&#x26af;</div>";
+            $html .= "<div class=\"UnChecked\" title=\"" . _("Value currently defined locally") . "\">&#x26ae;</div>";
             $html .= "</label>";
             $html .= "</div>";
         }
 
         // accessability
-        $derived_accessability = ($param->base() !== NULL) ? $param->base()->derivedAccessability() : 2;
-        $html .= "<div class=\"ParameterDerivedCheckbox\" onclick=\"toggleParameterAccessability('$key_snake', $derived_accessability)\">";
-        $display = ($param->derivedAccessability() != 0) ? "style=\"display:none;\"" : "";
-        $html .= "<div class=\"ParameterAccessabilityHidden\" id=\"ParameterDerivedAccessabilityHidden_$key_snake\"  title=\"" . _("Derived parameters hidden") . "\" $display>&#x1f6ab;</div>";
-        $display = ($param->derivedAccessability() != 1) ? "style=\"display:none;\"" : "";
-        $html .= "<div class=\"ParameterAccessabilityVisible\" id=\"ParameterAccessabilityVisible_$key_snake\" title=\"" . _("Derived parameters are visible but fixed") . "\" $display>&#x1f441;</div>";
-        $display = ($param->derivedAccessability() != 2) ? "style=\"display:none;\"" : "";
-        $html .= "<div class=\"ParameterAccessabilityEditable\" id=\"ParameterAccessabilityEditable_$key_snake\" title=\"" . _("Derived parameters can be changed") . "\" $display>&#x1f4dd;</div>";
-        $html .= "<input type=\"hidden\" id=\"ParameterAccessability_$key_snake\" name=\"ParameterAccessability_$key_snake\" value=\"" . $param->derivedAccessability() . "\">";
-        $html .= "</div>";
+        if (!$hide_accessability_controls) {
+            $derived_accessability = ($param->base() !== NULL) ? $param->base()->derivedAccessability() : 2;
+            $html .= "<div class=\"ParameterDerivedCheckbox\" onclick=\"toggleParameterAccessability('$key_snake', $derived_accessability)\">";
+            $display = ($param->derivedAccessability() != 0) ? "style=\"display:none;\"" : "";
+            $html .= "<div class=\"ParameterAccessabilityHidden\" id=\"ParameterDerivedAccessabilityHidden_$key_snake\"  title=\"" . _("Derived parameters hidden") . "\" $display>&#x1f6ab;</div>";
+            $display = ($param->derivedAccessability() != 1) ? "style=\"display:none;\"" : "";
+            $html .= "<div class=\"ParameterAccessabilityVisible\" id=\"ParameterAccessabilityVisible_$key_snake\" title=\"" . _("Derived parameters are visible but fixed") . "\" $display>&#x1f441;</div>";
+            $display = ($param->derivedAccessability() != 2) ? "style=\"display:none;\"" : "";
+            $html .= "<div class=\"ParameterAccessabilityEditable\" id=\"ParameterAccessabilityEditable_$key_snake\" title=\"" . _("Derived parameters can be changed") . "\" $display>&#x1f4dd;</div>";
+            $html .= "<input type=\"hidden\" id=\"ParameterAccessability_$key_snake\" name=\"ParameterAccessability_$key_snake\" value=\"" . $param->derivedAccessability() . "\">";
+            $html .= "</div>";
+        }
 
         return $html;
     }

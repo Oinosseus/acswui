@@ -207,6 +207,12 @@ class CommandInstall(Command):
             Verbosity(Verbosity(verb)).print("mkdirs " + path_data_acserver_results)
             self.mkdirs(path_data_acserver_results)
 
+        # acswui_udp_plugin
+        path_data_acswui_udpp = os.path.join(path_data, "acswui_udp_plugin")
+        if not os.path.isdir(path_data_acswui_udpp):
+            Verbosity(Verbosity(verb)).print("mkdirs " + path_data_acswui_udpp)
+            self.mkdirs(path_data_acswui_udpp)
+
         # copy system directory
         path_srvpkg_acserver_system = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver", "system")
         path_data_acserver_system = os.path.join(path_data_acserver, "system")
@@ -218,7 +224,7 @@ class CommandInstall(Command):
         self.copytree(path_srvpkg_acserver_content, path_data_acserver_content)
 
         # log dirs
-        for logdir in ['logs_acserver', 'logs_cron', 'logs_http']:
+        for logdir in ['logs_srvrun', 'logs_cron', 'logs_http']:
             path_data_log = os.path.join(path_data, logdir)
             if not os.path.isdir(path_data_log):
                 Verbosity(Verbosity(verb)).print("mkdirs " + path_data_log)
@@ -234,15 +240,10 @@ class CommandInstall(Command):
 
         # acserver binaries
         path_srvpkg_acserver = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver")
-        slot_nr = 0
-        while True:
-            slot_dict = self.getIniSection("SERVER_SLOT_" + str(slot_nr))
-            if slot_dict is None:
-                break
+        for slot_nr in range(1, 1 + int(self.getGeneralArg('server-slot-amount'))):
             path_srvpkg_acserver_bin = os.path.join(path_srvpkg_acserver, "acServer")
             path_data_acserver_binslot = os.path.join(path_data_acserver, "acServer%i" % slot_nr)
             shutil.copy(path_srvpkg_acserver_bin, path_data_acserver_binslot)
-            slot_nr += 1
 
         # server_cfg.json
         path_srvpkg_servercfg = os.path.join(self.getGeneralArg("path-srvpkg"), "server_cfg.json")
@@ -252,6 +253,21 @@ class CommandInstall(Command):
         # server slots
         path_data_server_slots = os.path.join(path_data, "server_slots")
         self.mkdirs(path_data_server_slots)
+
+        # real penalty
+        path_srvpkg_rp = os.path.join(self.getGeneralArg("path-srvpkg"), "RealPenalty_ServerPlugin")
+        if not os.path.isdir(path_srvpkg_rp):
+            Verbosity(verb).print("skip real penalty")
+        else:
+            Verbosity(verb).print("install penalty")
+            for slot_nr in range(int(self.getGeneralArg('server-slot-amount'))):
+                path_rp_dst = os.path.join(path_data, "real_penalty", str(slot_nr + 1))
+                for subfolder in ["files", "tracks"]:
+                    self.copytree(os.path.join(path_srvpkg_rp, subfolder), os.path.join(path_rp_dst, subfolder))
+                for subfile in ["ac_penalty", "licensing_token", "public.pem"]:
+                    shutil.copy(os.path.join(path_srvpkg_rp, subfile), os.path.join(path_rp_dst, subfile))
+                for createfile in ["settings.ini", "penalty_settings.ini", "ac_settings.ini"]:
+                    open(os.path.join(path_rp_dst, createfile), "w").close()
 
 
 
@@ -481,12 +497,14 @@ class CommandInstall(Command):
         paths = []
         paths.append(os.path.join(abspath_data, "logs_http"))
         paths.append(os.path.join(abspath_data, "logs_cron"))
-        paths.append(os.path.join(abspath_data, "logs_acserver"))
+        paths.append(os.path.join(abspath_data, "logs_srvrun"))
         paths.append(os.path.join(abspath_data, "htcache"))
         paths.append(os.path.join(abspath_data, "acserver"))
         paths.append(os.path.join(abspath_data, "acserver", "cfg"))
         paths.append(os.path.join(abspath_data, "acserver", "results"))
         paths.append(os.path.join(abspath_data, "server_slots"))
+        paths.append(os.path.join(abspath_data, "real_penalty"))
+        paths.append(os.path.join(abspath_data, "acswui_udp_plugin"))
         paths.append(os.path.join(abspath_htdata, "realtime"))
         for path in paths:
             cmd = ["chmod", "-R", "g+w", path]
@@ -507,6 +525,15 @@ class CommandInstall(Command):
         cmd = ["chmod", "-R", "u+w", abspath_htdata]
         Verbosity(verb).print(" ".join(cmd))
         subprocess.run(cmd)
+
+        # make real penalty executable
+        path_srvpkg_rp = os.path.join(self.getGeneralArg("path-srvpkg"), "RealPenalty_ServerPlugin")
+        if os.path.isdir(path_srvpkg_rp):
+            for slot_nr in range(int(self.getGeneralArg('server-slot-amount'))):
+                path_rp = os.path.join(abspath_data, "real_penalty", str(slot_nr + 1), "ac_penalty")
+                cmd = ["chmod", "ug+x", path_rp]
+                Verbosity(verb).print(" ".join(cmd))
+                subprocess.run(cmd)
 
 
 

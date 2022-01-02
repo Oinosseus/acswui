@@ -39,6 +39,13 @@ class Verbosity(object):
             raise ValueError("Droping below zero!")
 
 
+    def level(self):
+        level = self._MaxIndentLevel - Verbosity.CurrentIndentLevel + 1
+        if level < 0:
+            level = 0
+        return level
+
+
     def print(self, *args, **kwargs):
 
         if Verbosity.CurrentIndentLevel < (self._MaxIndentLevel + 1):

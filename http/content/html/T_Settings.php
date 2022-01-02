@@ -2,10 +2,7 @@
 
 namespace Content\Html;
 
-class Y_Settings extends \core\HtmlContent {
-
-    private $CurrentPreset = NULL;
-
+class T_Settings extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("Settings"),  "");

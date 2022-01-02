@@ -5,7 +5,7 @@ namespace Content\Html;
 class ServerSlots extends \core\HtmlContent {
 
     private $CurrentSlot = NULL;
-    private $EditPermission = FALSE;
+    private $CanEdit = FALSE;
 
 
     public function __construct() {
@@ -18,14 +18,14 @@ class ServerSlots extends \core\HtmlContent {
         $html = "";
 
         // check edit permission
-        $this->EditPermission = \Core\UserManager::loggedUser()->permitted("Settings_Slots_Edit");
+        $this->CanEdit = \Core\UserManager::loggedUser()->permitted("Settings_Slots_Edit");
 
         // retrieve requested slot
         if (array_key_exists('ServerSlot', $_REQUEST)) {
             $this->CurrentSlot = \Core\ServerSlot::fromId($_REQUEST['ServerSlot']);
         }
         if (array_key_exists('Action', $_REQUEST)) {
-            if ($_REQUEST['Action'] == "SaveServerSlot" && $this->EditPermission) {
+            if ($_REQUEST['Action'] == "SaveServerSlot" && $this->CanEdit) {
                 $this->CurrentSlot->parameterCollection()->storeHttpRequest();
                 $this->CurrentSlot->save();
             }
@@ -41,9 +41,9 @@ class ServerSlots extends \core\HtmlContent {
             $html .= "<h1>" . $this->CurrentSlot->name() . "</h1>";
             $html .= $this->newHtmlForm("POST");
             $pc = $this->CurrentSlot->parameterCollection();
-            $html .= $pc->getHtml();
+            $html .= $pc->getHtml($this->CurrentSlot->id() !== 0);
 
-            if ($this->EditPermission) {
+            if ($this->CanEdit) {
                 $html .= "<br><br>";
                 $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveServerSlot\">" . _("Save Slot Settings") . "</button>";
             }
@@ -55,7 +55,7 @@ class ServerSlots extends \core\HtmlContent {
         // port overview
         if ($this->CurrentSlot !== NULL && $this->CurrentSlot->id() != 0) {
             $html .= "<h1>" . _("Port Overview") . "</h1>";
-            $html .= "<p>" . _("Save settings to get an updated picture") . "</p>";
+            $html .= "<p>" . _("The following diagramm illustrates the communication sockets which are used locally and via WAN. All involved ports and protocols are shown. Save settings to get an updated picture") . "</p>";
             $html .= "<p>" . _("Be aware, that the internet TCP port of Real penalty is defined automatically from the acServer HTTP port + 27.") . "</p>";
             $html .= file_get_contents(\Core\Config::AbsPathData . "/htcache/slot_ports_optimized.svg");
 
@@ -105,7 +105,7 @@ class ServerSlots extends \core\HtmlContent {
         $class_current_slot = ($this->CurrentSlot && $this->CurrentSlot->id() == $root_slot->id()) ? "class=\"CurrentSlot\"" : "";
         $html .= "<tr $class_current_slot>";
         $html .= "<td><a href=\"" . $this->url(['ServerSlot'=>$root_slot->id()]) . "\">" . $root_slot->name() . "</a></td>";
-        $html .= "<td>" . $root_slot->parameterCollection()->child("Name")->value() . "</td>";
+        $html .= "<td>" . $root_slot->parameterCollection()->child("AcServer", "General", "Name")->value() . "</td>";
         $html .= "</tr>";
 
         // user defined slots
@@ -115,7 +115,7 @@ class ServerSlots extends \core\HtmlContent {
             $prechars = ($i == \Core\Config::ServerSlotAmount) ? "&#x2516;&#x2574;" : "&#x2520;&#x2574;";
             $html .= "<tr $class_current_slot>";
             $html .= "<td>" . $prechars . "<a href=\"" . $this->url(['ServerSlot'=>$i]) . "\">" . $slot->name() . "</a></td>";
-            $html .= "<td>" . $slot->parameterCollection()->child("Name")->value() . "</td>";
+            $html .= "<td>" . $slot->parameterCollection()->child("AcServer", "General", "Name")->value() . "</td>";
             $html .= "</tr>";
         }
 

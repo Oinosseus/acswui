@@ -5,7 +5,9 @@ import json
 
 class UdpPluginSession(object):
 
-    def __init__(self, acswui_info, database, packet, predecessor=None, verbosity=0):
+    def __init__(self, server_slot, server_preset, car_class,
+                 database, packet, predecessor=None,
+                 verbosity=0):
 
         # sanity check
         if not isinstance(database, Database):
@@ -13,7 +15,9 @@ class UdpPluginSession(object):
         if not isinstance(packet, UdpPacket):
             raise TypeError("Parameter 'packet' must be a UdpPacket object!")
 
-        self.__acswui_info = acswui_info
+        self.__server_slot = int(server_slot)
+        self.__server_preset = int(server_preset)
+        self.__car_class = int(car_class)
         self.__db = database
         self.__db_field_cache = {}
         self._db_id = None
@@ -108,9 +112,9 @@ class UdpPluginSession(object):
         self.__db_field_cache['TempRoad'] = temp_road
         self.__db_field_cache['WheatherGraphics'] = weather_graphics
         self.__db_field_cache['Elapsed'] = elapsed_ms
-        self.__db_field_cache['ServerSlot'] = self.__acswui_info['SERVER_SLOT']
-        self.__db_field_cache['ServerPreset'] = self.__acswui_info['SERVER_PRESET']
-        self.__db_field_cache['CarClass'] = self.__acswui_info['CAR_CLASS']
+        self.__db_field_cache['ServerSlot'] = self.__server_slot
+        self.__db_field_cache['ServerPreset'] = self.__server_preset
+        self.__db_field_cache['CarClass'] = self.__car_class
 
         # save to db
         if is_new_session:

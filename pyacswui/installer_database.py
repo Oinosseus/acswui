@@ -230,6 +230,8 @@ class InstallerDatabase(object):
         self.__db.appendColumnTinyInt("Groups", "Settings_Presets_View")
         self.__db.appendColumnTinyInt("Groups", "Settings_Slots_View")
         self.__db.appendColumnTinyInt("Groups", "Settings_Slots_Edit")
+        self.__db.appendColumnTinyInt("Groups", "Sessions_View")
+        self.__db.appendColumnTinyInt("Groups", "Sessions_Control")
 
         # check table UserGroupMap
         Verbosity(verb).print("check database table `UserGroupMap`")

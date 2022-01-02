@@ -10,7 +10,7 @@ import os
 import sys
 import json
 import time
-from pyacswui import CommandPackage, CommandInstall, CommandSrvrun, CommandDbCleanup, CommandUpdateLocales
+from pyacswui import CommandPackage, CommandInstall, CommandSrvrun, CommandDbCleanup, CommandUpdateLocales, CommandUdpPlugin
 
 
 
@@ -31,6 +31,7 @@ CommandInstall(argparsersubs)
 CommandSrvrun(argparsersubs)
 CommandDbCleanup(argparsersubs)
 CommandUpdateLocales(argparsersubs)
+CommandUdpPlugin(argparsersubs)
 
 
 # ---------------------
