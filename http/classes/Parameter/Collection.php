@@ -184,11 +184,11 @@ final class Collection extends Deriveable {
             $derived_accessability = ($param->base() !== NULL) ? $param->base()->derivedAccessability() : 2;
             $html .= "<div class=\"ParameterDerivedCheckbox\" onclick=\"toggleParameterAccessability('$key', $derived_accessability)\">";
             $display = ($param->derivedAccessability() != 0) ? "style=\"display:none;\"" : "";
-            $html .= "<div class=\"ParameterAccessabilityHidden\" id=\"ParameterDerivedAccessabilityHidden_$key\"  title=\"" . _("Derived parameters hidden") . "\" $display>&#x1f6ab;</div>";
+            $html .= "<div class=\"ParameterAccessabilityHidden\" id=\"ParameterDerivedAccessabilityHidden_$key\"  title=\"" . _("Hidden for derived parameters") . "\" $display>&#x1f6ab;</div>";
             $display = ($param->derivedAccessability() != 1) ? "style=\"display:none;\"" : "";
-            $html .= "<div class=\"ParameterAccessabilityVisible\" id=\"ParameterAccessabilityVisible_$key\" title=\"" . _("Derived parameters are visible but fixed") . "\" $display>&#x1f441;</div>";
+            $html .= "<div class=\"ParameterAccessabilityVisible\" id=\"ParameterAccessabilityVisible_$key\" title=\"" . _("Read-only for derived parameters") . "\" $display>&#x1f441;</div>";
             $display = ($param->derivedAccessability() != 2) ? "style=\"display:none;\"" : "";
-            $html .= "<div class=\"ParameterAccessabilityEditable\" id=\"ParameterAccessabilityEditable_$key\" title=\"" . _("Derived parameters can be changed") . "\" $display>&#x1f4dd;</div>";
+            $html .= "<div class=\"ParameterAccessabilityEditable\" id=\"ParameterAccessabilityEditable_$key\" title=\"" . _("Derived parameters can change this value") . "\" $display>&#x1f4dd;</div>";
             $html .= "<input type=\"hidden\" id=\"ParameterAccessability_$key\" name=\"ParameterAccessability_$key\" value=\"" . $param->derivedAccessability() . "\">";
             $html .= "</div>";
         }
