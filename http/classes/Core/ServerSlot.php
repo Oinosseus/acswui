@@ -155,6 +155,14 @@ class ServerSlot {
 
                 $p = new \Parameter\ParamString(NULL, $coll, "AdminPwd", _("Admin Passwort"), _("Password only for app 'Real Penalty - admin'"), "", "");
 
+                $p = new \Parameter\ParamInt(NULL, $coll, "FCT", _("First Check"), _("Delay (seconds) after connection of new driver for the first check (app + sol). Default 5"), "s", 5);
+                $p->setMin(1);
+                $p->setMax(60);
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "CF", _("Check Frequency"), _("Frequency (second) for APP, SOL and CSP check. Default 60"), "s", 60);
+                $p->setMin(1);
+                $p->setMax(3600);
+
                 // plugin ports
                 $coll = new \Parameter\Collection(NULL, $pc, "PortsPlugin", _("Plugin Ports"), _("UDP plugin port settings"));
 
@@ -568,7 +576,7 @@ class ServerSlot {
 
         // section General
         fwrite($f, "[General]\n");
-        fwrite($f, "FIRST_CHECK_TIME = 5\n");
+        fwrite($f, "FIRST_CHECK_TIME = " . $pc->child("RP", "General", "FCT")->value() . "\n");
         fwrite($f, "COCKPIT_CAMERA = false\n");
         fwrite($f, "TRACK_CHECKSUM = false\n");
         fwrite($f, "WEATHER_CHECKSUM = false\n");
@@ -577,18 +585,18 @@ class ServerSlot {
 
         // section App
         fwrite($f, "\n[App]\n");
-        fwrite($f, "CHECK_FREQUENCY = 60\n");
+        fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RP", "General", "CF")->value() . "\n");
 
         // section Sol
         fwrite($f, "\n[Sol]\n");
         fwrite($f, "PERFORMACE_MODE_ALLOWED = true\n");  // intentionally not needed but current revision 4.01.07 throws an error when this is not present
         fwrite($f, "MANDATORY = false\n");
-        fwrite($f, "CHECK_FREQUENCY = 60\n");
+        fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RP", "General", "CF")->value() . "\n");
 
         // section Custom_Shaders_Patch
         fwrite($f, "\n[Custom_Shaders_Patch]\n");
         fwrite($f, "MANDATORY = false\n");
-        fwrite($f, "CHECK_FREQUENCY = 60\n");
+        fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RP", "General", "CF")->value() . "\n");
 
         // section Safety_Car
         fwrite($f, "\n[Safety_Car]\n");
@@ -653,10 +661,10 @@ class ServerSlot {
 
         // section General
         fwrite($f, "[General]\n");
-        fwrite($f, "ENABLE_CUTTING_PENALTIES = false\n");
-        fwrite($f, "ENABLE_SPEEDING_PENALTIES = false\n");
-        fwrite($f, "ENABLE_CROSSING_PENALTIES = false\n");
-        fwrite($f, "ENABLE_DRS_PENALTIES = false\n");
+        fwrite($f, "ENABLE_CUTTING_PENALTIES = true\n");
+        fwrite($f, "ENABLE_SPEEDING_PENALTIES = true\n");
+        fwrite($f, "ENABLE_CROSSING_PENALTIES = true\n");
+        fwrite($f, "ENABLE_DRS_PENALTIES = true\n");
         fwrite($f, "LAPS_TO_TAKE_PENALTY = 2\n");
         fwrite($f, "PENALTY_SECONDS = 0\n");
         fwrite($f, "LAST_TIME_WITHOUT_PENALTY = 360\n");
