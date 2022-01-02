@@ -49,10 +49,10 @@ abstract class Parameter extends Deriveable {
         if ($inherit !== NULL) {
 
             if ($this->base() === NULL)  {
-                \Core\Log::warning("Prevent inheriting value without having a base at '" . $this->keySnake() . "'");
+                \Core\Log::warning("Prevent inheriting value without having a base at '" . $this->key() . "'");
                 $this->InheritValue = FALSE;
             } else if ($this->accessability() != 2 && !$inherit) {
-                \Core\Log::warning("Prevent inheriting value without allowing access '" . $this->keySnake() . "'");
+                \Core\Log::warning("Prevent inheriting value without allowing access '" . $this->key() . "'");
                 $this->InheritValue = TRUE;
             } else {
                 $this->InheritValue = $inherit;
@@ -76,7 +76,7 @@ abstract class Parameter extends Deriveable {
         if ($this->accessability() == 2) {
             $this->Value = $this->formatValue($new_value);
         } else {
-            \Core\Log::warning("Prevented editing a non-editable parameter '" . $this->keySnake() . "'");
+            \Core\Log::warning("Prevented editing a non-editable parameter '" . $this->key() . "'");
         }
     }
 
@@ -84,7 +84,7 @@ abstract class Parameter extends Deriveable {
     //! This function will check for HTTP POST/GEST form data and store the data into the collection
     public function storeHttpRequest() {
         parent::storeHttpRequest();
-        $key_snake = $this->keySnake();
+        $key_snake = $this->key();
 
         // my inherit value
         $this->InheritValue = (array_key_exists("ParameterInheritValueCheckbox_$key_snake", $_REQUEST)) ? TRUE : FALSE;

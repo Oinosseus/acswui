@@ -10,6 +10,11 @@ abstract class Deriveable {
     private $Key = "";
     private $Label = "";
     private $Parent = NULL;
+    private $ParentTopLevel = NULL;
+
+    // associative array that only is filled on the top level parent
+    // the idea is to provide direct access to children with a unique ID
+    private $TopLevelChildCache = array();
 
     // access to derived parameters
     private $DerivedAccessability = 0;
@@ -19,7 +24,6 @@ abstract class Deriveable {
 
     // cache objects
     private $MaxChildLevels = 0;
-    private $KeySnake = "";
 
 
     /**
@@ -35,6 +39,16 @@ abstract class Deriveable {
 
         $this->Base = $base;
         $this->Parent = $parent;
+
+
+        // find top most base
+        $this->ParentTopLevel = $this->Parent;
+        if ($this->ParentTopLevel == NULL) {
+            $this->ParentTopLevel = $this;
+        } else {
+            while ($this->ParentTopLevel->parent() !== NULL) $this->ParentTopLevel = $this->ParentTopLevel->parent();
+        }
+
 
         // not deriving
         if ($base === NULL) {
@@ -52,7 +66,6 @@ abstract class Deriveable {
         } else {
 
             $this->MaxChildLevels = $base->MaxChildLevels;
-            $this->KeySnake = $base->KeySnake;
 
             // create derived children
             foreach ($base->children() as $base_child) {
@@ -66,11 +79,9 @@ abstract class Deriveable {
         }
 
 
-        if ($parent === NULL) {
-            $this->KeySnake = $this->key();
-
         // announce to parent
-        } else {
+        if ($parent !== NULL) {
+
             // append child
             if (array_key_exists($this->key(), $parent->Children)) {
                 \Core\Log::error("Collection '" . $parent->key() . "' already contains a child with key='" . $this->key() . "'!");
@@ -81,8 +92,12 @@ abstract class Deriveable {
             // inform parent that at least one child is present
             $parent->informChildLevels(1);
 
-            // determine parent keys
-            $this->KeySnake = $parent->keySnake() . "_" . $this->key();
+            // unique key cache
+            if (array_key_exists($this->key(), $this->ParentTopLevel->TopLevelChildCache)) {
+                \Core\Log::error("Key '" . $this->key() . "' is not unique.");
+            } else {
+                $this->ParentTopLevel->TopLevelChildCache[$this->key()] = $this;
+            }
         }
     }
 
@@ -113,19 +128,18 @@ abstract class Deriveable {
 
 
     /**
-     * @param $keys One or many keys that identify the requested child (multiple parameters to get childs of childs)
+     * @param $key The unique key of the child item
      * @return A child object with a specific key (NULL if not found)
      */
-    public function child(...$keys) {
-        $child = $this;
-        foreach ($keys as $key) {
-            if (array_key_exists($key, $child->Children)) {
-                $child = $child->Children[$key];
-            } else {
-                \Core\Log::debug("Cannot find key '$key' in '" . $child->keySnake() . "'");
-                $child = NULL;
-            }
+    public function child($key) {
+        $child = NULL;
+
+        $child_cache = $this->parentTopLevel()->TopLevelChildCache;
+
+        if (array_key_exists($key, $child_cache)) {
+            $child = $child_cache[$key];
         }
+
         return $child;
     }
 
@@ -149,9 +163,14 @@ abstract class Deriveable {
      */
     public function dataArrayImport(array $data) {
         if (array_key_exists('CHLD', $data)) {
-            foreach ($this->children() as $child) {
-                if (array_key_exists($child->key(), $data['CHLD'])) {
-                    $child->dataArrayImport($data['CHLD'][$child->key()]);
+
+            // inform all child items about the import
+            foreach ($data['CHLD'] as $child_key=>$child_data) {
+                $child = $this->child($child_key);
+                if ($child !== NULL) {
+                    $child->dataArrayImport($child_data);
+                } else {
+                    \Core\Log::warning("Cannot import '$child_key'");
                 }
             }
         }
@@ -290,12 +309,6 @@ abstract class Deriveable {
     }
 
 
-    //! @return A string, that concatenates all keys of the upward hierarchy wih '_' (eg RootKey_CollectionOne_CollectionTwo_CurrentItem)
-    public function keySnake() {
-        return $this->KeySnake;
-    }
-
-
     //! @return The user visible name of this parameter
     public function label() {
         return ($this->Base == NULL) ? $this->Label : $this->Base->label();
@@ -314,13 +327,19 @@ abstract class Deriveable {
     }
 
 
+    //! @return The top level parenting object (never NULL, but can return this object)
+    public function parentTopLevel() {
+        return $this->ParentTopLevel;
+    }
+
+
     //! This function will check for HTTP POST/GEST form data and store the data into the collection
     public function storeHttpRequest() {
 
         // accessability
-        $key_snake = $this->keySnake();
-        if (array_key_exists("ParameterAccessability_$key_snake", $_REQUEST)) {
-            $this->derivedAccessability($_REQUEST["ParameterAccessability_$key_snake"]);
+        $key = $this->key();
+        if (array_key_exists("ParameterAccessability_$key", $_REQUEST)) {
+            $this->derivedAccessability($_REQUEST["ParameterAccessability_$key$key"]);
         }
 
         // store http request for children

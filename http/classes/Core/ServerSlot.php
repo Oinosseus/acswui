@@ -106,37 +106,37 @@ class ServerSlot {
                 $pc = new \Parameter\Collection(NULL, $root_collection, "AcServer", _("acServer"), _("Settings for the actual acServer"));
 
                 // genral
-                $coll = new \Parameter\Collection(NULL, $pc, "General", _("General Settings"), _("General settings for Real Penalty"));
-                $p = new \Parameter\ParamString(NULL, $coll, "Name", _("Name"), _("An arbitrary name for the server (shown in lobby)"), "", "");
+                $coll = new \Parameter\Collection(NULL, $pc, "AcServerGeneral", _("General Settings"), _("General settings for Real Penalty"));
+                $p = new \Parameter\ParamString(NULL, $coll, "AcServerGeneralName", _("Name"), _("An arbitrary name for the server (shown in lobby)"), "", "");
 
                 // ports
-                $coll = new \Parameter\Collection(NULL, $pc, "PortsInet", _("Internet Ports"), _("Internet protocol port numbers for the AC server"));
-                $p = new \Parameter\ParamInt(NULL, $coll, "UDP", "UDP", _("UDP port number: open this port on your server's firewall"), "", 9101);
+                $coll = new \Parameter\Collection(NULL, $pc, "AcServerPortsInet", _("Internet Ports"), _("Internet protocol port numbers for the AC server"));
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerPortsInetUdp", "UDP", _("UDP port number: open this port on your server's firewall"), "", 9101);
                 $p->setMin(1024);
                 $p->setMax(65535);
-                $p = new \Parameter\ParamInt(NULL, $coll, "TCP", "TCP", _("TCP port number: open this port on your server's firewall"), "", 9101);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerPortsInetTcp", "TCP", _("TCP port number: open this port on your server's firewall"), "", 9101);
                 $p->setMin(1024);
                 $p->setMax(65535);
-                $p = new \Parameter\ParamInt(NULL, $coll, "HTTP", "HTTP", _("Lobby port number: open these ports (both UDP and TCP) on your server's firewall"), "", 9100);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerPortsInetHttp", "HTTP", _("Lobby port number: open these ports (both UDP and TCP) on your server's firewall"), "", 9100);
                 $p->setMin(1024);
                 $p->setMax(65535);
 
                 // plugin ports
-                $coll = new \Parameter\Collection(NULL, $pc, "PortsPlugin", _("Plugin Ports"), _("UDP plugin port settings"));
+                $coll = new \Parameter\Collection(NULL, $pc, "AcServerPortsPlugin", _("Plugin Ports"), _("UDP plugin port settings"));
 
-                $p = new \Parameter\ParamInt(NULL, $coll, "UDP_R", "UDP_R", _("Remote UDP port for external plugins"), "", 9102);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerPortsPluginUdpR", "UDP_R", _("Remote UDP port for external plugins"), "", 9102);
                 $p->setMin(1024);
                 $p->setMax(65535);
 
                 // performance
-                $coll = new \Parameter\Collection(NULL, $pc, "Performance", _("Performance"), _("Settings that affect the transfer performance / quality"));
-                $p = new \Parameter\ParamInt(NULL, $coll, "ClntIntvl", _("Client Interval"), _("Refresh rate of packet sending by the server. 10Hz = ~100ms. Higher number = higher MP quality = higher bandwidth resources needed. Really high values can create connection issues"), "Hz", 15);
+                $coll = new \Parameter\Collection(NULL, $pc, "AcServerPerformance", _("Performance"), _("Settings that affect the transfer performance / quality"));
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerPerformanceClntIntvl", _("Client Interval"), _("Refresh rate of packet sending by the server. 10Hz = ~100ms. Higher number = higher MP quality = higher bandwidth resources needed. Really high values can create connection issues"), "Hz", 15);
                 $p->setMin(1);
                 $p->setMax(100);
-                $p = new \Parameter\ParamInt(NULL, $coll, "Threads", _("Number of Threads"), _("Number of threads to run on"), "", 2);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerPerformanceThreads", _("Number of Threads"), _("Number of threads to run on"), "", 2);
                 $p->setMin(1);
                 $p->setMax(64);
-                $p = new \Parameter\ParamInt(NULL, $coll, "MaxClients", _("Max Clients"), _("Max number of clients"), "", 25);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerPerformanceMaxClients", _("Max Clients"), _("Max number of clients"), "", 25);
                 $p->setMin(1);
                 $p->setMax(999);
 
@@ -147,37 +147,37 @@ class ServerSlot {
                 $pc = new \Parameter\Collection(NULL, $root_collection, "RP", _("Real Penalty Plugin"), _("Settings for the Real Penalty plugin"));
 
                 // genral
-                $coll = new \Parameter\Collection(NULL, $pc, "General", _("General Settings"), _("General settings for Real Penalty"));
+                $coll = new \Parameter\Collection(NULL, $pc, "RPGeneral", _("General Settings"), _("General settings for Real Penalty"));
 
-                $p = new \Parameter\ParamBool(NULL, $coll, "Enable", _("Enable RP"), _("Wheather to use Real Penalty for this slot or not"), "", FALSE);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RPGeneralEnable", _("Enable RP"), _("Wheather to use Real Penalty for this slot or not"), "", FALSE);
 
-                $p = new \Parameter\ParamString(NULL, $coll, "ProductKey", _("Product Key"), _("Personal key, received after the Patreon subscription: https://www.patreon.com/DavideBolognesi"), "", "");
+                $p = new \Parameter\ParamString(NULL, $coll, "RPGeneralProductKey", _("Product Key"), _("Personal key, received after the Patreon subscription: https://www.patreon.com/DavideBolognesi"), "", "");
 
-                $p = new \Parameter\ParamString(NULL, $coll, "AdminPwd", _("Admin Passwort"), _("Password only for app 'Real Penalty - admin'"), "", "");
+                $p = new \Parameter\ParamString(NULL, $coll, "RPGeneralAdminPwd", _("Admin Passwort"), _("Password only for app 'Real Penalty - admin'"), "", "");
 
-                $p = new \Parameter\ParamInt(NULL, $coll, "FCT", _("First Check"), _("Delay (seconds) after connection of new driver for the first check (app + sol). Default 5"), "s", 5);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RPGeneralFCT", _("First Check"), _("Delay (seconds) after connection of new driver for the first check (app + sol). Default 5"), "s", 5);
                 $p->setMin(1);
                 $p->setMax(60);
 
-                $p = new \Parameter\ParamInt(NULL, $coll, "CF", _("Check Frequency"), _("Frequency (second) for APP, SOL and CSP check. Default 60"), "s", 60);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RPGeneralCF", _("Check Frequency"), _("Frequency (second) for APP, SOL and CSP check. Default 60"), "s", 60);
                 $p->setMin(1);
                 $p->setMax(3600);
 
                 // plugin ports
-                $coll = new \Parameter\Collection(NULL, $pc, "PortsPlugin", _("Plugin Ports"), _("UDP plugin port settings"));
+                $coll = new \Parameter\Collection(NULL, $pc, "RPPortsPlugin", _("Plugin Ports"), _("UDP plugin port settings"));
 
-                $p = new \Parameter\ParamInt(NULL, $coll, "UDP_L", "UDP_L", _("Local UDP port to communicate with the acServer"), "", 9103);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RPPortsPluginUdpL", "UDP_L", _("Local UDP port to communicate with the acServer"), "", 9103);
                 $p->setMin(1024);
                 $p->setMax(65535);
 
-                $p = new \Parameter\ParamInt(NULL, $coll, "UDP_R", "UDP_R", _("Remote UDP port for additional plugins"), "", 9104);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RPPortsPluginUdpR", "UDP_R", _("Remote UDP port for additional plugins"), "", 9104);
                 $p->setMin(1024);
                 $p->setMax(65535);
 
                 // internet ports
-                $coll = new \Parameter\Collection(NULL, $pc, "PortsInet", _("Internet Ports"), _("Port settings open to the internet"));
+                $coll = new \Parameter\Collection(NULL, $pc, "RPPortsInet", _("Internet Ports"), _("Port settings open to the internet"));
 
-                $p = new \Parameter\ParamInt(NULL, $coll, "UDP", "UDP", _("UDP to communicate with RP client app"), "", 9105);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RPPortsInetUdp", "UDP", _("UDP to communicate with RP client app"), "", 9105);
                 $p->setMin(1024);
                 $p->setMax(65535);
 
@@ -188,9 +188,9 @@ class ServerSlot {
                 $pc = new \Parameter\Collection(NULL, $root_collection, "ACswui", _("ACswui Plugin"), _("Settings for the ACswui plugin"));
 
                 // plugin ports
-                $coll = new \Parameter\Collection(NULL, $pc, "PortsPlugin", _("Plugin Ports"), _("UDP plugin port settings"));
+                $coll = new \Parameter\Collection(NULL, $pc, "ACswuiPortsPlugin", _("Plugin Ports"), _("UDP plugin port settings"));
 
-                $p = new \Parameter\ParamInt(NULL, $coll, "UDP_L", "UDP_L", _("Local UDP port to communicate with the acServer"), "", 9106);
+                $p = new \Parameter\ParamInt(NULL, $coll, "ACswuiPortsPluginUdpL", "UDP_L", _("Local UDP port to communicate with the acServer"), "", 9106);
                 $p->setMin(1024);
                 $p->setMax(65535);
 
@@ -302,7 +302,7 @@ class ServerSlot {
         $cmd = "nohup ". \Core\Config::AbsPathAcswui . "/acswui.py srvrun -vvvvv";
         $cmd .= " \"" . \Core\Config::AbsPathData . "/acswui_udp_plugin/acswui_udp_plugin_$id.ini\" ";
         $cmd .= " --slot $id";
-        if ($this->parameterCollection()->child("RP", "General", "Enable")->value()) {
+        if ($this->parameterCollection()->child("RPGeneralEnable")->value()) {
             $cmd .= " --real-penalty";
         }
         $cmd .= " >" . \Core\Config::AbsPathData . "/logs_srvrun//slot_$id.srvrun.log 2>&1 &";
@@ -380,11 +380,11 @@ class ServerSlot {
         fwrite($f, "slot = " . $this->id() . "\n");
         fwrite($f, "preset = 0\n");
         fwrite($f, "carclass = 0\n");
-        fwrite($f, "udp_plugin = " . $pc->child("ACswui", "PortsPlugin", "UDP_L")->value() . "\n");
-        if ($pc->child("RP", "General", "Enable")->value()) {
-            fwrite($f, "udp_acserver = " . $pc->child("RP", "PortsPlugin", "UDP_R")->value() . "\n");
+        fwrite($f, "udp_plugin = " . $pc->child("ACswuiPortsPluginUdpL")->value() . "\n");
+        if ($pc->child("RPGeneralEnable")->value()) {
+            fwrite($f, "udp_acserver = " . $pc->child("RPPortsPluginUdpR")->value() . "\n");
         } else {
-            fwrite($f, "udp_acserver = " . $pc->child("AcServer", "PortsPlugin", "UDP_R")->value() . "\n");
+            fwrite($f, "udp_acserver = " . $pc->child("AcServerPortsPluginUdpR")->value() . "\n");
         }
 
 
@@ -403,19 +403,19 @@ class ServerSlot {
         }
 
         fwrite($f, "[SERVER]\n");
-        fwrite($f, "NAME=" . $pc->child("AcServer", "General", "Name")->value() . "\n");
+        fwrite($f, "NAME=" . $pc->child("AcServerGeneralName")->value() . "\n");
         fwrite($f, "PASSWORD=\n");
         fwrite($f, "ADMIN_PASSWORD=\n");
-        fwrite($f, "UDP_PORT=" . $pc->child("AcServer", "PortsInet", "UDP")->value() . "\n");
-        fwrite($f, "TCP_PORT=" . $pc->child("AcServer", "PortsInet", "TCP")->value() . "\n");
-        fwrite($f, "HTTP_PORT=" . $pc->child("AcServer", "PortsInet", "HTTP")->value() . "\n");
+        fwrite($f, "UDP_PORT=" . $pc->child("AcServerPortsInetUdp")->value() . "\n");
+        fwrite($f, "TCP_PORT=" . $pc->child("AcServerPortsInetTcp")->value() . "\n");
+        fwrite($f, "HTTP_PORT=" . $pc->child("AcServerPortsInetHttp")->value() . "\n");
         fwrite($f, "SEND_BUFFER_SIZE=0\n");
         fwrite($f, "RECV_BUFFER_SIZE=0\n");
-        fwrite($f, "CLIENT_SEND_INTERVAL_HZ=" . $pc->child("AcServer", "Performance", "ClntIntvl")->value() . "\n");
-        fwrite($f, "NUM_THREADS=" . $pc->child("AcServer", "Performance", "Threads")->value() . "\n");
+        fwrite($f, "CLIENT_SEND_INTERVAL_HZ=" . $pc->child("AcServerPerformanceClntIntvl")->value() . "\n");
+        fwrite($f, "NUM_THREADS=" . $pc->child("AcServerPerformanceThreads")->value() . "\n");
         fwrite($f, "SLEEP_TIME=1\n");
         fwrite($f, "REGISTER_TO_LOBBY=1\n");
-        fwrite($f, "MAX_CLIENTS=" . $pc->child("AcServer", "Performance", "MaxClients")->value() . "\n");
+        fwrite($f, "MAX_CLIENTS=" . $pc->child("AcServerPerformanceMaxClients")->value() . "\n");
         fwrite($f, "WELCOME_MESSAGE=\n");
         fwrite($f, "PICKUP_MODE_ENABLED=1\n");
         fwrite($f, "LOOP_MODE=0\n");
@@ -434,11 +434,11 @@ class ServerSlot {
         fwrite($f, "RESULT_SCREEN_TIME=60\n");
         fwrite($f, "MAX_CONTACTS_PER_KM=99\n");
         fwrite($f, "RACE_EXTRA_LAP=0\n");
-        fwrite($f, "UDP_PLUGIN_LOCAL_PORT=" . $pc->child("AcServer", "PortsPlugin", "UDP_R")->value() . "\n");
-        if ($pc->child("RP", "General", "Enable")->value()) {
-            fwrite($f, "UDP_PLUGIN_ADDRESS=127.0.0.1:" . $pc->child("RP", "PortsPlugin", "UDP_L")->value() . "\n");
+        fwrite($f, "UDP_PLUGIN_LOCAL_PORT=" . $pc->child("AcServerPortsPluginUdpR")->value() . "\n");
+        if ($pc->child("RPGeneralEnable")->value()) {
+            fwrite($f, "UDP_PLUGIN_ADDRESS=127.0.0.1:" . $pc->child("RPPortsPluginUdpL")->value() . "\n");
         } else {
-            fwrite($f, "UDP_PLUGIN_ADDRESS=127.0.0.1:" . $pc->child("ACswui", "PortsPlugin", "UDP_L")->value() . "\n");
+            fwrite($f, "UDP_PLUGIN_ADDRESS=127.0.0.1:" . $pc->child("ACswuiPortsPluginUdpL")->value() . "\n");
         }
         fwrite($f, "AUTH_PLUGIN_ADDRESS=\n");
         fwrite($f, "KICK_QUORUM=70\n");
@@ -576,7 +576,7 @@ class ServerSlot {
 
         // section General
         fwrite($f, "[General]\n");
-        fwrite($f, "FIRST_CHECK_TIME = " . $pc->child("RP", "General", "FCT")->value() . "\n");
+        fwrite($f, "FIRST_CHECK_TIME = " . $pc->child("RPGeneralFCT")->value() . "\n");
         fwrite($f, "COCKPIT_CAMERA = false\n");
         fwrite($f, "TRACK_CHECKSUM = false\n");
         fwrite($f, "WEATHER_CHECKSUM = false\n");
@@ -585,18 +585,18 @@ class ServerSlot {
 
         // section App
         fwrite($f, "\n[App]\n");
-        fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RP", "General", "CF")->value() . "\n");
+        fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RPGeneralCF")->value() . "\n");
 
         // section Sol
         fwrite($f, "\n[Sol]\n");
         fwrite($f, "PERFORMACE_MODE_ALLOWED = true\n");  // intentionally not needed but current revision 4.01.07 throws an error when this is not present
         fwrite($f, "MANDATORY = false\n");
-        fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RP", "General", "CF")->value() . "\n");
+        fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RPGeneralCF")->value() . "\n");
 
         // section Custom_Shaders_Patch
         fwrite($f, "\n[Custom_Shaders_Patch]\n");
         fwrite($f, "MANDATORY = false\n");
-        fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RP", "General", "CF")->value() . "\n");
+        fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RPGeneralCF")->value() . "\n");
 
         // section Safety_Car
         fwrite($f, "\n[Safety_Car]\n");
@@ -743,25 +743,25 @@ class ServerSlot {
 
         // section General
         fwrite($f, "[General]\n");
-        fwrite($f, "product_key = " . $pc->child("RP", "General", "ProductKey")->value() . "\n");
+        fwrite($f, "product_key = " . $pc->child("RPGeneralProductKey")->value() . "\n");
         fwrite($f, "AC_SERVER_PATH = " . \Core\Config::AbsPathData . "/acserver\n");
         fwrite($f, "AC_CFG_FILE = " . \Core\Config::AbsPathData . "/acserver/cfg/server_cfg_$id.ini\n");
         fwrite($f, "AC_TRACKS_FOLDER = " . \Core\Config::AbsPathData . "/acserver/content/tracks\n");
         fwrite($f, "AC_WEATHER_FOLDER = " . \Core\Config::AbsPathData . "/acserver/content/weather\n");
-        fwrite($f, "UDP_PORT = " . $pc->child("RP", "PortsPlugin", "UDP_L")->value() . "\n");
-        fwrite($f, "UDP_RESPONSE = 127.0.0.1:" . $pc->child("AcServer", "PortsPlugin", "UDP_R")->value() . "\n");
-        fwrite($f, "APP_TCP_PORT = " . (27 + $pc->child("AcServer", "PortsInet", "HTTP")->value()) . "\n");
-        fwrite($f, "APP_UDP_PORT = " . $pc->child("RP", "PortsInet", "UDP")->value() . "\n");
+        fwrite($f, "UDP_PORT = " . $pc->child("RPPortsPluginUdpL")->value() . "\n");
+        fwrite($f, "UDP_RESPONSE = 127.0.0.1:" . $pc->child("AcServerPortsPluginUdpR")->value() . "\n");
+        fwrite($f, "APP_TCP_PORT = " . (27 + $pc->child("AcServerPortsInetHttp")->value()) . "\n");
+        fwrite($f, "APP_UDP_PORT = " . $pc->child("RPPortsInetUdp")->value() . "\n");
         fwrite($f, "APP_FILE = " . \Core\Config::AbsPathData . "/real_penalty/$id/files/app\n");
         fwrite($f, "IMAGES_FILE = " . \Core\Config::AbsPathData . "/real_penalty/$id/files/images\n");
         fwrite($f, "SOUNDS_FILE = " . \Core\Config::AbsPathData . "/real_penalty/$id/files/sounds\n");
         fwrite($f, "TRACKS_FOLDER = " . \Core\Config::AbsPathData . "/real_penalty/$id/tracks\n");
-        fwrite($f, "ADMIN_PSW = " . $pc->child("RP", "General", "AdminPwd")->value() . "\n");
+        fwrite($f, "ADMIN_PSW = " . $pc->child("RPGeneralAdminPwd")->value() . "\n");
         fwrite($f, "AC_SERVER_MANAGER = false\n");
 
         fwrite($f, "\n[Plugins_Relay]\n");
-        fwrite($f, "UDP_PORT = " . $pc->child("RP", "PortsPlugin", "UDP_R")->value() . "\n");
-        fwrite($f, "OTHER_UDP_PLUGIN = 127.0.0.1:" . $pc->child("ACswui", "PortsPlugin", "UDP_L")->value() . "\n");
+        fwrite($f, "UDP_PORT = " . $pc->child("RPPortsPluginUdpR")->value() . "\n");
+        fwrite($f, "OTHER_UDP_PLUGIN = 127.0.0.1:" . $pc->child("ACswuiPortsPluginUdpL")->value() . "\n");
 
         fclose($f);
     }

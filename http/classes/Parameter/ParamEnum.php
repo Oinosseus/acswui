@@ -17,9 +17,9 @@ final class ParamEnum extends Parameter {
     final public function getHtmlInput() {
         $html = "";
 
-        $key_snake = $this->keySnake();
+        $key = $this->key();
         $value = $this->value();
-        $html .= "<select name=\"ParameterValue_$key_snake\">";
+        $html .= "<select name=\"ParameterValue_$key\">";
         foreach ($this->EnumItemList as $enum_item) {
             $selected = ($value == $enum_item->value()) ? "selected" : "";
             $html .= "<option value=\"" . $enum_item->value() . "\" $selected>" . $enum_item->label() . "</option>";
@@ -45,7 +45,7 @@ final class ParamEnum extends Parameter {
         if (array_key_exists($enum_item->value(), $this->EnumItemHash)) {
             \Core\Log::warning("Ignoring duplicated EnumItem value '" .
                                $enum_item->value() . "' at '" .
-                               $this->keySnake() . "'");
+                               $this->key() . "'");
         }
         $this->EnumItemHash[$enum_item->value()] = $enum_item;
         $this->EnumItemList[] = $enum_item;

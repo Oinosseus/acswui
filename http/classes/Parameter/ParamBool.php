@@ -7,9 +7,9 @@ final class ParamBool extends Parameter {
     final public function getHtmlInput() {
         $html = "";
 
-        $key_snake = $this->keySnake();
+        $key = $this->key();
         $checked = ($this->value()) ? "checked" : "";
-        $html .= "<input type=\"checkbox\" name=\"ParameterValue_$key_snake\" $checked>";
+        $html .= "<input type=\"checkbox\" name=\"ParameterValue_$key\" $checked>";
 
         return $html;
     }
@@ -23,8 +23,8 @@ final class ParamBool extends Parameter {
     //! This function will check for HTTP POST/GEST form data and store the data into the collection
     public function storeHttpRequest() {
         parent::storeHttpRequest();
-        $key_snake = $this->keySnake();
-        $new_val = (array_key_exists("ParameterValue_$key_snake", $_REQUEST)) ? TRUE : FALSE;
+        $key = $this->key();
+        $new_val = (array_key_exists("ParameterValue_$key", $_REQUEST)) ? TRUE : FALSE;
         $this->setValue($new_val);
     }
 

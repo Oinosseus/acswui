@@ -64,17 +64,17 @@ class ServerSlots extends \core\HtmlContent {
             $html .= "  var svg = document.getElementById('ServerSlotPortsSvg');\n";
             $html .= "  svg.removeAttribute('width');\n";
             $html .= "  svg.removeAttribute('height');\n";
-            $html .= "  document.getElementById('ServerSlotPortsAcServerUdpR').innerHTML = 'UDP_R=" . $this->CurrentSlot->parameterCollection()->child('AcServer', 'PortsPlugin', 'UDP_R')->valueLabel() . "';\n";
-            $html .= "  document.getElementById('ServerSlotPortsAcswuiUdpL').innerHTML = 'UDP_L=" . $this->CurrentSlot->parameterCollection()->child('ACswui', 'PortsPlugin', 'UDP_L')->valueLabel() . "';\n";
-            $html .= "  document.getElementById('ServerSlotPortsAcserverUdp').innerHTML = 'UDP=" . $this->CurrentSlot->parameterCollection()->child('AcServer', 'PortsInet', 'UDP')->valueLabel() . "';\n";
-            $html .= "  document.getElementById('ServerSlotPortsAcserverTcp').innerHTML = 'TCP=" . $this->CurrentSlot->parameterCollection()->child('AcServer', 'PortsInet', 'TCP')->valueLabel() . "';\n";
-            $html .= "  document.getElementById('ServerSlotPortsAcserverHttp').innerHTML = 'HTTP=" . $this->CurrentSlot->parameterCollection()->child('AcServer', 'PortsInet', 'HTTP')->valueLabel() . "';\n";
+            $html .= "  document.getElementById('ServerSlotPortsAcServerUdpR').innerHTML = 'UDP_R=" . $this->CurrentSlot->parameterCollection()->child('AcServerPortsPluginUdpR')->valueLabel() . "';\n";
+            $html .= "  document.getElementById('ServerSlotPortsAcswuiUdpL').innerHTML = 'UDP_L=" . $this->CurrentSlot->parameterCollection()->child('ACswuiPortsPluginUdpL')->valueLabel() . "';\n";
+            $html .= "  document.getElementById('ServerSlotPortsAcserverUdp').innerHTML = 'UDP=" . $this->CurrentSlot->parameterCollection()->child('AcServerPortsInetUdp')->valueLabel() . "';\n";
+            $html .= "  document.getElementById('ServerSlotPortsAcserverTcp').innerHTML = 'TCP=" . $this->CurrentSlot->parameterCollection()->child('AcServerPortsInetTcp')->valueLabel() . "';\n";
+            $html .= "  document.getElementById('ServerSlotPortsAcserverHttp').innerHTML = 'HTTP=" . $this->CurrentSlot->parameterCollection()->child('AcServerPortsInetHttp')->valueLabel() . "';\n";
 
-            if ($this->CurrentSlot->parameterCollection()->child('RP', 'General', 'Enable')->value()) {
-                $html .= "  document.getElementById('ServerSlotPortsRpUdpL').innerHTML = 'UDP_L=" . $this->CurrentSlot->parameterCollection()->child('RP', 'PortsPlugin', 'UDP_L')->valueLabel() . "';\n";
-                $html .= "  document.getElementById('ServerSlotPortsRpUdpR').innerHTML = 'UDP_R=" . $this->CurrentSlot->parameterCollection()->child('RP', 'PortsPlugin', 'UDP_R')->valueLabel() . "';\n";
-                $html .= "  document.getElementById('ServerSlotPortsRpUdp').innerHTML = 'UDP=" . $this->CurrentSlot->parameterCollection()->child('RP', 'PortsInet', 'UDP')->valueLabel() . "';\n";
-                $html .= "  document.getElementById('ServerSlotPortsRpTcp').innerHTML = 'TCP=" . (27 + $this->CurrentSlot->parameterCollection()->child('AcServer', 'PortsInet', 'HTTP')->value()) . "';\n";
+            if ($this->CurrentSlot->parameterCollection()->child('RPGeneralEnable')->value()) {
+                $html .= "  document.getElementById('ServerSlotPortsRpUdpL').innerHTML = 'UDP_L=" . $this->CurrentSlot->parameterCollection()->child('RPPortsPluginUdpL')->valueLabel() . "';\n";
+                $html .= "  document.getElementById('ServerSlotPortsRpUdpR').innerHTML = 'UDP_R=" . $this->CurrentSlot->parameterCollection()->child('RPPortsPluginUdpR')->valueLabel() . "';\n";
+                $html .= "  document.getElementById('ServerSlotPortsRpUdp').innerHTML = 'UDP=" . $this->CurrentSlot->parameterCollection()->child('RPPortsInetUdp')->valueLabel() . "';\n";
+                $html .= "  document.getElementById('ServerSlotPortsRpTcp').innerHTML = 'TCP=" . (27 + $this->CurrentSlot->parameterCollection()->child('AcServerPortsInetHttp')->value()) . "';\n";
                 $html .= "  document.getElementById('WithoutRP').style.display = 'none';\n";
             } else {
                 $html .= "  document.getElementById('WithRP').style.display = 'none';\n";
@@ -105,7 +105,7 @@ class ServerSlots extends \core\HtmlContent {
         $class_current_slot = ($this->CurrentSlot && $this->CurrentSlot->id() == $root_slot->id()) ? "class=\"CurrentSlot\"" : "";
         $html .= "<tr $class_current_slot>";
         $html .= "<td><a href=\"" . $this->url(['ServerSlot'=>$root_slot->id()]) . "\">" . $root_slot->name() . "</a></td>";
-        $html .= "<td>" . $root_slot->parameterCollection()->child("AcServer", "General", "Name")->value() . "</td>";
+        $html .= "<td>" . $root_slot->parameterCollection()->child("AcServerGeneralName")->value() . "</td>";
         $html .= "</tr>";
 
         // user defined slots
@@ -115,7 +115,7 @@ class ServerSlots extends \core\HtmlContent {
             $prechars = ($i == \Core\Config::ServerSlotAmount) ? "&#x2516;&#x2574;" : "&#x2520;&#x2574;";
             $html .= "<tr $class_current_slot>";
             $html .= "<td>" . $prechars . "<a href=\"" . $this->url(['ServerSlot'=>$i]) . "\">" . $slot->name() . "</a></td>";
-            $html .= "<td>" . $slot->parameterCollection()->child("AcServer", "General", "Name")->value() . "</td>";
+            $html .= "<td>" . $slot->parameterCollection()->child("AcServerGeneralName")->value() . "</td>";
             $html .= "</tr>";
         }
 

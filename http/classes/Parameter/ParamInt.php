@@ -17,12 +17,12 @@ final class ParamInt extends Parameter {
     final public function getHtmlInput() {
         $html = "";
 
-        $key_snake = $this->keySnake();
+        $key = $this->key();
         $value = $this->value();
         $min = ($this->MinVal !== NULL) ? "min=\"$this->MinVal\"" : "";
         $max = ($this->MaxVal !== NULL) ? "max=\"$this->MaxVal\"" : "";
 
-        $html .= "<input type=\"number\" name=\"ParameterValue_$key_snake\" value=\"$value\" $min $max step=\"1\">";
+        $html .= "<input type=\"number\" name=\"ParameterValue_$key\" value=\"$value\" $min $max step=\"1\">";
 
         return $html;
     }

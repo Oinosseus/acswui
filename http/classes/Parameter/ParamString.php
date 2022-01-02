@@ -7,9 +7,9 @@ final class ParamString extends Parameter {
     final public function getHtmlInput() {
         $html = "";
 
-        $key_snake = $this->keySnake();
+        $key = $this->key();
         $value = $this->value();
-        $html .= "<input type=\"text\" name=\"ParameterValue_$key_snake\" value=\"$value\">";
+        $html .= "<input type=\"text\" name=\"ParameterValue_$key\" value=\"$value\">";
 
         return $html;
     }

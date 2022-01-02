@@ -100,7 +100,7 @@ final class Collection extends Deriveable {
 
             $h = 6 - $this->maxChildLevels();
             if ($h < 1) $h = 1;
-            $html .= "<h$h>" . $this->label() . " [" . $this->keySnake() . "]</h$h>";
+            $html .= "<h$h>" . $this->label() . " [" . $this->key() . "]</h$h>";
             $html .= "<small>" . $this->description() . "</small>";
 
             //! @todo list direct parameters
@@ -136,10 +136,10 @@ final class Collection extends Deriveable {
         if ($param->accessability() < 1) return "";
 
         // key snake for ID and Name attributes
-        $key_snake = $param->keySnake();
+        $key = $param->key();
 
         // parameter label
-        $html .= "<div class=\"ParameterLabel\" title=\"[" . $param->keySnake() . "]\">" . $param->label() . "</div>";
+        $html .= "<div class=\"ParameterLabel\" title=\"[$key]\">" . $param->label() . "</div>";
 
         // value
         $param_value_span = 1;
@@ -148,15 +148,15 @@ final class Collection extends Deriveable {
         if ($hide_accessability_controls || $read_only) ++$param_value_span;
         $html .= "<div class=\"ParameterValueSpan$param_value_span\">";
         if ($read_only) {
-            $html .= "<div id=\"ParameterValueInput_$key_snake\" title=\"" . $param->description() . "\">" . $param->valueLabel() . "</div>";
+            $html .= "<div id=\"ParameterValueInput_$key\" title=\"" . $param->description() . "\">" . $param->valueLabel() . "</div>";
         } else {
             if ($param->accessability() == 2) {  // editable input
                 $visible = ($param->inheritValue()) ? "style=\"display: none;\"" : "";
-                $html .= "<div id=\"ParameterValueInput_$key_snake\" title=\"" . $param->description() . "\" $visible>" . $param->getHtmlInput() . "</div>";
+                $html .= "<div id=\"ParameterValueInput_$key\" title=\"" . $param->description() . "\" $visible>" . $param->getHtmlInput() . "</div>";
             }
             if ($param->base() !== NULL) {  // inherited value
                 $visible = ($param->inheritValue()) ? "" : "style=\"display: none;\"";
-                $html .= "<div class=\"ParameterInheritedValue\" id=\"ParameterValueInherited_$key_snake\" title=\"" . $param->description() . "\" $visible>" . $param->base()->valueLabel() . "</div>";
+                $html .= "<div class=\"ParameterInheritedValue\" id=\"ParameterValueInherited_$key\" title=\"" . $param->description() . "\" $visible>" . $param->base()->valueLabel() . "</div>";
             }
         }
         $html .= "</div>";
@@ -171,8 +171,8 @@ final class Collection extends Deriveable {
             $html .= "<div class=\"ParameterDerivedCheckbox\">";
             $checked = $param->inheritValue() ? "checked" : "";
             $disabled = ($read_only) ? "disabled" : "";
-            $html .= "<input type=\"checkbox\" id=\"ParameterInheritValueCheckbox_$key_snake\" name=\"ParameterInheritValueCheckbox_$key_snake\" $checked onclick=\"toggleParameterInheritance('$key_snake')\" $disabled>";
-            $html .= "<label for=\"ParameterInheritValueCheckbox_$key_snake\">";
+            $html .= "<input type=\"checkbox\" id=\"ParameterInheritValueCheckbox_$key\" name=\"ParameterInheritValueCheckbox_$key\" $checked onclick=\"toggleParameterInheritance('$key')\" $disabled>";
+            $html .= "<label for=\"ParameterInheritValueCheckbox_$key\">";
             $html .= "<div class=\"Checked\" title=\"" . _("Value currently inherited from from base parameter") . "\">&#x26af;</div>";
             $html .= "<div class=\"UnChecked\" title=\"" . _("Value currently defined locally") . "\">&#x26ae;</div>";
             $html .= "</label>";
@@ -182,14 +182,14 @@ final class Collection extends Deriveable {
         // accessability
         if (!$hide_accessability_controls && !$read_only) {
             $derived_accessability = ($param->base() !== NULL) ? $param->base()->derivedAccessability() : 2;
-            $html .= "<div class=\"ParameterDerivedCheckbox\" onclick=\"toggleParameterAccessability('$key_snake', $derived_accessability)\">";
+            $html .= "<div class=\"ParameterDerivedCheckbox\" onclick=\"toggleParameterAccessability('$key', $derived_accessability)\">";
             $display = ($param->derivedAccessability() != 0) ? "style=\"display:none;\"" : "";
-            $html .= "<div class=\"ParameterAccessabilityHidden\" id=\"ParameterDerivedAccessabilityHidden_$key_snake\"  title=\"" . _("Derived parameters hidden") . "\" $display>&#x1f6ab;</div>";
+            $html .= "<div class=\"ParameterAccessabilityHidden\" id=\"ParameterDerivedAccessabilityHidden_$key\"  title=\"" . _("Derived parameters hidden") . "\" $display>&#x1f6ab;</div>";
             $display = ($param->derivedAccessability() != 1) ? "style=\"display:none;\"" : "";
-            $html .= "<div class=\"ParameterAccessabilityVisible\" id=\"ParameterAccessabilityVisible_$key_snake\" title=\"" . _("Derived parameters are visible but fixed") . "\" $display>&#x1f441;</div>";
+            $html .= "<div class=\"ParameterAccessabilityVisible\" id=\"ParameterAccessabilityVisible_$key\" title=\"" . _("Derived parameters are visible but fixed") . "\" $display>&#x1f441;</div>";
             $display = ($param->derivedAccessability() != 2) ? "style=\"display:none;\"" : "";
-            $html .= "<div class=\"ParameterAccessabilityEditable\" id=\"ParameterAccessabilityEditable_$key_snake\" title=\"" . _("Derived parameters can be changed") . "\" $display>&#x1f4dd;</div>";
-            $html .= "<input type=\"hidden\" id=\"ParameterAccessability_$key_snake\" name=\"ParameterAccessability_$key_snake\" value=\"" . $param->derivedAccessability() . "\">";
+            $html .= "<div class=\"ParameterAccessabilityEditable\" id=\"ParameterAccessabilityEditable_$key\" title=\"" . _("Derived parameters can be changed") . "\" $display>&#x1f4dd;</div>";
+            $html .= "<input type=\"hidden\" id=\"ParameterAccessability_$key\" name=\"ParameterAccessability_$key\" value=\"" . $param->derivedAccessability() . "\">";
             $html .= "</div>";
         }
 

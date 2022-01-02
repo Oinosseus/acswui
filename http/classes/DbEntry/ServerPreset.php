@@ -107,57 +107,58 @@ class ServerPreset extends DbEntry {
             // create collection
             } else {
                 $this->ParameterCollection = new \Parameter\Collection(NULL, NULL, "Root", _("Root"), _("Collection of server preset settings"));
-                $p = new \Parameter\ParamString(NULL, $this->ParameterCollection, "Name", _("Name"), _("Name of the preset"), "", "");
+
+                $p = new \Parameter\ParamString(NULL, $this->ParameterCollection, "PresetName", _("Name"), _("Name of the preset"), "", "");
 
 
                 // ------------------------------------------------------------
                 //                    Session Settings
                 // ------------------------------------------------------------
 
-                $coll_group = new \Parameter\Collection(NULL, $this->ParameterCollection, "Sessions", _("Sessions"), _("Session Settings"));
+                $coll_group = new \Parameter\Collection(NULL, $this->ParameterCollection, "AcServerSessions", _("Sessions"), _("Session Settings"));
 
                 // booking
-                $coll = new \Parameter\Collection(NULL, $coll_group, "Booking", _("Booking"), _("Settings for Booking Session"));
-                $p = new \Parameter\ParamString(NULL, $coll, "Name", _("Name"), _("Name of the session"), "", "Booking");
-                $p = new \Parameter\ParamInt(NULL, $coll, "Time", _("Time"), _("Duration of session in Minutes"), "min", 30);
+                $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerSessionsBooking", _("Booking"), _("Settings for Booking Session"));
+                $p = new \Parameter\ParamString(NULL, $coll, "AcServerSessionsBookingName", _("Name"), _("Name of the session"), "", "Booking");
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerSessionsBookingTime", _("Time"), _("Duration of session in Minutes"), "min", 30);
                 $p->setMin(0);
                 $p->setMax(999);
 
                 // practice
-                $coll = new \Parameter\Collection(NULL, $coll_group, "Practice", _("Practice"), _("Settings for Practice Session"));
-                $p = new \Parameter\ParamString(NULL, $coll, "Name", _("Name"), _("Name of the session"), "", "Practice");
-                $p = new \Parameter\ParamInt(NULL, $coll, "Time", _("Time"), _("Duration of session in Minutes"), "Min", 30);
+                $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerSessionsPractice", _("Practice"), _("Settings for Practice Session"));
+                $p = new \Parameter\ParamString(NULL, $coll, "AcServerSessionsPracticeName", _("Name"), _("Name of the session"), "", "Practice");
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerSessionsPracticeTime", _("Time"), _("Duration of session in Minutes"), "Min", 30);
                 $p->setMin(0);
                 $p->setMax(999);
-                $p = new \Parameter\ParamEnum(NULL, $coll, "IsOpen", _("Is Open"), _("Either Session can be joined"));
+                $p = new \Parameter\ParamEnum(NULL, $coll, "AcServerSessionsPracticeIsOpen", _("Is Open"), _("Either Session can be joined"));
                 new \Parameter\EnumItem($p, 0, _("No Join"));
                 new \Parameter\EnumItem($p, 1, _("Free Join"));
                 $p->setValue(1);
 
                 // qualifying
-                $coll = new \Parameter\Collection(NULL, $coll_group, "Qualifying", _("Qualifying"), _("Settings for Qualifying Session"));
-                $p = new \Parameter\ParamString(NULL, $coll, "Name", _("Name"), _("Name of the session"), "", "Qualifying");
-                $p = new \Parameter\ParamInt(NULL, $coll, "Time", _("Time"), _("Duration of session in Minutes"), "Min", 30);
+                $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerSessionsQualifying", _("Qualifying"), _("Settings for Qualifying Session"));
+                $p = new \Parameter\ParamString(NULL, $coll, "AcServerSessionsQualifyingName", _("Name"), _("Name of the session"), "", "Qualifying");
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerSessionsQualifyingTime", _("Time"), _("Duration of session in Minutes"), "Min", 30);
                 $p->setMin(0);
                 $p->setMax(999);
-                $p = new \Parameter\ParamEnum(NULL, $coll, "IsOpen", _("Is Open"), _("Either Session can be joined"));
+                $p = new \Parameter\ParamEnum(NULL, $coll, "AcServerSessionsQualifyingIsOpen", _("Is Open"), _("Either Session can be joined"));
                 new \Parameter\EnumItem($p, 0, _("No Join"));
                 new \Parameter\EnumItem($p, 1, _("Free Join"));
                 $p->setValue(1);
 
                 // race
-                $coll = new \Parameter\Collection(NULL, $coll_group, "Race", _("Race"), _("Settings for Race Session"));
-                $p = new \Parameter\ParamString(NULL, $coll, "Name", _("Name"), _("Name of the session"), "", "Race");
-                $p = new \Parameter\ParamInt(NULL, $coll, "Laps", _("Laps"), _("Amount of Laps for the race"), "Laps", 0);
+                $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerSessionsRace", _("Race"), _("Settings for Race Session"));
+                $p = new \Parameter\ParamString(NULL, $coll, "AcServerSessionsRaceName", _("Name"), _("Name of the session"), "", "Race");
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerSessionsRaceLaps", _("Laps"), _("Amount of Laps for the race"), "Laps", 0);
                 $p->setMin(0);
                 $p->setMax(999);
-                $p = new \Parameter\ParamInt(NULL, $coll, "Time", _("Time"), _("Amount of Minutes for the race (only if Laps=0)"), "Min", 0);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerSessionsRaceTime", _("Time"), _("Amount of Minutes for the race (only if Laps=0)"), "Min", 0);
                 $p->setMin(0);
                 $p->setMax(999);
-                $p = new \Parameter\ParamInt(NULL, $coll, "WaitTime", _("Wait Time"), _("Seconds before start of the Session"), "s", 0);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerSessionsRaceWaitTime", _("Wait Time"), _("Seconds before start of the Session"), "s", 0);
                 $p->setMin(0);
                 $p->setMax(999);
-                $p = new \Parameter\ParamEnum(NULL, $coll, "IsOpen", _("Is Open"), _("Either Session can be joined"));
+                $p = new \Parameter\ParamEnum(NULL, $coll, "AcServerSessionsRaceIsOpen", _("Is Open"), _("Either Session can be joined"));
                 new \Parameter\EnumItem($p, 0, _("No Join"));
                 new \Parameter\EnumItem($p, 1, _("Free Join"));
                 new \Parameter\EnumItem($p, 2, _("Join 20s"));
@@ -168,64 +169,64 @@ class ServerPreset extends DbEntry {
                 //                    Realism Settings
                 // ------------------------------------------------------------
 
-                $coll_group = new \Parameter\Collection(NULL, $this->ParameterCollection, "Realism", _("Realism"), _("Realism Settings"));
+                $coll_group = new \Parameter\Collection(NULL, $this->ParameterCollection, "AcServerRealism", _("Realism"), _("Realism Settings"));
 
                 // driving aids
-                $coll = new \Parameter\Collection(NULL, $coll_group, "DrivingAids", _("Driving Aids"), _("Allowance of systems that support drivability"));
-                $p = new \Parameter\ParamInt(NULL, $coll, "TyresOut", _("Allowed Tyres Out"), _("Amount of tyres that are allowed to cross the driving line"), "", 2);
+                $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerRealismDrivingAids", _("Driving Aids"), _("Allowance of systems that support drivability"));
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerRealismDrivingAidsTyresOut", _("Allowed Tyres Out"), _("Amount of tyres that are allowed to cross the driving line"), "", 2);
                 $p->setMin(0);
                 $p->setMax(4);
-                $p = new \Parameter\ParamEnum(NULL, $coll, "Abs", _("ABS"), _("Anti-Lock Braking System"));
+                $p = new \Parameter\ParamEnum(NULL, $coll, "AcServerRealismDrivingAidsAbs", _("ABS"), _("Anti-Lock Braking System"));
                 new \Parameter\EnumItem($p, 0, _("Disabled"));
                 new \Parameter\EnumItem($p, 1, _("Car Dependent"));
                 new \Parameter\EnumItem($p, 2, _("Enabled"));
                 $p->setValue(1);
-                $p = new \Parameter\ParamEnum(NULL, $coll, "Tc", _("TC"), _("Traction Control"));
+                $p = new \Parameter\ParamEnum(NULL, $coll, "AcServerRealismDrivingAidsTc", _("TC"), _("Traction Control"));
                 new \Parameter\EnumItem($p, 0, _("Disabled"));
                 new \Parameter\EnumItem($p, 1, _("Car Dependent"));
                 new \Parameter\EnumItem($p, 2, _("Enabled"));
                 $p->setValue(1);
-                $p = new \Parameter\ParamEnum(NULL, $coll, "Esp", _("ESC"), _("Electronic Stability Control"));
+                $p = new \Parameter\ParamEnum(NULL, $coll, "AcServerRealismDrivingAidsEsc", _("ESC"), _("Electronic Stability Control"));
                 new \Parameter\EnumItem($p, 0, _("Disabled"));
                 new \Parameter\EnumItem($p, 1, _("Allow"));
                 $p->setValue(1);
-                $p = new \Parameter\ParamEnum(NULL, $coll, "Clutch", _("Automatic Clutch"), _("Automatic Clutch Assist"));
+                $p = new \Parameter\ParamEnum(NULL, $coll, "AcServerRealismDrivingAidsClutch", _("Automatic Clutch"), _("Automatic Clutch Assist"));
                 new \Parameter\EnumItem($p, 0, _("Disabled"));
                 new \Parameter\EnumItem($p, 1, _("Allow"));
                 $p->setValue(1);
-                $p = new \Parameter\ParamEnum(NULL, $coll, "TyreBlankets", _("Tyre Blankets"), _("At the start of the session or after the pitstop the tyre will have the the optimal temperature"));
+                $p = new \Parameter\ParamEnum(NULL, $coll, "AcServerRealismDrivingAidsTyreBlankets", _("Tyre Blankets"), _("At the start of the session or after the pitstop the tyre will have the the optimal temperature"));
                 new \Parameter\EnumItem($p, 0, _("No"));
                 new \Parameter\EnumItem($p, 1, _("Yes"));
                 $p->setValue(0);
-                $p = new \Parameter\ParamEnum(NULL, $coll, "Mirror", _("Virtual Mirror"), _("With this setting the virtual mirror can be forced for every driver."));
+                $p = new \Parameter\ParamEnum(NULL, $coll, "AcServerRealismDrivingAidsMirror", _("Virtual Mirror"), _("With this setting the virtual mirror can be forced for every driver."));
                 new \Parameter\EnumItem($p, 0, _("Optional"));
                 new \Parameter\EnumItem($p, 1, _("Forced"));
                 $p->setValue(0);
 
                 // physics
-                $coll = new \Parameter\Collection(NULL, $coll_group, "Physics", _("Physics"), _("Adjustment constants of physics"));
-                $p = new \Parameter\ParamInt(NULL, $coll, "FuelRate", _("Fuel Rate"), _("Fuel usage from 0 (no fuel usage) to XXX (100 is the realistic one)"), "&percnt;", 100);
+                $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerRealismPhysics", _("Physics"), _("Adjustment constants of physics"));
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerRealismPhysicsFuelRate", _("Fuel Rate"), _("Fuel usage from 0 (no fuel usage) to XXX (100 is the realistic one)"), "&percnt;", 100);
                 $p->setMin(0);
                 $p->setMax(1000);
-                $p = new \Parameter\ParamInt(NULL, $coll, "DamageMultiplier", _("Damage Multiplier"), _("Damage from 0 (no damage) to 100 (full damage)"), "&percnt;", 100);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerRealismPhysicsDamageMultiplier", _("Damage Multiplier"), _("Damage from 0 (no damage) to 100 (full damage)"), "&percnt;", 100);
                 $p->setMin(0);
                 $p->setMax(100);
-                $p = new \Parameter\ParamInt(NULL, $coll, "TyreWearRate", _("Tyre Wear Rate"), _("Tyre wear from 0 (no tyre wear) to XXX (100 is the realistic one)"), "&percnt;", 100);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerRealismPhysicsTyreWearRate", _("Tyre Wear Rate"), _("Tyre wear from 0 (no tyre wear) to XXX (100 is the realistic one)"), "&percnt;", 100);
                 $p->setMin(0);
                 $p->setMax(999);
 
                 // dynamic track
-                $coll = new \Parameter\Collection(NULL, $coll_group, "DynamicTrack", _("Dynamic Track"), _("Dynamic Grip Level of the Track"));
-                $p = new \Parameter\ParamInt(NULL, $coll, "SessionStart", _("Start Grip"), _("Amount of Grip at session start"), "&percnt;", 96);
+                $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerRealismDynamicTrack", _("Dynamic Track"), _("Dynamic Grip Level of the Track"));
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerRealismDynamicTrackSessionStart", _("Start Grip"), _("Amount of Grip at session start"), "&percnt;", 96);
                 $p->setMin(0);
                 $p->setMax(100);
-                $p = new \Parameter\ParamInt(NULL, $coll, "Randomness", _("Randomness"), _("Level of randomness added to the start grip"), "&percnt;", 2);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerRealismDynamicTrackRandomness", _("Randomness"), _("Level of randomness added to the start grip"), "&percnt;", 2);
                 $p->setMin(0);
                 $p->setMax(100);
-                $p = new \Parameter\ParamInt(NULL, $coll, "LapGain", _("Lap Gain"), _("How many laps are needed to increase the grip by 1%"), "Laps", 20);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerRealismDynamicTrackLapGain", _("Lap Gain"), _("How many laps are needed to increase the grip by 1%"), "Laps", 20);
                 $p->setMin(0);
                 $p->setMax(999);
-                $p = new \Parameter\ParamInt(NULL, $coll, "SessionTransfer", _("Session Transfer"), _("How much of the gained grip is to be added to the next session 100 -> all the gained grip. Example: difference between starting (90) and ending (96) grip in the session = 6%, with session_transfer = 50 then the next session is going to start with 93."), "&percnt;", 50);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerRealismDynamicTrackSessionTransfer", _("Session Transfer"), _("How much of the gained grip is to be added to the next session 100 -> all the gained grip. Example: difference between starting (90) and ending (96) grip in the session = 6%, with session_transfer = 50 then the next session is going to start with 93."), "&percnt;", 50);
                 $p->setMin(0);
                 $p->setMax(100);
 
@@ -271,6 +272,21 @@ class ServerPreset extends DbEntry {
 //                 }
 
 
+
+                // ------------------------------------------------------------
+                //                    Real Penalty Settings
+                // ------------------------------------------------------------
+
+//                 $coll_group = new \Parameter\Collection(NULL, $this->ParameterCollection, "RP", _("Real Penalty"), _("Settings for the Real Penalty plugin"));
+//
+//                 // driving aids
+//                 $coll = new \Parameter\Collection(NULL, $coll_group, "DrivingAids", _("Driving Aids"), _("Allowance of systems that support drivability"));
+//                 $p = new \Parameter\ParamInt(NULL, $coll, "TyresOut", _("Allowed Tyres Out"), _("Amount of tyres that are allowed to cross the driving line"), "", 2);
+//                 $p->setMin(0);
+//                 $p->setMax(4);
+
+
+
                 // set all deriveable and visible
                 function __adjust_derived_collection($collection) {
                     $collection->derivedAccessability(2);
@@ -301,7 +317,7 @@ class ServerPreset extends DbEntry {
         $column_data = array();
 
         // name, slot-id
-        $column_data['Name'] = $this->parameterCollection()->child("Name")->valueLabel();
+        $column_data['Name'] = $this->parameterCollection()->child("PresetName")->valueLabel();
 
         // parameter data
         $data_array = $this->parameterCollection()->dataArrayExport();
