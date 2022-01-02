@@ -14,7 +14,7 @@ class UdpPluginCarEntry(object):
             raise ValueError("Unexpected entry_id: '%s'" % str(entry_id))
 
         self.__db = database
-        self.__verbosity = Verbosity(verbosity)
+        self.__verbosity = Verbosity(verbosity, self.__class__.__name__)
         self.__verbosity2 = Verbosity(self.__verbosity)
 
         # state vars

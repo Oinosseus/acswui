@@ -29,7 +29,7 @@ class UdpPluginServer(object):
         # and for realtime data update
         self.__PROCESS_TIME = 0.1 # seconds
 
-        self.__verbosity = Verbosity(verbosity)
+        self.__verbosity = Verbosity(verbosity, self.__class__.__name__)
         self.__server_slot = int(server_slot)
         self.__server_preset = int(server_preset)
         self.__car_class = int(car_class)
@@ -46,7 +46,7 @@ class UdpPluginServer(object):
         self.__sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         address = "127.0.0.1"
-        Verbosity(self.__verbosity).print("Bind UdpPluginSever to %s:%i" % (address, self.__port_plugin))
+        self.__verbosity.print("Bind UdpPluginSever to %s:%i" % (address, self.__port_plugin))
         try:
             self.__sock.bind((address, self.__port_plugin))
         except BaseException as be:

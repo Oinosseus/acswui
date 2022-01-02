@@ -28,7 +28,7 @@ class CommandUdpPlugin(Command):
 
         # paths
         slot_string = self.getIniSection('PLUGIN')['slot']
-        path_data_acserver = self.getGeneralArg("path-data")
+        path_data_acserver = os.path.join(self.getGeneralArg("path-data"), "acserver")
         path_realtime_json = os.path.join(self.getGeneralArg("path-htdata"), "realtime", slot_string + ".json")
         path_entry_list = os.path.join(path_data_acserver, "cfg", "entry_list_" + slot_string + ".ini")
         path_server_cfg = os.path.join(path_data_acserver, "cfg", "server_cfg_" + slot_string + ".ini")

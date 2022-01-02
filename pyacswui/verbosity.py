@@ -1,61 +1,47 @@
 
 class Verbosity(object):
 
-    CurrentIndentLevel = 0
-
-
     def __init__(self, verbosity=0, group_prefix=""):
 
-        Verbosity.CurrentIndentLevel += 1
+        #Verbosity.CurrentIndentLevel += 1
+        self._verbose_level = 0
+        self._indent_level = 0
 
         # parent
         self._parent = None
         if isinstance(verbosity, Verbosity):
             self._parent = verbosity
+            self._verbose_level = self._parent._verbose_level - 1
+            self._indent_level = self._parent._indent_level + 1
+        else:
+            self._verbose_level = int(verbosity)
 
-        # verbosity level
-        self._MaxIndentLevel = 0
-        if self._parent:
-            self._MaxIndentLevel = self._parent._MaxIndentLevel
-        elif type(verbosity) == type(123):
-            self._MaxIndentLevel = verbosity
+        # limit to zero
+        if self._verbose_level < 0:
+            self._verbose_level = 0
 
         # group prefix
-        self._group_prefix = None
-        #if group_prefix is None:
-            #if self._parent:
-                #self._group_prefix = self._parent._group_prefix
-        #else:
         self._group_prefix = str(group_prefix)
+        if self._group_prefix == "" and self._parent is not None:
+            self._group_prefix = self._parent._group_prefix + "."
 
-        self._any_print = False
+        self._anything_printed = False
 
 
     def __del__(self):
-        Verbosity.CurrentIndentLevel -= 1
-
-        # for debugging (should not happen)
-        if Verbosity.CurrentIndentLevel < 0:
-            raise ValueError("Droping below zero!")
+        pass
 
 
     def level(self):
-        level = self._MaxIndentLevel - Verbosity.CurrentIndentLevel + 1
-        if level < 0:
-            level = 0
-        return level
+        return self._verbose_level
 
 
     def print(self, *args, **kwargs):
 
-        if Verbosity.CurrentIndentLevel < (self._MaxIndentLevel + 1):
+        if self._verbose_level > 0:
 
             # indent
-            print("    " * (Verbosity.CurrentIndentLevel - 1), end="")
-
-            p = self._parent
-            if p and p._group_prefix and not p._any_print:
-                p.print("...")
+            print("    " * self._indent_level, end="")
 
             # group_prefix
             if self._group_prefix:
@@ -63,7 +49,7 @@ class Verbosity(object):
 
             # print message
             print(*args, **kwargs)
-            self._any_print = True
+            self._anything_printed = True
 
 
 

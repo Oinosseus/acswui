@@ -24,7 +24,7 @@ class UdpPluginSession(object):
         self.__db_id_predecessor = 0
         if predecessor is not None and predecessor._db_id is not None:
             self.__db_id_predecessor = predecessor._db_id
-        self.__verbosity = Verbosity(verbosity)
+        self.__verbosity = Verbosity(verbosity, self.__class__.__name__)
 
         # calling this update creates a new session
         self.update(packet)

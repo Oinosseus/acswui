@@ -291,7 +291,7 @@ class ServerSlot {
 
         // start server
         $cmd_ret = 0;
-        $cmd = "nohup ". \Core\Config::AbsPathAcswui . "/acswui.py srvrun -vv";
+        $cmd = "nohup ". \Core\Config::AbsPathAcswui . "/acswui.py srvrun -vvvvv";
         $cmd .= " \"" . \Core\Config::AbsPathData . "/acswui_udp_plugin/acswui_udp_plugin_$id.ini\" ";
         $cmd .= " --slot $id";
         if ($this->parameterCollection()->child("RP", "General", "Enable")->value()) {
@@ -577,11 +577,11 @@ class ServerSlot {
 
         // section App
         fwrite($f, "\n[App]\n");
-        fwrite($f, "MANDATORY = false\n");
         fwrite($f, "CHECK_FREQUENCY = 60\n");
 
         // section Sol
         fwrite($f, "\n[Sol]\n");
+        fwrite($f, "PERFORMACE_MODE_ALLOWED = true\n");  // intentionally not needed but current revision 4.01.07 throws an error when this is not present
         fwrite($f, "MANDATORY = false\n");
         fwrite($f, "CHECK_FREQUENCY = 60\n");
 
@@ -724,6 +724,7 @@ class ServerSlot {
 
     //! create settings.ini for real penalty
     private function writeRpSettings() {
+        $id = $this->id();
         $pc = $this->parameterCollection();
         $file_path = \Core\Config::AbsPathData . "/real_penalty/" . $this->id() . "/settings.ini";
         $f = fopen($file_path, 'w');
@@ -736,23 +737,23 @@ class ServerSlot {
         fwrite($f, "[General]\n");
         fwrite($f, "product_key = " . $pc->child("RP", "General", "ProductKey")->value() . "\n");
         fwrite($f, "AC_SERVER_PATH = " . \Core\Config::AbsPathData . "/acserver\n");
-        fwrite($f, "AC_CFG_FILE = " . \Core\Config::AbsPathData . "/acserver/cfg/server_cfg_0.ini\n");
+        fwrite($f, "AC_CFG_FILE = " . \Core\Config::AbsPathData . "/acserver/cfg/server_cfg_$id.ini\n");
         fwrite($f, "AC_TRACKS_FOLDER = " . \Core\Config::AbsPathData . "/acserver/content/tracks\n");
         fwrite($f, "AC_WEATHER_FOLDER = " . \Core\Config::AbsPathData . "/acserver/content/weather\n");
         fwrite($f, "UDP_PORT = " . $pc->child("RP", "PortsPlugin", "UDP_L")->value() . "\n");
         fwrite($f, "UDP_RESPONSE = 127.0.0.1:" . $pc->child("AcServer", "PortsPlugin", "UDP_R")->value() . "\n");
         fwrite($f, "APP_TCP_PORT = " . (27 + $pc->child("AcServer", "PortsInet", "HTTP")->value()) . "\n");
         fwrite($f, "APP_UDP_PORT = " . $pc->child("RP", "PortsInet", "UDP")->value() . "\n");
-        fwrite($f, "APP_FILE = " . \Core\Config::AbsPathData . "/real_penalty/" . $this->id() . "/files/app\n");
-        fwrite($f, "IMAGES_FILE = " . \Core\Config::AbsPathData . "/real_penalty/" . $this->id() . "/files/images\n");
-        fwrite($f, "SOUNDS_FILE = " . \Core\Config::AbsPathData . "/real_penalty/" . $this->id() . "/files/sounds\n");
-        fwrite($f, "TRACKS_FOLDER = " . \Core\Config::AbsPathData . "/real_penalty/" . $this->id() . "/tracks\n");
+        fwrite($f, "APP_FILE = " . \Core\Config::AbsPathData . "/real_penalty/$id/files/app\n");
+        fwrite($f, "IMAGES_FILE = " . \Core\Config::AbsPathData . "/real_penalty/$id/files/images\n");
+        fwrite($f, "SOUNDS_FILE = " . \Core\Config::AbsPathData . "/real_penalty/$id/files/sounds\n");
+        fwrite($f, "TRACKS_FOLDER = " . \Core\Config::AbsPathData . "/real_penalty/$id/tracks\n");
         fwrite($f, "ADMIN_PSW = " . $pc->child("RP", "General", "AdminPwd")->value() . "\n");
         fwrite($f, "AC_SERVER_MANAGER = false\n");
 
         fwrite($f, "\n[Plugins_Relay]\n");
         fwrite($f, "UDP_PORT = " . $pc->child("RP", "PortsPlugin", "UDP_R")->value() . "\n");
-        fwrite($f, "OTHER_UDP_PLUGIN = " . $pc->child("ACswui", "PortsPlugin", "UDP_L")->value() . "\n");
+        fwrite($f, "OTHER_UDP_PLUGIN = 127.0.0.1:" . $pc->child("ACswui", "PortsPlugin", "UDP_L")->value() . "\n");
 
         fclose($f);
     }
