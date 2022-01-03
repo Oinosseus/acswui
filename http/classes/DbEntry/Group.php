@@ -44,6 +44,9 @@ class Group extends DbEntry {
             return;
         }
 
+        // Delete all maps with this group
+        //! @todo
+
         $this->deleteFromDb();
         Group::$GroupsList = NULL;
     }

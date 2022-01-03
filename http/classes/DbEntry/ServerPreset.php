@@ -110,12 +110,15 @@ class ServerPreset extends DbEntry {
 
                 $p = new \Parameter\ParamString(NULL, $this->ParameterCollection, "PresetName", _("Name"), _("Name of the preset"), "", "");
 
+                $coll_acserver = new \Parameter\Collection(NULL, $this->ParameterCollection, "AcServer", _("AC Server"), _("Assetto Corsa Server Sesstings"));
+                new \Parameter\ParamString(NULL, $coll_acserver, "DebugTest", _("Testing"), _("Testing"), "", "");
+
 
                 // ------------------------------------------------------------
                 //                    Session Settings
                 // ------------------------------------------------------------
 
-                $coll_group = new \Parameter\Collection(NULL, $this->ParameterCollection, "AcServerSessions", _("Sessions"), _("Session Settings"));
+                $coll_group = new \Parameter\Collection(NULL, $coll_acserver, "AcServerSessions", _("Sessions"), _("Session Settings"));
 
                 // booking
                 $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerSessionsBooking", _("Booking"), _("Settings for Booking Session"));
@@ -169,7 +172,7 @@ class ServerPreset extends DbEntry {
                 //                    Realism Settings
                 // ------------------------------------------------------------
 
-                $coll_group = new \Parameter\Collection(NULL, $this->ParameterCollection, "AcServerRealism", _("Realism"), _("Realism Settings"));
+                $coll_group = new \Parameter\Collection(NULL, $coll_acserver, "AcServerRealism", _("Realism"), _("Realism Settings"));
 
                 // driving aids
                 $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerRealismDrivingAids", _("Driving Aids"), _("Allowance of systems that support drivability"));
@@ -274,16 +277,18 @@ class ServerPreset extends DbEntry {
 
 
                 // ------------------------------------------------------------
-                //                    Real Penalty Settings
+                //                     Real Penalty Settings
                 // ------------------------------------------------------------
 
+                $coll_rps = new \Parameter\Collection(NULL, $this->ParameterCollection, "RP", _("Real Penalty"), _("Real Penalty Plugin Sesstings"));
+
 //                 $coll_group = new \Parameter\Collection(NULL, $this->ParameterCollection, "RP", _("Real Penalty"), _("Settings for the Real Penalty plugin"));
-//
-//                 // driving aids
-//                 $coll = new \Parameter\Collection(NULL, $coll_group, "DrivingAids", _("Driving Aids"), _("Allowance of systems that support drivability"));
-//                 $p = new \Parameter\ParamInt(NULL, $coll, "TyresOut", _("Allowed Tyres Out"), _("Amount of tyres that are allowed to cross the driving line"), "", 2);
-//                 $p->setMin(0);
-//                 $p->setMax(4);
+
+                // driving aids
+                $coll = new \Parameter\Collection(NULL, $coll_rps, "FooBarBaz", _("Driving Aids"), _("Allowance of systems that support drivability"));
+                $p = new \Parameter\ParamInt(NULL, $coll, "TyresOut", _("Allowed Tyres Out"), _("Amount of tyres that are allowed to cross the driving line"), "", 2);
+                $p->setMin(0);
+                $p->setMax(4);
 
 
 

@@ -5,6 +5,10 @@ div.ParameterCollection {
     margin-bottom: 2em;
 }
 
+div.ParameterCollection:last-child {
+    margin-right: 0em;
+}
+
 div.ParameterCollectionContainerLabel {
     display: block;
 
@@ -24,6 +28,20 @@ div.ParameterCollectionContainer {
     border-bottom: 0.1em solid var(--color-red-accent);
     border-right: 0.1em solid var(--color-red-accent);
     padding: 0.1em;
+/*     width: 100%; */
+}
+
+div.ParameterCollectionLevel3SubContainer {
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 1em;
+    padding-bottom: 0em;
+    border-top: 0.1em solid var(--color-red-accent);
+    background-color: var(--color-bg-elements);
+}
+
+div.ParameterCollectionLevel3SubContainer:first-child {
+    border-top: none;
 }
 
 
@@ -119,4 +137,45 @@ div.ParameterLastColumn {
 .ParameterDerivedCheckbox input[type="checkbox"]:checked + label div.UnChecked {
     display: none;
 }
+
+
+
+/* Tabs */
+div.ParameterCollectionLevel4TabContainer nav div {
+    display: inline-block;
+}
+
+div.ParameterCollectionLevel4TabContainer nav div input {
+    display: none;
+}
+
+div.ParameterCollectionLevel4TabContainer nav div label {
+    display: inline-block;
+    border-top: 0.1em solid var(--color-red-accent);
+    border-left: 0.1em solid var(--color-red-accent);
+    padding: 0.3em 0.5em;
+    background-color: var(--color-bg-elements);
+}
+
+div.ParameterCollectionLevel4TabContainer nav div input:checked ~ label {
+    background-color: var(--color-red-accent);
+    padding-top: 0.5em;
+}
+
+div.ParameterCollectionLevel4TabContainer nav div:last-child label {
+    border-right: 0.1em solid var(--color-red-accent);
+    border-top-right-radius: 0.5em;
+}
+
+div.ParameterCollectionLevel4TabContainer nav div:first-child label {
+    border-top-left-radius: 0.5em;
+}
+
+div.ParameterCollectionTabContentContainer {
+    border-top: 0.1em solid var(--color-red-accent);
+    display: inline-block;
+}
+
+
+
 
