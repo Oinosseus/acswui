@@ -42,6 +42,7 @@ class ServerSlots extends \core\HtmlContent {
             $html .= $this->newHtmlForm("POST");
             $pc = $this->CurrentSlot->parameterCollection();
             $html .= $pc->getHtml($this->CurrentSlot->id() !== 0, !$this->CanEdit);
+//             $html .= "<br><br><br>" . $pc->getHtmlTree();
 
             if ($this->CanEdit) {
                 $html .= "<br><br>";

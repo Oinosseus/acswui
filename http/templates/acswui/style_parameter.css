@@ -1,67 +1,7 @@
-div.ParameterCollection {
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 2em;
-    margin-bottom: 2em;
-}
 
-div.ParameterCollection:last-child {
-    margin-right: 0em;
-}
-
-div.ParameterCollectionContainerLabel {
-    display: block;
-
-    font-weight: bolder;
-    font-size: 1.1em;
-    background-color: var(--color-red-accent);
-    border-top-left-radius: 0.5em;
-    border-top-right-radius: 0.5em;
-
-    padding: 0.1em 0.1em;
-    text-align: center;;
-}
-
-
-div.ParameterCollectionContainer {
-    border-left: 0.1em solid var(--color-red-accent);
-    border-bottom: 0.1em solid var(--color-red-accent);
-    border-right: 0.1em solid var(--color-red-accent);
-    padding: 0.1em;
-/*     width: 100%; */
-}
-
-div.ParameterCollectionLevel3SubContainer {
-    padding-left: 1em;
-    padding-right: 1em;
-    padding-top: 1em;
-    padding-bottom: 0em;
-    border-top: 0.1em solid var(--color-red-accent);
-    background-color: var(--color-bg-elements);
-}
-
-div.ParameterCollectionLevel3SubContainer:first-child {
-    border-top: none;
-}
-
-
-div.ParameterContainer {
-    display: grid;
-    grid-template-columns: auto auto auto auto auto;
-}
-
-div.ParameterCollectionSubLabel {
-    grid-column: 1 / span 5;
-
-    font-weight: bold;
-    background-color: var(--color-red-accent);
-    padding: 0.1em 0.1em;
-    text-align: center;;
-    margin-top: 0.5em;
-}
-
-
-
+/*****************************************************************************
+                            Parameters
+*****************************************************************************/
 
 div.ParameterLabel,
 div.ParameterValueSpan1,
@@ -103,12 +43,6 @@ div.ParameterInheritedValue {
     font-style: italic;
 }
 
-div.ParameterLastColumn {
-    margin-right: 0;
-}
-
-
-
 .ParameterDerivedCheckbox input[type="checkbox"] {
     display: none;
 }
@@ -140,42 +74,150 @@ div.ParameterLastColumn {
 
 
 
-/* Tabs */
-div.ParameterCollectionLevel4TabContainer nav div {
+/*****************************************************************************
+                            Collections
+*****************************************************************************/
+
+
+div.CollectionContainerLevel1,
+div.CollectionContainerLevel2,
+div.CollectionContainerLevel3 {
+    display: inline-block;
+    vertical-align: top;
+}
+
+
+div.CollectionContainerLevel1Label,
+div.CollectionContainerLevel2Label,
+div.CollectionContainerLevel3Label {
+    display: block;
+    font-weight: bold;
+    background-color: var(--color-red-accent);
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+    padding: 0.1em 0.1em;
+    text-align: center;;
+}
+
+div.CollectionContainerLevel1ParameterContainer {
+    border-left: 0.1em solid var(--color-red-accent);
+    border-bottom: 0.1em solid var(--color-red-accent);
+    border-right: 0.1em solid var(--color-red-accent);
+    padding: 0.1em;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+}
+
+
+/*  LEVEL 2 / 3 */
+
+div.CollectionContainerLevel2Label {
+    font-weight: bolder;
+    font-size: 1.2em;
+}
+
+div.CollectionContainerLevel3Label {
+    font-weight: bolder;
+    font-size: 1.4em;
+}
+
+div.CollectionContainerLevel2ChildContainer,
+div.CollectionContainerLevel3ChildContainer {
+    border-left: 0.1em solid var(--color-red-accent);
+    border-bottom: 0.1em solid var(--color-red-accent);
+    border-right: 0.1em solid var(--color-red-accent);
+    padding: 0.1em;
+    padding-top: 0.5em;
+}
+
+div.CollectionContainerLevel3ChildContainer {
+    background-color: var(--color-bg-elements);
+}
+
+div.CollectionContainerLevel2ParameterContainer,
+div.CollectionContainerLevel3ParameterContainer,
+div.CollectionContainerLevel4ParameterContainer {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+}
+
+div.CollectionContainerLevel2ChildContainerCollectionLabel {
+    font-weight: bold;
+    background-color: var(--color-red-accent);
+    padding: 0.1em 0.1em;
+    text-align: center;;
+    margin-top: 0.5em;
+}
+
+div.CollectionContainerLevel2
+div.CollectionContainerLevel1 {
+    display: block;
+}
+
+div.CollectionContainerLevel2
+div.CollectionContainerLevel1
+div.CollectionContainerLevel1Label {
+    border-radius: 0;
+}
+
+div.CollectionContainerLevel2
+div.CollectionContainerLevel1
+div.CollectionContainerLevel1ParameterContainer {
+    border: 0;
+}
+
+/* div.CollectionContainerLevel3ChildContainer */
+div.CollectionContainerLevel2 {
+    margin: 1em;
+}
+
+
+/*  LEVEL 4 */
+
+div.CollectionContainerLevel4 nav div {
     display: inline-block;
 }
 
-div.ParameterCollectionLevel4TabContainer nav div input {
+div.CollectionContainerLevel4 nav div input {
     display: none;
 }
 
-div.ParameterCollectionLevel4TabContainer nav div label {
+div.CollectionContainerLevel4 nav div label {
     display: inline-block;
     border-top: 0.1em solid var(--color-red-accent);
     border-left: 0.1em solid var(--color-red-accent);
     padding: 0.3em 0.5em;
     background-color: var(--color-bg-elements);
+    font-weight: bold;
 }
 
-div.ParameterCollectionLevel4TabContainer nav div input:checked ~ label {
+div.CollectionContainerLevel4 nav div input:checked ~ label {
     background-color: var(--color-red-accent);
     padding-top: 0.5em;
 }
 
-div.ParameterCollectionLevel4TabContainer nav div:last-child label {
+div.CollectionContainerLevel4 nav div:last-child label {
     border-right: 0.1em solid var(--color-red-accent);
     border-top-right-radius: 0.5em;
 }
 
-div.ParameterCollectionLevel4TabContainer nav div:first-child label {
+div.CollectionContainerLevel4 nav div:first-child label {
     border-top-left-radius: 0.5em;
 }
 
-div.ParameterCollectionTabContentContainer {
+div.CollectionContainerLevel4ChildContainer {
     border-top: 0.1em solid var(--color-red-accent);
     display: inline-block;
 }
 
 
 
+div.CollectionContainerLevel4ChildContainerTab {
+    border-left: 0.1em solid var(--color-red-accent);
+    border-bottom: 0.1em solid var(--color-red-accent);
+    border-right: 0.1em solid var(--color-red-accent);
+    padding: 0.1em;
+/*     width: 100%; */
+    background-color: var(--color-bg-elements);
+}
 

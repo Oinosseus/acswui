@@ -33,21 +33,19 @@ final class Collection extends Deriveable {
     public function getHtml(bool $hide_accessability_controls = FALSE, bool $read_only = FALSE) {
         $html = "";
 
+        $level = $this->maxChildLevels();
 
-        if ($this->maxChildLevels() == 0) {
-            $html .= $this->getHtmlLevel0($hide_accessability_controls, $read_only);
+        if ($level >= 0 && $level <= 1) {
+            $html .= $this->getContainerLevel1($hide_accessability_controls, $read_only);
 
-        } else if ($this->maxChildLevels() == 1) {
-            $html .= $this->getHtmlLevel1($hide_accessability_controls, $read_only);
+        } else if ($level == 2) {
+            $html .= $this->getContainerLevel2($hide_accessability_controls, $read_only);
 
-        } else if ($this->maxChildLevels() == 2) {
-            $html .= $this->getHtmlLevel2($hide_accessability_controls, $read_only);
+        } else if ($level == 3) {
+            $html .= $this->getContainerLevel3($hide_accessability_controls, $read_only);
 
-        } else if ($this->maxChildLevels() == 3) {
-            $html .= $this->getHtmlLevel3($hide_accessability_controls, $read_only);
-
-        } else if ($this->maxChildLevels() == 4) {
-            $html .= $this->getHtmlLevel4($hide_accessability_controls, $read_only);
+        } else if ($level == 4) {
+            $html .= $this->getContainerLevel4($hide_accessability_controls, $read_only);
 
         } else {
             \Core\Log::error("Collection with level > 4 are currently not implemented :-(");
@@ -60,104 +58,10 @@ final class Collection extends Deriveable {
 
 
 
-    private function getHtmlLevel0(bool $hide_accessability_controls, bool $read_only) {
+
+    private function getContainerLevel4(bool $hide_accessability_controls, bool $read_only) {
         $html = "";
-        $html .= "<div class=\"ParameterCollection\">";
-        $html .= "<div class=\"ParameterCollectionContainerLabel\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
-        $html .= "</div>";
-        return $html;
-    }
-
-
-
-    private function getHtmlLevel1(bool $hide_accessability_controls, bool $read_only) {
-        $html = "";
-//         if ($this->containsAccessableParameters()) {  // maybe if this is called at a low-level collection, you always want to see at least something
-            $html .= "<div class=\"ParameterCollection\">";
-            $html .= "<div class=\"ParameterCollectionContainerLabel\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
-            $html .= "<div class=\"ParameterCollectionContainer\">";
-
-            // list direct parameter children
-            $html .= "<div class=\"ParameterContainer\">";
-            foreach ($this->children() as $parameter) {
-                if (!($parameter instanceof Parameter)) continue;
-                if ($parameter->accessability() < 1) continue;
-                $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
-            }
-            $html .= "</div>";
-
-            $html .= "</div>";
-            $html .= "</div>";
-//         }
-        return $html;
-    }
-
-
-    private function getHtmlLevel2(bool $hide_accessability_controls, bool $read_only) {
-        $html = "";
-        if ($this->containsAccessableParameters()) {
-            $html .= "<div class=\"ParameterCollection\">";
-            $html .= "<div class=\"ParameterCollectionContainerLabel\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
-            $html .= "<div class=\"ParameterCollectionContainer\">";
-
-            // list direct parameter children
-            $html .= "<div class=\"ParameterContainer\">";
-            foreach ($this->children() as $parameter) {
-                if (!($parameter instanceof Parameter)) continue;
-                $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
-            }
-            $html .= "</div>";
-
-            // list collection children
-            foreach ($this->children() as $collection) {
-                if (!($collection instanceof Collection)) continue;
-                if (!$collection->containsAccessableParameters()) continue;  // hide collections with only invisible children
-                $html .= "<div class=\"ParameterCollectionSubLabel\" title=\"" . $collection->description() . "\">" . $collection->label() . "</div>";
-                $html .= "<div class=\"ParameterContainer\">";
-                foreach ($collection->children() as $parameter) {
-                    if (!($parameter instanceof Parameter)) continue;
-                    if ($parameter->accessability() < 1) continue;
-                    $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
-                }
-                $html .= "</div>";
-            }
-
-            $html .= "</div>";
-            $html .= "</div>";
-        }
-        return $html;
-    }
-
-
-    private function getHtmlLevel3(bool $hide_accessability_controls, bool $read_only) {
-        $html = "";
-        $html .= "<div class=\"ParameterCollection\">";
-
-        $html .= "<div class=\"ParameterCollectionContainerLabel\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
-        $html .= "<div class=\"ParameterCollectionContainer\">";
-        $html .= "<div class=\"ParameterContainer\">";
-        foreach ($this->children() as $parameter) {
-            if (!($parameter instanceof Parameter)) continue;
-            if ($parameter->accessability() < 1) continue;
-            $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
-        }
-        $html .= "</div>";
-
-        $html .= "<div class=\"ParameterCollectionLevel3SubContainer\">";
-        foreach ($this->children() as $collection) {
-            if (!($collection instanceof Collection)) continue;
-            $html .= $collection->getHtml($hide_accessability_controls, $read_only);
-        }
-        $html .= "</div>";
-        $html .= "</div>";
-        $html .= "</div>";
-        return $html;
-    }
-
-
-    private function getHtmlLevel4(bool $hide_accessability_controls, bool $read_only) {
-        $html = "";
-        $html .= "<div class=\"ParameterCollectionLevel4TabContainer\">";
+        $html .= "<div class=\"CollectionContainerLevel4\">";
 
         // tabs
         $html .= "<nav>";
@@ -179,7 +83,7 @@ final class Collection extends Deriveable {
         $html .= "</nav>";
 
         // content
-        $html .= "<div class=\"ParameterCollectionTabContentContainer\" id=\"ParameterCollectionTabContentContainer" . $this->key() . "\">";
+        $html .= "<div class=\"CollectionContainerLevel4ChildContainer\" id=\"CollectionContainerLevel4ChildContainer" . $this->key() . "\">";
         $display = "inline-block;";
         foreach ($this->children() as $collection) {
 
@@ -188,8 +92,9 @@ final class Collection extends Deriveable {
             if (!($collection instanceof Collection)) continue;
             if (!$collection->containsAccessableParameters()) continue;
 
-            $html .= "<div class=\"ParameterCollectionContainer\" id=\"ParameterCollectionTabContainer" . $collection->key() . "\" style=\"display:$display\">";
+            $html .= "<div class=\"CollectionContainerLevel4ChildContainerTab\" id=\"CollectionContainerLevel4ChildContainerTab" . $collection->key() . "\" style=\"display:$display\">";
 
+            // direct parameters
             $html_childparams = "";
             foreach ($collection->children() as $parameter) {
                 if (!($parameter instanceof Parameter)) continue;
@@ -197,32 +102,102 @@ final class Collection extends Deriveable {
                 $html_childparams .= $collection->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
             }
             if ($html_childparams != "") {
-                $html .= "<div class=\"ParameterContainer\">";
+                $html .= "<div class=\"CollectionContainerLevel4ParameterContainer\">";
                 $html .= $html_childparams;
                 $html .= "</div>";
             }
 
-            $html .= "<div class=\"ParameterCollectionLevel3SubContainer\">";
+            // sub collections
             foreach ($collection->children() as $collection) {
                 if (!($collection instanceof Collection)) continue;
-                $html .= $collection->getHtml($hide_accessability_controls, $read_only);
+                $html .= $collection->getContainerLevel2($hide_accessability_controls, $read_only);
             }
-            $html .= "</div>";
-            $html .= "</div>";
 
+            $html .= "</div>";
             $display = "none";
+        }
+
+        $html .= "</div>";
+        $html .= "</div>";
+        return $html;
+    }
+
+
+    private function getContainerLevel3(bool $hide_accessability_controls, bool $read_only) {
+        $html = "";
+        $html .= "<div class=\"CollectionContainerLevel3\">";
+
+        $html .= "<div class=\"CollectionContainerLevel3Label\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
+        $html .= "<div class=\"CollectionContainerLevel3ChildContainer\">";
+
+        $html .= "<div class=\"CollectionContainerLevel3ParameterContainer\">";
+        foreach ($this->children() as $parameter) {
+            if (!($parameter instanceof Parameter)) continue;
+            if ($parameter->accessability() < 1) continue;
+            $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
         }
         $html .= "</div>";
 
-        // collection contents
         foreach ($this->children() as $collection) {
             if (!($collection instanceof Collection)) continue;
+            $html .= $collection->getContainerLevel2($hide_accessability_controls, $read_only);
         }
 
+        $html .= "</div>";
+        $html .= "</div>";
+        return $html;
+    }
+
+
+    private function getContainerLevel2(bool $hide_accessability_controls, bool $read_only) {
+        $html = "";
+        if ($this->containsAccessableParameters()) {
+            $html .= "<div class=\"CollectionContainerLevel2\">";
+            $html .= "<div class=\"CollectionContainerLevel2Label\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
+            $html .= "<div class=\"CollectionContainerLevel2ChildContainer\">";
+
+            // list direct parameter children
+            $html .= "<div class=\"CollectionContainerLevel2ParameterContainer\">";
+            foreach ($this->children() as $parameter) {
+                if (!($parameter instanceof Parameter)) continue;
+                if ($parameter->accessability() < 1) continue;
+                $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
+            }
+            $html .= "</div>";
+
+            // list collection children
+            foreach ($this->children() as $collection) {
+                if (!($collection instanceof Collection)) continue;
+                if (!$collection->containsAccessableParameters()) continue;  // hide collections with only invisible children
+                $html .= $collection->getContainerLevel1($hide_accessability_controls, $read_only);
+            }
+
+            $html .= "</div>";
+            $html .= "</div>";
+        }
+        return $html;
+    }
+
+
+
+    private function getContainerLevel1(bool $hide_accessability_controls, bool $read_only) {
+        $html = "";
+        $html .= "<div class=\"CollectionContainerLevel1\">";
+        $html .= "<div class=\"CollectionContainerLevel1Label\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
+
+        // list direct parameter children
+        $html .= "<div class=\"CollectionContainerLevel1ParameterContainer\">";
+        foreach ($this->children() as $parameter) {
+            if (!($parameter instanceof Parameter)) continue;
+            if ($parameter->accessability() < 1) continue;
+            $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
+        }
+        $html .= "</div>";
 
         $html .= "</div>";
         return $html;
     }
+
 
 
     private function getHtmlParameter(Parameter $param, bool $hide_accessability_controls, bool $read_only = FALSE) {
