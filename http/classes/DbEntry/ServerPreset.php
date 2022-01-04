@@ -108,15 +108,26 @@ class ServerPreset extends DbEntry {
             } else {
                 $this->ParameterCollection = new \Parameter\Collection(NULL, NULL, "Root", _("Root"), _("Collection of server preset settings"));
 
-                $p = new \Parameter\ParamString(NULL, $this->ParameterCollection, "PresetName", _("Name"), _("Name of the preset"), "", "");
+
+                // ------------------------------------------------------------
+                //                    General Preset Settings
+                // ------------------------------------------------------------
+
+                $coll_general = new \Parameter\Collection(NULL, $this->ParameterCollection, "General", _("General"), _("General settings for the preset"));
+                $p = new \Parameter\ParamString(NULL, $coll_general, "PresetName", _("Name"), _("Name of the preset"), "", "");
+
+
+
+                // ------------------------------------------------------------
+                //                    AcServer Settings
+                // ------------------------------------------------------------
+
 
                 $coll_acserver = new \Parameter\Collection(NULL, $this->ParameterCollection, "AcServer", _("AC Server"), _("Assetto Corsa Server Sesstings"));
-                new \Parameter\ParamString(NULL, $coll_acserver, "DebugTest", _("Testing"), _("Testing"), "", "");
 
 
-                // ------------------------------------------------------------
-                //                    Session Settings
-                // ------------------------------------------------------------
+                ////////////////////
+                // Session Settings
 
                 $coll_group = new \Parameter\Collection(NULL, $coll_acserver, "AcServerSessions", _("Sessions"), _("Session Settings"));
 
@@ -168,9 +179,8 @@ class ServerPreset extends DbEntry {
                 $p->setValue(1);
 
 
-                // ------------------------------------------------------------
-                //                    Realism Settings
-                // ------------------------------------------------------------
+                ////////////////////
+                // Realism Settings
 
                 $coll_group = new \Parameter\Collection(NULL, $coll_acserver, "AcServerRealism", _("Realism"), _("Realism Settings"));
 
