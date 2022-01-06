@@ -14,11 +14,11 @@ class Z_About extends \core\HtmlContent {
         $html .= "<h1>ACswui</h1>";
         $html .= "<p>The acronym 'ACswui' stands for Assetto Corsa Server Web User Interface.</p>";
         $html .= "<p>The letters 'AC' are written in capitals intentionally. ";
-        $html .= "Since <a href=\"https://www.assettocorsa.it\">Assetto Corsa</a> is THE greatest racining simulation in the current decade (at least in my humble oppinion),
-                  the capital latters shall show my respect to <a href=\"http://www.kunos-simulazioni.com\">KUNOS Simulationi</a>.
+        $html .= "Since <a href=\"https://www.assettocorsa.it\">Assetto Corsa</a> is THE greatest racing simulator in the current decade (at least in my humble oppinion),
+                  the capital letters shall show my respect to <a href=\"http://www.kunos-simulazioni.com\">KUNOS Simulationi</a>.
                   The remaining 'swui' is just a user interface around the simulation.
                   </p>";
-        $html .= "<p>It must be said, that the ACswui system stands in no legal conjunction with KUNOZ Simulationi.</p>";
+        $html .= "<p>It must be said, that the ACswui system stands in no legal conjunction with KUNOZ Simulazioni.</p>";
 
 
         $html .= "<h1>Third Party Software</h1>";
@@ -28,10 +28,21 @@ class Z_About extends \core\HtmlContent {
                   it makes sense to make use of these if applicable.
                   </p>";
 
+        // php-steam-openid
         $html .= "<h2>php-steam-openid</h2>";
         $html .= "<p>This library provides an interface to make use of Steam as Open-ID provider for user login.</p>";
         $html .= "<p>Source: <a href=\"https://github.com/fisuku/php-steam-openid\">github</a><br>
-                  License: MIT License, see submodules source directory for a copy oif the license
+                  License: MIT License, see submodules source directory for a copy of the license
+                  </p>";
+
+        // real penalty
+        $html .= "<h2>Real Penalty</h2>";
+        $html .= "<p>A UDP plugin for the assetto corsa server, created by <a href=\"https://www.patreon.com/DavideBolognesi/posts\">Davide Bolognesi</a>.
+                  It helps to ensure fair racing by monitoring drivers behavior and automatially apply penalties (like drivetru).
+                  </p>";
+        $html .= "<p>The actually Real Penalty software is not integrated into ACswui.
+                  You have to procure it separately.
+                  But ACswui is prepared to configure and operate the Real Penalty plugin.
                   </p>";
 
 
