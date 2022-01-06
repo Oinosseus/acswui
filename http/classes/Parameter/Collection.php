@@ -74,7 +74,7 @@ final class Collection extends Deriveable {
             $id = "ParameterCollectionTabLabel$key";
             $name = "ParameterCollectionTabRadios" . $this->key();
             $html .= "<input type=\"radio\" id=\"$id\" name=\"$name\" $checked/>";
-            $html .= "<label for=\"$id\" onclick=\"toggleParameterCollectionTabVisibility('" . $this->key() . "', '$key')\">";
+            $html .= "<label for=\"$id\" onmouseup=\"toggleParameterCollectionTabVisibility('" . $this->key() . "', '$key')\">";
             $html .= $collection->label();
             $html .= "</label>";
             $checked = "";
@@ -209,9 +209,12 @@ final class Collection extends Deriveable {
         // key snake for ID and Name attributes
         $key = $param->key();
 
+        $class_param_inherited = ($param->inheritValue()) ? "ParameterIsInherited" : "";
+
+
         // parameter label
         $param_val = print_r($param->value(), TRUE);
-        $html .= "<div class=\"ParameterLabel\" title=\"$key=$param_val\">" . $param->label() . "</div>";
+        $html .= "<div class=\"ParameterLabel $class_param_inherited\" title=\"$key=$param_val\" id=\"ParameterContainerLabel$key\">" . $param->label() . "</div>";
 
         // value
         $param_value_span = 1;
@@ -228,19 +231,19 @@ final class Collection extends Deriveable {
             }
             if ($param->base() !== NULL) {  // inherited value
                 $visible = ($param->inheritValue()) ? "" : "style=\"display: none;\"";
-                $html .= "<div class=\"ParameterInheritedValue\" id=\"ParameterValueInherited_$key\" title=\"" . $param->description() . "\" $visible>" . $param->base()->valueLabel() . "</div>";
+                $html .= "<div class=\"ParameterInheritedValue ParameterIsInherited\" id=\"ParameterValueInherited_$key\" title=\"" . $param->description() . "\" $visible>" . $param->base()->valueLabel() . "</div>";
             }
         }
         $html .= "</div>";
 
         // unit
         if ($param->unit() !== "") {
-            $html .= "<div class=\"ParameterUnit\">" . $param->unit() . "</div>";
+            $html .= "<div class=\"ParameterUnit $class_param_inherited\" id=\"ParameterContainerUnit$key\">" . $param->unit() . "</div>";
         }
 
         // inheritance
         if ($param->base() !== NULL && $param->accessability() == 2) {
-            $html .= "<div class=\"ParameterDerivedCheckbox\">";
+            $html .= "<div class=\"ParameterDerivedCheckbox $class_param_inherited\" id=\"ParameterContainerDerivedCheckbox$key\">";
             $checked = $param->inheritValue() ? "checked" : "";
             $disabled = ($read_only) ? "disabled" : "";
             $html .= "<input type=\"checkbox\" id=\"ParameterInheritValueCheckbox_$key\" name=\"ParameterInheritValueCheckbox_$key\" $checked onclick=\"toggleParameterInheritance('$key')\" $disabled>";

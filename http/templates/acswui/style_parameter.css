@@ -81,6 +81,10 @@ div.ParameterInheritedValue {
     display: block;
 }
 
+div.ParameterIsInherited {
+    color: var(--color-disabled);
+}
+
 
 /*****************************************************************************
                             Collections

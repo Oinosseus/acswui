@@ -281,8 +281,8 @@ class ServerSlot {
         $id = $this->id();
 
         // configure real penalty
-        $this->writeRpAcSettings();
-        $this->writeRpPenaltySettings();
+        $this->writeRpAcSettings($preset);
+        $this->writeRpPenaltySettings($preset);
         $this->writeRpSettings();
 
         // configure ACswui plugin
@@ -576,8 +576,9 @@ class ServerSlot {
 
 
     //! create ac_settings.ini for real penalty
-    private function writeRpAcSettings() {
+    private function writeRpAcSettings(\DbEntry\ServerPreset $preset) {
         $pc = $this->parameterCollection();
+        $ppc = $preset->parameterCollection();
         $file_path = \Core\Config::AbsPathData . "/real_penalty/" . $this->id() . "/ac_settings.ini";
         $f = fopen($file_path, 'w');
         if ($f === FALSE) {
@@ -588,11 +589,11 @@ class ServerSlot {
         // section General
         fwrite($f, "[General]\n");
         fwrite($f, "FIRST_CHECK_TIME = " . $pc->child("RPGeneralFCT")->value() . "\n");
-        fwrite($f, "COCKPIT_CAMERA = false\n");
+        fwrite($f, "COCKPIT_CAMERA = " . (($ppc->child("RpAcsGeneralCockpitCam")->value()) ? 1:0) . "\n");
         fwrite($f, "TRACK_CHECKSUM = false\n");  //! @todo Copy track models and KN5 files to path-srvpkg to use this feature
-        fwrite($f, "WEATHER_CHECKSUM = true\n");
+        fwrite($f, "WEATHER_CHECKSUM = " . (($ppc->child("RpAcsGeneralWeatherChecksum")->value()) ? 1:0) . "\n");
         fwrite($f, "CAR_CHECKSUM = false\n");  //! @todo copy data.acd and collider.kn5 to path-srvpkg to use this feature
-        fwrite($f, "qualify_time = _\n");
+        fwrite($f, "qualify_time = _\n");  //! @todo I do not understand this setting, yet. This need to be understood berfore implemented.
 
         // section App
         fwrite($f, "\n[App]\n");
@@ -601,68 +602,70 @@ class ServerSlot {
         // section Sol
         fwrite($f, "\n[Sol]\n");
         fwrite($f, "PERFORMACE_MODE_ALLOWED = true\n");  // intentionally not needed but current revision 4.01.07 throws an error when this is not present
-        fwrite($f, "MANDATORY = false\n");
+        fwrite($f, "MANDATORY = " . (($ppc->child("RpAcsSolMandatory")->value()) ? 1:0) . "\n");
         fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RPGeneralCF")->value() . "\n");
 
         // section Custom_Shaders_Patch
         fwrite($f, "\n[Custom_Shaders_Patch]\n");
-        fwrite($f, "MANDATORY = false\n");
+        fwrite($f, "MANDATORY = " . (($ppc->child("RpAcsCspMandatory")->value()) ? 1:0) . "\n");
         fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RPGeneralCF")->value() . "\n");
 
         // section Safety_Car
         fwrite($f, "\n[Safety_Car]\n");
-        fwrite($f, "CAR_MODEL = XXXXX\n");
-        fwrite($f, "RACE_START_BEHIND_SC = false\n");
-        fwrite($f, "NORMALIZED_LIGHT_OFF_POSITION = 0.5\n");
-        fwrite($f, "NORMALIZED_START_POSITION = 0.95\n");
-        fwrite($f, "GREEN_LIGHT_DELAY = 2.5\n");
+        fwrite($f, "CAR_MODEL = " . $ppc->child("RpAcsScCarModel")->value() . "\n");
+        fwrite($f, "RACE_START_BEHIND_SC = " . (($ppc->child("RpAcsScStartBehind")->value()) ? 1:0) . "\n");
+        fwrite($f, "NORMALIZED_LIGHT_OFF_POSITION = " . $ppc->child("RpAcsScNormLightOff")->value() . "\n");
+        fwrite($f, "NORMALIZED_START_POSITION = " . $ppc->child("RpAcsScNormStart")->value() . "\n");
+        fwrite($f, "GREEN_LIGHT_DELAY = " . $ppc->child("RpAcsScGreenDelay")->value() . "\n");
 
         // section No_Penalty
         fwrite($f, "\n[No_Penalty]\n");
-        fwrite($f, "GUIDs =\n");
-        fwrite($f, "Cars =\n");
+        fwrite($f, "GUIDs = " . $ppc->child("RpAcsNpGuids")->value() . "\n");
+        fwrite($f, "Cars = " . $ppc->child("RpAcsNpCars")->value() . "\n");
 
         // section Admin
         fwrite($f, "\n[Admin]\n");
-        fwrite($f, "GUIDs =\n");
+        fwrite($f, "GUIDs = " . $ppc->child("RPAcsAdminGuids")->value() . "\n");
 
         // section Helicorsa
         fwrite($f, "\n[Helicorsa]\n");
-        fwrite($f, "MANDATORY = false\n");
-        fwrite($f, "DISTANCE_THRESHOLD = 30.0\n");
-        fwrite($f, "WORLD_ZOOM = 5.0\n");
-        fwrite($f, "OPACITY_THRESHOLD = 8.0\n");
-        fwrite($f, "FRONT_FADE_OUT_ARC = 90.0\n");
-        fwrite($f, "FRONT_FADE_ANGLE = 10.0\n");
-        fwrite($f, "CAR_LENGHT = 4.3\n");
-        fwrite($f, "CAR_WIDTH = 1.8\n");
+        fwrite($f, "MANDATORY = " . (($ppc->child("RPAcsHcMandatory")->value()) ? 1:0) . "\n");
+        fwrite($f, "DISTANCE_THRESHOLD = " . $ppc->child("RPAcsHcDistThld")->value() . "\n");
+        fwrite($f, "WORLD_ZOOM = " . $ppc->child("RPAcsHcWorldZoom")->value() . "\n");
+        fwrite($f, "OPACITY_THRESHOLD = " . $ppc->child("RPAcsHcOpaThld")->value() . "\n");
+        fwrite($f, "FRONT_FADE_OUT_ARC = " . $ppc->child("RPAcsHcFrontFadeoutArc")->value() . "\n");
+        fwrite($f, "FRONT_FADE_ANGLE = " . $ppc->child("RPAcsHcFrontFadeAngle")->value() . "\n");
+        fwrite($f, "CAR_LENGHT = " . $ppc->child("RPAcsHcCarLength")->value() . "\n");
+        fwrite($f, "CAR_WIDTH = " . $ppc->child("RPAcsHcCarWidth")->value() . "\n");
 
         // section Swap
         fwrite($f, "\n[Swap]\n");
-        fwrite($f, "min_time = _\n");
-        fwrite($f, "min_count = _\n");
-        fwrite($f, "enable_penalty = false\n");
-        fwrite($f, "penalty_time = 5\n");
-        fwrite($f, "penalty_during_race = false\n");
-        fwrite($f, "convert_time_penalty = false\n");
-        fwrite($f, "convert_race_penalty = false\n");
-        fwrite($f, "disqualify_time = _\n");
-        fwrite($f, "count_only_driver_change = false\n");
+        fwrite($f, "enable = " . (($ppc->child("RPAcsSwapEna")->value()) ? 1:0) . "\n");
+        fwrite($f, "min_time = " . $ppc->child("RpAcsSwapMinTime")->value() . "\n");
+        fwrite($f, "min_count = " . $ppc->child("RpAcsSwapMinCount")->value() . "\n");
+        fwrite($f, "enable_penalty = " . (($ppc->child("RPAcsSwapPenEna")->value()) ? 1:0) . "\n");
+        fwrite($f, "penalty_time = " . $ppc->child("RpAcsSwapPenTime")->value() . "\n");
+        fwrite($f, "penalty_during_race = " . (($ppc->child("RPAcsSwapPenDurRace")->value()) ? 1:0) . "\n");
+        fwrite($f, "convert_time_penalty = " . (($ppc->child("RPAcsSwapConvertTimePen")->value()) ? 1:0) . "\n");
+        fwrite($f, "convert_race_penalty = " . (($ppc->child("RPAcsSwapConvertRacePen")->value()) ? 1:0) . "\n");
+        fwrite($f, "disqualify_time = " . $ppc->child("RpAcsSwapDsqTime")->value() . "\n");
+        fwrite($f, "count_only_driver_change = " . (($ppc->child("RPAcsSwapCntOnlyDrvChnge")->value()) ? 1:0) . "\n");
 
         // section Teleport
         fwrite($f, "\n[Teleport]\n");
-        fwrite($f, "max_distance = 10\n");
-        fwrite($f, "practice_enable = true\n");
-        fwrite($f, "qualify_enable = true\n");
-        fwrite($f, "race_enable = true\n");
+        fwrite($f, "max_distance = " . $ppc->child("RPAcsTeleportMaxDist")->value() . "\n");
+        fwrite($f, "practice_enable = " . (($ppc->child("RPAcsTeleportEnaPractice")->value()) ? 1:0) . "\n");
+        fwrite($f, "qualify_enable = " . (($ppc->child("RPAcsTeleportEnaQualify")->value()) ? 1:0) . "\n");
+        fwrite($f, "race_enable = " . (($ppc->child("RPAcsTeleportEnaRace")->value()) ? 1:0) . "\n");
 
         fclose($f);
     }
 
 
     //! create penalty_settings.ini for real penalty
-    private function writeRpPenaltySettings() {
-        $pc = $this->parameterCollection();
+     private function writeRpPenaltySettings(\DbEntry\ServerPreset $preset) {
+        $ppc = $this->parameterCollection();
+        $ppc = $preset->parameterCollection();
         $file_path = \Core\Config::AbsPathData . "/real_penalty/" . $this->id() . "/penalty_settings.ini";
         $f = fopen($file_path, 'w');
         if ($f === FALSE) {
@@ -672,69 +675,69 @@ class ServerSlot {
 
         // section General
         fwrite($f, "[General]\n");
-        fwrite($f, "ENABLE_CUTTING_PENALTIES = true\n");
-        fwrite($f, "ENABLE_SPEEDING_PENALTIES = true\n");
-        fwrite($f, "ENABLE_CROSSING_PENALTIES = true\n");
-        fwrite($f, "ENABLE_DRS_PENALTIES = true\n");
-        fwrite($f, "LAPS_TO_TAKE_PENALTY = 2\n");
-        fwrite($f, "PENALTY_SECONDS = 0\n");
-        fwrite($f, "LAST_TIME_WITHOUT_PENALTY = 360\n");
-        fwrite($f, "LAST_LAPS_WITHOUT_PENALTY = 1\n");
+        fwrite($f, "ENABLE_CUTTING_PENALTIES = " . (($ppc->child("RpPsGeneralCutting")->value()) ? 1:0) . "\n");
+        fwrite($f, "ENABLE_SPEEDING_PENALTIES = " . (($ppc->child("RpPsGeneralSpeeding")->value()) ? 1:0) . "\n");
+        fwrite($f, "ENABLE_CROSSING_PENALTIES = " . (($ppc->child("RpPsGeneralCrossing")->value()) ? 1:0) . "\n");
+        fwrite($f, "ENABLE_DRS_PENALTIES = " . (($ppc->child("RpPsGeneralDrs")->value()) ? 1:0) . "\n");
+        fwrite($f, "LAPS_TO_TAKE_PENALTY = " . (($ppc->child("RpPsGeneralLapsToTake")->value()) ? 1:0) . "\n");
+        fwrite($f, "PENALTY_SECONDS = " . (($ppc->child("RpPsGeneralPenSecs")->value()) ? 1:0) . "\n");
+        fwrite($f, "LAST_TIME_WITHOUT_PENALTY = " . (($ppc->child("RpPsGenerallastTimeNPen")->value()) ? 1:0) . "\n");
+        fwrite($f, "LAST_LAPS_WITHOUT_PENALTY = " . (($ppc->child("RpPsGenerallastLapsNPen")->value()) ? 1:0) . "\n");
 
         // section Cutting
         fwrite($f, "\n[Cutting]\n");
-        fwrite($f, "ENABLED_DURING_SAFETY_CAR = false\n");
-        fwrite($f, "TOTAL_CUT_WARNINGS = 3\n");
-        fwrite($f, "ENABLE_TYRES_DIRT_LEVEL = false\n");
-        fwrite($f, "WHEELS_OUT = 2\n");
-        fwrite($f, "MIN_SPEED = 40\n");
-        fwrite($f, "SECONDS_BETWEEN_CUTS = 5\n");
-        fwrite($f, "MAX_CUT_TIME = 3\n");
-        fwrite($f, "MIN_SLOW_DOWN_RATIO = 0.9\n");
-        fwrite($f, "QUAL_SLOW_DOWN_SPEED = 40\n");
-        fwrite($f, "QUALIFY_MAX_SECTOR_OUT_SPEED = 150\n");
-        fwrite($f, "QUALIFY_SLOW_DOWN_SPEED_RATIO = 0.99\n");
-        fwrite($f, "POST_CUTTING_TIME = 1\n");
-        fwrite($f, "PENALTY_TYPE = dt\n");
+        fwrite($f, "ENABLED_DURING_SAFETY_CAR = " . (($ppc->child("RpPsCuttingEnaDurSc")->value()) ? 1:0) . "\n");
+        fwrite($f, "TOTAL_CUT_WARNINGS = " . $ppc->child("RpPsCuttingTotCtWarn")->value() . "\n");
+        fwrite($f, "ENABLE_TYRES_DIRT_LEVEL = " . (($ppc->child("RpPsCuttingTyreDirt")->value()) ? 1:0) . "\n");
+        fwrite($f, "WHEELS_OUT = " . $ppc->child("AcServerTyresOut")->value() . "\n");
+        fwrite($f, "MIN_SPEED = " . $ppc->child("RpPsCuttingMinSpeed")->value() . "\n");
+        fwrite($f, "SECONDS_BETWEEN_CUTS = " . $ppc->child("RpPsCuttingSecsBetween")->value() . "\n");
+        fwrite($f, "MAX_CUT_TIME = " . $ppc->child("RpPsCuttingMaxTime")->value() . "\n");
+        fwrite($f, "MIN_SLOW_DOWN_RATIO = " . $ppc->child("RpPsCuttingMinSlowdownRatio")->value() . "\n");
+        fwrite($f, "QUAL_SLOW_DOWN_SPEED = " . $ppc->child("RpPsCuttingQualSlowdownSpeed")->value() . "\n");
+        fwrite($f, "QUALIFY_MAX_SECTOR_OUT_SPEED = " . $ppc->child("RpPsCuttingQualMaxSecOutSpeed")->value() . "\n");
+        fwrite($f, "QUALIFY_SLOW_DOWN_SPEED_RATIO = " . $ppc->child("RpPsCuttingQualSlowdownRatio")->value() . "\n");
+        fwrite($f, "POST_CUTTING_TIME = " . $ppc->child("RpPsCuttingPostCtTime")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
 
         // section Speeding
         fwrite($f, "\n[Speeding]\n");
-        fwrite($f, "PIT_LANE_SPEED = 82\n");
-        fwrite($f, "PENALTY_TYPE_0 = dt\n");
-        fwrite($f, "SPEED_LIMIT_PENALTY_0 = 100\n");
-        fwrite($f, "PENALTY_TYPE_1 = sg10\n");
-        fwrite($f, "SPEED_LIMIT_PENALTY_1 = 120\n");
-        fwrite($f, "PENALTY_TYPE_2 = sg20\n");
-        fwrite($f, "SPEED_LIMIT_PENALTY_2 = 140\n");
+        fwrite($f, "PIT_LANE_SPEED = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_0 = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_0 = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_1 = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_1 = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_2 = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_2 = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
 
         // section Crossing
         fwrite($f, "\n[Crossing]\n");
-        fwrite($f, "PENALTY_TYPE = dt\n");
+        fwrite($f, "PENALTY_TYPE = " . $ppc->child("RpPsCrossingPenType")->value() . "\n");
 
         // section Jump_Start
         fwrite($f, "\n[Jump_Start]\n");
-        fwrite($f, "PENALTY_TYPE_0 = dt\n");
-        fwrite($f, "SPEED_LIMIT_PENALTY_0 = 50\n");
-        fwrite($f, "PENALTY_TYPE_1 = sg10\n");
-        fwrite($f, "SPEED_LIMIT_PENALTY_1 = 200\n");
-        fwrite($f, "PENALTY_TYPE_2 = dsq\n");
-        fwrite($f, "SPEED_LIMIT_PENALTY_2 = 9999\n");
+        fwrite($f, "PENALTY_TYPE_0 = " . $ppc->child("RpPsJumpStartPenType0")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_0 = " . $ppc->child("RpPsJumpStartSpeedLimit0")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_1 = " . $ppc->child("RpPsJumpStartPenType1")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_1 = " . $ppc->child("RpPsJumpStartSpeedLimit1")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_2 = " . $ppc->child("RpPsJumpStartPenType2")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_2 = " . $ppc->child("RpPsJumpStartSpeedLimit2")->value() . "\n");
 
         // section Drs
         fwrite($f, "\n[Drs]\n");
-        fwrite($f, "PENALTY_TYPE = dt\n");
-        fwrite($f, "GAP = 1.0\n");
-        fwrite($f, "ENABLED_AFTER_LAPS = 0\n");
-        fwrite($f, "MIN_SPEED = 50\n");
-        fwrite($f, "BONUS_TIME = 0.8\n");
-        fwrite($f, "MAX_ILLEGAL_USES = 2\n");
-        fwrite($f, "ENABLED_DURING_SAFETY_CAR = true\n");
-        fwrite($f, "OMIT_CARS =\n");
+        fwrite($f, "PENALTY_TYPE = " . $ppc->child("RpPsDRSPenType")->value() . "\n");
+        fwrite($f, "GAP = " . $ppc->child("RpPsDRSGap")->value() . "\n");
+        fwrite($f, "ENABLED_AFTER_LAPS = " . $ppc->child("RpPsDRSEnaAfterLaps")->value() . "\n");
+        fwrite($f, "MIN_SPEED = " . $ppc->child("RpPsDRSMinSpeed")->value() . "\n");
+        fwrite($f, "BONUS_TIME = " . $ppc->child("RpPsDRSBonusTime")->value() . "\n");
+        fwrite($f, "MAX_ILLEGAL_USES = " . $ppc->child("RpPsJumpStartSpeedLimit2")->value() . "\n");
+        fwrite($f, "ENABLED_DURING_SAFETY_CAR = " . (($ppc->child("RpPsDRSEnaDurSc")->value()) ? 1:0) . "\n");
+        fwrite($f, "OMIT_CARS = " . $ppc->child("RpPsDRSOmitCars")->value() . "\n");
 
         // section Blue_Flag
         fwrite($f, "\n[Blue_Flag]\n");
-        fwrite($f, "QUALIFY_TIME_THRESHOLD = 2.5\n");
-        fwrite($f, "RACE_TIME_THRESHOLD = 2.5\n");
+        fwrite($f, "QUALIFY_TIME_THRESHOLD = " . $ppc->child("RpPsBfQual")->value() . "\n");
+        fwrite($f, "RACE_TIME_THRESHOLD = " . $ppc->child("RpPsBfRace")->value() . "\n");
 
 
         fclose($f);

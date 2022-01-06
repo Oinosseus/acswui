@@ -2,10 +2,10 @@
 
 namespace Parameter;
 
-final class ParamInt extends Parameter {
+class ParamInt extends Parameter {
 
-    private $MinVal = NULL;
-    private $MaxVal = NULL;
+    protected $MinVal = NULL;
+    protected $MaxVal = NULL;
 
 
     final protected function cloneXtraAttributes($base) {
@@ -14,7 +14,7 @@ final class ParamInt extends Parameter {
     }
 
 
-    final public function getHtmlInput() {
+    public function getHtmlInput() {
         $html = "";
 
         $key = $this->key();
@@ -28,7 +28,7 @@ final class ParamInt extends Parameter {
     }
 
 
-    final public function formatValue($value) {
+    public function formatValue($value) {
         return "$value";
     }
 

@@ -8,22 +8,19 @@ namespace Parameter;
  */
 final class ParamSpecialTyres extends ParamEnumMulti {
 
-    // to add tyres, just enhance this array
-    const LegalTyres = array(
-                             'H'=>"Hard",
-                             'I'=>"Intermediate",
-                             'M'=>"Medium",
-                             'S'=>"Soft",
-                             'ST'=>"Street",
-                             'V'=>"Vintage",
-                            );
-
-
     public function __construct(?Deriveable $base, ?Collection $parent, string $key = "", string $label = "", string $description = "") {
         parent::__construct($base, $parent, $key, $label, $description);
 
-        foreach (ParamSpecialTyres::LegalTyres as $value=>$label)
-            new EnumItem($this, $value, $label);
+        // to add tyres, just enhance this array
+        new EnumItem($this, 'H',  "(H) " .  _("Hard"));
+        new EnumItem($this, 'I',  "(I) " .  _("Intermediate"));
+        new EnumItem($this, 'M',  "(M) " .  _("Medium"));
+        new EnumItem($this, 'S',  "(S) " .  _("Soft"));
+        new EnumItem($this, 'ST', "(ST) " . _("Street"));
+        new EnumItem($this, 'V',  "(V) " .  _("Vintage"));
     }
 
+
+    final protected function cloneXtraAttributes($base) {
+    }
 }

@@ -356,13 +356,225 @@ class ServerPreset extends DbEntry {
 
                 $coll_rps = new \Parameter\Collection(NULL, $this->ParameterCollection, "RP", _("Real Penalty"), _("Real Penalty Plugin Sesstings"));
 
-//                 $coll_group = new \Parameter\Collection(NULL, $this->ParameterCollection, "RP", _("Real Penalty"), _("Settings for the Real Penalty plugin"));
 
-                // driving aids
-                $coll = new \Parameter\Collection(NULL, $coll_rps, "FooBarBaz", _("Driving Aids"), _("Allowance of systems that support drivability"));
-                $p = new \Parameter\ParamInt(NULL, $coll, "TyresOut", _("Allowed Tyres Out"), _("Amount of tyres that are allowed to cross the driving line"), "", 2);
+                //////////////
+                // AcSettings
+
+                $coll_group = new \Parameter\Collection(NULL, $coll_rps, "RpAcs", _("AC Settings"), "");
+
+                // General
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsGeneral", _("General"), _(""));
+                $p = new \Parameter\ParamBool(NULL, $coll, "RpAcsGeneralCockpitCam", _("Cockpit Camera"), "Set to true for mandatory cockpit visual for all drivers.", "", FALSE);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RpAcsGeneralWeatherChecksum", _("Weather Checksum"), "Set to true for mandatory cockpit visual for all drivers.", "", FALSE);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RpAcsSolMandatory", _("SOL Mandatory"), "Set to true if the event is with mod sol \"day to night transition\"", "", FALSE);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RpAcsCspMandatory", _("CSP Mandatory"), "Set if you want that all drivers need the Custom Shaders Patch (version 0.1.46 or newer) to diver on the server.", "", FALSE);
+
+                // Safety Car
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsSc", _("Safety Car"), _(""));
+                $p = new \Parameter\ParamString(NULL, $coll, "RpAcsScCarModel", _("Car Model"), _("Car model of safety car (folder name in assettocorsa/content/cars)"), "", "");
+                $p = new \Parameter\ParamBool(NULL, $coll, "RpAcsScStartBehind", _("Sart Behind SC"), "Rolling start. Set to true if race starts afer the first lap beheind Safety Car (it works with or without a real Safety Car on the server.", "", FALSE);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RpAcsScNormLightOff", _("Normalized Light Off Position"), _("Rolling start: normalized position (rance 0-1 - 0 = start of first lap, 1 = end of first lap) of the first driver during rolling start when the app switchs off the SC signal."), "", 0.5);
                 $p->setMin(0);
-                $p->setMax(4);
+                $p->setMax(10);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RpAcsScNormStart", _("Normalized Start Position"), _("Rolling start: normalized position (racege 0 - 1.xx - 0 = start of first lap, 1 = end of first lap, >1 during second lap) of the first driver during rolling start when the app switchs on the red signal\nSTART_NORMALIZED_POSITION must be greater than LIGHT_OFF_NORMALIZED_POSITION"), "", 0.95);
+                $p->setMin(0);
+                $p->setMax(10);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RpAcsScGreenDelay", _("Green Light Delay"), _("Rolling start: delay of the green light after red signal (seconds). Default 2.5"), "", 2.5);
+                $p->setMin(0);
+                $p->setMax(60);
+
+                // No Penalty
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsNp", _("No Penalty"), _(""));
+                $p = new \Parameter\ParamString(NULL, $coll, "RpAcsNpGuids", _("GUIDs"), _("List of the Steam GUIDs (seperated by a semicolon) that can connect to the server without the app and sol (for example \"Race Direction\" or for \"Live\") "), "", "");
+                $p = new \Parameter\ParamString(NULL, $coll, "RpAcsNpCars", _("Cars"), _("List of car models (seperated by a semicolon) wihtout penalties and checks.\nExample: Cars=car_name1;car_name2,car_name3"), "");
+
+                // Admin
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsAdmin", _("Admin"), _(""));
+                $p = new \Parameter\ParamString(NULL, $coll, "RPAcsAdminGuids", _("GUIDs"), _("list of the Steam GUIDs. This drivers can send \"commands\" to the server via chat"), "", "");
+
+                // Helicorsa
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsHc", _("Helicorsa"), _(""));
+                $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsHcMandatory", _("Mandatory"), "if you set true all driver have the helicorsa radar on the center of the screen and can not disabile it!! ", "", FALSE);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RPAcsHcDistThld", _("Distance Threshold"), _("Distance threshold: How far away are the cars we paint?"), "", 30);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RPAcsHcWorldZoom", _("World Zoom"), _(" world coordinates zoom or how big the bars are"), "", 5);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RPAcsHcOpaThld", _("Opacity Threshold"), _("Opacity threshold: At wich distance (in meters) should the cars start to fade?"), "m", 8);
+                $p->setMin(0);
+                $p->setMax(100);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RPAcsHcFrontFadeoutArc", _("Front Fadeout Arc"), _("fade out cars in front of the player in an arc of X degrees (0 to disable)"), "&deg;", 90);
+                $p->setMin(0);
+                $p->setMax(180);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RPAcsHcFrontFadeAngle", _("Front Fade Angle"), _("if a car in front is faded out, how soft should it fade? (again in degrees, 0 to disable = on/off, 10? is default and quite nice)"), "&deg;", 10);
+                $p->setMin(0);
+                $p->setMax(180);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RPAcsHcCarLength", _("Car Length"), _("Real Penalty reads the size of the cars from collider. Only if enable to do it because some error it use this option. Default 4.3/1.8"), "m", 4.3);
+                $p->setMin(0);
+                $p->setMax(30);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RPAcsHcCarWidth", _("Car Width"), _("Real Penalty reads the size of the cars from collider. Only if enable to do it because some error it use this option. Default 4.3/1.8"), "m", 1.8);
+                $p->setMin(0);
+                $p->setMax(30);
+
+                // Driver Swap
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsSwap", _("Driver Swap"), _(""));
+                $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsSwapEna", _("Enable"), "Enable the swap driver function for the race. Default false\nIMPORTANT: multi GUIDs in the locked entry list of the server are needed!!!!", "", FALSE);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpAcsSwapMinTime", _("Min Time"), _("Min swap time (pit lane time) in seconds. Wihtout this value the swap does not work! No default"), "s", 0);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpAcsSwapMinCount", _("Min Count"), _("min mandatory swap count for every team until the end of the race . Wihtout this value the swap does not work! Zero is also ok! No default"), "s", 0);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsSwapPenEna", _("Enable Penalty"), "Enable penalty for wrong swap (too fast). Default true\nIf true the team must remain in the pit line until counter = 0. If not it receive a Stop&Go Peanlty (seconds = penalty_time + time saved during swap).\nIf false each wrong swap will be not counted to reach the min_count (the team needs one more stop/swap to prevent disqualify)\nI advise against disabling this option!", "", TRUE);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpAcsSwapPenTime", _("Penalty Time"), _("Only if enable_penalty = true. Additional penalty time for each invalid swap (for stop&go or to the final time) for each wrong swap."), "s", 5);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsSwapPenDurRace", _("Penalty During Race"), "Only if enable_penalty = true. Default true\nIf enabled the team must take the penalty for wrong swap during the race (stop & go N seconds -> N = penalty_time + remaining  from min_time). \nIf disable the team receive time penalty at the end of the race (for each invalid stop --> penalty_time + remaining from min_time)", "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsSwapConvertTimePen", _("Convert Time Penalty"), "add the time penalty from the last driver to the min current swap time. Valid only if penalty_during_race is set.", "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsSwapConvertRacePen", _("Convert Race Penalty"), "convert the penalties (DT and S&G) from the last driver to time penalty and add it to the min current swap time. Valid only if penalty_during_race is set.", "", TRUE);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpAcsSwapDsqTime", _("Disqualify Time"), _("Only if enable_penalty = true. Disqualify if the team completes the swap and the remaining time > disqualify_time.\nExample: 50% of Min-Time"), "s", 0);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsSwapCntOnlyDrvChnge", _("Driver Change"), "If enable only the swaps with driver change are counted as valid for the min_count. If disable every reconnection is considered as valid swap (a driver con leave the server and rejoin the race --> swap is valid). Default True\nYou can set it to false and use the swap function as mandatory long pit stops. The driver has to leave the server and rejoin the race or a new driver can just join the server; both cases are considered valid long pit.\nThe false value is enable only if convert_time_penalty = false and convert_race_penalty = false", "", TRUE);
+
+                // Teleport
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsTeleport", _("Teleport"), _(""));
+                $p = new \Parameter\ParamInt(NULL, $coll, "RPAcsTeleportMaxDist", _("Max Distance"), _("Permitted max distance from the pit for teleport. Default 10\nThis value is valid only inside the pit lane! Every teleport from the track is not allowed! "), "m", 10);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsTeleportEnaPractice", _("Practice Enabled"), "Teleport in practice session allowed.", "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsTeleportEnaQualify", _("Qualify Enabled"), "Teleport in qualify session allowed.", "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsTeleportEnaRace", _("Race Enabled"), "Teleport in race session allowed.", "", TRUE);
+
+
+                ////////////////////
+                // Penalty Settings
+
+                $coll_group = new \Parameter\Collection(NULL, $coll_rps, "RpPs", _("Penalty Settings"), "");
+
+                // General
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsGeneral", _("General"), _(""));
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsGeneralLapsToTake", _("Laps To Take Penalty"), _("How many laps a driver has to take a penalty in. Default 3 (if LAPS_TO_TAKE_PENALTY > 2 --> Jump start is always 2 for AC limit!)"), "", 2);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsGeneralPenSecs", _("Penalty Seconds"), _("Number of seconds to add manually to the final race result for all penalties not taken during the race."), "s", 20);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsGenerallastTimeNPen", _("Last Time Without Penalty"), _("Only for Time Race - Seconds at and of race to end race time (remembere the optional +1 lap is extra) without mandatory penalty\nAll panalties not taken ----> Panlty seconds to add to the final race time (in chat and log). Default 360 (6 minutes)\nIMPORTAN! Adjust this value in according to the track, the cars and the additional lap (ca. 3/5 laps but in according to LAPS_TO_TAKE_PENALTY)."), "s", 360);
+                $p->setMin(0);
+                $p->setMax(9999);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsGenerallastLapsNPen", _("Last Laps Without Penalty"), _("If a divers gets a penalty in the last N laps (N = LAPS_TO_TAKE_PENALTY + LAST_LAPS_WITHOUT_PENALTY) can drive to the end of the race without taking it but receive time penalty! (Drive through = PENALTY_SECONDS, Stop & GO 10 = PENALTY_SECONDS + 10, .......)."), "Laps", 2);
+                $p->setMin(0);
+                $p->setMax(999);
+
+                // Cutting
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsCutting", _("Cutting"), _(""));
+                $p = new \Parameter\ParamBool(NULL, $coll, "RpPsGeneralCutting", _("Enable"), "Set to true to enable cuttings penalties; false to issue warnings only.", "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RpPsCuttingEnaDurSc", _("During Safety Car"), "Cutting penalty enable during Safety Car or Virtual Safety Car.", "", FALSE);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsCuttingTotCtWarn", _("Total Cut Warnings"), _("How many warnings are allowed before a penalty is given."), "", 3);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RpPsCuttingTyreDirt", _("Tyre Dirt"), "Tyres dirt for cutting.", "", FALSE);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsCuttingMinSpeed", _("Minimum Speed"), _("The minimum speed, in kph, that will trigger a cut."), "km/h", 40);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsCuttingSecsBetween", _("Seconds Between Cuts"), _("You won't get a cut until this many seconds after the last one."), "s", 4);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsCuttingMaxTime", _("Maximum Time"), _("The maximum time cut (in seconds) to trigger a warning. If you make this too long, off-track accidents may trigger cut warnings."), "s", 3);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RpPsCuttingMinSlowdownRatio", _("Min Slowdown Ratio"), _("The minimum ratio of speed at leaving the track to speed at re-entering the track that will trigger a warning.\nA speed ratio under this means that the car has slowed, and negated any advantage gained, and a warning won't be triggered.\n0.9 means the car is re-entering the track at 90% of the speed at which it left it.\nA value < 1 means the car has slowed during the cut; a value > 1 means the car has sped up. Default 0.9."), "", 0.9);
+                $p->setMin(0);
+                $p->setMax(9);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RpPsCuttingQualSlowdownSpeed", _("Qual Slow Down Speed"), _("Slowing down to this speed (kph) will make the \"INVALID LAP, SLOW DOWN\" message in qualifying go away. Default 50."), "km/h", 45);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RpPsCuttingQualMaxSecOutSpeed", _("Qual Max Sector Out Speed"), _("Initial qualify max allowed speed on the start line after cutting in the last corner. Default 150 \nIMPORTAN! Adjust this value in according to the track and the cars!!!!!!!!!"), "km/h", 150);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RpPsCuttingQualSlowdownRatio", _("Qual Slowdown Ratio"), _("Ratio of the QUALIFY_MAX_SECTOR_OUT_SPEED. Default 0.99\nThe max allowed speed on the start line after cutting  =\nQUALIFY_MAX_SECTOR_OUT_SPEED (other new max speed of driver) * QUALIFY_SLOW_DOWN_SPEED_RATIO"), "", 0.99);
+                $p->setMin(0);
+                $p->setMax(9);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsCuttingPostCtTime", _("Post Cutting Time"), _("Bonus time after reentering on the track. If speed decreses in this time --> No cutting! Default 2.\nSet to 0 to have cutting checks similar to PLP (no check after re-entering the track)"), "s", 2);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsCuttingPenType", _("Penalty Type"), _("Penalty type for cutting."), TRUE);
+
+                // Speeding
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsSpeeding", _("Speeding"), _(""));
+                $p = new \Parameter\ParamBool(NULL, $coll, "RpPsGeneralSpeeding", _("Speeding"), "Set to true to enable pit lane speeding penalties.", "", TRUE);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingPitLaneSpeed", _("Pit Lane Speed"), _("The speed, in kph, above which you will be deemed to be speeding in pits. Make this higher to give more leniency on pit lane entry."), "km/h", 82);
+                $p->setMin(0);
+                $p->setMax(299);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType0", _("Penalty Type 0"), _("Penalty type for speeding"), TRUE);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit0", _("Speed Limit 0"), _(""), "km/h", 100);
+                $p->setMin(0);
+                $p->setMax(199);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType1", _("Penalty Type 1"), _("Penalty type for speeding"), TRUE);
+                $p->setValue("sg10");
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit1", _("Speed Limit 1"), _(""), "km/h", 200);
+                $p->setMin(0);
+                $p->setMax(599);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType2", _("Penalty Type 2"), _("Penalty type for speeding"), TRUE);
+                $p->setValue("dsq");
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit2", _("Speed Limit 2"), _(""), "km/h", 999);
+                $p->setMin(0);
+                $p->setMax(999);
+
+                // Crossing
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsCrossing", _("Crossing"), _(""));
+                $p = new \Parameter\ParamBool(NULL, $coll, "RpPsGeneralCrossing", _("Crossing"), "Set to true to enable exit pit lane crossing line penalty.", "", TRUE);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsCrossingPenType", _("Penalty Type"), _("Penalty type for speeding"), TRUE);
+
+                // Jump Start
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsJumpStart", _("Jump Start"), _(""));
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsJumpStartPenType0", _("Penalty Type 0"), _("Penalty type for speeding"), TRUE);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsJumpStartSpeedLimit0", _("Speed Limit 0"), _(""), "km/h", 50);
+                $p->setMin(0);
+                $p->setMax(199);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsJumpStartPenType1", _("Penalty Type 1"), _("Penalty type for speeding"), TRUE);
+                $p->setValue("sg10");
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsJumpStartSpeedLimit1", _("Speed Limit 1"), _(""), "km/h", 100);
+                $p->setMin(0);
+                $p->setMax(599);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsJumpStartPenType2", _("Penalty Type 2"), _("Penalty type for speeding"), TRUE);
+                $p->setValue("dsq");
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsJumpStartSpeedLimit2", _("Speed Limit 2"), _(""), "km/h", 200);
+                $p->setMin(0);
+                $p->setMax(999);
+
+                // DRS
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsDRS", _("DRS"), _(""));
+                $p = new \Parameter\ParamBool(NULL, $coll, "RpPsGeneralDrs", _("Drs"), "Set to true to enable DRS penalty (only for car wiht DRS).", "", TRUE);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsDRSPenType", _("Penalty Type"), _("Penalty type for speeding"), TRUE);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RpPsDRSGap", _("Gap"), _("Max gap in seconds from front car."), "", 1.0);
+                $p->setMin(0);
+                $p->setMax(29);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsDRSEnaAfterLaps", _("Enabled After"), _("DRS enabled after N lap from start (+1 if rolling start with SC - file ac_settings.ini)."), "Laps", 1);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsDRSMinSpeed", _("Minimum Speed"), _("IF the car speed < MIN SPEED no penaly for illegal DRS use."), "km/h", 50);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RpPsDRSBonusTime", _("Bonus Time"), _("How many seconds the DRS can remain open during each illegal use before the penalty."), "s", 0.9);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsDRSMaxIllegal", _("Illegal Uses"), _("How many time the driver can open the illegal DRS in each sector before the penalty."), "", 1);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamBool(NULL, $coll, "RpPsDRSEnaDurSc", _("During Safetycar"), "DRS penalty enable during Safety Car or Virtual Safety Car.", "", FALSE);
+                $p = new \Parameter\ParamString(NULL, $coll, "RpPsDRSOmitCars", _("Omit Cars"), _("List of cars wihtout DRS (sorry, no information from AC available)\nif all cars are without DRS set ENABLE_DRS_PENALTIES in General to false!!!"), "");
+
+                // Blue Flag
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsBf", _("Blue Flag"), _(""));
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RpPsBfQual", _("Qualifying"), _("Time distance (seconds) to show the blue flag in qualifying."), "s", 2.5);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "RpPsBfRace", _("Race"), _("Time distance (seconds) to show the blue flag in race."), "s", 2.5);
+                $p->setMin(0);
+                $p->setMax(99);
 
 
 

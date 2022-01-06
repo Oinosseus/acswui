@@ -23,4 +23,8 @@ class EnumItem {
     public function label() {
         return $this->Label;
     }
+
+    public function __toString() {
+        return "EnumItem(" . $this->Value . ")";
+    }
 }

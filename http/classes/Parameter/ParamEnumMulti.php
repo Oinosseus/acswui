@@ -12,7 +12,7 @@ class ParamEnumMulti extends ParamEnum {
     }
 
 
-    final protected function cloneXtraAttributes($base) {
+    protected function cloneXtraAttributes($base) {
     }
 
 
