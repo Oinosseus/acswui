@@ -174,3 +174,33 @@ main.ServerSlots table#SlotManagementTable tr.CurrentSlot td:first-child {
 /*     font-weight: bold; */
     color: var(--color-red-accent);
 }
+
+
+
+/******************************************************************************
+                                   ServerSlots
+ ******************************************************************************/
+
+main.Weathers table#WeatherManagementTable img {
+    max-height: 3em;
+    max-width: 5em;
+}
+
+main.Weathers table#WeatherManagementTable {
+    border-spacing: 0.1em;
+}
+
+main.Weathers table#WeatherManagementTable tr td {
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+}
+
+main.Weathers table#WeatherManagementTable tr td:first-child {
+    font-family: monospace;
+    text-align: left;
+}
+
+main.Weathers table#WeatherManagementTable tr.CurrentSlot td:first-child {
+/*     font-weight: bold; */
+    color: var(--color-red-accent);
+}

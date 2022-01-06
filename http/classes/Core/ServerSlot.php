@@ -274,7 +274,10 @@ class ServerSlot {
 
 
     //! start the server within this slot
-    public function start() {
+    public function start(\DbEntry\Track $track,
+                          \DbEntry\CarClass $car_class,
+                          \DbEntry\ServerPreset $preset) {
+
         $id = $this->id();
 
         // configure real penalty
@@ -283,11 +286,11 @@ class ServerSlot {
         $this->writeRpSettings();
 
         // configure ACswui plugin
-        $this->writeACswuiUdpPluginIni();
+        $this->writeACswuiUdpPluginIni($car_class, $preset);
 
         // configure ac server
-        $this->writeAcServerEntryList();
-        $this->writeAcServerCfg();
+        $this->writeAcServerEntryList($track, $car_class);
+        $this->writeAcServerCfg($track, $car_class, $preset);
 
         // lunch server with plugins
         $ac_server = \Core\Config::AbsPathData . "/acserver/acServer$id";
@@ -358,7 +361,7 @@ class ServerSlot {
 
 
     //! create acswui_udp_plugin.ini
-    private function writeACswuiUdpPluginIni() {
+    private function writeACswuiUdpPluginIni(\DbEntry\CarClass $car_class, \DbEntry\ServerPreset $preset) {
         $pc = $this->parameterCollection();
         $file_path = \Core\Config::AbsPathData . "/acswui_udp_plugin/acswui_udp_plugin_" . $this->id() . ".ini";
         $f = fopen($file_path, 'w');
@@ -378,8 +381,8 @@ class ServerSlot {
 
         fwrite($f, "\n[PLUGIN]\n");
         fwrite($f, "slot = " . $this->id() . "\n");
-        fwrite($f, "preset = 0\n");
-        fwrite($f, "carclass = 0\n");
+        fwrite($f, "preset = " . $preset->id() . "\n");
+        fwrite($f, "carclass = " . $car_class->id() . "\n");
         fwrite($f, "udp_plugin = " . $pc->child("ACswuiPortsPluginUdpL")->value() . "\n");
         if ($pc->child("RPGeneralEnable")->value()) {
             fwrite($f, "udp_acserver = " . $pc->child("RPPortsPluginUdpR")->value() . "\n");
@@ -393,8 +396,12 @@ class ServerSlot {
 
 
     //! create server_cfg.ini for real penalty
-    private function writeAcServerCfg() {
+    private function writeAcServerCfg(\DbEntry\Track $track,
+                                      \DbEntry\CarClass $car_class,
+                                      \DbEntry\ServerPreset $preset) {
+
         $pc = $this->parameterCollection();
+        $ppc = $preset->parameterCollection();
         $file_path = \Core\Config::AbsPathData . "/acserver/cfg/server_cfg_" . $this->id() . ".ini";
         $f = fopen($file_path, 'w');
         if ($f === FALSE) {
@@ -416,24 +423,23 @@ class ServerSlot {
         fwrite($f, "SLEEP_TIME=1\n");
         fwrite($f, "REGISTER_TO_LOBBY=1\n");
         fwrite($f, "MAX_CLIENTS=" . $pc->child("AcServerPerformanceMaxClients")->value() . "\n");
-        fwrite($f, "WELCOME_MESSAGE=\n");
-        fwrite($f, "PICKUP_MODE_ENABLED=1\n");
-        fwrite($f, "LOOP_MODE=0\n");
-        fwrite($f, "SUN_ANGLE=-45\n");
-        fwrite($f, "QUALIFY_MAX_WAIT_PERC=100\n");
-        fwrite($f, "LEGAL_TYRES=\n");
-        fwrite($f, "MAX_BALLAST_KG=300\n");
-        fwrite($f, "RACE_OVER_TIME=600\n");
-        fwrite($f, "RACE_PIT_WINDOW_START=0\n");
-        fwrite($f, "RACE_PIT_WINDOW_END=999\n");
-        fwrite($f, "REVERSED_GRID_RACE_POSITIONS=0\n");
-        fwrite($f, "LOCKED_ENTRY_LIST=0\n");
-        fwrite($f, "START_RULE=2\n");
-        fwrite($f, "RACE_GAS_PENALTY_DISABLED=0\n");
-        fwrite($f, "TIME_OF_DAY_MULT=2\n");
-        fwrite($f, "RESULT_SCREEN_TIME=60\n");
-        fwrite($f, "MAX_CONTACTS_PER_KM=99\n");
-        fwrite($f, "RACE_EXTRA_LAP=0\n");
+        fwrite($f, "WELCOME_MESSAGE=\n");  //! @todo needs to be implemented as parameter
+        fwrite($f, "PICKUP_MODE_ENABLED=" . (($ppc->child("AcServerPickupMode")->value()) ? 1:0) . "\n");
+        fwrite($f, "LOOP_MODE=0\n");  // ACswui system does require LOOP_MODE=0
+        fwrite($f, "SUN_ANGLE=" . $ppc->child("AcServerSunAngle")->value() . "\n");
+        fwrite($f, "QUALIFY_MAX_WAIT_PERC=" . $ppc->child("AcServerQualifyingWaitPerc")->value() . "\n");
+        fwrite($f, "LEGAL_TYRES=" . $ppc->child("AcServerLegalTyres")->value() . "\n");
+        fwrite($f, "RACE_OVER_TIME=" . $ppc->child("AcServerRaceOverTime")->value() . "\n");
+        fwrite($f, "RACE_PIT_WINDOW_START=" . $ppc->child("AcServerPitWinOpen")->value() . "\n");
+        fwrite($f, "RACE_PIT_WINDOW_END=" . $ppc->child("AcServerPitWinClose")->value() . "\n");
+        fwrite($f, "REVERSED_GRID_RACE_POSITIONS=" . $ppc->child("AcServerReversedGrid")->value() . "\n");
+        fwrite($f, "LOCKED_ENTRY_LIST=" . (($ppc->child("AcServerLockedEntryList")->value()) ? 1:0) . "\n");
+        fwrite($f, "START_RULE=" . $ppc->child("AcServerStartRule")->value() . "\n");
+        fwrite($f, "RACE_GAS_PENALTY_DISABLED=" . (($ppc->child("AcServerRaceGasPenalty")->value()) ? 1:0) . "\n");
+        fwrite($f, "TIME_OF_DAY_MULT=" . $ppc->child("AcServerTimeMultiplier")->value() . "\n");
+        fwrite($f, "RESULT_SCREEN_TIME=" . $ppc->child("AcServerResultScreenTime")->value() . "\n");
+        fwrite($f, "MAX_CONTACTS_PER_KM=" . $ppc->child("AcServerMaxContactsPerKm")->value() . "\n");
+        fwrite($f, "RACE_EXTRA_LAP=" . (($ppc->child("AcServerExtraLap")->value()) ? 1:0) . "\n");
         fwrite($f, "UDP_PLUGIN_LOCAL_PORT=" . $pc->child("AcServerPortsPluginUdpR")->value() . "\n");
         if ($pc->child("RPGeneralEnable")->value()) {
             fwrite($f, "UDP_PLUGIN_ADDRESS=127.0.0.1:" . $pc->child("RPPortsPluginUdpL")->value() . "\n");
@@ -441,59 +447,94 @@ class ServerSlot {
             fwrite($f, "UDP_PLUGIN_ADDRESS=127.0.0.1:" . $pc->child("ACswuiPortsPluginUdpL")->value() . "\n");
         }
         fwrite($f, "AUTH_PLUGIN_ADDRESS=\n");
-        fwrite($f, "KICK_QUORUM=70\n");
-        fwrite($f, "BLACKLIST_MODE=1\n");
-        fwrite($f, "VOTING_QUORUM=70\n");
-        fwrite($f, "VOTE_DURATION=30\n");
-        fwrite($f, "FUEL_RATE=100\n");
-        fwrite($f, "DAMAGE_MULTIPLIER=100\n");
-        fwrite($f, "TYRE_WEAR_RATE=100\n");
-        fwrite($f, "ALLOWED_TYRES_OUT=2\n");
-        fwrite($f, "ABS_ALLOWED=1\n");
-        fwrite($f, "TC_ALLOWED=1\n");
-        fwrite($f, "STABILITY_ALLOWED=0\n");
-        fwrite($f, "AUTOCLUTCH_ALLOWED=0\n");
-        fwrite($f, "TYRE_BLANKETS_ALLOWED=0\n");
-        fwrite($f, "FORCE_VIRTUAL_MIRROR=0\n");
+        fwrite($f, "KICK_QUORUM=" . $ppc->child("AcServerKickQuorum")->value() . "\n");
+        fwrite($f, "BLACKLIST_MODE=" . $ppc->child("AcServerKickQuorum")->value() . "\n");
+        fwrite($f, "VOTING_QUORUM=" . $ppc->child("AcServerVotingQuorum")->value() . "\n");
+        fwrite($f, "VOTE_DURATION=" . $ppc->child("AcServerVoteDuration")->value() . "\n");
+        fwrite($f, "FUEL_RATE=" . $ppc->child("AcServerFuelRate")->value() . "\n");
+        fwrite($f, "DAMAGE_MULTIPLIER=" . $ppc->child("AcServerDamageMultiplier")->value() . "\n");
+        fwrite($f, "TYRE_WEAR_RATE=" . $ppc->child("AcServerTyreWearRate")->value() . "\n");
+        fwrite($f, "ALLOWED_TYRES_OUT=" . $ppc->child("AcServerTyresOut")->value() . "\n");
+        fwrite($f, "ABS_ALLOWED=" . $ppc->child("AcServerAbsAllowed")->value() . "\n");
+        fwrite($f, "TC_ALLOWED=" . $ppc->child("AcServerTcAllowed")->value() . "\n");
+        fwrite($f, "STABILITY_ALLOWED=" . $ppc->child("AcServerEscAllowed")->value() . "\n");
+        fwrite($f, "AUTOCLUTCH_ALLOWED=" . $ppc->child("AcServerAutoClutchAllowed")->value() . "\n");
+        fwrite($f, "TYRE_BLANKETS_ALLOWED=" . $ppc->child("AcServerTyreBlankets")->value() . "\n");
+        fwrite($f, "FORCE_VIRTUAL_MIRROR=" . $ppc->child("AcServerForceVirtualMirror")->value() . "\n");
         fwrite($f, "\n");
-        fwrite($f, "CARS=wec_lmp2_cadillac_dpi;wec_lmp2_dallara_p217;wec_lmp2_ligierp217;wec_lmp2_onroak_nissan_dpi;wec_lmp2_oreca07\n");
-        fwrite($f, "TRACK=imola\n");
-        fwrite($f, "CONFIG_TRACK=\n");
-        fwrite($f, "\n");
-        fwrite($f, "\n");
-        fwrite($f, "[FTP]\n");
-        fwrite($f, "HOST=\n");
-        fwrite($f, "LOGIN=\n");
-        fwrite($f, "PASSWORD=\n");
-        fwrite($f, "FOLDER=\n");
-        fwrite($f, "LINUX=1\n");
-        fwrite($f, "\n");
-        fwrite($f, "[PRACTICE]\n");
-        fwrite($f, "NAME=Practice\n");
-        fwrite($f, "TIME=240\n");
-        fwrite($f, "IS_OPEN=1\n");
-        fwrite($f, "\n");
-        fwrite($f, "[DYNAMIC_TRACK]\n");
-        fwrite($f, "SESSION_START=96\n");
-        fwrite($f, "RANDOMNESS=1\n");
-        fwrite($f, "LAP_GAIN=50\n");
-        fwrite($f, "SESSION_TRANSFER=80\n");
-        fwrite($f, "\n");
-        fwrite($f, "[WEATHER_0]\n");
-        fwrite($f, "GRAPHICS=5\n");
-        fwrite($f, "BASE_TEMPERATURE_AMBIENT=24\n");
-        fwrite($f, "VARIATION_AMBIENT=4\n");
-        fwrite($f, "BASE_TEMPERATURE_ROAD=10\n");
-        fwrite($f, "VARIATION_ROAD=4\n");
-        fwrite($f, "WIND_BASE_SPEED_MIN=0\n");
-        fwrite($f, "WIND_BASE_SPEED_MAX=30\n");
-        fwrite($f, "WIND_BASE_DIRECTION=0\n");
-        fwrite($f, "WIND_VARIATION_DIRECTION=360\n");
-        fwrite($f, "\n");
-        fwrite($f, "[ACSWUI]\n");
-        fwrite($f, "SERVER_SLOT=" . $this->id() . "\n");
-        fwrite($f, "SERVER_PRESET=10\n");
-        fwrite($f, "CAR_CLASS=70\n");
+        //! @todo Extract from CarClass and Track
+        $cars = array();
+        foreach ($car_class->cars() as $car) $cars[] = $car->model();
+        fwrite($f, "CARS=" . implode(";", $cars) . "\n");
+        fwrite($f, "MAX_BALLAST_KG=" . $car_class->ballastMax() . "\n");
+        fwrite($f, "TRACK=" . $track->location()->track() . "\n");
+        fwrite($f, "CONFIG_TRACK=" . $track->config() . "\n");
+
+//         fwrite($f, "\n[FTP]\n");
+//         fwrite($f, "HOST=\n");
+//         fwrite($f, "LOGIN=\n");
+//         fwrite($f, "PASSWORD=\n");
+//         fwrite($f, "FOLDER=\n");
+//         fwrite($f, "LINUX=1\n");
+
+        if ($ppc->child("AcServerBookingTime")->value() > 0) {
+            fwrite($f, "\n[BOOKING]\n");
+            fwrite($f, "NAME=" . $ppc->child("AcServerBookingName")->value() . "\n");
+            fwrite($f, "TIME=" . $ppc->child("AcServerBookingTime")->value() . "\n");
+        }
+
+        if ($ppc->child("AcServerPracticeTime")->value() > 0) {
+            fwrite($f, "\n[PRACTICE]\n");
+            fwrite($f, "NAME=" . $ppc->child("AcServerPracticeName")->value() . "\n");
+            fwrite($f, "TIME=" . $ppc->child("AcServerPracticeTime")->value() . "\n");
+            fwrite($f, "IS_OPEN=" . $ppc->child("AcServerPracticeIsOpen")->value() . "\n");
+        }
+
+        if ($ppc->child("AcServerQualifyingTime")->value() > 0) {
+            fwrite($f, "\n[QUALIFY]\n");
+            fwrite($f, "NAME=" . $ppc->child("AcServerQualifyingName")->value() . "\n");
+            fwrite($f, "TIME=" . $ppc->child("AcServerQualifyingTime")->value() . "\n");
+            fwrite($f, "IS_OPEN=" . $ppc->child("AcServerQualifyingIsOpen")->value() . "\n");
+        }
+
+        if ($ppc->child("AcServerQualifyingTime")->value() > 0) {
+            fwrite($f, "\n[RACE]\n");
+            fwrite($f, "NAME=" . $ppc->child("AcServerRaceName")->value() . "\n");
+            fwrite($f, "LAPS=" . $ppc->child("AcServerRaceLaps")->value() . "\n");
+            fwrite($f, "TIME=" . $ppc->child("AcServerRaceTime")->value() . "\n");
+            fwrite($f, "WAIT_TIME=" . $ppc->child("AcServerRaceWaitTime")->value() . "\n");
+            fwrite($f, "IS_OPEN=" . $ppc->child("AcServerRaceIsOpen")->value() . "\n");
+        }
+
+        fwrite($f, "\n[DYNAMIC_TRACK]\n");
+        fwrite($f, "SESSION_START=" . $ppc->child("AcServerDynamicTrackSessionStart")->value() . "\n");
+        fwrite($f, "RANDOMNESS=" . $ppc->child("AcServerDynamicTrackRandomness")->value() . "\n");
+        fwrite($f, "LAP_GAIN=" . $ppc->child("AcServerDynamicTrackLapGain")->value() . "\n");
+        fwrite($f, "SESSION_TRANSFER=" . $ppc->child("AcServerDynamicTrackSessionTransfer")->value() . "\n");
+
+        // weather
+        $weathers = array();
+        if (count($ppc->child("AcServerWeather")->valueList()) > 0) {
+            foreach ($ppc->child("AcServerWeather")->valueList() as $w_id) {
+                $weathers[] = \DbEntry\Weather::fromId($w_id);
+            }
+        } else {
+            $weathers[] = \DbEntry\Weather::fromId(0);
+        }
+
+        for ($i=0; $i<count($weathers); ++$i) {
+            $wpc = $weathers[$i]->parameterCollection();
+            fwrite($f, "\n[WEATHER_$i]\n");
+            fwrite($f, "GRAPHICS=" . $wpc->child("Graphic")->value() . "\n");
+            fwrite($f, "BASE_TEMPERATURE_AMBIENT=" . $wpc->child("AmbientBase")->value() . "\n");
+            fwrite($f, "VARIATION_AMBIENT=" . $wpc->child("AmbientVar")->value() . "\n");
+            fwrite($f, "BASE_TEMPERATURE_ROAD=" . $wpc->child("RoadBase")->value() . "\n");
+            fwrite($f, "VARIATION_ROAD=" . $wpc->child("RoadVar")->value() . "\n");
+            fwrite($f, "WIND_BASE_SPEED_MIN=" . $wpc->child("WindBaseMin")->value() . "\n");
+            fwrite($f, "WIND_BASE_SPEED_MAX=" . $wpc->child("WindBaseMax")->value() . "\n");
+            fwrite($f, "WIND_BASE_DIRECTION=" . $wpc->child("WindDirection")->value() . "\n");
+            fwrite($f, "WIND_VARIATION_DIRECTION=" . $wpc->child("WindDirectionVar")->value() . "\n");
+        }
 
 
         fclose($f);
@@ -501,7 +542,7 @@ class ServerSlot {
 
 
     //! create entry_list.ini for real penalty
-    private function writeAcServerEntryList() {
+    private function writeAcServerEntryList(\DbEntry\Track $track, \DbEntry\CarClass $car_class) {
         $pc = $this->parameterCollection();
         $file_path = \Core\Config::AbsPathData . "/acserver/cfg/entry_list_" . $this->id() . ".ini";
         $f = fopen($file_path, 'w');
@@ -510,55 +551,25 @@ class ServerSlot {
             return;
         }
 
-        fwrite($f, "[CAR_0]\n");
-        fwrite($f, "MODEL=wec_lmp2_dallara_p217\n");
-        fwrite($f, "SKIN=HighClassRacing\n");
-        fwrite($f, "SPECTATOR_MODE=0\n");
-        fwrite($f, "DRIVERNAME=\n");
-        fwrite($f, "TEAM=\n");
-        fwrite($f, "GUID=\n");
-        fwrite($f, "BALLAST=0\n");
-        fwrite($f, "RESTRICTOR=0\n");
+        $entry_id = 0;
+        foreach ($car_class->cars() as $c) {
+            foreach ($c->skins() as $s) {
+                if ($entry_id >= $track->pitboxes()) break;
 
-        fwrite($f, "\n[CAR_1]\n");
-        fwrite($f, "MODEL=wec_lmp2_cadillac_dpi\n");
-        fwrite($f, "SKIN=ActionExpressRacing1\n");
-        fwrite($f, "SPECTATOR_MODE=0\n");
-        fwrite($f, "DRIVERNAME=\n");
-        fwrite($f, "TEAM=\n");
-        fwrite($f, "GUID=\n");
-        fwrite($f, "BALLAST=0\n");
-        fwrite($f, "RESTRICTOR=0\n");
+                fwrite($f, "\n[CAR_$entry_id]\n");
+                fwrite($f, "MODEL=" . $s->car()->model() . "\n");
+                fwrite($f, "SKIN=" . $s->skin() . "\n");
+                fwrite($f, "SPECTATOR_MODE=0\n");
+                fwrite($f, "DRIVERNAME=\n");
+                fwrite($f, "TEAM=\n");
+                fwrite($f, "GUID=\n");
+                fwrite($f, "BALLAST=" . $car_class->ballast($s->car()) . "\n");
+                fwrite($f, "RESTRICTOR=" . $car_class->restrictor($s->car()) . "\n");
 
-        fwrite($f, "\n[CAR_2]\n");
-        fwrite($f, "MODEL=wec_lmp2_oreca07\n");
-        fwrite($f, "SKIN=26\n");
-        fwrite($f, "SPECTATOR_MODE=0\n");
-        fwrite($f, "DRIVERNAME=\n");
-        fwrite($f, "TEAM=\n");
-        fwrite($f, "GUID=\n");
-        fwrite($f, "BALLAST=0\n");
-        fwrite($f, "RESTRICTOR=0\n");
-
-        fwrite($f, "\n[CAR_3]\n");
-        fwrite($f, "MODEL=wec_lmp2_ligierp217\n");
-        fwrite($f, "SKIN=MathiasenMotorsport\n");
-        fwrite($f, "SPECTATOR_MODE=0\n");
-        fwrite($f, "DRIVERNAME=\n");
-        fwrite($f, "TEAM=\n");
-        fwrite($f, "GUID=\n");
-        fwrite($f, "BALLAST=0\n");
-        fwrite($f, "RESTRICTOR=0\n");
-
-        fwrite($f, "\n[CAR_4]\n");
-        fwrite($f, "MODEL=wec_lmp2_onroak_nissan_dpi\n");
-        fwrite($f, "SKIN=ESMRacing2\n");
-        fwrite($f, "SPECTATOR_MODE=0\n");
-        fwrite($f, "DRIVERNAME=\n");
-        fwrite($f, "TEAM=\n");
-        fwrite($f, "GUID=\n");
-        fwrite($f, "BALLAST=0\n");
-        fwrite($f, "RESTRICTOR=0\n");
+                ++$entry_id;
+            }
+            if ($entry_id >= $track->pitboxes()) break;
+        }
 
         fclose($f);
     }
@@ -578,9 +589,9 @@ class ServerSlot {
         fwrite($f, "[General]\n");
         fwrite($f, "FIRST_CHECK_TIME = " . $pc->child("RPGeneralFCT")->value() . "\n");
         fwrite($f, "COCKPIT_CAMERA = false\n");
-        fwrite($f, "TRACK_CHECKSUM = false\n");
-        fwrite($f, "WEATHER_CHECKSUM = false\n");
-        fwrite($f, "CAR_CHECKSUM = false\n");
+        fwrite($f, "TRACK_CHECKSUM = false\n");  //! @todo Copy track models and KN5 files to path-srvpkg to use this feature
+        fwrite($f, "WEATHER_CHECKSUM = true\n");
+        fwrite($f, "CAR_CHECKSUM = false\n");  //! @todo copy data.acd and collider.kn5 to path-srvpkg to use this feature
         fwrite($f, "qualify_time = _\n");
 
         // section App

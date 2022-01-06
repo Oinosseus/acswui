@@ -2,19 +2,19 @@
 
 namespace Parameter;
 
-final class ParamEnum extends Parameter {
+class ParamEnum extends Parameter {
 
-    private $EnumItemList = array();
-    private $EnumItemHash = array(); // key=enum-item-value, value=EnumItem
+    protected $EnumItemList = array();
+    protected $EnumItemHash = array(); // key=enum-item-value, value=EnumItem
 
 
-    final protected function cloneXtraAttributes($base) {
+    protected function cloneXtraAttributes($base) {
         $this->EnumItemHash = $base->EnumItemHash;
         $this->EnumItemList = $base->EnumItemList;
     }
 
 
-    final public function getHtmlInput() {
+    public function getHtmlInput() {
         $html = "";
 
         $key = $this->key();
@@ -30,13 +30,18 @@ final class ParamEnum extends Parameter {
     }
 
 
-    final public function formatValue($value) {
+    public function formatValue($value) {
         if (!array_key_exists($value, $this->EnumItemHash)) return NULL;
         else return $this->EnumItemHash[$value]->value();
     }
 
 
-    final public function value2Label($value) {
+    public function value2Label($value) {
+        if ($value === NULL || $value === "") {
+            return "";
+        } else if (!array_key_exists($value, $this->EnumItemHash)) {
+            \Core\Log::error("Undefined enum value '$value'!");
+        }
         return $this->EnumItemHash[$value]->label();
     }
 

@@ -137,7 +137,7 @@ class TrackLocation extends DbEntry {
     }
 
 
-    //! @return User friendly name of the car
+    //! @return User friendly name
     public function name() {
         if ($this->Name === NULL) $this->Name = $this->loadColumn("Name");
         return $this->Name;

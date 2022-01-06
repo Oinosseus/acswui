@@ -72,6 +72,14 @@ div.ParameterInheritedValue {
     display: none;
 }
 
+.ParameterValueSpan1 img,
+.ParameterValueSpan2 img,
+.ParameterValueSpan3 img,
+.ParameterValueSpan4 img {
+    max-width: 12em;
+    max-height: 6em;
+    display: block;
+}
 
 
 /*****************************************************************************

@@ -221,7 +221,7 @@ class Track extends DbEntry {
             }
         }
 
-        return $list;
+        return ($inculde_deprecated) ? Track::$ListTracksDeprConf : Track::$ListTracksNDeprConf;
     }
 
 //     //! @return The longest track

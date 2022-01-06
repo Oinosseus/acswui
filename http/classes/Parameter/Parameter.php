@@ -76,8 +76,6 @@ abstract class Parameter extends Deriveable {
     public function setValue($new_value) {
         if ($this->accessability() == 2) {
             $this->Value = $this->formatValue($new_value);
-        } else {
-            \Core\Log::warning("Prevented editing a non-editable parameter '" . $this->key() . "'");
         }
     }
 

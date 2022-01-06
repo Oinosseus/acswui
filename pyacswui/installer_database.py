@@ -4,13 +4,8 @@ from .verbosity import Verbosity
 class InstallerDatabase(object):
 
 
-    def __init__(self,
-                 database,
-                 server_cfg_json,
-                 verbosity=0
-                ):
+    def __init__(self, database, verbosity=0):
         self.__db = database
-        self.__server_cfg_json = server_cfg_json
         self._verbosity = Verbosity(verbosity, self.__class__.__name__)
 
 
@@ -59,6 +54,13 @@ class InstallerDatabase(object):
         self.__db.appendColumnString("ServerPresets", "Name", 60)
         self.__db.appendColumnUInt("ServerPresets", "Parent")
         self.__db.appendColumnText("ServerPresets", "ParameterData")
+
+        # check table Weathers
+        Verbosity(verb).print("check database table `Weathers`")
+        self.__db.appendTable("Weathers")
+        self.__db.appendColumnString("Weathers", "Name", 60)
+        self.__db.appendColumnUInt("Weathers", "Parent")
+        self.__db.appendColumnText("Weathers", "ParameterData")
 
 
 
@@ -225,6 +227,8 @@ class InstallerDatabase(object):
         self.__db.appendColumnTinyInt("Groups", "Settings_Presets_Edit")
         self.__db.appendColumnTinyInt("Groups", "Settings_Slots_View")
         self.__db.appendColumnTinyInt("Groups", "Settings_Slots_Edit")
+        self.__db.appendColumnTinyInt("Groups", "Settings_Weather_View")
+        self.__db.appendColumnTinyInt("Groups", "Settings_Weather_Edit")
         self.__db.appendColumnTinyInt("Groups", "Sessions_View")
         self.__db.appendColumnTinyInt("Groups", "Sessions_Control")
 

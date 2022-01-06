@@ -210,7 +210,8 @@ final class Collection extends Deriveable {
         $key = $param->key();
 
         // parameter label
-        $html .= "<div class=\"ParameterLabel\" title=\"[$key]\">" . $param->label() . "</div>";
+        $param_val = print_r($param->value(), TRUE);
+        $html .= "<div class=\"ParameterLabel\" title=\"$key=$param_val\">" . $param->label() . "</div>";
 
         // value
         $param_value_span = 1;

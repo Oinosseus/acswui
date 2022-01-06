@@ -64,6 +64,16 @@ class CarClass extends DbEntry {
     }
 
 
+    //! @return The maximum ballast that is applied to any car in this class
+    public function ballastMax() {
+        $ballast_max = 0;
+        foreach ($this->cars() as $car) {
+            if ($this->ballast($car) > $ballast_max) $ballast_max = $this->ballast($car);
+        }
+        return $ballast_max;
+    }
+
+
     //! @return A list of Car objects (ordered by car name)
     public function cars() {
 

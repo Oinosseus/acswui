@@ -30,12 +30,6 @@ class CommandInstall(Command):
         self._verbosity = Verbosity(self.getArg("v"), self.__class__.__name__)
         self._verbosity.print("begin process")
 
-        # read server_cfg json
-        self._verbosity.print("read server_cfg_json")
-        with open(os.path.join(self.getGeneralArg("path-srvpkg"), "server_cfg.json"), "r") as f:
-            json_string = f.read()
-        self.__server_cfg_json = json.loads(json_string)
-
         # setup database
         self._verbosity.print("setup datatasbe")
         self.__db = Database(host=self.getGeneralArg("db-host"),
@@ -49,9 +43,7 @@ class CommandInstall(Command):
         self._verbosity.print("initialize data")
         self.__work_copy_files()
 
-        installer = InstallerDatabase(self.__db,
-                                self.__server_cfg_json,
-                                self._verbosity)
+        installer = InstallerDatabase(self.__db, self._verbosity)
         installer.process()
 
         # temporarily needed to fix track location table
@@ -245,11 +237,6 @@ class CommandInstall(Command):
             path_data_acserver_binslot = os.path.join(path_data_acserver, "acServer%i" % slot_nr)
             shutil.copy(path_srvpkg_acserver_bin, path_data_acserver_binslot)
 
-        # server_cfg.json
-        path_srvpkg_servercfg = os.path.join(self.getGeneralArg("path-srvpkg"), "server_cfg.json")
-        path_data_servercfg = os.path.join(path_data, "server_cfg.json")
-        shutil.copy(path_srvpkg_servercfg, path_data_servercfg)
-
         # server slots
         path_data_server_slots = os.path.join(path_data, "server_slots")
         self.mkdirs(path_data_server_slots)
@@ -355,6 +342,13 @@ class CommandInstall(Command):
         if self.getGeneralArg('log-debug').lower() == "true":
             log_debug = "TRUE"
 
+        # scan weather
+        weather_graphics = []
+        path_ac_weather = os.path.join(self.getGeneralArg("path-data"), "acserver", "content", "weather")
+        for weather in os.listdir(path_ac_weather):
+            weather_graphics.append(weather)
+        weather_graphics = sorted(weather_graphics);
+
 
 
         with open(os.path.join(abspath_htdocs, "classes" , "Core", "Config.php"), "w") as f:
@@ -389,6 +383,7 @@ class CommandInstall(Command):
             f.write("\n")
             f.write("    // server_cfg\n")
             f.write("    const ServerSlotAmount = %d;\n" % int(self.getGeneralArg('server-slot-amount')))
+            f.write("    const WeatherGraphics = ['%s'];\n" % "', '".join(weather_graphics))
             f.write("\n")
             f.write("    // discord webhooks\n")
             f.write("    const DWhManSrvStrtUrl = \"%s\";\n" % self.getIniSection("DISCORD_WEBHOOKS")['MANUAL_SERVER_START_URL'])

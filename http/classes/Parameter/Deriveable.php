@@ -170,12 +170,28 @@ abstract class Deriveable {
                 if ($child !== NULL) {
                     $child->dataArrayImport($child_data);
                 } else {
-                    \Core\Log::warning("Cannot import '$child_key'");
+                    $this->dataArrayImportUnknownChild($child_data);
                 }
             }
         }
 
         if (array_key_exists('DA', $data)) $this->derivedAccessability($data['DA']);
+    }
+
+
+    // When a key of a collection has been changed,
+    // this recursive method tries to find existing children in the record
+    private function dataArrayImportUnknownChild(array $data) {
+        if (array_key_exists('CHLD', $data)) {
+            foreach ($data['CHLD'] as $child_key=>$child_data) {
+                $child = $this->child($child_key);
+                if ($child !== NULL) {
+                    $child->dataArrayImport($child_data);
+                } else {
+                    $this->dataArrayImportUnknownChild($child_data);
+                }
+            }
+        }
     }
 
 
@@ -271,7 +287,7 @@ abstract class Deriveable {
             $html .= ", accessability=" . $child->accessability();
             if ($child instanceof Parameter) {
                 $html .= ", inherit=" . $child->inheritValue();
-                $html .= ", value=" . $child->value();
+                $html .= ", value=" . print_r($child->value(), TRUE);
             }
             $html .= ")</small><br>";
 

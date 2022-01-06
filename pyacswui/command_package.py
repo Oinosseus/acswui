@@ -223,3 +223,8 @@ class CommandPackage(Command):
             # copy files
             for weather_file in os.listdir(os.path.join(path_ac_weather, weather)):
                 self._copy2acs("content", "weather", weather, weather_file)
+
+                preview_src = os.path.join(os.path.join(path_ac_weather, weather, "preview.jpg"))
+                if os.path.isfile(preview_src):
+                    self._copy2http("content", "weather", weather, "preview.jpg")
+
