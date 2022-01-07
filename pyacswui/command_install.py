@@ -342,14 +342,6 @@ class CommandInstall(Command):
         if self.getGeneralArg('log-debug').lower() == "true":
             log_debug = "TRUE"
 
-        # scan weather
-        weather_graphics = []
-        path_ac_weather = os.path.join(self.getGeneralArg("path-data"), "acserver", "content", "weather")
-        for weather in os.listdir(path_ac_weather):
-            weather_graphics.append(weather)
-        weather_graphics = sorted(weather_graphics);
-
-
 
         with open(os.path.join(abspath_htdocs, "classes" , "Core", "Config.php"), "w") as f:
             f.write("<?php\n")
@@ -383,7 +375,6 @@ class CommandInstall(Command):
             f.write("\n")
             f.write("    // server_cfg\n")
             f.write("    const ServerSlotAmount = %d;\n" % int(self.getGeneralArg('server-slot-amount')))
-            f.write("    const WeatherGraphics = ['%s'];\n" % "', '".join(weather_graphics))
             f.write("\n")
             f.write("    // discord webhooks\n")
             f.write("    const DWhManSrvStrtUrl = \"%s\";\n" % self.getIniSection("DISCORD_WEBHOOKS")['MANUAL_SERVER_START_URL'])

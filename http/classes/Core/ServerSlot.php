@@ -195,15 +195,8 @@ class ServerSlot {
                 $p->setMax(65535);
 
 
-
                 // set all deriveable and visible
-                function __adjust_derived_collection($collection) {
-                    $collection->derivedAccessability(2);
-                    foreach ($collection->children() as $child) {
-                        __adjust_derived_collection($child);
-                    }
-                }
-                __adjust_derived_collection($root_collection);
+                $root_collection->setAllAccessible();
 
                 // derive base collection from (invisible) root collection
                 $this->ParameterCollection = new \Parameter\Collection($root_collection, NULL);
@@ -426,7 +419,16 @@ class ServerSlot {
         fwrite($f, "WELCOME_MESSAGE=\n");  //! @todo needs to be implemented as parameter
         fwrite($f, "PICKUP_MODE_ENABLED=" . (($ppc->child("AcServerPickupMode")->value()) ? 1:0) . "\n");
         fwrite($f, "LOOP_MODE=0\n");  // ACswui system does require LOOP_MODE=0
-        fwrite($f, "SUN_ANGLE=" . $ppc->child("AcServerSunAngle")->value() . "\n");
+
+        if ($preset->anyWeatherUsesCsp()) {
+            $time_minutes = $ppc->child("SessionStartTime")->value();
+            fwrite($f, "SUN_ANGLE=-80\n");
+            fwrite($f, "TIME_OF_DAY_MULT=0.1\n");
+        } else {
+            fwrite($f, "SUN_ANGLE=" . $ppc->child("SessionStartTime")->valueSunAngle() . "\n");
+            fwrite($f, "TIME_OF_DAY_MULT=" . $ppc->child("AcServerTimeMultiplier")->value() . "\n");
+        }
+
         fwrite($f, "QUALIFY_MAX_WAIT_PERC=" . $ppc->child("AcServerQualifyingWaitPerc")->value() . "\n");
         fwrite($f, "LEGAL_TYRES=" . $ppc->child("AcServerLegalTyres")->value() . "\n");
         fwrite($f, "RACE_OVER_TIME=" . $ppc->child("AcServerRaceOverTime")->value() . "\n");
@@ -436,7 +438,6 @@ class ServerSlot {
         fwrite($f, "LOCKED_ENTRY_LIST=" . (($ppc->child("AcServerLockedEntryList")->value()) ? 1:0) . "\n");
         fwrite($f, "START_RULE=" . $ppc->child("AcServerStartRule")->value() . "\n");
         fwrite($f, "RACE_GAS_PENALTY_DISABLED=" . (($ppc->child("AcServerRaceGasPenalty")->value()) ? 1:0) . "\n");
-        fwrite($f, "TIME_OF_DAY_MULT=" . $ppc->child("AcServerTimeMultiplier")->value() . "\n");
         fwrite($f, "RESULT_SCREEN_TIME=" . $ppc->child("AcServerResultScreenTime")->value() . "\n");
         fwrite($f, "MAX_CONTACTS_PER_KM=" . $ppc->child("AcServerMaxContactsPerKm")->value() . "\n");
         fwrite($f, "RACE_EXTRA_LAP=" . (($ppc->child("AcServerExtraLap")->value()) ? 1:0) . "\n");
@@ -513,19 +514,19 @@ class ServerSlot {
         fwrite($f, "SESSION_TRANSFER=" . $ppc->child("AcServerDynamicTrackSessionTransfer")->value() . "\n");
 
         // weather
-        $weathers = array();
-        if (count($ppc->child("AcServerWeather")->valueList()) > 0) {
-            foreach ($ppc->child("AcServerWeather")->valueList() as $w_id) {
-                $weathers[] = \DbEntry\Weather::fromId($w_id);
-            }
-        } else {
-            $weathers[] = \DbEntry\Weather::fromId(0);
-        }
-
+        $weathers = $preset->weathers();
         for ($i=0; $i<count($weathers); ++$i) {
             $wpc = $weathers[$i]->parameterCollection();
             fwrite($f, "\n[WEATHER_$i]\n");
-            fwrite($f, "GRAPHICS=" . $wpc->child("Graphic")->value() . "\n");
+
+            $g = $wpc->child("Graphic");
+            $g_str = $g->getGraphic();
+            if ($g->csp()) {
+                $g_str .= "_time=" . $ppc->child("SessionStartTime")->valueSeconds();
+                $g_str .= "_mult=" . 10 * $ppc->child("AcServerTimeMultiplier")->value();
+            }
+            fwrite($f, "GRAPHICS=$g_str\n");
+
             fwrite($f, "BASE_TEMPERATURE_AMBIENT=" . $wpc->child("AmbientBase")->value() . "\n");
             fwrite($f, "VARIATION_AMBIENT=" . $wpc->child("AmbientVar")->value() . "\n");
             fwrite($f, "BASE_TEMPERATURE_ROAD=" . $wpc->child("RoadBase")->value() . "\n");
@@ -554,7 +555,7 @@ class ServerSlot {
         $entry_id = 0;
         foreach ($car_class->cars() as $c) {
             foreach ($c->skins() as $s) {
-                if ($entry_id >= $track->pitboxes()) break;
+                if ($entry_id >= ($track->pitboxes() - 5)) break;
 
                 fwrite($f, "\n[CAR_$entry_id]\n");
                 fwrite($f, "MODEL=" . $s->car()->model() . "\n");

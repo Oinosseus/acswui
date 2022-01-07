@@ -17,6 +17,22 @@ class ServerPreset extends DbEntry {
     }
 
 
+    //! @return TRUE if any of the weathers in the preset is using custom shader patch weather
+    public function anyWeatherUsesCsp() {
+        $ppc = $this->parameterCollection();
+        if (count($ppc->child("Weathers")->valueList()) > 0) {
+            foreach ($ppc->child("Weathers")->valueList() as $w_id) {
+                $weather = \DbEntry\Weather::fromId($w_id);
+                if ($weather->parameterCollection()->child("Graphic")->csp()) return TRUE;
+            }
+        } else {
+            $weather = \DbEntry\Weather::fromId(0);
+            if ($weather->csp()) return TRUE;
+        }
+        return FALSE;
+    }
+
+
     //! @return An array of ServerPreset objects that are children of this preset
     public function children() {
         if ($this->ChildPresets === NULL) {
@@ -172,9 +188,7 @@ class ServerPreset extends DbEntry {
 
                 // Environment
                 $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerEnvironment", _("Environment"), "");
-                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerSunAngle", _("Sun Angle"), _("angle of the position of the sun"), "°", 0);
-                $p->setMin(-180);
-                $p->setMax(180);
+                $p = new \Parameter\ParamTime(NULL, $coll, "SessionStartTime", _("Session Start Time"), _("Time at when the session shall start (vanilla AC will clip to the range 08:00 .. 18:00, only CSP weather can go beyond)"), "°", "08:00");
                 $p = new \Parameter\ParamInt(NULL, $coll, "AcServerTimeMultiplier", _("Time Multiplier"), _("multiplier for the time of day"), "", 2);
                 $p->setMin(0);
                 $p->setMax(99);
@@ -198,8 +212,8 @@ class ServerPreset extends DbEntry {
                 $p->setMax(300);
 
                 // weather
-                $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerWeatherGroup", _("Weather"), "");
-                $p = new \Parameter\ParamSpecialWeathers(NULL, $coll, "AcServerWeather", _("Weathers"), _("Select which weathers shall be used on the server"));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "WeatherGroup", _("Weather"), "");
+                $p = new \Parameter\ParamSpecialWeathers(NULL, $coll, "Weathers", _("Weathers"), _("Select which weathers shall be used on the server"));
 
 
                 ////////////////////
@@ -577,15 +591,8 @@ class ServerPreset extends DbEntry {
                 $p->setMax(99);
 
 
-
                 // set all deriveable and visible
-                function __adjust_derived_collection($collection) {
-                    $collection->derivedAccessability(2);
-                    foreach ($collection->children() as $child) {
-                        __adjust_derived_collection($child);
-                    }
-                }
-                __adjust_derived_collection($this->ParameterCollection);
+                $this->ParameterCollection->setAllAccessible();
             }
         }
 
@@ -616,5 +623,20 @@ class ServerPreset extends DbEntry {
         $column_data['ParameterData'] = $data_json;
 
         $this->storeColumns($column_data);
+    }
+
+
+    //! @return An array of Weather objects, which are used for this preset
+    public function weathers() {
+        $ppc = $this->parameterCollection();
+        $weathers = array();
+        if (count($ppc->child("Weathers")->valueList()) > 0) {
+            foreach ($ppc->child("Weathers")->valueList() as $w_id) {
+                $weathers[] = \DbEntry\Weather::fromId($w_id);
+            }
+        } else {
+            $weathers[] = \DbEntry\Weather::fromId(0);
+        }
+        return $weathers;
     }
 }

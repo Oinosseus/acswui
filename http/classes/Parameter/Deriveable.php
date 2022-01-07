@@ -349,6 +349,15 @@ abstract class Deriveable {
     }
 
 
+    //! Set everything from here as fully accessable (including this)
+    public function setAllAccessible() {
+        $this->derivedAccessability(2);
+        foreach ($this->children() as $child) {
+            $child->setAllAccessible();
+        }
+    }
+
+
     //! This function will check for HTTP POST/GEST form data and store the data into the collection
     public function storeHttpRequest() {
 
