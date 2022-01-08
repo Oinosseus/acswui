@@ -29,10 +29,9 @@ class Template extends \Core\HtmlTemplate {
         $html .= "  <body>\n";
 
         $html .= "<div id=\"UserBox\">";
-//         if ($current_user === NULL) {
-            $html .= \Core\UserManager::htmlLogInOut();
-//         } else {
-//         }
+        if ($current_user !== NULL) {
+            $html .= $current_user->name();
+        }
         $html .= "</div>";
 
         $html .= "    <header>\n";
