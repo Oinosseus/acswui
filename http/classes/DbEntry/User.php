@@ -81,12 +81,11 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
-    /**
-     * @return The username that shall be displayed on HTML output (depending on privacy settings)
-     */
-    public function name() {
-        if ($this->isRoot()) return "root";
-        return ($this->privacyFulfilled()) ? $this->loadColumn("Name") : "***";
+    //! @return A date time value formatted for the user
+    public function formatDateTime(\DateTime $dt) {
+        $tz = new \DateTimezone($this->getParam("UserTimezone"));
+        $dt->setTimezone($tz);
+        return $dt->format($this->getParam("UserFormatDate"));
     }
 
 
@@ -97,14 +96,6 @@ class User extends DbEntry { #implements JsonSerializable {
      */
     public static function fromId(int $id) {
         return parent::getCachedObject("Users", "User", $id);
-    }
-
-
-    //! @return A date time value formatted for the user
-    public function formatDateTime(\DateTime $dt) {
-        $tz = new \DateTimezone($this->getParam("UserTimezone"));
-        $dt->setTimezone($tz);
-        return $dt->format($this->getParam("UserFormatDate"));
     }
 
 
@@ -183,6 +174,15 @@ class User extends DbEntry { #implements JsonSerializable {
         }
 
         return User::$DriverList;
+    }
+
+
+    /**
+     * @return The username that shall be displayed on HTML output (depending on privacy settings)
+     */
+    public function name() {
+        if ($this->isRoot()) return "root";
+        return ($this->privacyFulfilled()) ? $this->loadColumn("Name") : "***";
     }
 
 
