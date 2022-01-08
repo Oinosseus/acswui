@@ -9,7 +9,7 @@ class CarSkin extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("Car Skin"),  _("Car Skin"));
-        $this->requirePermission("ViewServerContent_Cars");
+        $this->requirePermission("ServerContent_Cars_View");
     }
 
     public function getHtml() {

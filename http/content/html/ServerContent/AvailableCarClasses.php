@@ -8,11 +8,11 @@ class AvailableCarClasses extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("Car Classes"), _("Available Car Classes"), 'ServerContent');
-        $this->requirePermission("ViewServerContent_CarClasses");
+        $this->requirePermission("ServerContent_CarClasses_View");
     }
 
     public function getHtml() {
-        $this->CanEdit = \Core\UserManager::permitted("CarClass_Edit");
+        $this->CanEdit = \Core\UserManager::permitted("ServerContent_CarClasses_Edit");
         $html = "";
 
         // create new CarClass

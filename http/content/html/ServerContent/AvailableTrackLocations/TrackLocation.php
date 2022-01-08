@@ -6,7 +6,7 @@ class TrackLocation extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("Track Location"),  _("Track Location"));
-        $this->requirePermission("ViewServerContent_Tracks");
+        $this->requirePermission("ServerContent_Tracks_View");
     }
 
     public function getHtml() {

@@ -573,11 +573,11 @@ class CommandInstall(Command):
 
         # list available permissions
         permissions = []
-        permissions.append("ViewServerContent")
-        permissions.append("ViewServerContent_Tracks")
-        permissions.append("ViewServerContent_Cars")
-        permissions.append("ViewServerContent_CarClasses")
-        permissions.append("CarClass_Edit")
+        permissions.append("ServerContent_View")
+        permissions.append("ServerContent_Tracks_View")
+        permissions.append("ServerContent_Cars_View")
+        permissions.append("ServerContent_CarClasses_View")
+        permissions.append("ServerContent_CarClasses_Edit")
         permissions.append("User_View")
         permissions.append("User_Settings")
         permissions.append("User_Groups_View")

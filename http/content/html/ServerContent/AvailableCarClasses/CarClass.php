@@ -12,13 +12,13 @@ class CarClass extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("Car Class"),  _("Car CarClass"));
-        $this->requirePermission("ViewServerContent_CarClasses");
+        $this->requirePermission("ServerContent_CarClasses_View");
         $this->addScript("Content_CarClass.js");
     }
 
 
     public function getHtml() {
-        $this->CanEdit = \Core\UserManager::permitted("CarClass_Edit");
+        $this->CanEdit = \Core\UserManager::permitted("ServerContent_CarClasses_Edit");
 
         // delete carclass
         if ($this->CanEdit && array_key_exists("DeleteCarClass", $_POST)) {
