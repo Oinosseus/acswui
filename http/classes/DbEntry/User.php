@@ -110,6 +110,9 @@ class User extends DbEntry { #implements JsonSerializable {
             foreach ($res as $row) {
                 $this->Groups[] = \DbEntry\Group::fromId($row['Group']);
             }
+
+            // check for automatic group assignments
+            if ($this->isDriver()) $this->Groups[] = Group::fromName(\Core\Config::DriverGroup);
         }
         return $this->Groups;
     }

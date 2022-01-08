@@ -18,6 +18,14 @@ class UserProfile extends \core\HtmlContent {
             $html .= "<strong>" . _("ID") . "</strong>: " . $user->id() . "<br>";
             $html .= "<strong>" . _("Name") . "</strong>: " . $user->name() . "<br>";
             $html .= "<strong>Steam64GUID</strong>: " . $user->steam64GUID() . "<br>";
+
+            $html .= "<strong>" . _("User Groups") . "</strong>:";
+            for ($i=0; $i < count($user->groups()); ++$i) {
+                $html .= ($i == 0) ? " " : ", ";
+                $html .= $user->groups()[$i]->name();
+            }
+            $html .= "<br>";
+
             $html .= "<strong>" . _("Last Login") . "</strong>: " . $user->formatDateTime($user->lastLogin()) . " (" . $user->daysSinceLastLogin() . "d)<br>";
 
             $html .= "<strong>" . _("Status") . "</strong>: ";
