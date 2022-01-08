@@ -85,6 +85,11 @@ div.ParameterIsInherited {
     color: var(--color-disabled);
 }
 
+img.ParameterUserCountry {
+    max-height: 1.0em;
+    display: inline-block;
+}
+
 
 /*****************************************************************************
                             Collections

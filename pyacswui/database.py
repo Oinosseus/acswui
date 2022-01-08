@@ -420,3 +420,11 @@ class Database(object):
         cursor.execute(query)
         cursor.close()
         self.__db_handle.commit()
+
+
+    def deleteColumn(self, tblname, column_name):
+        query ="ALTER TABLE `" + tblname + "` DROP `" + column_name + "`"
+        cursor = self.__db_handle.cursor()
+        cursor.execute(query)
+        cursor.close()
+        self.__db_handle.commit()

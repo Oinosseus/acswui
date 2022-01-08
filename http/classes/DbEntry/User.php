@@ -8,13 +8,18 @@ namespace DbEntry;
 class User extends DbEntry { #implements JsonSerializable {
 
     private $Steam64GUID = NULL;
-    private $Color = NULL;
-    private $Privacy = NULL;
     private $Locale = NULL;
     private $Groups = NULL;
     private $Permissions = NULL;
+    private $ParameterCollection = NULL;
+
+    private $DaysSinceLastLap = NULL;
+    private $DaysSinceLastLogin = NULL;
 
     private static $UserList = NULL;
+    private static $DriverList = NULL;
+
+    private $CountLaps = NULL;
 
 
     /**
@@ -25,14 +30,54 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
-    //! @return The color code for this user as string (eg #12ab9f)
-    public function color() {
-        if ($this->isRoot()) return "#000000";
-        if ($this->Color === NULL) {
-            $this->Color = $this->loadColumn("Color");
-            if ($this->Color == "") $this->Color = "#000000";
+    //! @return The number of driven laps by this user
+    public function countLaps() {
+        if ($this->CountLaps === NULL) {
+            $res = \Core\Database::fetchRaw("SELECT COUNT(Id) FROM Laps WHERE User=" . $this->id());
+            $this->CountLaps = (int) $res[0]['COUNT(Id)'];
         }
-        return $this->Color;
+        return $this->CountLaps;
+    }
+
+
+    //! @return The amount of days since the last driven lap (999999 if the user never drove a lap)
+    public function daysSinceLastLap() {
+        if ($this->DaysSinceLastLap === NULL) {
+            $query = "SELECT Timestamp FROM Laps WHERE User=" . $this->id() . " ORDER BY Id DESC LIMIT 1;";
+            $res = \Core\Database::fetchRaw($query);
+            if (count($res) == 1) {
+                $t_last_lap = \Core\Database::timestamp2DateTime($res[0]['Timestamp']);
+                $_now = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+                $t_diff = $_now->diff($t_last_lap);
+                $this->DaysSinceLastLap = $t_diff->days;
+            } else {
+                $this->DaysSinceLastLap = 999999;
+            }
+        }
+        return $this->DaysSinceLastLap;
+    }
+
+
+    //! @return The amount of days since the last login of the user (when never logged in '0000-00-00T00:00:00' is assumed)
+    public function daysSinceLastLogin() {
+        if ($this->DaysSinceLastLogin === NULL) {
+            $t_last_login = $this->lastLogin();
+            $_now = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+            $t_diff = $_now->diff($t_last_login);
+            $this->DaysSinceLastLogin = $t_diff->days;
+        }
+        return $this->DaysSinceLastLogin;
+    }
+
+
+    /**
+     * Access parameters statically
+     *
+     * get("fooBar") is the same as parameterCollection()->child"fooBar")->value()
+     * @return The curent value of a certain parameter
+     */
+    public function getParam(string $parameter_key) {
+        return $this->parameterCollection()->child($parameter_key)->value();
     }
 
 
@@ -55,6 +100,14 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    //! @return A date time value formatted for the user
+    public function formatDateTime(\DateTime $dt) {
+        $tz = new \DateTimezone($this->getParam("UserTimezone"));
+        $dt->setTimezone($tz);
+        return $dt->format($this->getParam("UserFormatDate"));
+    }
+
+
     //! @return A list of Group objects where the user is member in
     public function groups() {
         if ($this->isRoot()) {
@@ -71,61 +124,78 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    //! @return TRUE if the user is an active driver and uses the ACswui system
+    public function isCommunity() {
+        if (!$this->isDriver()) return FALSE;
+        return ($this->daysSinceLastLogin() <= \Core\ACswui::getParam("CommunityLastLoginDays")) ? TRUE : FALSE;
+    }
+
+
+    //! TRUE if the user is an active driver
+    public function isDriver() {
+        return ($this->daysSinceLastLap() <= \Core\ACswui::getParam("NonActiveDrivingDays")) ? TRUE : FALSE;
+    }
+
+
     //! @return True, if this represents the root user, else False
     public function isRoot() {
         return $this->id() === 0;
     }
 
 
-    //! @return The preferred locale of the user
-    public function locale() {
-        if ($this->isRoot()) return "";
-        if ($this->Locale === NULL) {
-            $this->Locale = $this->loadColumn('Locale');
-        }
-        return $this->Locale;
+    //! @return A DateTime object
+    public function lastLogin() {
+        return \Core\Database::timestamp2DateTime($this->loadColumn("LastLogin"));
     }
 
 
-    /**
-     * Set a new color for the user
-     * @param $color E.g. '#12ab98'
-     */
-    public function setColor(string $color) {
 
-        if (strlen($color) !== 7 || substr($color, 0, 1) != "#") {
-            \Core\Log::error("Malformed color: '$color'!");
-            return;
+    //! @return A list of all users
+    public static function listUsers() {
+
+        if (User::$UserList === NULL) {
+            User::$UserList = array();
+            foreach (\Core\Database::fetch("Users", ['Id']) as $u) {
+                User::$UserList[] = User::fromId($u['Id']);
+            }
         }
 
-        \Core\Database::update("Users", $this->id(), ['Color'=>$color]);
-        $this->Color = $color;
+        return User::$UserList;
     }
 
 
-    public function setLocale(string $new_locale) {
+    //! @return A list of users which are considered to be active drivers
+    public static function listDrivers() {
 
-        // sanity check
-        if (!in_array($new_locale, \Core\Config::Locales)) {
-            $new_locale = "";
+        if (User::$DriverList === NULL) {
+            User::$DriverList = array();
+
+            $t_thld = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+            $days = \Core\ACswui::getParam("NonActiveDrivingDays");
+            $delta_t = new \DateInterval("P" . $days . "D");
+            $t_thld = $t_thld->sub($delta_t);
+
+            $query = "SELECT DISTINCT User FROM Laps WHERE Timestamp >= \"" . \Core\Database::dateTime2timestamp($t_thld)  . "\"";
+            $res = \Core\Database::fetchRaw($query);
+            foreach ($res as $row) {
+                User::$DriverList[] = User::fromId($row['User']);
+            }
         }
-        if ($new_locale === $this->Locale) return;
 
-        // update DB
-        \Core\Database::update("Users", $this->id(), ['Locale'=>$new_locale]);
-        $this->Locale = $new_locale;
+        return User::$DriverList;
     }
 
 
-    public function setPrivacy(int $privacy) {
-
-        if ($privacy < -1 || $privacy > 1) {
-            \Core\Log::error("Invalid privacy value: $privacy!");
-            return;
+    public function parameterCollection() {
+        if ($this->ParameterCollection === NULL) {
+            $base = (new \Core\ACswui)->parameterCollection()->child("User");
+            $this->ParameterCollection = new \Parameter\Collection($base, NULL);
+            $data_json = $this->loadColumn('ParameterData');
+            $data_array = json_decode($data_json, TRUE);
+            if ($data_array !== NULL) $this->ParameterCollection->dataArrayImport($data_array);
         }
 
-        \Core\Database::update("Users", $this->id(), ['Privacy'=>$privacy]);
-        $this->Privacy = $privacy;
+        return $this->ParameterCollection;
     }
 
 
@@ -148,38 +218,58 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
-    /**
-     * Following values are possible:
-     * -1 (Private): Absolute privacy (not showing any personal information to public
-     * 0 (Community): Only show personal information to logged in users
-     * 1 (Public): Allow anyone to see personal information
-     * @return The privacy level for this user
-     */
-    public function privacy() {
-        if ($this->isRoot()) return 0;
-        if ($this->Privacy == NULL) $this->Privacy = (int) $this->loadColumn("Privacy");
-        return $this->Privacy;
+    //! @return TRUE if the requsted privacy level is currenlty fulfuilled
+    public function privacyFulfilled() {
+        $privacy_fillfilled = FALSE;
+
+        // root user
+//         if ($this->isRoot()) return TRUE;
+
+        $current_user = \Core\UserManager::loggedUser();
+
+        // privacy is always fulfilled when the current user is the requested user
+        if ($current_user && $current_user->id() == $this->id()) return TRUE;
+
+        // check permission
+        switch ($this->getParam("UserPrivacy")) {
+            case 'Public';
+                $privacy_fillfilled = TRUE;
+                break;
+            case 'ActiveDriver':
+                if ($current_user && $current_user->isDriver()) $privacy_fillfilled = TRUE;
+                break;
+            case 'Community':
+                if ($current_user && $current_user->isCommunity()) $privacy_fillfilled = TRUE;
+                break;
+            case 'Private':
+                break;
+            default:
+                \Core\Log::error("Unexpected privacy level '" . $this->getParam("UserPrivacy") . "'!");
+                break;
+        }
+
+        return $privacy_fillfilled;
     }
 
 
-    //! @return TRUE if the requsted privacy level is currenlty fulfuilled
-    public function privacyFulfilled() {
+    /**
+     * Saves the current values of the users parameterCollection.
+     * Remember to retrieve enventally posted changes before.
+     *
+     * $user->parameterCollection()->storeHttpRequest();
+     * $user->saveParameterCollection()
+     */
+    public function saveParameterCollection() {
+        if ($this->id() == 0) return;
 
-        // root user
-        if ($this->isRoot()) return TRUE;
+        $column_data = array();
 
-        $current_user = \Core\UserManager::loggedUser();
-        $privacy = $this->privacy();
+        // parameter data
+        $data_array = $this->parameterCollection()->dataArrayExport();
+        $data_json = json_encode($data_array);
+        $column_data['ParameterData'] = $data_json;
 
-        if ($current_user && $current_user->id() == $this->id()) {
-            return TRUE;
-        } else if ($privacy > 0) {
-            return TRUE;
-        } else if ($privacy == 0 && $current_user) {
-            return TRUE;
-        }
-
-        return FALSE;
+        $this->storeColumns($column_data);
     }
 
 
@@ -191,18 +281,6 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
-    //! @return A list of all users
-    public static function listUsers() {
-
-        if (User::$UserList === NULL) {
-            User::$UserList = array();
-            foreach (\Core\Database::fetch("Users", ['Id']) as $u) {
-                User::$UserList[] = User::fromId($u['Id']);
-            }
-        }
-
-        return User::$UserList;
-    }
 }
 
 ?>

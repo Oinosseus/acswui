@@ -1,37 +1,33 @@
 import argparse
-import subprocess
-import shutil
-import os
+import getpass
 import json
-import re
+import os
 import pymysql
+import re
+import shutil
+import subprocess
 from .command import Command, ArgumentException
 from .database import Database
-from .verbosity import Verbosity
-from .installer_tracks import InstallerTracks
 from .installer_cars import InstallerCars
 from .installer_database import InstallerDatabase
+from .installer_tracks import InstallerTracks
+from .verbosity import Verbosity
+
 
 class CommandInstall(Command):
 
     def __init__(self, argparser):
         Command.__init__(self, argparser, "install", "Server-Installer -  install http from server package")
-
-        self.add_argument('--root-password', help="Password for root user")
-        self.add_argument('--guest-group', default="Guests", help="Group name of visitors that are not logged in")
-        self.add_argument('--driver-group', default="Drivers", help="Group name for users that are logged in")
-        self.add_argument('--default-template', default="acswui", help="Default template for http")
         self.add_argument('--base-data', action="store_true", help="install basic http data (default groups, etc.)")
         self.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
+        self.__root_password = "";
 
 
 
     def process(self):
         self._verbosity = Verbosity(self.getArg("v"), self.__class__.__name__)
-        self._verbosity.print("begin process")
 
         # setup database
-        self._verbosity.print("setup datatasbe")
         self.__db = Database(host=self.getGeneralArg("db-host"),
                              port=self.getGeneralArg("db-port"),
                              database=self.getGeneralArg("db-database"),
@@ -39,10 +35,25 @@ class CommandInstall(Command):
                              password=self.getGeneralArg("db-password")
                              )
 
+        # root password
+        print("Set a password for the HTTP root user (leave empty to disable root login)")
+        pwd1 = getpass.getpass("assign HTTP root password:")
+        if len(pwd1) > 0:
+            pwd2 = getpass.getpass("confirm HTTP root password:")
+            pwd2 = pwd2.strip()  # only strip second to detect crazy admins that use whitespaces at the beginning or end of their passwords
+            if pwd1 != pwd2:
+                print("ERROR: Passwords to not match")
+                exit(1);
+            self.__root_password = pwd2
+        else:
+            print("HTTP root login disabled")
+
         # install work
-        self._verbosity.print("initialize data")
+        self._verbosity.print("copy data")
         self.__work_copy_files()
 
+        # database
+        self._verbosity.print("install datatasbe tables")
         installer = InstallerDatabase(self.__db, self._verbosity)
         installer.process()
 
@@ -73,29 +84,40 @@ class CommandInstall(Command):
                 self.__db.updateRow("Users", row['Id'], {'Name': row['Login']})
 
 
-        self._verbosity.print("start scanning AC content")
         self.__work_cconfig()
 
+        # cars
+        self._verbosity.print("scanning available cars")
         installer = InstallerCars(self.__db,
                                   self.getGeneralArg("path-srvpkg"),
                                   self.getGeneralArg("path-htdata"),
                                   self._verbosity)
         installer.process()
 
+        # tracks
+        self._verbosity.print("scanning available tracks")
         installer = InstallerTracks(self.__db,
                              self.getGeneralArg("path-srvpkg"),
                              self.getGeneralArg("path-htdata"),
                              self._verbosity)
         installer.process()
 
-        installer = None
+        installer = None  # I can't remember why I put this is here. Maybe to ensure destructor is called?
 
+        # ?? stuff
         self.__work_database_data()
 
-        self._verbosity.print("post processing")
+        # translations
+        self._verbosity.print("installing translations")
         self.__work_translations()
+
+        # base data
         if self.getArg("base-data") is True:
+            self._verbosity.print("installing base data")
             self.__work_install_basics()
+
+        # chmod
+        self._verbosity.print("chgrp for http server user-group")
         self.__set_chmod()
 
 
@@ -112,7 +134,7 @@ class CommandInstall(Command):
             elif type(value) == type([]):
                 raise NotImplementedError("please implement list2php()")
             else:
-                value = str(value)
+                value = "\"" + str(value) + "\""
 
             list_php_elements.append("\"" + str(key) + "\"=>" + value)
 
@@ -237,9 +259,9 @@ class CommandInstall(Command):
             path_data_acserver_binslot = os.path.join(path_data_acserver, "acServer%i" % slot_nr)
             shutil.copy(path_srvpkg_acserver_bin, path_data_acserver_binslot)
 
-        # server slots
-        path_data_server_slots = os.path.join(path_data, "server_slots")
-        self.mkdirs(path_data_server_slots)
+        # common config directory
+        path_data_acswui_config = os.path.join(path_data, "acswui_config")
+        self.mkdirs(path_data_acswui_config)
 
         # real penalty
         path_srvpkg_rp = os.path.join(self.getGeneralArg("path-srvpkg"), "RealPenalty_ServerPlugin")
@@ -310,7 +332,7 @@ class CommandInstall(Command):
         self._verbosity.print("create Config.php")
 
         # encrypt root password
-        http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.getArg('root-password')])
+        http_root_password = subprocess.check_output(['php', '-r', 'echo(password_hash("%s", PASSWORD_BCRYPT));' % self.__root_password])
         http_root_password = http_root_password.decode("utf-8")
 
         # paths
@@ -342,6 +364,14 @@ class CommandInstall(Command):
         if self.getGeneralArg('log-debug').lower() == "true":
             log_debug = "TRUE"
 
+        # identify local time zone
+        time_zone = subprocess.check_output(["date", "+%Z"]).decode("utf-8").strip()
+
+        # country codes
+        country_codes_json_string = subprocess.check_output(["curl", "https://flagcdn.com/en/codes.json"]).decode("utf-8")
+        country_codes_json = json.loads(country_codes_json_string)
+
+
 
         with open(os.path.join(abspath_htdocs, "classes" , "Core", "Config.php"), "w") as f:
             f.write("<?php\n")
@@ -358,13 +388,15 @@ class CommandInstall(Command):
             f.write("    const AbsPathAcswui = \"%s\";\n" % abspath_acswui)
             f.write("\n")
             f.write("    // basic constants\n")
-            f.write("    const DefaultTemplate = \"%s\";\n" % self.getArg('default-template'))
+            f.write("    const DefaultTemplate = \"acswui\";\n")
             f.write("    const LogWarning = %s;\n" % log_warning)
             f.write("    const LogDebug = %s;\n" % log_debug)
             f.write("    const RootPassword = '%s';\n" % http_root_password)
-            f.write("    const GuestGroup = '%s';\n" % self.getArg('guest-group'))
-            f.write("    const DriverGroup = '%s';\n" % self.getArg('driver-group'))
+            f.write("    const GuestGroup = '%s';\n" % self.getGeneralArg('user-group-guest'))
+            f.write("    const DriverGroup = '%s';\n" % self.getGeneralArg('user-group-driver'))
             f.write("    const Locales = [%s];\n" % ", ".join(locales))
+            f.write("    const LocalTimeZone = '%s';\n" % time_zone)
+            f.write("    const Countries = %s;\n" % self.dict2php(country_codes_json))
             f.write("\n")
             f.write("    // database constants\n")
             f.write("    const DbHost = \"%s\";\n" % self.getGeneralArg('db-host'))
@@ -395,7 +427,7 @@ class CommandInstall(Command):
 
         # add guest group
         try:
-            guest_group = self.getArg("guest-group")
+            guest_group = self.getGeneralArg('user-group-guest')
         except ArgumentException as e:
             guest_group = ""
 
@@ -488,7 +520,7 @@ class CommandInstall(Command):
         paths.append(os.path.join(abspath_data, "acserver"))
         paths.append(os.path.join(abspath_data, "acserver", "cfg"))
         paths.append(os.path.join(abspath_data, "acserver", "results"))
-        paths.append(os.path.join(abspath_data, "server_slots"))
+        paths.append(os.path.join(abspath_data, "acswui_config"))
         paths.append(os.path.join(abspath_data, "real_penalty"))
         paths.append(os.path.join(abspath_data, "acswui_udp_plugin"))
         paths.append(os.path.join(abspath_htdata, "realtime"))
@@ -529,8 +561,46 @@ class CommandInstall(Command):
 
         # default groups
         groups = []
-        groups.append(self.getArg('driver-group'))
-        groups.append(self.getArg('guest-group'))
+        groups.append(self.getGeneralArg('user-group-driver'))
+        groups.append(self.getGeneralArg('user-group-guest'))
         for g in groups:
             if len(self.__db.fetch("Groups", ['Id'], {'Name':g})) == 0:
                 self.__db.insertRow("Groups", {"Name":g})
+
+        # ---------------------------------------------------------------------
+        #                             Permissions
+        # ---------------------------------------------------------------------
+
+        # list available permissions
+        permissions = []
+        permissions.append("ViewServerContent")
+        permissions.append("ViewServerContent_Tracks")
+        permissions.append("ViewServerContent_Cars")
+        permissions.append("ViewServerContent_CarClasses")
+        permissions.append("CarClass_Edit")
+        permissions.append("User_View")
+        permissions.append("User_Settings")
+        permissions.append("User_Groups_View")
+        permissions.append("User_Groups_Edit")
+        permissions.append("User_Management_View")
+        permissions.append("User_Management_Edit")
+        permissions.append("Settings_View")
+        permissions.append("Settings_ACswui_View")
+        permissions.append("Settings_ACswui_Edit")
+        permissions.append("Settings_Presets_View")
+        permissions.append("Settings_Presets_Edit")
+        permissions.append("Settings_Slots_View")
+        permissions.append("Settings_Slots_Edit")
+        permissions.append("Settings_Weather_View")
+        permissions.append("Settings_Weather_Edit")
+        permissions.append("Sessions_View")
+        permissions.append("Sessions_Control")
+
+        # delete obsolete permissions
+        for column in self.__db.columns("Groups"):
+            if column not in ["Id", "Name"] + permissions:
+                self.__db.deleteColumn("Groups", column)
+
+        # create missing columns
+        for p in permissions:
+            self.__db.appendColumnTinyInt("Groups", p)

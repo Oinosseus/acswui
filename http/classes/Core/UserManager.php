@@ -27,6 +27,11 @@ class UserManager {
     private static function login(int $user_id) {
         UserManager::$CurrentLoggedUser = \DbEntry\User::fromId($user_id);
         $_SESSION['CurrentLoggedUserId'] = UserManager::$CurrentLoggedUser->id();
+
+        // update last login time
+        $t_now = new \DateTime("now", new \DateTimezone(Config::LocalTimeZone));
+        $login_time = Database::dateTime2timestamp($t_now);
+        Database::update("Users", $user_id, ['LastLogin'=>$login_time]);
     }
 
 

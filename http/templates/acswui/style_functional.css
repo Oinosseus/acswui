@@ -1,5 +1,5 @@
 /* -----------------------------------------------------------------------------
- *                             Table Row Delete
+ *                             Table Row/Column Delete
  * -----------------------------------------------------------------------------
  *
  * See \Core\HtmlContent::newHtmlTableRowDeleteCheckbox()
@@ -12,6 +12,11 @@ table tr.RowWillBeDeleted {
 table tr.RowWillBeDeleted td {
     background-color: none;
     color: #a44;
+}
+
+table td.ColumnWillBeDeleted,
+table th.ColumnWillBeDeleted {
+    background-color: var(--color-red-accent);
 }
 
 label.HtmlContentDeleteCheckbox {

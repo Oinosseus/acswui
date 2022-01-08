@@ -18,8 +18,7 @@ spl_autoload_register(function($className) {
 //     }
 
     $file_path = 'classes/' . $className . '.php';
-
-    include_once $file_path;
+    if (file_exists($file_path)) include_once $file_path;
 });
 
 // session control

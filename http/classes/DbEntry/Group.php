@@ -44,8 +44,8 @@ class Group extends DbEntry {
             return;
         }
 
-        // Delete all maps with this group
-        //! @todo
+        // delete all maps with this group
+        \Core\Database::query("DELETE FROM UserGroupMap WHERE UserGroupMap.Group = " . $this->id() . ";");
 
         $this->deleteFromDb();
         Group::$GroupsList = NULL;

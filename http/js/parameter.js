@@ -80,3 +80,20 @@ function toggleParamWeatherGraphic(param_key) {
     var img = select.previousElementSibling;
     img.setAttribute('src', weather_img);
 }
+
+
+function toggleParamUserCountry(param_key) {
+
+    // retrieve selected weather image
+    var select = document.getElementById('ParameterUserCountry' + param_key);
+    var country_code = select.options[select.selectedIndex].getAttribute('value');
+
+    // replace new img src
+    var img = select.previousElementSibling;
+    if (country_code == "_") {
+        img.style.display = "none";
+    } else {
+        img.setAttribute('src', "https://flagcdn.com/" + country_code + ".svg");
+        img.style.display = "inline-block";
+    }
+}

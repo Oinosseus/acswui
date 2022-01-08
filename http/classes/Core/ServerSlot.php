@@ -203,7 +203,7 @@ class ServerSlot {
             }
 
             // load data from disk
-            $file_path = \Core\Config::AbsPathData . "/server_slots/" . $this->id() . ".json";
+            $file_path = \Core\Config::AbsPathData . "/acswui_config/server_slot_" . $this->id() . ".json";
             if (file_exists($file_path)) {
                 $ret = file_get_contents($file_path);
                 if ($ret === FALSE) {
@@ -216,6 +216,8 @@ class ServerSlot {
                         $this->parameterCollection()->dataArrayImport($data_array);
                     }
                 }
+            } else {
+                \Core\Log::warning("Server Slot Config file '$file_path' does not exist.");
             }
         }
 
@@ -255,7 +257,7 @@ class ServerSlot {
         $data_json = json_encode($data_array);
 
         // write to file
-        $file_path = \Core\Config::AbsPathData . "/server_slots/" . $this->id() . ".json";
+        $file_path = \Core\Config::AbsPathData . "/acswui_config/server_slot_" . $this->id() . ".json";
         $f = fopen($file_path, 'w');
         if ($f === FALSE) {
             \Core\Log::error("Cannot write to file '$file_path'!");
@@ -498,7 +500,7 @@ class ServerSlot {
             fwrite($f, "IS_OPEN=" . $ppc->child("AcServerQualifyingIsOpen")->value() . "\n");
         }
 
-        if ($ppc->child("AcServerQualifyingTime")->value() > 0) {
+        if ($ppc->child("AcServerRaceTime")->value() > 0 || $ppc->child("AcServerRaceLaps")->value() > 0) {
             fwrite($f, "\n[RACE]\n");
             fwrite($f, "NAME=" . $ppc->child("AcServerRaceName")->value() . "\n");
             fwrite($f, "LAPS=" . $ppc->child("AcServerRaceLaps")->value() . "\n");

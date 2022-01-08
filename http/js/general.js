@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 // ----------------------------------------------------------------------------
-//                           TableRowDelete
+//                           TableRow/ColumnDelete
 // ----------------------------------------------------------------------------
 
 function toggleTableRowDelete(input_element) {
@@ -50,5 +50,52 @@ function toggleTableRowDelete(input_element) {
     } else {
         tr.classList.remove('RowWillBeDeleted');
         label.classList.remove('Checked');
+    }
+}
+
+function toggleTableColumnDelete(input_element) {
+
+    // find parenting label element
+    var label = input_element.parentElement;
+    while (1) {
+        if (label.tagName == "LABEL") break;
+        label = label.parentElement;
+    }
+
+    // determine column index
+    var col_index = 0;
+    var previous_sibling = label.parentElement.previousElementSibling;
+    while (previous_sibling) {
+        previous_sibling = previous_sibling.previousElementSibling;
+        ++col_index;
+    }
+
+    // get table element
+    var table = label.parentElement.parentElement.parentElement;
+
+    // assign css class
+    if (input_element.checked) {
+        label.classList.add('Checked');
+
+        // apply to all columns
+        for (var i=0; i < table.children.length; ++i) {
+            var row = table.children[i]
+            if (row.tagName == "TR") {
+                var column = row.children[col_index];
+                column.classList.add('ColumnWillBeDeleted');
+            }
+        }
+
+    } else {
+        label.classList.remove('Checked');
+
+        // apply to all columns
+        for (var i=0; i < table.children.length; ++i) {
+            var row = table.children[i]
+            if (row.tagName == "TR") {
+                var column = row.children[col_index];
+                column.classList.remove('ColumnWillBeDeleted');
+            }
+        }
     }
 }

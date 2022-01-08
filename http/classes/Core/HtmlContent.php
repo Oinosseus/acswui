@@ -273,6 +273,25 @@ abstract class HtmlContent {
 
 
     /**
+     * Generates a checkbox element to indicate if a table column shall be deleted (or not).
+     * This must be placed within a <tr><td> construct.
+     * When the column shall be deleted, all <td> elements in the same column gets the CSS class 'ColumnWillBeDeleted' assigned
+     * @param $var_name A custom name for the checkbox element (will be available as $_REQUEST variable on form submission)
+     */
+    public function newHtmlTableColumnDeleteCheckbox(string $var_name) {
+        $html = "";
+
+        $html .= "<label class=\"HtmlContentDeleteCheckbox\">";
+        $html .= "<div class=\"DeleteRowIcon\" title=\"" . _("Delete Column Entry") . "\">&#x2612;</div>";
+        $html .= "<div class=\"UnDeleteRowIcon\" title=\"" . _("Not Delete Column Entry") . "\">&#x267b;</div>";
+        $html .= "<input type=\"checkbox\" name=\"$var_name\" onClick=\"toggleTableColumnDelete(this)\">";
+        $html .= "</label>";
+
+        return $html;
+    }
+
+
+    /**
      * Generates a checkbox element to indicate if a table row shall be deleted (or not).
      * This must be placed within a <tr><td> construct.
      * When the row shall be deleted, the parenting <tr> element gets the CSS class 'RowWillBeDeleted' assigned
