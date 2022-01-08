@@ -149,6 +149,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnString("TrackLocations", "Track", 80)
         self.__db.appendColumnString("TrackLocations", "Name", 80)
         self.__db.appendColumnTinyInt("TrackLocations", "Deprecated")
+        self.__db.appendColumnString("TrackLocations", "Country", 80)
 
         # check table Tracks
         Verbosity(verb).print("check database table `Tracks`")

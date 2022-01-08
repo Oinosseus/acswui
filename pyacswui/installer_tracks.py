@@ -85,6 +85,7 @@ class InstallerTracks(object):
             track_pitbxs = self._interpret_pitboxes(self.__parse_json(track_path + "/ui/ui_track.json", "pitboxes", "0"))
             track_version = self.__parse_json(track_path + "/ui/ui_track.json", "version", "")[:30]
             track_author = self.__parse_json(track_path + "/ui/ui_track.json", "author", "")[:50]
+            track_country = self.__parse_json(track_path + "/ui/ui_track.json", "country", "")[:80]
             track_descr = self.__parse_json(track_path + "/ui/ui_track.json", "description", "")
 
             existing_track_ids = self._find_track_ids(track_location_id)
@@ -94,11 +95,12 @@ class InstallerTracks(object):
             else:
                 self.__db.updateRow("Tracks", existing_track_ids[0], {"Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs, "Deprecated":0})
 
-            self._update_track_info(track_location_id, [track_name])
+            self._update_track_info(track_location_id, [track_name], [track_country])
 
         # update track configs
         if os.path.isdir(track_path + "/ui"):
             track_names = []
+            track_countries = []
             for track_config in os.listdir(track_path + "/ui"):
                 if os.path.isdir(track_path + "/ui/" + track_config):
                     if os.path.isfile(track_path + "/ui/" + track_config + "/ui_track.json"):
@@ -110,7 +112,9 @@ class InstallerTracks(object):
                         track_version = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "version", "")[:30]
                         track_author = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "author", "")[:50]
                         track_descr = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "description", "")
+                        track_country = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "country", "")
                         track_names.append(track_name)
+                        track_countries.append(track_country)
 
                         existing_track_ids = self._find_track_ids(track_location_id, track_config)
                         table_fields = {"Location": track_location_id,
@@ -128,7 +132,7 @@ class InstallerTracks(object):
                             self.__db.updateRow("Tracks", existing_track_ids[0], table_fields)
 
             if len(track_names) > 0:
-                self._update_track_info(track_location_id, track_names)
+                self._update_track_info(track_location_id, track_names, track_countries)
 
 
 
@@ -148,7 +152,7 @@ class InstallerTracks(object):
 
 
 
-    def _update_track_info(self, track_location_id, track_names):
+    def _update_track_info(self, track_location_id, track_names, track_countries):
 
         def detect_location(track_names):
             track_location_name = ""
@@ -189,7 +193,15 @@ class InstallerTracks(object):
             track_location_name = track_location_name[:-1]
         track_location_name = track_location_name.strip()
 
-        self.__db.updateRow("TrackLocations", track_location_id, {"Name": track_location_name, "Deprecated": 0})
+        # country
+        track_country = ""
+        for c in track_countries:
+            if len(c) > len(track_country):
+                track_country = c
+        #if track_country in ["U.S.A", "U.S.A."]:
+            #track_country = "USA"
+
+        self.__db.updateRow("TrackLocations", track_location_id, {"Name": track_location_name, "Country": track_country, "Deprecated": 0})
 
 
 

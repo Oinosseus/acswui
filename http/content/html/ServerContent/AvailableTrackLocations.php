@@ -12,8 +12,12 @@ class AvailableTrackLocations extends \core\HtmlContent {
     public function getHtml() {
         $html = "";
 
-        foreach (\DbEntry\TrackLocation::listLocations() as $tl) {
-            $html .= $tl->html();
+        foreach (\DbEntry\TrackLocation::listCountries() as $c) {
+            $html .= "<h1>$c</h1>";
+
+            foreach (\DbEntry\TrackLocation::listLocations(FALSE, $c) as $tl) {
+                $html .= $tl->html();
+            }
         }
 
         return $html;

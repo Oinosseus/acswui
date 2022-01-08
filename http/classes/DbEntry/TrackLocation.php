@@ -77,13 +77,30 @@ class TrackLocation extends DbEntry {
     }
 
 
-    public static function listLocations($inculde_deprecated=FALSE) {
+    //! @return A list of all available countries, ordered by name
+    public static function listCountries() {
+        $countries = array();
+        $res = \Core\Database::fetchRaw("SELECT DISTINCT Country FROM `TrackLocations` WHERE Deprecated=0 ORDER BY Country ASC;");
+        foreach ($res as $row) {
+            $countries[] = $row['Country'];
+        }
+        return $countries;
+    }
+
+
+    /**
+     * @param $inculde_deprecated When TRUE (default FALSE) also deprected locations are listed
+     * @param $country If not NULL (default) then only locations of this country are returned
+     * @return A list of available TrackLocation objects
+     */
+    public static function listLocations($inculde_deprecated=FALSE, $country=NULL) {
         $ret = array();
 
-        $query = "SELECT Id FROM TrackLocations";
-        if (!$inculde_deprecated) $query .= " WHERE Deprecated = 0";
-        $query .= " ORDER BY Name ASC";
-        $res = \core\Database::fetchRaw($query);
+        $where = array();
+        if (!$inculde_deprecated) $where["Deprecated"] = 0;
+        if ($country !== NULL) $where["Country"] = $country;
+
+        $res = \core\Database::fetch("TrackLocations", ["Id"], $where, "Name");
 
         // extract values
         foreach ($res as $row) {
