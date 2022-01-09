@@ -102,6 +102,19 @@ class ServerPreset extends DbEntry {
 
 
     /**
+     * Access parameter values directly
+     *
+     * getParam("fooBar")
+     * is the same as
+     * (new parameterCollection()->child"fooBar")->value()
+     * @return The curent value of a certain parameter
+     */
+    public function getParam(string $parameter_key) {
+        return $this->parameterCollection()->child($parameter_key)->value();
+    }
+
+
+    /**
      * Retrieve all current existing presets as an array
      * The returned list is sorted by preset names
      * @param $allowed_only If set to TRUE (default) only presets are listed that are allowed for the current user
@@ -162,6 +175,7 @@ class ServerPreset extends DbEntry {
 
                 $coll_general = new \Parameter\Collection(NULL, $this->ParameterCollection, "ACswui1", _("ACswui"), _("General settings for the preset"));
                 $p = new \Parameter\ParamString(NULL, $coll_general, "ACswuiPresetName", _("Name"), _("Name of the preset"), "", "");
+                $p = new \Parameter\ParamBool(NULL, $coll_general, "ACswuiPreservedKick", _("Preseved Kick"), _("Kick drivers if they join with a car from the entry list that is preserved for other drivers."), "", TRUE);
                 $p = new \Parameter\ParamSpecialGroups(NULL, $coll_general, "ACswuiPresetUsers", _("Users"), _("Which user groups are allowed to use this preset"), "", "");
 
 

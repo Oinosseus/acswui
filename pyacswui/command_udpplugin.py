@@ -49,6 +49,7 @@ class CommandUdpPlugin(Command):
                                path_entry_list,
                                path_data_acserver,
                                path_realtime_json,
+                               self.getIniSection('PLUGIN')['preserved_kick'].lower() in ["true", "1", "yes"],
                                verbosity=self._verbosity)
         udpp.process() # run once just to ensure that it does not crash immediately
 

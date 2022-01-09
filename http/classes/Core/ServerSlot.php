@@ -384,6 +384,7 @@ class ServerSlot {
         } else {
             fwrite($f, "udp_acserver = " . $pc->child("AcServerPortsPluginUdpR")->value() . "\n");
         }
+        fwrite($f, "preserved_kick = " . $preset->getParam("ACswuiPreservedKick") . "\n");
 
 
         fclose($f);

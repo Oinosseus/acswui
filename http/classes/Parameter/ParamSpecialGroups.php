@@ -24,8 +24,11 @@ final class ParamSpecialGroups extends ParamEnumMulti {
      * @return TRUE when any of the user groups matches to any of the currently selected groups
      */
     public function containsUser(\DbEntry\User $user) {
-        $contained_user_ids = explode(";", $this->value());
-        return in_array($user->id(), $contained_user_ids);
+        $contained_group_ids = explode(";", $this->value());
+        foreach ($user->groups() as $g) {
+            if (in_array($g->id(), $contained_group_ids)) return TRUE;
+        }
+        return FALSE;
     }
 
 }

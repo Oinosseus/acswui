@@ -68,6 +68,13 @@ class UdpPluginCarEntry(object):
 
         self.__verbosity.print("Car entry: Id =", self.__id, ", model =", self.__car_model)
 
+        # read preserved GUIDs
+        self.__preserved_drivers_guids = []  #Steam64GUIDs that are defined in the entry list
+        for guid in entry_dict['GUID'].split(";"):
+            if guid != "":
+                self.__preserved_drivers_guids.append(guid.strip())
+
+
 
     @property
     def Id(self):
@@ -97,9 +104,21 @@ class UdpPluginCarEntry(object):
 
     @property
     def DriverGuid(self):
-        """! Steam64GUID
+        """! Steam64GUID of the current dirver
         """
         return self.__driver_guid
+
+    @property
+    def DriverName(self):
+        """! Name of the current driver
+        """
+        return self.__driver_name
+
+    #@property
+    #def PreservedGuids(self):
+        #"""! List of Steam64GUID for which this entry is preserved for
+        #"""
+        #return self.__preserved_drivers_guids
 
     @property
     def RealtimeJsonDict(self):
@@ -116,6 +135,23 @@ class UdpPluginCarEntry(object):
         d['LastLapCuts'] = self.__last_lap_cuts
         d['LastLapGrip'] = self.__last_lap_grip
         return d
+
+
+    def illegalOccupation(self):
+        """! @return True If the current occupation violates the preserved GUIDs
+        """
+        if self.__driver_guid is None:
+            return False
+
+        illegal = False
+        if len(self.__preserved_drivers_guids) > 0:
+            illegal = True
+            for preserved_guid in self.__preserved_drivers_guids:
+                if self.__driver_guid == preserved_guid:
+                    illegal = False
+                    break
+
+        return illegal
 
 
     def occupy(self, driver_name, driver_guid, session):

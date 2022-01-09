@@ -2,6 +2,7 @@ import socket
 from configparser import ConfigParser
 import json
 import os.path
+import time
 from .verbosity import Verbosity
 from .udp_packet import UdpPacket
 from .udp_plugin_session import UdpPluginSession
@@ -22,6 +23,7 @@ class UdpPluginServer(object):
                  entry_list_path,
                  ac_server_path,
                  realtime_json_path = None,
+                 kick_illegal_occupations = False,
                  verbosity=0):
 
         # This is the typical duration for the process() method
@@ -38,6 +40,8 @@ class UdpPluginServer(object):
         self.__database = database
         self.__ac_server_path = ac_server_path
         self.__realtime_json_path = realtime_json_path
+        self.__last_kick_illegal_occupations = None
+        self.__kick_illegal_occupations = kick_illegal_occupations
 
         self.__port_plugin = int(port_plugin)
         self.__port_server = int(port_server)
@@ -68,6 +72,17 @@ class UdpPluginServer(object):
 
 
 
+    def kick(self, entry):
+        """ Kick a user from a car entry
+        """
+        data = bytearray(100)
+        data[0] = 206
+        data[1] = entry.Id
+        self.__sock.sendto(data, ("127.0.0.1", self.__port_server))
+
+
+
+
     def process(self):
         """ This must be called periodically
         """
@@ -81,6 +96,17 @@ class UdpPluginServer(object):
 
         if self.__session is not None and self.__session.IsActive:
             self.dump_realtime_json()
+
+        # check for illegal occupations
+        if self.__kick_illegal_occupations:
+            if self.__last_kick_illegal_occupations is None or (time.time() - self.__last_kick_illegal_occupations) > 10:
+                self.__last_kick_illegal_occupations = time.time()
+
+                for entry in self.__entries:
+                    if entry.illegalOccupation():
+                        self.__verbosity.print("Illegal Occupation of driver " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id) + "!")
+                        self.send_chat_broadcast("ACswui: kick " + entry.DriverName + " because using preserved car!")
+                        self.kick(entry)
 
 
 
@@ -332,3 +358,26 @@ class UdpPluginServer(object):
         # dump data
         with open(self.__realtime_json_path, "w") as f:
             json.dump(data, f, indent=4)
+
+
+    def send_chat_broadcast(self, message):
+
+        # cut message
+        if len(message) > 254:
+            message = message[:254]
+        if message[-1] != "\n":
+            message += "\n"
+
+        data = bytearray(10 + 4*len(message))
+        data[0] = 203
+        data[1] = len(message)
+
+        index = 2
+        for byte in message.encode("utf-32"):
+            data[index] = byte
+            index += 1
+
+        self.__sock.sendto(data, ("127.0.0.1", self.__port_server))
+
+
+
