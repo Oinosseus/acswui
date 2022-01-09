@@ -213,3 +213,16 @@ main.Weathers table#WeatherManagementTable tr.CurrentSlot td:first-child {
 main.GroupManagement table tr:hover {
     background-color: #fff2;
 }
+
+
+
+/*****************************************************************************
+                          AvailableTrackLocations
+ *****************************************************************************/
+
+main.AvailableTrackLocations div#ListOfCountries a {
+    margin: 0.3em;
+    padding: 0.5em 1.0em;
+    background-color: var(--color-bg-elements);
+    border-radius: 0.2em;
+}

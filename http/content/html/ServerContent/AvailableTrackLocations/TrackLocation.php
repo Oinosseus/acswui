@@ -22,6 +22,7 @@ class TrackLocation extends \core\HtmlContent {
             $html .= "<caption>" . _("Track Location Info") . "</caption>";
             $html .= "<tr><th>" . _("Location Name") . "</th><td>" . $tl->name() . "</td></tr>";
             $html .= "<tr><th>AC-Directory</th><td>content/tracks/" . $tl->track() . "</td></tr>";
+            $html .= "<tr><th>" . _("Country") . "</th><td>". $tl->country() . "</td></tr>";
             $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($tl->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
             $html .= "</table>";
 

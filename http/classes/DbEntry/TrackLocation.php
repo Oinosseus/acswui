@@ -24,6 +24,12 @@ class TrackLocation extends DbEntry {
     }
 
 
+    //! @return Country of the location
+    public function country() {
+        return $this->loadColumn("Country");
+    }
+
+
     //! @return TRUE when this car is deprected
     public function deprecated() {
         if ($this->Deprecated === NULL)
