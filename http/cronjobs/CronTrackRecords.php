@@ -56,7 +56,7 @@ class CronTrackRecords extends Cronjob {
         foreach ($acswuiDatabase->fetch_raw_select($query) as $row) {
             $lap = new Lap($row['Id']);
             $lid = $lap->id();
-            $uid = $lap->user()->id();
+            $uid = ($lap->user() === NULL) ? 0 : $lap->user()->id();
             $cid = $lap->carSkin()->car()->id();
             $tid = $lap->session()->track()->id();
 
@@ -99,6 +99,7 @@ class CronTrackRecords extends Cronjob {
         // get last calculated records
         @ $json_string = file_get_contents($this->JsonPath);
         $json_data = ($json_string === FALSE) ? array() : json_decode($json_string, TRUE);
+        if ($json_data === NULL) $json_data = array();
 
         // prepare meta
         if (!array_key_exists("Meta", $json_data)) {
