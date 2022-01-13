@@ -226,3 +226,52 @@ main.AvailableTrackLocations div#ListOfCountries a {
     background-color: var(--color-bg-elements);
     border-radius: 0.2em;
 }
+
+
+
+/*****************************************************************************
+                          SessionOverview
+ *****************************************************************************/
+
+main.SessionOverview div#SessionOverviewFilter {
+    margin-bottom: 1em;
+}
+
+main.SessionOverview div#SessionOverviewFilter * {
+    display: inline-block;
+    font-size: 0.85em;
+}
+
+main.SessionOverview div#SessionOverviewFilter label {
+    margin-right: 1em;
+}
+
+main.SessionOverview tr.ValidLap {
+}
+
+main.SessionOverview tr.InvalidLap {
+    color: var(--color-disabled);
+}
+
+main.SessionOverview td.CarSkin,
+main.SessionOverview td.CarSkin div {
+    margin: 0;
+    padding: 0;
+}
+
+main.SessionOverview td.CarSkin div,
+main.SessionOverview td.CarSkin div a {
+    display: block;
+}
+
+main.SessionOverview td.CarSkin img {
+    height: 3em;
+}
+
+main.SessionOverview td.Driver {
+    text-align: left;
+}
+
+main.SessionOverview td.Driver img {
+    margin-right: 0.5em;
+}

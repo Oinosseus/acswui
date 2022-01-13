@@ -39,7 +39,7 @@ class ACswui  {
             $p = new \Parameter\ParamInt(NULL, $root_collection, "NonActiveDrivingDays", _("Non-Active Driving Days"), _("When the last lap of a user is longer days ago than this value, he or she is considered to be an inactive driver"), "", 30);
             $p->setMin(1);
             $p->setMax(3650);
-            $p = new \Parameter\ParamInt(NULL, $root_collection, "CommunityLastLoginDays", _("Community Login Days"), _("When a user has not logged in into the system for this amount of days he or she is not considered to be a community member\nAdditionally an user must be an active driver to be considered as community member"), "", 180);
+            $p = new \Parameter\ParamInt(NULL, $root_collection, "CommunityLastLoginDays", _("Non-Active Community Login Days"), _("When a user has not logged in into the system for this amount of days he or she is not considered to be a community member\nAdditionally an user must be an active driver to be considered as community member"), "", 90);
             $p->setMin(1);
             $p->setMax(3650);
 
@@ -88,9 +88,12 @@ class ACswui  {
             $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCe", _("Collision Environment"), _("Points for colliding with the environment per driven distance"), "Points/Collision/Mm", -2.0);
             $p->setMin(-9999);
             $p->setMax(0);
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCc", _("Collision Cars"), _("Points for colliding with other cars per driven distance"), "Points/Collision/Mm", -5.0);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCc", _("Collision Cars"), _("Points for colliding with other cars per driven distance"), "Points/Collision/Nomspeed/Mm", -5.0);
             $p->setMin(-9999);
             $p->setMax(0);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingCollNormSpeed", _("Nominal Collision-Speed"), _("Nominal speed at which collision a collsion points counts nominal"), "km/h", 100.0);
+            $p->setMin(0);
+            $p->setMax(999);
             $p = new \Parameter\ParamBool(NULL, $coll, "DriverRankingSfAP", _("Amnesty in Practice"), _("If enabled, safety penalties are not given for pure practice sessions (sessions without succeeding qualifying/race)"), "", TRUE);
 
 
@@ -100,7 +103,7 @@ class ACswui  {
 
             $pc = new \Parameter\Collection(NULL, $root_collection, "User", _("User Settings"), _("Settings for users"));
             $p = new \Parameter\ParamSpecialLocale(NULL, $pc, "UserLocale", _("Locale"), _("Localization settings"));
-            $p = new \Parameter\ParamSpecialUserPrivacy(NULL, $pc, "UserPrivacy", _("Privacy"), _("Privacy settings\n'private' means nobody can identify me\n'community' means that all active drivers which logged in at least once into the ACswui system can identify me\n'drivers' means that all other active drivers can identiofy me\n'public' means everyone can identify me"));
+            $p = new \Parameter\ParamSpecialUserPrivacy(NULL, $pc, "UserPrivacy", _("Privacy"), _("Privacy settings\n'Private' means nobody can identify me\n'Community' means that all active drivers, which actively use the ACswui system, can identify me - as long as I use the ACswui system as well\n'Active Drivers' means that all other active drivers can identify me - as long as I am an active driver as well\n'Public' means everyone can identify me"));
             $p = new \Parameter\ParamSpecialUserCountry(NULL, $pc, "UserCountry", _("Country"), _("Select which country you want to represent"));
             $p = new \Parameter\ParamSpecialUserFormatDate(NULL, $pc, "UserFormatDate", _("Date/Time Format"), _("How shal date-times be presented"));
             $p = new \Parameter\ParamSpecialUserTimezone(NULL, $pc, "UserTimezone", _("Timezone"), _("Define your preferred timezone"));

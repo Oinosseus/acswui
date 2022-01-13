@@ -16,8 +16,9 @@ class User extends DbEntry { #implements JsonSerializable {
     private $DaysSinceLastLap = NULL;
     private $DaysSinceLastLogin = NULL;
 
-    private static $UserList = NULL;
+    private static $CommunityList = NULL;
     private static $DriverList = NULL;
+    private static $UserList = NULL;
 
     private $CountLaps = NULL;
 
@@ -81,12 +82,68 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    //! @return A User object that represents the guest user (virtual, not existing in database)
+    public static function guestUser() {
+        $u = new USer(NULL);
+        return $u;
+    }
+
+
     //! @return A date time value formatted for the user
     public function formatDateTime(\DateTime $dt) {
         $tz = new \DateTimezone($this->getParam("UserTimezone"));
         $dt->setTimezone($tz);
         return $dt->format($this->getParam("UserFormatDate"));
     }
+
+
+    //! @return A date time value formatted for the user (without seconds
+    public function formatDateTimeNoSeconds(\DateTime $dt) {
+        $tz = new \DateTimezone($this->getParam("UserTimezone"));
+        $dt->setTimezone($tz);
+        $format = $this->getParam("UserFormatDate");
+
+        // remove seconds
+        $format = str_replace(":s", "", $format);
+
+        return $dt->format($format);
+    }
+
+
+    /**
+     * @param $laptime Laptime in milliseconds
+     * @return A string with formated laptime
+     */
+    public function formatLaptime(int $laptime) {
+        $milliseconds = $laptime % 1000;
+        $laptime /= 1000;
+        $seconds = $laptime % 60;
+        $minutes = $laptime / 60;
+        return sprintf("%0d:%02d.%03d" , $minutes, $seconds, $milliseconds);
+    }
+
+
+
+    /**
+     * @param $laptime Difference between two Laptimes in milliseconds
+     * @return A string with formated laptime
+     */
+    public function formatLaptimeDelta(int $laptime_delta) {
+        if ($laptime_delta < 1000) {
+            return sprintf("%d ms", $laptime_delta);
+        } else if ($laptime_delta < 60000) {
+            $centi_seconds = $laptime_delta % 100;
+            $laptime_delta /= 1000;
+            $seconds = $laptime_delta % 60;
+            return sprintf("%d.%02d s", $seconds, $centi_seconds);
+        } else {
+            $laptime_delta /= 1000;
+            $seconds = $laptime_delta % 60;
+            $minutes = $laptime_delta / 60;
+            return sprintf("%d:%02d", $minutes, $seconds);
+        }
+    }
+
 
 
     /**
@@ -118,6 +175,20 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    //! @return A html string with the user name and containing a link to the user profile page
+    public function html() {
+        $html = "";
+        if ($this->privacyFulfilled()) {
+            $html .= "<a href=\"index.php?HtmlContent=UserProfile&UserId=" . $this->id() . "\">";
+            $html .= $this->name();
+            $html .= "</a>";
+        } else {
+            $html .= $this->name();
+        }
+        return $html;
+    }
+
+
     //! @return TRUE if the user is an active driver and uses the ACswui system
     public function isCommunity() {
         if (!$this->isDriver()) return FALSE;
@@ -142,6 +213,29 @@ class User extends DbEntry { #implements JsonSerializable {
         return \Core\Database::timestamp2DateTime($this->loadColumn("LastLogin"));
     }
 
+
+
+    //! @return A list of users which are considered to be active community members
+    public static function listCommunity() {
+
+        if (User::$CommunityList === NULL) {
+            User::$CommunityList = array();
+
+            $t_thld = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+            $days = \Core\ACswui::getParam("NonActiveDrivingDays");
+            $delta_t = new \DateInterval("P" . $days . "D");
+            $t_thld = $t_thld->sub($delta_t);
+
+            $query = "SELECT DISTINCT User FROM Laps WHERE Timestamp >= \"" . \Core\Database::dateTime2timestamp($t_thld)  . "\" ORDER BY User ASC";
+            $res = \Core\Database::fetchRaw($query);
+            foreach ($res as $row) {
+                $u = User::fromId($row['User']);
+                if ($u->isCommunity()) User::$CommunityList[] = $u;
+            }
+        }
+
+        return User::$CommunityList;
+    }
 
 
     //! @return A list of all users
@@ -169,7 +263,7 @@ class User extends DbEntry { #implements JsonSerializable {
             $delta_t = new \DateInterval("P" . $days . "D");
             $t_thld = $t_thld->sub($delta_t);
 
-            $query = "SELECT DISTINCT User FROM Laps WHERE Timestamp >= \"" . \Core\Database::dateTime2timestamp($t_thld)  . "\"";
+            $query = "SELECT DISTINCT User FROM Laps WHERE Timestamp >= \"" . \Core\Database::dateTime2timestamp($t_thld)  . "\" ORDER BY User ASC";
             $res = \Core\Database::fetchRaw($query);
             foreach ($res as $row) {
                 User::$DriverList[] = User::fromId($row['User']);
@@ -184,8 +278,15 @@ class User extends DbEntry { #implements JsonSerializable {
      * @return The username that shall be displayed on HTML output (depending on privacy settings)
      */
     public function name() {
-        if ($this->isRoot()) return "root";
-        return ($this->privacyFulfilled()) ? $this->loadColumn("Name") : "***";
+        if ($this->isRoot()) {
+            return "root";
+        } else if ($this->id() == NULL) {
+            return _("Guest");
+        } else if ($this->privacyFulfilled()) {
+            return $this->loadColumn("Name");
+        } else {
+            return "<div class=\"UserHiddenName\">User[" . $this->id() . "]</div>";
+        }
     }
 
 
@@ -239,10 +340,12 @@ class User extends DbEntry { #implements JsonSerializable {
                 $privacy_fillfilled = TRUE;
                 break;
             case 'ActiveDriver':
-                if ($current_user && $current_user->isDriver()) $privacy_fillfilled = TRUE;
+                // both, me and the other must be drivers
+                if ($current_user && $current_user->isDriver() && $this->isDriver()) $privacy_fillfilled = TRUE;
                 break;
             case 'Community':
-                if ($current_user && $current_user->isCommunity()) $privacy_fillfilled = TRUE;
+                // both, me and the other must be community level
+                if ($current_user && $current_user->isCommunity() && $this->isCommunity()) $privacy_fillfilled = TRUE;
                 break;
             case 'Private':
                 break;

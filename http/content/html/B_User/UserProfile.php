@@ -12,7 +12,11 @@ class UserProfile extends \core\HtmlContent {
     public function getHtml() {
         $html = "";
 
-        $user = \Core\UserManager::loggedUser();
+        if (array_key_exists("UserId", $_GET)) {
+            $user = \DbEntry\User::fromId($_GET['UserId']);
+        } else {
+            $user = \Core\UserManager::loggedUser();
+        }
 
         if ($user && $user->privacyFulfilled()) {
             $html .= "<strong>" . _("ID") . "</strong>: " . $user->id() . "<br>";
@@ -37,6 +41,8 @@ class UserProfile extends \core\HtmlContent {
             $html .= "<strong>" . _("Country") . "</strong>: " . $user->parameterCollection()->child("UserCountry")->valueLabel() . "<br>";
             $html .= "<strong>" . _("Driven Laps") . "</strong>: " . $user->countLaps() . "<br>";
 
+        } else {
+            $html .= _("Privacy settings of the user does not allow to show any information.");
         }
 
         return $html;

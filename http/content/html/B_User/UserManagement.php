@@ -22,14 +22,9 @@ class UserManagement extends \Core\HtmlContent {
         }
 
 
-        // get list of users/drivers
-        //! @todo implement differennt approach to directly read drivers to save execution time
-        \DbEntry\User::listDrivers();
-
-
         // process data
         if (array_key_exists("SaveUsers", $_POST) && $_POST['SaveUsers'] == "TRUE" && $this->CanEdit) {
-            foreach (\DbEntry\User::listDrivers() as $u) {
+            foreach (\DbEntry\User::listCommunity() as $u) {
                 foreach ($group_list as $g) {
 
                     // This line is actually not necessary.
@@ -51,7 +46,7 @@ class UserManagement extends \Core\HtmlContent {
         $html .= '<table>';
 
         $rowcount = 0;
-        foreach (\DbEntry\User::listDrivers() as $u) {
+        foreach (\DbEntry\User::listCommunity() as $u) {
 
             if (($rowcount%16) == 0) $html .= $this->tableHeader($group_list);
             ++$rowcount;

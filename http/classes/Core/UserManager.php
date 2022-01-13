@@ -9,6 +9,20 @@ class UserManager {
     private function __construct() {}
 
 
+    /**
+     * In contrary to loggedUser() this will always return a valid User object.
+     * Even if currently no user is logged in, this will return a default user
+     * @return A User object that represents the current user (never NULL)
+     */
+    public static function currentUser() {
+        if (UserManager::$CurrentLoggedUser === NULL) {
+            return \DbEntry\User::guestUser();
+        } else {
+            return UserManager::$CurrentLoggedUser;
+        }
+    }
+
+
     //! @return TRUE if root user is currently logged in
     public static function loggedIsRoot() {
         $user = UserManager::loggedUser();

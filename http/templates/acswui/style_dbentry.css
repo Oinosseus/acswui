@@ -110,3 +110,14 @@ div.CarTorquePowerChart svg g.Axes g.YAxisPower text.YAxisLabel {
     fill: #aa0000;
 }
 
+
+
+/* -----------------------------------------------------------------------------
+ *                                  User
+ * -----------------------------------------------------------------------------
+ */
+
+div.UserHiddenName {
+    font-weight: normal;
+    font-style: italic;
+}
