@@ -391,14 +391,14 @@ class ServerPreset extends DbEntry {
                 $coll_group = new \Parameter\Collection(NULL, $coll_rps, "RpAcs", _("AC Settings"), "");
 
                 // General
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsGeneral", _("General"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsGeneral", _("General"), "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpAcsGeneralCockpitCam", _("Cockpit Camera"), "Set to true for mandatory cockpit visual for all drivers.", "", FALSE);
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpAcsGeneralWeatherChecksum", _("Weather Checksum"), "Set to true for mandatory cockpit visual for all drivers.", "", FALSE);
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpAcsSolMandatory", _("SOL Mandatory"), "Set to true if the event is with mod sol \"day to night transition\"", "", FALSE);
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpAcsCspMandatory", _("CSP Mandatory"), "Set if you want that all drivers need the Custom Shaders Patch (version 0.1.46 or newer) to diver on the server.", "", FALSE);
 
                 // Safety Car
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsSc", _("Safety Car"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsSc", _("Safety Car"), "");
                 $p = new \Parameter\ParamString(NULL, $coll, "RpAcsScCarModel", _("Car Model"), _("Car model of safety car (folder name in assettocorsa/content/cars)"), "", "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpAcsScStartBehind", _("Sart Behind SC"), "Rolling start. Set to true if race starts afer the first lap beheind Safety Car (it works with or without a real Safety Car on the server.", "", FALSE);
                 $p = new \Parameter\ParamFloat(NULL, $coll, "RpAcsScNormLightOff", _("Normalized Light Off Position"), _("Rolling start: normalized position (rance 0-1 - 0 = start of first lap, 1 = end of first lap) of the first driver during rolling start when the app switchs off the SC signal."), "", 0.5);
@@ -412,16 +412,16 @@ class ServerPreset extends DbEntry {
                 $p->setMax(60);
 
                 // No Penalty
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsNp", _("No Penalty"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsNp", _("No Penalty"), "");
                 $p = new \Parameter\ParamString(NULL, $coll, "RpAcsNpGuids", _("GUIDs"), _("List of the Steam GUIDs (seperated by a semicolon) that can connect to the server without the app and sol (for example \"Race Direction\" or for \"Live\") "), "", "");
                 $p = new \Parameter\ParamString(NULL, $coll, "RpAcsNpCars", _("Cars"), _("List of car models (seperated by a semicolon) wihtout penalties and checks.\nExample: Cars=car_name1;car_name2,car_name3"), "");
 
                 // Admin
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsAdmin", _("Admin"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsAdmin", _("Admin"), "");
                 $p = new \Parameter\ParamString(NULL, $coll, "RPAcsAdminGuids", _("GUIDs"), _("list of the Steam GUIDs. This drivers can send \"commands\" to the server via chat"), "", "");
 
                 // Helicorsa
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsHc", _("Helicorsa"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsHc", _("Helicorsa"), "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsHcMandatory", _("Mandatory"), "if you set true all driver have the helicorsa radar on the center of the screen and can not disabile it!! ", "", FALSE);
                 $p = new \Parameter\ParamFloat(NULL, $coll, "RPAcsHcDistThld", _("Distance Threshold"), _("Distance threshold: How far away are the cars we paint?"), "", 30);
                 $p->setMin(0);
@@ -446,7 +446,7 @@ class ServerPreset extends DbEntry {
                 $p->setMax(30);
 
                 // Driver Swap
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsSwap", _("Driver Swap"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsSwap", _("Driver Swap"), "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsSwapEna", _("Enable"), "Enable the swap driver function for the race. Default false\nIMPORTANT: multi GUIDs in the locked entry list of the server are needed!!!!", "", FALSE);
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpAcsSwapMinTime", _("Min Time"), _("Min swap time (pit lane time) in seconds. Wihtout this value the swap does not work! No default"), "s", 0);
                 $p->setMin(0);
@@ -467,7 +467,7 @@ class ServerPreset extends DbEntry {
                 $p = new \Parameter\ParamBool(NULL, $coll, "RPAcsSwapCntOnlyDrvChnge", _("Driver Change"), "If enable only the swaps with driver change are counted as valid for the min_count. If disable every reconnection is considered as valid swap (a driver con leave the server and rejoin the race --> swap is valid). Default True\nYou can set it to false and use the swap function as mandatory long pit stops. The driver has to leave the server and rejoin the race or a new driver can just join the server; both cases are considered valid long pit.\nThe false value is enable only if convert_time_penalty = false and convert_race_penalty = false", "", TRUE);
 
                 // Teleport
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsTeleport", _("Teleport"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsTeleport", _("Teleport"), "");
                 $p = new \Parameter\ParamInt(NULL, $coll, "RPAcsTeleportMaxDist", _("Max Distance"), _("Permitted max distance from the pit for teleport. Default 10\nThis value is valid only inside the pit lane! Every teleport from the track is not allowed! "), "m", 10);
                 $p->setMin(0);
                 $p->setMax(999);
@@ -482,7 +482,7 @@ class ServerPreset extends DbEntry {
                 $coll_group = new \Parameter\Collection(NULL, $coll_rps, "RpPs", _("Penalty Settings"), "");
 
                 // General
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsGeneral", _("General"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsGeneral", _("General"), "");
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpPsGeneralLapsToTake", _("Laps To Take Penalty"), _("How many laps a driver has to take a penalty in. Default 3 (if LAPS_TO_TAKE_PENALTY > 2 --> Jump start is always 2 for AC limit!)"), "", 2);
                 $p->setMin(0);
                 $p->setMax(99);
@@ -497,7 +497,7 @@ class ServerPreset extends DbEntry {
                 $p->setMax(999);
 
                 // Cutting
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsCutting", _("Cutting"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsCutting", _("Cutting"), "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpPsGeneralCutting", _("Enable"), "Set to true to enable cuttings penalties; false to issue warnings only.", "", TRUE);
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpPsCuttingEnaDurSc", _("During Safety Car"), "Cutting penalty enable during Safety Car or Virtual Safety Car.", "", FALSE);
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpPsCuttingTotCtWarn", _("Total Cut Warnings"), _("How many warnings are allowed before a penalty is given."), "", 3);
@@ -531,50 +531,50 @@ class ServerPreset extends DbEntry {
                 $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsCuttingPenType", _("Penalty Type"), _("Penalty type for cutting."), TRUE);
 
                 // Speeding
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsSpeeding", _("Speeding"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsSpeeding", _("Speeding"), "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpPsGeneralSpeeding", _("Speeding"), "Set to true to enable pit lane speeding penalties.", "", TRUE);
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingPitLaneSpeed", _("Pit Lane Speed"), _("The speed, in kph, above which you will be deemed to be speeding in pits. Make this higher to give more leniency on pit lane entry."), "km/h", 82);
                 $p->setMin(0);
                 $p->setMax(299);
                 $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType0", _("Penalty Type 0"), _("Penalty type for speeding"), TRUE);
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit0", _("Speed Limit 0"), _(""), "km/h", 100);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit0", _("Speed Limit 0"), "", "km/h", 100);
                 $p->setMin(0);
                 $p->setMax(199);
                 $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType1", _("Penalty Type 1"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("sg10");
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit1", _("Speed Limit 1"), _(""), "km/h", 200);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit1", _("Speed Limit 1"), "", "km/h", 200);
                 $p->setMin(0);
                 $p->setMax(599);
                 $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType2", _("Penalty Type 2"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("dsq");
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit2", _("Speed Limit 2"), _(""), "km/h", 999);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit2", _("Speed Limit 2"), "", "km/h", 999);
                 $p->setMin(0);
                 $p->setMax(999);
 
                 // Crossing
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsCrossing", _("Crossing"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsCrossing", _("Crossing"), "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpPsGeneralCrossing", _("Crossing"), "Set to true to enable exit pit lane crossing line penalty.", "", TRUE);
                 $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsCrossingPenType", _("Penalty Type"), _("Penalty type for speeding"), TRUE);
 
                 // Jump Start
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsJumpStart", _("Jump Start"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsJumpStart", _("Jump Start"), "");
                 $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsJumpStartPenType0", _("Penalty Type 0"), _("Penalty type for speeding"), TRUE);
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsJumpStartSpeedLimit0", _("Speed Limit 0"), _(""), "km/h", 50);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsJumpStartSpeedLimit0", _("Speed Limit 0"), "", "km/h", 50);
                 $p->setMin(0);
                 $p->setMax(199);
                 $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsJumpStartPenType1", _("Penalty Type 1"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("sg10");
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsJumpStartSpeedLimit1", _("Speed Limit 1"), _(""), "km/h", 100);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsJumpStartSpeedLimit1", _("Speed Limit 1"), "", "km/h", 100);
                 $p->setMin(0);
                 $p->setMax(599);
                 $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsJumpStartPenType2", _("Penalty Type 2"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("dsq");
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsJumpStartSpeedLimit2", _("Speed Limit 2"), _(""), "km/h", 200);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsJumpStartSpeedLimit2", _("Speed Limit 2"), "", "km/h", 200);
                 $p->setMin(0);
                 $p->setMax(999);
 
                 // DRS
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsDRS", _("DRS"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsDRS", _("DRS"), "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpPsGeneralDrs", _("Drs"), "Set to true to enable DRS penalty (only for car wiht DRS).", "", TRUE);
                 $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsDRSPenType", _("Penalty Type"), _("Penalty type for speeding"), TRUE);
                 $p = new \Parameter\ParamFloat(NULL, $coll, "RpPsDRSGap", _("Gap"), _("Max gap in seconds from front car."), "", 1.0);
@@ -596,7 +596,7 @@ class ServerPreset extends DbEntry {
                 $p = new \Parameter\ParamString(NULL, $coll, "RpPsDRSOmitCars", _("Omit Cars"), _("List of cars wihtout DRS (sorry, no information from AC available)\nif all cars are without DRS set ENABLE_DRS_PENALTIES in General to false!!!"), "");
 
                 // Blue Flag
-                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsBf", _("Blue Flag"), _(""));
+                $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsBf", _("Blue Flag"), "");
                 $p = new \Parameter\ParamFloat(NULL, $coll, "RpPsBfQual", _("Qualifying"), _("Time distance (seconds) to show the blue flag in qualifying."), "s", 2.5);
                 $p->setMin(0);
                 $p->setMax(99);
@@ -637,6 +637,144 @@ class ServerPreset extends DbEntry {
         $column_data['ParameterData'] = $data_json;
 
         $this->storeColumns($column_data);
+    }
+
+
+    /**
+     * A list of entries.
+     * Each entry contains a \Core\TimeInterval object as duration, a Core\TimeInterval as positive uncertainty and the name of the entry.
+     * The last element contains the end of the session.
+     *
+     * Example to get the end of the session:
+     * $session_time = new \DateTime("now");
+     * foreach ($my_session->schedule() as [$interval, $uncertainty, $type, $name]) {
+     *     $session_time->add($interval->toDateInterval());
+     *     $session_time->add($uncertainty->toDateInterval());
+     *     echo $session_time->format("c") , " $name<br>";
+     * }
+     * // now $session_time points to the latest end of the session (including uncertainty)
+     *
+     * The returned array will be like this:
+     * [ [\Core\TimeInterval, \Core\TimeInterval, \DbEntry\Session::TypeQualifying, "Qualifying"],
+     *   [\Core\TimeInterval, \Core\TimeInterval, \DbEntry\Session::TypeInvalid, "Pause"],
+     *   [\Core\TimeInterval, \Core\TimeInterval, \DbEntry\Session::TypeRace, "Race"]
+     * ]
+     *
+     * @return A list of [\Core\TimeInterval, \Core\TimeInterval, Name]-tuples
+     */
+    public function schedule(Track $t=NULL, CarClass $cc=NULL) {
+
+        // estimate laptimes
+        $laptime_typ = 0;  // [s]
+        $laptime_max = 0;  // [s]
+        if ($t !== NULL) {
+            [$min, $typ, $max] = $t->estimeLaptime($cc);
+            $laptime_typ = $typ / 1e3;
+            $laptime_max = $max / 1e3;
+        }
+
+
+        $schedule = array();
+
+        // Booking
+        $t = $this->getParam("AcServerBookingTime");
+        if ($t > 0) {
+            $name = $this->getParam("AcServerBookingName");
+            $interval = new \Core\TimeInterval($t * 60);
+            $uncertainty = new \Core\TimeInterval(0);
+            $schedule[] = array($interval, $uncertainty, Session::TypeBooking, $name);
+        }
+
+        // Practice
+        $t = $this->getParam("AcServerPracticeTime");
+        if ($t > 0) {
+            $name = $this->getParam("AcServerPracticeName");
+            $interval = new \Core\TimeInterval($t * 60);
+            $uncertainty = new \Core\TimeInterval(0);
+            $schedule[] = array($interval, $uncertainty, Session::TypePractice, $name);
+
+            // Result Screen Time
+            $t = $this->getParam("AcServerResultScreenTime");
+            if ($t > 0) {
+                $name = _("Result Screen");
+                $interval = new \Core\TimeInterval($t);
+                $uncertainty = new \Core\TimeInterval(0);
+                $schedule[] = array($interval, $uncertainty, Session::TypeInvalid, $name);
+            }
+        }
+
+        // Qualifying
+        $t = $this->getParam("AcServerQualifyingTime");
+        if ($t > 0) {
+            $name = $this->getParam("AcServerQualifyingName");
+            $interval = new \Core\TimeInterval($t * 60);
+            $uncertainty = new \Core\TimeInterval($laptime_max * $this->getParam("AcServerQualifyingWaitPerc") / 100);
+            $schedule[] = array($interval, $uncertainty, Session::TypeQualifying, $name);
+
+            // Result Screen Time
+            $rst = $this->getParam("AcServerResultScreenTime");
+            if ($rst > 0) {
+                $name = _("Result Screen");
+                $interval = new \Core\TimeInterval($rst);
+                $uncertainty = new \Core\TimeInterval();
+                $schedule[] = array($interval, $uncertainty, Session::TypeInvalid, $name);
+            }
+        }
+
+        // Race
+        $races = ($this->getParam("AcServerReversedGrid") == 0) ? 1 : 2;
+        for ($i=0; $i<$races; ++$i) {
+            $t = $this->getParam("AcServerRaceTime");
+            $l = $this->getParam("AcServerRaceLaps");
+            if ($t > 0 || $l > 0) {  // wait time
+
+                // wait time
+                $wt = $this->getParam("AcServerRaceWaitTime");
+                if ($wt > 0) {
+                    $name = _("Wait Time");
+                    $interval = new \Core\TimeInterval($wt);
+                    $uncertainty = new \Core\TimeInterval(0);
+                    $schedule[] = array($interval, $uncertainty, Session::TypeInvalid, $name);
+                }
+
+                // race
+                $uncertainty = new \Core\TimeInterval(0);
+                $interval = new \Core\TimeInterval(0);
+                if ($l > 0) {  // lap race
+                    $interval->add($l * $laptime_typ);
+                    $uncertainty->add($l * ($laptime_max - $laptime_typ));
+                } else if ($t > 0) {  // timed race
+                    $interval->add($t * 60);
+                }
+                $ot = $this->getParam("AcServerRaceOverTime");
+                if ($ot > 0) {
+                    $uncertainty->add($ot);
+                }
+                if ($this->getParam("AcServerExtraLap")) {
+                    $interval->add($laptime_typ);
+                    $interval->add($laptime_max - $laptime_typ);
+                }
+                $name = $this->getParam("AcServerRaceName");
+                $schedule[] = array($interval, $uncertainty, Session::TypeRace, $name);
+
+                // Result Screen Time
+                $rst = $this->getParam("AcServerResultScreenTime");
+                if ($rst > 0) {
+                    $name = _("Result Screen");
+                    $interval = new \Core\TimeInterval($rst);
+                    $uncertainty = new \Core\TimeInterval();
+                    $schedule[] = array($interval, $uncertainty, Session::TypeInvalid, $name);
+                }
+            }
+        }
+
+        // Session End
+        $name = _("End");
+        $interval = new \Core\TimeInterval();
+        $uncertainty = new \Core\TimeInterval();
+        $schedule[] = array($interval, $uncertainty, Session::TypeInvalid, $name);
+
+        return $schedule;
     }
 
 

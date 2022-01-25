@@ -29,7 +29,7 @@ class ParamInt extends Parameter {
 
 
     public function formatValue($value) {
-        return "$value";
+        return (int) $value;
     }
 
 

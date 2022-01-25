@@ -214,24 +214,24 @@ final class Collection extends Deriveable {
 
         // parameter label
         $param_val = print_r($param->value(), TRUE);
-        $html .= "<div class=\"ParameterLabel $class_param_inherited\" title=\"$key=$param_val\" id=\"ParameterContainerLabel$key\">" . $param->label() . "</div>";
+        $html .= "<div class=\"ParameterLabel $class_param_inherited\" title=\"" . $param->description() . "\" id=\"ParameterContainerLabel$key\">" . $param->label() . "</div>";
 
         // value
         $param_value_span = 1;
         if ($param->unit() == "") ++$param_value_span;
         if ($param->base() == NULL || $param->accessability() < 2) ++$param_value_span;
         if ($hide_accessability_controls || $read_only) ++$param_value_span;
-        $html .= "<div class=\"ParameterValueSpan$param_value_span\">";
+        $html .= "<div class=\"ParameterValueSpan$param_value_span\" title=\"$key=$param_val\">";
         if ($read_only) {
-            $html .= "<div id=\"ParameterValueInput_$key\" title=\"" . $param->description() . "\">" . $param->valueLabel() . "</div>";
+            $html .= "<div id=\"ParameterValueInput_$key\">" . $param->valueLabel() . "</div>";
         } else {
             if ($param->accessability() == 2) {  // editable input
                 $visible = ($param->inheritValue()) ? "style=\"display: none;\"" : "";
-                $html .= "<div id=\"ParameterValueInput_$key\" title=\"" . $param->description() . "\" $visible>" . $param->getHtmlInput() . "</div>";
+                $html .= "<div id=\"ParameterValueInput_$key\" $visible>" . $param->getHtmlInput() . "</div>";
             }
             if ($param->base() !== NULL) {  // inherited value
                 $visible = ($param->inheritValue()) ? "" : "style=\"display: none;\"";
-                $html .= "<div class=\"ParameterInheritedValue ParameterIsInherited\" id=\"ParameterValueInherited_$key\" title=\"" . $param->description() . "\" $visible>" . $param->base()->valueLabel() . "</div>";
+                $html .= "<div class=\"ParameterInheritedValue ParameterIsInherited\" id=\"ParameterValueInherited_$key\" $visible>" . $param->base()->valueLabel() . "</div>";
             }
         }
         $html .= "</div>";

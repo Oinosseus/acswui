@@ -13,6 +13,8 @@ class CarClass extends DbEntry {
 
     private $BallastMap = NULL;
     private $RestrictorMap = NULL;
+    private $ValidCarIds = NULL;
+    private $Teams = NULL;
 //     private $OccupationMap = NULL;
 
     /**
@@ -157,6 +159,39 @@ class CarClass extends DbEntry {
 
 
     /**
+     * Group a list of CarSkin objects by car classes.
+     * @param $carskins A list of CarSkin objects
+     * @return An associative array [CarClass1Id=>[CarSkin1,CarSkin4], CarClass2Id=>[CarSkin2, CarSkin5], NULL=>[CarSkin3, CarSkin6]]
+     */
+    public static function groupCarSkins(array $carskins) {
+        $group_array = array();
+        $grouped_carskins = array();
+
+        // group by each car class
+        foreach (CarClass::listClasses() as $carclass) {
+            foreach ($carskins as $cs) {
+                if ($carclass->validCar($cs->car())) {
+                    if (!array_key_exists($carclass->id(), $group_array)) $group_array[$carclass->id()] = array();
+                    $group_array[$carclass->id()][] = $cs;
+                    $grouped_carskins[] = $cs;
+                }
+            }
+        }
+
+        // group un-classed carskins
+        foreach ($carskins as $cs) {
+            if (!in_array($cs, $grouped_carskins)) {
+                if (!array_key_exists(NULL, $group_array)) $group_array[NULL] = array();
+                $group_array[NULL][] = $cs;
+                $grouped_carskins[] = $cs;
+            }
+        }
+
+        return $group_array;
+    }
+
+
+    /**
      * @param $car The requeted Car object
      * @return The harmonized Power/Weight respecting Ballast and Restrictor [g/W]
      */
@@ -204,6 +239,12 @@ class CarClass extends DbEntry {
 
         $html = "<div class=\"DbEntryHtml\">$html</div>";
         return $html;
+    }
+
+
+    //! @return An html string with the name and a link
+    public function htmlName() {
+        return "<a href=\"index.php?HtmlContent=CarClass&Id=" . $this->id() . "\">" . $this->name() . "</a>";
     }
 
 
@@ -419,16 +460,39 @@ class CarClass extends DbEntry {
     }
 
 
+    //! @return A list of relevant Team objects
+    public function teams() {
+        if ($this->Teams === NULL) {
+            $this->Teams = array();
+            $car_ids = implode(" OR Car = ", $this->validCarIds());
+            $query = "SELECT DISTINCT Team FROM CarSkins WHERE Steam64GUID !='' AND Deprecated = 0 AND (Car = $car_ids)";
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $this->Teams[] = Team::fromId($row['Team']);
+            }
+        }
+        return $this->Teams;
+    }
+
+
     /**
      * Check if a certain Car is contained in this CarClass
      * @return True if the requested car object is part of this car class
      */
     public function validCar(Car $car) {
-        foreach ($this->cars() as $c) {
-            if ($c->id() != $car->id()) continue;
-            return TRUE;
+        return in_array($car->id(), $this->validCarIds());
+    }
+
+
+    //! @return A list of Database IDs of the car table which are in this car class
+    public function validCarIds() {
+        if ($this->ValidCarIds === NULL) {
+            $this->ValidCarIds = array();
+            $res = \Core\Database::fetch("CarClassesMap", ['Car'], ['CarClass'=>$this->id()]);
+            foreach ($res as $row) {
+                $this->ValidCarIds[] = (int) $row['Car'];
+            }
         }
-        return FALSE;
+        return $this->ValidCarIds;
     }
 
 

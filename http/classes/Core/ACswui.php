@@ -85,13 +85,13 @@ class ACswui  {
             $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCt", _("Cuts"), _("Points for amount of cuts that were made per driven distance"), "Points/Cut/Mm", -0.1);
             $p->setMin(-9999);
             $p->setMax(0);
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCe", _("Collision Environment"), _("Points for colliding with the environment per driven distance"), "Points/Collision/Mm", -2.0);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCe", _("Collision Environment"), _("Points for colliding with the environment per driven distance"), "Points/Collision/Nomspeed/Mm", -2.0);
             $p->setMin(-9999);
             $p->setMax(0);
             $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCc", _("Collision Cars"), _("Points for colliding with other cars per driven distance"), "Points/Collision/Nomspeed/Mm", -5.0);
             $p->setMin(-9999);
             $p->setMax(0);
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingCollNormSpeed", _("Nominal Collision-Speed"), _("Nominal speed at which collision a collsion points counts nominal"), "km/h", 100.0);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingCollNormSpeed", _("Nominal Collision-Speed"), _("Nominal speed at which collision a collsion points counts nominal"), "km/h", 50.0);
             $p->setMin(0);
             $p->setMax(999);
             $p = new \Parameter\ParamBool(NULL, $coll, "DriverRankingSfAP", _("Amnesty in Practice"), _("If enabled, safety penalties are not given for pure practice sessions (sessions without succeeding qualifying/race)"), "", TRUE);
@@ -107,6 +107,9 @@ class ACswui  {
             $p = new \Parameter\ParamSpecialUserCountry(NULL, $pc, "UserCountry", _("Country"), _("Select which country you want to represent"));
             $p = new \Parameter\ParamSpecialUserFormatDate(NULL, $pc, "UserFormatDate", _("Date/Time Format"), _("How shal date-times be presented"));
             $p = new \Parameter\ParamSpecialUserTimezone(NULL, $pc, "UserTimezone", _("Timezone"), _("Define your preferred timezone"));
+            $p = new \Parameter\ParamBool(NULL, $pc, "UserEnaLaptimeHistograms", _("Laptime Histogram"), _("In laptime distributin diagrams, enable option to show histogram bars (instead of distribution only)"), FALSE);
+            $p = new \Parameter\ParamColor(NULL, $pc, "UserColor", _("Color"), _("Your preferred color to better identify you in diagrams"));
+            $p->setValue(sprintf("#%06x", rand(0, 2**24 - 1)));
 
 
 

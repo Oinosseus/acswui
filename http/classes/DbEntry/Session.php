@@ -17,6 +17,12 @@ class Session extends DbEntry {
     //! Definition of practice session type
     const TypePractice = 1;
 
+    //! Definition of practice session type
+    const TypeBooking = 0;
+
+    //! Invalid Session type
+    const TypeInvalid = -1;
+
     private $Collisions = NULL;
     private $DrivenLength = NULL;
     private $Laps = NULL;
@@ -101,9 +107,17 @@ class Session extends DbEntry {
     }
 
 
+    //! @return The Lap object with the best, valid laptime (can be NULL)
+    public function lapBest() {
+        $query = "SELECT Id from Laps WHERE Session = " . $this->id() . " AND Cuts = 0 ORDER BY Laptime ASC LIMIT 1;";
+        $res = \Core\Database::fetchRaw($query);
+        return (count($res) == 1) ? Lap::fromId($res[0]['Id']) : NULL;
+    }
+
+
     /**
      * @param $user If not NULL, only the laps of this user are returned
-     * @param $valid_only If TRUE (default FALSE) onyl laps without cuts are listed
+     * @param $valid_only If TRUE (default FALSE) only laps without cuts are listed
      * @return An array of Lap objects
      */
     public function laps(User $user = NULL, bool $valid_only=FALSE) {
@@ -181,7 +195,16 @@ class Session extends DbEntry {
 
     //! @return 'P', 'Q' or 'R', depending on the session type
     public function typeChar() {
-        switch ($this->type()) {
+        return Session::type2Char($this->type());
+    }
+
+
+    /**
+     * Converty any Session Type identifier to a indetifier char
+     * @return A char
+     */
+    public static function type2Char($type) {
+        switch ($type) {
             case Session::TypeRace:
                 return "R";
                 break;
@@ -191,9 +214,15 @@ class Session extends DbEntry {
             case Session::TypePractice:
                 return "P";
                 break;
+            case Session::TypeBooking:
+                return "B";
+                break;
+            case Session::TypeInvalid:
+                return "I";
+                break;
             default:
-                \Core\Log::error("Unknown session type '" . $this->type() . "'!");
-                return "";
+                \Core\Log::warning("Unknown session type '$type'!");
+                return "?";
                 break;
         }
     }

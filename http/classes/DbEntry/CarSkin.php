@@ -121,7 +121,7 @@ class CarSkin extends DbEntry {
 
     //! @return Team name of the skin
     public function team() {
-        return $this->loadColumn("Team");
+        return Team::fromId($this->loadColumn("Team"));
     }
 
 }

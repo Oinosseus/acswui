@@ -103,6 +103,72 @@ class ServerPresets extends \core\HtmlContent {
         $html .= "<button type=\"submit\" name=\"Action\" value=\"SavePreset\">" . _("Save Preset") . "</button>";
         $html .= "</form>";
 
+
+        // schedule
+        $html .= "<h1>" . _("Schedule") . "</h1>";
+        $html .= "<h2>" . _("Long Schedule") . "</h2>";
+        $html .= "<p>" . _("Save preset to update the schedule.") . "</p>";
+        $html .= "<table>";
+        $html .= "<tr>";
+        $html .= "<th colspan=\"2\">" . _("Start") . "</th>";
+        $html .= "<th colspan=\"2\">" . _("Entry") . "</th>";
+        $html .= "<th colspan=\"2\">" . _("Duration") . "</th>";
+        $html .= "</tr>";
+        $preset_offset = new \Core\TimeInterval();
+        $preset_offset_delay = new \Core\TimeInterval();
+        foreach ($this->CurrentPreset->schedule() as [$interval, $uncertainty, $type, $name]) {
+            $html .= "<tr>";
+
+            $html .= "<td>";
+            $html .= \Core\UserManager::currentUser()->formatSessionSchedule($preset_offset);
+            $html .= "</td><td>";
+            $html .= "(+" . \Core\UserManager::currentUser()->formatSessionSchedule($preset_offset_delay) . ")";
+            $html .= "</td>";
+            $preset_offset->add($interval);
+            $preset_offset_delay->add($uncertainty);
+
+            if ($type == \DbEntry\Session::TypeInvalid) $type = "";
+            else $type = \DbEntry\Session::type2Char($type);
+            $html .= "<td>" . $type . "</td>";
+            $html .= "<td>" . $name . "</td>";
+
+            $html .= "<td>";
+            $html .= \Core\UserManager::currentUser()->formatSessionSchedule($interval);
+            $html .= "</td><td>";
+            $html .= "(+" . \Core\UserManager::currentUser()->formatSessionSchedule($uncertainty) . ")";
+            $html .= "</td>";
+
+            $html .= "</tr>";
+        }
+        $html .= "</table>";
+
+
+        // short schedule
+        $html .= "<h2>" . _("Short Schedule") . "</h2>";
+        $html .= "<table>";
+        $html .= "<tr>";
+        $html .= "<th>" . _("Start") . "</th>";
+        $html .= "<th>" . _("Entry") . "</th>";
+        $html .= "<th>" . _("Duration") . "</th>";
+        $html .= "</tr>";
+        $preset_offset = new \Core\TimeInterval();
+        $preset_offset_delay = new \Core\TimeInterval();
+        foreach ($this->CurrentPreset->schedule() as [$interval, $uncertainty, $type, $name]) {
+
+            if ($type != \DbEntry\Session::TypeInvalid) {
+                $html .= "<tr>";
+                $html .= "<td>" . \Core\UserManager::currentUser()->formatSessionSchedule($preset_offset) . "</td>";
+                $html .= "<td>$name</td>";
+                $html .= "<td>" . \Core\UserManager::currentUser()->formatSessionSchedule($interval) . "</td>";
+                $html .= "</tr>";
+            }
+
+            $preset_offset->add($interval);
+            $preset_offset_delay->add($uncertainty);
+        }
+        $html .= "</table>";
+
+
 //         $html .= "<br><br><br>";
 //         $html .= $pc->getHtmlTree();
 

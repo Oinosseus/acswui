@@ -58,12 +58,24 @@ class CarModel extends \core\HtmlContent {
             $html .= $car->description();
             $html .= "</div>";
 
+            $html .= "<h2>" . _("Car Skins") . "</h2>";
             $html .= "<div id=\"AvailableSkins\">";
             foreach ($car->skins() as $skin) {
                 $skin_name = $skin->skin();
                 $html .= $skin->html();
             }
             $html .= "</div>";
+
+            $html .= "<h2>" . _("Car Classes") . "</h2>";
+            $html .= "<ul>";
+            foreach ($car->classes() as $carclass) {
+                $html .= "<li>" . $carclass->htmlName() . "</li>";
+            }
+            $html .= "</ul>";
+        if (count($car->classes()) == 0) {
+            $html .= _("This car is not used in any car class");
+        }
+
 
 
         } else {

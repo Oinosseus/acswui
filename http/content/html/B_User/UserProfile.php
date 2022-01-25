@@ -20,7 +20,7 @@ class UserProfile extends \core\HtmlContent {
 
         if ($user && $user->privacyFulfilled()) {
             $html .= "<strong>" . _("ID") . "</strong>: " . $user->id() . "<br>";
-            $html .= "<strong>" . _("Name") . "</strong>: " . $user->name() . "<br>";
+            $html .= "<strong>" . _("Name") . "</strong>: " . $user->html() . "<br>";
             $html .= "<strong>Steam64GUID</strong>: " . $user->steam64GUID() . "<br>";
 
             $html .= "<strong>" . _("User Groups") . "</strong>:";
@@ -40,6 +40,13 @@ class UserProfile extends \core\HtmlContent {
 
             $html .= "<strong>" . _("Country") . "</strong>: " . $user->parameterCollection()->child("UserCountry")->valueLabel() . "<br>";
             $html .= "<strong>" . _("Driven Laps") . "</strong>: " . $user->countLaps() . "<br>";
+
+            $html .= "<h1>" . _("Teams") . "</h1>";
+            $html .= "<ul>";
+            foreach ($user->teams() as $team) {
+                $html .= "<li>" . $team->htmlName() . "</li>";
+            }
+            $html .= "</ul>";
 
         } else {
             $html .= _("Privacy settings of the user does not allow to show any information.");

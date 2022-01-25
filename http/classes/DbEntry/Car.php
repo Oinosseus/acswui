@@ -20,6 +20,7 @@ class Car extends DbEntry {
     private $PowerHarmonized = NULL;
     private $Weight = NULL;
     private $MaxRpm = NULL;
+    private $CarClasses = NULL;
 
 
     /**
@@ -37,6 +38,19 @@ class Car extends DbEntry {
             $this->Brand = CarBrand::fromId($this->loadColumn("Brand"));
         }
         return $this->Brand;
+    }
+
+
+    //! @return A list of all CarClass objects, this car is included
+    public function classes() {
+        if ($this->CarClasses === NULL) {
+            $this->CarClasses = array();
+            $query = "SELECT DISTINCT CarClass FROM CarClassesMap WHERE Car = " . $this->id();
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $this->CarClasses[] = CarClass::fromId($row['CarClass']);
+            }
+        }
+        return $this->CarClasses;
     }
 
 

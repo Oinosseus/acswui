@@ -75,7 +75,7 @@ class Database {
     }
 
 
-    private static function escape(string $s) {
+    public static function escape(string $s) {
         if (Database::$DbHandle === NULL) {
             Log::error("Uninitialized database");
             return $s;

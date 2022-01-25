@@ -15,7 +15,7 @@ class Z_About extends \core\HtmlContent {
         $html .= "<p>The acronym 'ACswui' stands for Assetto Corsa Server Web User Interface.</p>";
         $html .= "<p>The letters 'AC' are written in capitals intentionally. ";
         $html .= "Since <a href=\"https://www.assettocorsa.it\">Assetto Corsa</a> is THE greatest racing simulator in the current decade (at least in my humble oppinion),
-                  the capital letters shall show my respect to <a href=\"http://www.kunos-simulazioni.com\">KUNOS Simulationi</a>.
+                  the capital letters shall show my respect to <a href=\"http://www.kunos-simulazioni.com\">KUNOS Simulazioni</a>.
                   The remaining 'swui' is just a user interface around the simulation.
                   </p>";
         $html .= "<p>It must be said, that the ACswui system stands in no legal conjunction with KUNOZ Simulazioni.</p>";
@@ -51,6 +51,16 @@ class Z_About extends \core\HtmlContent {
         $html .= "<p>The actually Real Penalty software is not integrated into ACswui.
                   You have to procure it separately.
                   But ACswui is prepared to configure and operate the Real Penalty plugin.
+                  </p>";
+
+        // Chart.js
+        $html .= "<h2>Chart.js</h2>";
+        $html .= "<p>A javascript library to generate diagrams.</p>";
+        $html .= "<p>To be honest, javascript is not my favourite pet.
+                  So, I am really glad that a lot of contributors created <a href=\"https://www.chartjs.org/\">Chart.js</a>,
+                  which makes it easy to present diagrams in ACswui.
+                  At the moment this javascript library is included via cloudflare and not self hosted.
+                  This makes it easier to integrate - hopefully only the diagrams are loaded from the foreign server.
                   </p>";
 
 

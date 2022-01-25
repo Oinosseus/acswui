@@ -9,7 +9,6 @@ import argparse
 import os
 import sys
 import json
-import time
 from pyacswui import CommandPackage, CommandInstall, CommandSrvrun, CommandDbCleanup, CommandUpdateLocales, CommandUdpPlugin
 
 
@@ -38,15 +37,6 @@ CommandUdpPlugin(argparsersubs)
 #  - Execute Command -
 # ---------------------
 
-duration_start = time.monotonic()
 args = argparser.parse_args()
 args.CmdObject.parseArgs(args)
 args.CmdObject.process()
-duration_end = time.monotonic()
-
-if args.v >=2:
-    duration = duration_end - duration_start
-    if duration < 1.0:
-        print("processing duration: %0.1fms" % (1000 * duration))
-    else:
-        print("processing duration: %0.2fs" % (duration))

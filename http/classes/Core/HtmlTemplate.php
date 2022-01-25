@@ -59,6 +59,7 @@ abstract class HtmlTemplate {
         $l = array();
         $l[] = "js/general.js";
         $l[] = "js/parameter.js";
+        $l[] = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js";
 
         // scripts requested by content
         $content = \Core\HtmlContent::navigatedContent();

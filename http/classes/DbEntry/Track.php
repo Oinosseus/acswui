@@ -128,6 +128,27 @@ class Track extends DbEntry {
 
 
     /**
+     * Estimate expected Laptimes
+     * @param $cc If given laptimes are estimated for this CarClass
+     * @return The estimated laptime as tuple of [min, typ, max]
+     */
+    public function estimeLaptime(CarClass $cc=NULL) {
+        $l = $this->length();
+        if ($cc !== NULL) {
+            //! @todo Guess lap times by car class
+            \Core\Log::warning("Not Implemented yet, just guessing :-(");
+            return array(1000 * $l * 3.6 / 200,
+                         1000 * $l * 3.6 / 150,
+                         1000 * $l * 3.6 / 75);
+        } else {
+            return array(1000 * $l * 3.6 / 225,  // according to Porsche 919 on Nordschleife
+                         1000 * $l * 3.6 / 150,
+                         1000 * $l * 3.6 / 75);
+        }
+    }
+
+
+    /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.
      * @return An object by its database Id

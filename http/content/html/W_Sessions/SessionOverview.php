@@ -13,6 +13,7 @@ class SessionOverview extends \core\HtmlContent {
     public function __construct() {
         parent::__construct(_("Overview"),  "Session OVerview");
         $this->requirePermission("Sessions_View");
+        $this->addScript("laptime_ditribution_diagram.js");
     }
 
 
@@ -59,9 +60,17 @@ class SessionOverview extends \core\HtmlContent {
     private function listBestlap() {
         $user = \core\UserManager::currentUser();
         $html = "<h1>" . _("Best Laps") . "</h1>";
-        $html .= "<table>";
+
+        // laptime diagram
+        $html .= "<div id=\"LaptimeDistributionDiagram\">";
+        $title = _("Laptime Distribution Diagram");
+        $axis_y_title = _("Driven laps [in percent]");
+        $axis_x_title = _("Laptime distance to best lap in session [in seconds]");
+        $html .= "<canvas width=\"100\" height=\"20\" axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\"></canvas>";
+        $html .= "</div>";
 
         // header
+        $html .= "<table>";
         $html .= "<tr>";
         $html .= "<th>" . _("Driver") . "</th>";
         $html .= "<th>" . _("Laptime") . "</th>";
@@ -105,6 +114,18 @@ class SessionOverview extends \core\HtmlContent {
             $html .= "<td>" . $lap->restrictor() . " &percnt;</td>";
             $html .= "<td>" . sprintf("%0.1f", 100*$lap->grip()) . " &percnt;</td>";
             $html .= "<td>" . $lap->id() . "</td>";
+
+            $html .= "<td>";
+            if ($lap->user()->privacyFulfilled()) {
+                if ($user->getParam("UserEnaLaptimeHistograms")) {
+                    $html .= "<button type=\"button\" sessionId=\"" . $this->CurrentSession->id() . "\" userId=\"" . $lap->user()->id() . "\" onclick=\"LaptimeDistributionDiagramLoadData(this, 'bar')\" title=\"" . _("Load Laptime Distribution Data") . "\">";
+                    $html .= "&#x1f4ca;</button> ";
+                }
+                $html .= "<button type=\"button\" sessionId=\"" . $this->CurrentSession->id() . "\" userId=\"" . $lap->user()->id() . "\" onclick=\"LaptimeDistributionDiagramLoadData(this, 'line')\" title=\"" . _("Load Laptime Distribution Data") . "\">";
+                $html .= "&#x1f4c8;</button> ";
+            }
+            $html .= "</td>";
+
             $html .= "</tr>";
         }
 
@@ -135,8 +156,8 @@ class SessionOverview extends \core\HtmlContent {
 
             $html .= "<tr>";
             $html .= "<td>" . $user->formatDateTime($c->timestamp()) . "</td>";
-            $html .= "<td>" . $c->user()->name() . "</td>";
-            $html .= "<td>" . (($c instanceof \DbEntry\CollisionCar) ? $c->otheruser()->name() : "" ) . "</td>";
+            $html .= "<td>" . $c->user()->html() . "</td>";
+            $html .= "<td>" . (($c instanceof \DbEntry\CollisionCar) ? $c->otheruser()->html() : "" ) . "</td>";
             $html .= "<td>" . sprintf("%0.1f", $c->speed()) . " km/h</td>";
 
             $distance = $this->CurrentSession->drivenDistance($c->user());
@@ -167,6 +188,7 @@ class SessionOverview extends \core\HtmlContent {
         $html .= "<tr>";
         $html .= "<th>" . _("Lap") . "</th>";
         $html .= "<th>" . _("Laptime") . "</th>";
+        $html .= "<th><span title=\"" . _("Difference to session best lap") . "\">" . _("Delta") . "</span></th>";
         $html .= "<th>" . _("Cuts") . "</th>";
         $html .= "<th>" . _("Driver") . "</th>";
         $html .= "<th>" . _("Car") . "</th>";
@@ -177,6 +199,8 @@ class SessionOverview extends \core\HtmlContent {
         $html .= "<tr>";
 
         $laps = $this->CurrentSession->laps();
+        $bestlap = $this->CurrentSession->lapBest();
+        $besttime = ($bestlap) ? $bestlap->laptime() : 0;
         for ($i = (count($laps) - 1); $i >= 0; --$i) {
             $lap = $laps[$i];
 
@@ -184,6 +208,7 @@ class SessionOverview extends \core\HtmlContent {
             $html .= "<tr class=\"$tr_css_class\">";
             $html .= "<td>" . ($lap->id() - $laps[0]->id() + 1) . "</td>";
             $html .= "<td>" . $user->formatLaptime($lap->laptime()) . "</td>";
+            $html .= "<td>" . $user->formatLaptimeDelta($lap->laptime() - $besttime) . "</td>";
             $html .= "<td>" . $lap->cuts() . "</td>";
             $html .= "<td>" . $lap->user()->html() . "</td>";
             $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";

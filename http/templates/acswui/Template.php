@@ -24,13 +24,14 @@ class Template extends \Core\HtmlTemplate {
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_content.css\">\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_functional.css\">\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_parameter.css\">\n";
+        $html .= "    <script src=\"templates/acswui/style_chart.js\"></script>";
         foreach ($this->listScripts() as $s) $html .= "<script src=\"$s\"></script>";
         $html .= "  </head>\n";
         $html .= "  <body>\n";
 
         $html .= "<div id=\"UserBox\">";
         if ($current_user !== NULL) {
-            $html .= $current_user->name();
+            $html .= $current_user->html();
         }
         $html .= "</div>";
 

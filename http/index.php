@@ -12,11 +12,6 @@ if (ini_set('display_errors', '1') === false) {
 // autoload of class library
 spl_autoload_register(function($className) {
     $className = str_replace("\\", DIRECTORY_SEPARATOR, $className);
-
-//     if (class_exists("\\core\\Log", FALSE) && class_exists("\\core\\Config", FALSE)) {
-//         \core\Log::debug("AUTO-INC $className");
-//     }
-
     $file_path = 'classes/' . $className . '.php';
     if (file_exists($file_path)) include_once $file_path;
 });
@@ -40,22 +35,28 @@ session_start();
 \Core\UserManager::initialize();
 
 // Setup template
-$requested_template = \Core\Config::DefaultTemplate;
-$template = \Core\HtmlTemplate::getTemplate($requested_template);
-if ($template === NULL) {
-    \Core\Log::error("Could not load template '$requested_template'!");
+if (array_key_exists("JsonContent", $_GET)) {
+    echo \Core\JsonContent::getContent();
 } else {
-    echo $template->getHtml();
+    $requested_template = \Core\Config::DefaultTemplate;
+    $template = \Core\HtmlTemplate::getTemplate($requested_template);
+    if ($template === NULL) {
+        \Core\Log::error("Could not load template '$requested_template'!");
+    } else {
+        echo $template->getHtml();
+    }
 }
 
 // deinitialization of global singletons
 \Core\Database::shutdown();
 
 // finish log
-$duration_end = microtime(TRUE);
-$duration_ms = 1e3 * ($duration_end - $duration_start);
-$msg = sprintf("Execution duration: %0.1f ms", $duration_ms);
-\Core\Log::debug($msg);
+if (array_key_exists("HtmlContent", $_GET)) {
+    $duration_end = microtime(TRUE);
+    $duration_ms = 1e3 * ($duration_end - $duration_start);
+    $msg = sprintf("Execution duration: %0.1f ms", $duration_ms);
+    \Core\Log::debug($msg);
+}
 \Core\Log::shutdown();
 
 ?>

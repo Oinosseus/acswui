@@ -275,3 +275,7 @@ main.SessionOverview td.Driver {
 main.SessionOverview td.Driver img {
     margin-right: 0.5em;
 }
+
+main.SessionOverview div#LaptimeDistributionDiagram {
+    margin-bottom: 3em;
+}

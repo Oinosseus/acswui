@@ -118,7 +118,7 @@ abstract class DbEntry {
 
     //! The Id of the database table row (NULL for new entries)
     public function id() {
-        return $this->Id;
+        return ($this->Id === NULL) ? $this->Id : (int) $this->Id;
     }
 
 

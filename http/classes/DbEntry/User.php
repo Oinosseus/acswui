@@ -15,6 +15,7 @@ class User extends DbEntry { #implements JsonSerializable {
 
     private $DaysSinceLastLap = NULL;
     private $DaysSinceLastLogin = NULL;
+    private $Teams = NULL;
 
     private static $CommunityList = NULL;
     private static $DriverList = NULL;
@@ -145,6 +146,33 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    /**
+     * @param $interval An arbitrary \Core\TimeInterval object
+     * @return A string with formated interval
+     */
+    public function formatSessionSchedule(\Core\TimeInterval $interval) {
+        $seconds = $interval->seconds();
+
+        if ($seconds < 60) {
+            return sprintf("%d s", $seconds);
+
+        } else if ($seconds < (60*60)) {
+            $minutes = $seconds / 60;
+            $seconds = $seconds % 60;
+            return sprintf("%d:%02d min", $minutes, $seconds);
+
+
+        } else {
+//         } else if ($seconds < (60*60*24)) {
+            $hours = $seconds / (60*60);
+            $remaining_secs = $seconds % (60*60);
+            $minutes = $remaining_secs / 60;
+            $seconds = $remaining_secs % 60;
+            return sprintf("%d:%02d:%02d h", $hours, $minutes, $seconds);
+        }
+    }
+
+
 
     /**
      * Retrieve an existing object from database.
@@ -153,6 +181,16 @@ class User extends DbEntry { #implements JsonSerializable {
      */
     public static function fromId(int $id) {
         return parent::getCachedObject("Users", "User", $id);
+    }
+
+
+    /**
+     * @param $steam64guid The Steam ID
+     * @return The requested User object (can be NULL)
+     */
+    public static function fromSteam64GUID(string $steam64guid) {
+        $res = \Core\Database::fetch("Users", ['Id'], ['Steam64GUID'=>$steam64guid]);
+        return (count($res) == 1) ? User::fromId($res[0]['Id']) : NULL;
     }
 
 
@@ -183,7 +221,7 @@ class User extends DbEntry { #implements JsonSerializable {
             $html .= $this->name();
             $html .= "</a>";
         } else {
-            $html .= $this->name();
+            $html .= "<div class=\"UserHiddenName\">User-" . $this->id() . "</div>";
         }
         return $html;
     }
@@ -275,7 +313,8 @@ class User extends DbEntry { #implements JsonSerializable {
 
 
     /**
-     * @return The username that shall be displayed on HTML output (depending on privacy settings)
+     * @warning For HTML output use html() instead (which respects privacy settings)
+     * @return The username
      */
     public function name() {
         if ($this->isRoot()) {
@@ -285,7 +324,7 @@ class User extends DbEntry { #implements JsonSerializable {
         } else if ($this->privacyFulfilled()) {
             return $this->loadColumn("Name");
         } else {
-            return "<div class=\"UserHiddenName\">User[" . $this->id() . "]</div>";
+            return "User-" . $this->id();
         }
     }
 
@@ -386,6 +425,19 @@ class User extends DbEntry { #implements JsonSerializable {
         return $this->Steam64GUID;
     }
 
+
+    //! @return A list of Team objects
+    public function teams() {
+        if ($this->Teams === NULL) {
+            $this->Teams = array();
+            $sid = \Core\Database::escape($this->steam64GUID());
+            $query = "SELECT DISTINCT Team FROM `CarSkins` WHERE Steam64GUID = '$sid';";
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $this->Teams[] = Team::fromId($row['Team']);
+            }
+        }
+        return $this->Teams;
+    }
 
 }
 

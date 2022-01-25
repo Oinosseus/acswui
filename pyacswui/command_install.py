@@ -573,11 +573,12 @@ class CommandInstall(Command):
 
         # list available permissions
         permissions = []
-        permissions.append("ServerContent_View")
-        permissions.append("ServerContent_Tracks_View")
-        permissions.append("ServerContent_Cars_View")
         permissions.append("ServerContent_CarClasses_View")
         permissions.append("ServerContent_CarClasses_Edit")
+        permissions.append("ServerContent_Cars_View")
+        permissions.append("ServerContent_Teams_View")
+        permissions.append("ServerContent_Tracks_View")
+        permissions.append("ServerContent_View")
         permissions.append("User_View")
         permissions.append("User_Settings")
         permissions.append("User_Groups_View")
@@ -595,6 +596,7 @@ class CommandInstall(Command):
         permissions.append("Settings_Weather_Edit")
         permissions.append("Sessions_View")
         permissions.append("Sessions_Control")
+        permissions.append("Json")
 
         # delete obsolete permissions
         for column in self.__db.columns("Groups"):

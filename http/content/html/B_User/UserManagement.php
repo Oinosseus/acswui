@@ -53,7 +53,7 @@ class UserManagement extends \Core\HtmlContent {
 
             $html .= "<tr>";
             $html .= "<td>" . $u->id() . "</td>";
-            $html .= "<td>" . $u->name() . "</td>";
+            $html .= "<td>" . $u->html() . "</td>";
             $html .= "<td>" . $u->steam64GUID() . "</td>";
             foreach ($group_list as $g) {
 
