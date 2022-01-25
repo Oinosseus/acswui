@@ -66,7 +66,8 @@ class SessionOverview extends \core\HtmlContent {
         $title = _("Laptime Distribution Diagram");
         $axis_y_title = _("Driven laps [in percent]");
         $axis_x_title = _("Laptime distance to best lap in session [in seconds]");
-        $html .= "<canvas width=\"100\" height=\"20\" axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\"></canvas>";
+        $max_delta = $user->getParam("UserLaptimeDistriDiaMaxDelta");
+        $html .= "<canvas width=\"100\" height=\"20\" axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" maxDelta=\"$max_delta\"></canvas>";
         $html .= "</div>";
 
         // header
@@ -85,9 +86,9 @@ class SessionOverview extends \core\HtmlContent {
 
         // scan best laps
         $best_laps = array();
-        foreach ($this->CurrentSession->users() as $user) {
-            $laps = $this->CurrentSession->laps($user, TRUE);  // valid laps
-            if (count($laps) == 0) $laps = $this->CurrentSession->laps($user, FALSE);  // all laps
+        foreach ($this->CurrentSession->users() as $u) {
+            $laps = $this->CurrentSession->laps($u, TRUE);  // valid laps
+            if (count($laps) == 0) $laps = $this->CurrentSession->laps($u, FALSE);  // all laps
             usort($laps, "\DbEntry\Lap::compareLaptime");
             $best_laps[] = $laps[0];
         }
@@ -117,7 +118,7 @@ class SessionOverview extends \core\HtmlContent {
 
             $html .= "<td>";
             if ($lap->user()->privacyFulfilled()) {
-                if ($user->getParam("UserEnaLaptimeHistograms")) {
+                if ($user->getParam("UserLaptimeDistriDiaEnaHist")) {
                     $html .= "<button type=\"button\" sessionId=\"" . $this->CurrentSession->id() . "\" userId=\"" . $lap->user()->id() . "\" onclick=\"LaptimeDistributionDiagramLoadData(this, 'bar')\" title=\"" . _("Load Laptime Distribution Data") . "\">";
                     $html .= "&#x1f4ca;</button> ";
                 }

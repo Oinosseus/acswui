@@ -107,9 +107,14 @@ class ACswui  {
             $p = new \Parameter\ParamSpecialUserCountry(NULL, $pc, "UserCountry", _("Country"), _("Select which country you want to represent"));
             $p = new \Parameter\ParamSpecialUserFormatDate(NULL, $pc, "UserFormatDate", _("Date/Time Format"), _("How shal date-times be presented"));
             $p = new \Parameter\ParamSpecialUserTimezone(NULL, $pc, "UserTimezone", _("Timezone"), _("Define your preferred timezone"));
-            $p = new \Parameter\ParamBool(NULL, $pc, "UserEnaLaptimeHistograms", _("Laptime Histogram"), _("In laptime distributin diagrams, enable option to show histogram bars (instead of distribution only)"), FALSE);
             $p = new \Parameter\ParamColor(NULL, $pc, "UserColor", _("Color"), _("Your preferred color to better identify you in diagrams"));
             $p->setValue(sprintf("#%06x", rand(0, 2**24 - 1)));
+
+            $coll = new \Parameter\Collection(NULL, $pc, "UserLaptimeDistriDia", _("Laptime Distribution Diagrams"), "");
+            $p = new \Parameter\ParamBool(NULL, $coll, "UserLaptimeDistriDiaEnaHist", _("Laptime Histogram"), _("In laptime distributin diagrams, enable option to show histogram bars (instead of distribution only)"), "", FALSE);
+            $p = new \Parameter\ParamInt(NULL, $coll, "UserLaptimeDistriDiaMaxDelta", _("Max Delta"), _("Defines the maximum of the x-axis (how much seconds to show)"), "s", 10);
+            $p->setMin(1);
+            $p->setMax(300);
 
 
 

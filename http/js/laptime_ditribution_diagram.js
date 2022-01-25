@@ -1,12 +1,13 @@
 // used in SessionOverview
 
 var LaptimeDistributionDiagram = null;
+var LaptimeDistributionMaxDelta = 1; // seconds
 
-const xValues = [0.1, 0.2, 0.3, 0.5, 0.6, 0.7, 0.8, 0.9,
-                1, 2, 3, 4, 5, 6, 7, 8, 9,
-                10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
 function LaptimeDistributionDiagramCalculateGauss(x, mean, sigma_left, sigma_right) {
+
+    // This is just a foolish approach of calculating skewed gaussian distribution.
+    // A scientific correct approach has to be implemented later
 
     // calculate amplitude
     var sigma_average = (sigma_left + sigma_right) / 2;
@@ -24,34 +25,20 @@ function LaptimeDistributionDiagramCalculateGauss(x, mean, sigma_left, sigma_rig
 
 function LaptimeDistributionDiagramAddDatasetLine(response) {
     var info = JSON.parse(response);
-//     console.log(info);
-
-    // calculate logarithm
-    var laptimes_log10 = new Array();
-    for (var i = 0; i < info.Laptimes.length; ++i) {
-        if (info.Laptimes[i] ==  0) {
-            laptimes_log10.push(0);  // avoid '0' because of loarithms
-        } else  {
-            laptimes_log10.push(Math.log10(info.Laptimes[i]));
-        }
-    }
-//     console.log(laptimes_log10);
 
     // calculate mean value
     var mean = 0;
-    for (var i = 0; i < laptimes_log10.length; ++i) {
-        mean += laptimes_log10[i];
+    for (var i = 0; i < info.Laptimes.length; ++i) {
+        mean += info.Laptimes[i];
     }
-    mean /= laptimes_log10.length;
-    var mean_s = 10**mean / 1000;
-//     console.log("Mean=" + mean_s);
+    mean /= info.Laptimes.length;
+    var mean_s = mean / 1000;
 
     // calculate standard deviation, separately for left and right of mean
     var std_dev_left_s = 0;
     var std_dev_left_count = 0;
     var std_dev_right_s = 0;
-    var std_dev_right_count = 0;
-    for (var i = 0; i < info.Laptimes.length; ++i) {
+    var std_dev_right_count = 0;    for (var i = 0; i < info.Laptimes.length; ++i) {
         var laptime_s = info.Laptimes[i] / 1000;
 
         if (laptime_s <= mean_s) {
@@ -64,14 +51,12 @@ function LaptimeDistributionDiagramAddDatasetLine(response) {
     }
     std_dev_left_s = Math.sqrt(std_dev_left_s) / std_dev_left_count;
     std_dev_right_s = Math.sqrt(std_dev_right_s) / std_dev_right_count;
-//     console.log("StdDev=" + std_dev_left_s + "," + std_dev_right_s);
 
     // calculate diagram points
     var data = new Array();
     var laptime_min = Math.min(...info.Laptimes) / 1000;
     var laptime_max = Math.max(...info.Laptimes) / 1000;
-//     console.log("HERE " + laptime_min + " " + laptime_max);
-    for (var t=laptime_min; t < 30; ) {
+    for (var t=laptime_min; t <= LaptimeDistributionMaxDelta; ) {
 
         // stop at longest laptime
         if (t >= laptime_max) {
@@ -143,6 +128,8 @@ function LaptimeDistributionDiagramLoadData(button, type) {
     } else if (type == 'line') {
         request_url += "&Laptimes=Deltas"
     }
+    request_url += "&LaptimeDistributionMaxDelta=" + LaptimeDistributionMaxDelta;
+//     console.log(request_url);
 
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType('application/json');
@@ -179,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var diagram_title = canvas.getAttribute("title");
     var ax_y_title = canvas.getAttribute("axYTitle");
     var ax_x_title = canvas.getAttribute("axXTitle");
+    LaptimeDistributionMaxDelta = canvas.getAttribute("maxDelta");
 
     // create chart
     LaptimeDistributionDiagram = new Chart(canvas, {
@@ -189,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
             scales: {
                     x: {type: 'logarithmic',
                         min: 0.09,
-                        max: 30,
+                        max: LaptimeDistributionMaxDelta,
                         title: {
                             display: true,
                             text: ax_x_title

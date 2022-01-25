@@ -37,6 +37,13 @@ class LaptimeDistributionData extends \Core\JsonContent {
             return [];
         }
 
+        // options
+        $max_delta = NULL;
+        if (array_key_exists("LaptimeDistributionMaxDelta", $_GET)) {
+            $max_delta = (int) $_GET['LaptimeDistributionMaxDelta'];
+            $max_delta *= 1000;
+        }
+
         // get requested data
         $data = array();
         $data['User'] = array();
@@ -49,7 +56,7 @@ class LaptimeDistributionData extends \Core\JsonContent {
                     $data['Laptimes'] = $this->distributionBuckets($session, $user);
                     break;
                 case "Deltas":
-                    $data['Laptimes'] = $this->laptimeDeltas($session, $user);
+                    $data['Laptimes'] = $this->laptimeDeltas($session, $user, $max_delta);
                     breaK;
             }
 
@@ -60,12 +67,13 @@ class LaptimeDistributionData extends \Core\JsonContent {
     }
 
 
-    private function laptimeDeltas($session, $user) {
+    private function laptimeDeltas($session, $user, $max_delta=NULL) {
         $data = array();
         $besttime = $session->lapBest()->laptime();
         foreach ($session->laps($user, TRUE) as $lap) {
             $delta = $lap->laptime() - $besttime;
-            if ($delta < 30000) $data[] = $delta;
+            if ($max_delta !== NULL && $delta > $max_delta) continue;
+            $data[] = $delta;
         }
         return $data;
     }
