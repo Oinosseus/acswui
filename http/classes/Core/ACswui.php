@@ -110,12 +110,14 @@ class ACswui  {
             $p = new \Parameter\ParamColor(NULL, $pc, "UserColor", _("Color"), _("Your preferred color to better identify you in diagrams"));
             $p->setValue(sprintf("#%06x", rand(0, 2**24 - 1)));
 
-            $coll = new \Parameter\Collection(NULL, $pc, "UserLaptimeDistriDia", _("Laptime Distribution Diagrams"), "");
-            $p = new \Parameter\ParamBool(NULL, $coll, "UserLaptimeDistriDiaEnaHist", _("Laptime Histogram"), _("In laptime distributin diagrams, enable option to show histogram bars (instead of distribution only)"), "", FALSE);
+            $coll = new \Parameter\Collection(NULL, $pc, "UserLaptimeDistriDia", _("Laptime Distribution Diagrams"), _("Options to adjust the laptime distribution diagrams"));
             $p = new \Parameter\ParamInt(NULL, $coll, "UserLaptimeDistriDiaMaxDelta", _("Max Delta"), _("Defines the maximum of the x-axis (how much seconds to show)"), "s", 10);
             $p->setMin(1);
             $p->setMax(300);
-
+            $p = new \Parameter\ParamEnumMulti(NULL, $coll, "UserLaptimeDistriDiaType", _("Available Types"), _("Select which options shall be available for laptime distribution diagrams (just prevents to click wrong buttons)"));
+            new \Parameter\EnumItem($p, 'hist',  _("Histogram"));
+            new \Parameter\EnumItem($p, 'gauss',  _("Gaussian"));
+            $p->setValue("gauss");
 
 
             // derive root collection

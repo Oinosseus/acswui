@@ -4,12 +4,10 @@ namespace Content\Json;
 
 class LaptimeDistributionData extends \Core\JsonContent {
 
-    const xValues = [0.1, 0.2, 0.3, 0.5, 0.6, 0.7, 0.8, 0.9,
-                    1, 2, 3, 4, 5, 6, 7, 8, 9,
-                    10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
     public function __construct() {
     }
+
 
     public function getDataArray() {
 
@@ -80,38 +78,31 @@ class LaptimeDistributionData extends \Core\JsonContent {
 
 
     private function distributionBuckets($session, $user) {
-        // dataset
-        $data = array();
-        foreach (LaptimeDistributionData::xValues as $x) $data[] = array('x'=>$x, 'y'=>0);
-
         // count laptimes
+        $buckets = array();
         $besttime = $session->lapBest()->laptime();
         $laps_of_user = $session->laps($user, TRUE);
+        $lap_bucket_increment = 100 / count($laps_of_user);
         foreach ($laps_of_user as $lap) {
-            $delta = ($lap->laptime() - $besttime) / 1000;
-            if ($delta > 20) {
-                // don't care for such slow laps
-                continue;
-            } else if ($delta >= 10) {
-                $delta = ceil($delta / 10) * 10;
-            } else if ($delta >= 1) {
-                $delta = ceil($delta);
-            } else {
-                $delta = ceil($delta * 10) / 10;
-                if ($delta == 0) {
-                    $delta = 0.1; // besttime
-                }
-            }
+            $delta = $lap->laptime() - $besttime;
 
-            $index = array_search($delta, LaptimeDistributionData::xValues);
-            $data[$index]['y'] += 1;
+            // determine bucket
+            $bucket = ($delta == 0) ? 0 : (int) round(log10($delta) * 10); // forward calculate bucket number from time
+
+            // throw into bucket
+            if (!array_key_exists($bucket, $buckets)) $buckets[$bucket] = 0;
+            $buckets[$bucket] += $lap_bucket_increment;
         }
 
-        // normalize lapcounts
-        for ($i=0; $i < count($data); ++$i) {
-            $data[$i]['y'] = round($data[$i]['y'] * 100 / count($laps_of_user));
+        // reshape for output data
+        $output_data = array();
+        foreach ($buckets as $bucket=>$value) {
+            $data_pair = array();
+            $data_pair["x"] = 10 ** ($bucket / 10) / 1000;  // backward calculate time from bucket number
+            $data_pair["y"] = $value;
+            $output_data[] = $data_pair;
         }
 
-        return $data;
+        return $output_data;
     }
 }

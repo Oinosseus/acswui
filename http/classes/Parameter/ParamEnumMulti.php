@@ -12,10 +12,6 @@ class ParamEnumMulti extends ParamEnum {
     }
 
 
-    protected function cloneXtraAttributes($base) {
-    }
-
-
     final public function getHtmlInput() {
         $html = "";
 

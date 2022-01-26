@@ -95,7 +95,6 @@ function LaptimeDistributionDiagramAddDatasetLine(response) {
                     tension: 0.4,
                     data: data
                   };
-//     console.log(dataset);
     LaptimeDistributionDiagram.data.datasets.push(dataset);
     LaptimeDistributionDiagram.update();
 }
@@ -129,7 +128,6 @@ function LaptimeDistributionDiagramLoadData(button, type) {
         request_url += "&Laptimes=Deltas"
     }
     request_url += "&LaptimeDistributionMaxDelta=" + LaptimeDistributionMaxDelta;
-//     console.log(request_url);
 
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType('application/json');

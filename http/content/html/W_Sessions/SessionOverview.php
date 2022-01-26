@@ -118,12 +118,15 @@ class SessionOverview extends \core\HtmlContent {
 
             $html .= "<td>";
             if ($lap->user()->privacyFulfilled()) {
-                if ($user->getParam("UserLaptimeDistriDiaEnaHist")) {
+                $type_list = $user->parameterCollection()->child("UserLaptimeDistriDiaType")->valueList();
+                if (in_array("hist", $type_list)) {
                     $html .= "<button type=\"button\" sessionId=\"" . $this->CurrentSession->id() . "\" userId=\"" . $lap->user()->id() . "\" onclick=\"LaptimeDistributionDiagramLoadData(this, 'bar')\" title=\"" . _("Load Laptime Distribution Data") . "\">";
                     $html .= "&#x1f4ca;</button> ";
                 }
-                $html .= "<button type=\"button\" sessionId=\"" . $this->CurrentSession->id() . "\" userId=\"" . $lap->user()->id() . "\" onclick=\"LaptimeDistributionDiagramLoadData(this, 'line')\" title=\"" . _("Load Laptime Distribution Data") . "\">";
-                $html .= "&#x1f4c8;</button> ";
+                if (in_array("gauss", $type_list)) {
+                    $html .= "<button type=\"button\" sessionId=\"" . $this->CurrentSession->id() . "\" userId=\"" . $lap->user()->id() . "\" onclick=\"LaptimeDistributionDiagramLoadData(this, 'line')\" title=\"" . _("Load Laptime Distribution Data") . "\">";
+                    $html .= "&#x1f4c8;</button> ";
+                }
             }
             $html .= "</td>";
 
