@@ -7,6 +7,7 @@ class Track extends \core\HtmlContent {
     public function __construct() {
         parent::__construct(_("Track"),  _("Track"));
         $this->requirePermission("ServerContent_Tracks_View");
+        $this->addScript("track.js");
     }
 
     public function getHtml() {
@@ -50,9 +51,10 @@ class Track extends \core\HtmlContent {
             $html .= "<img src=\"" . $track->outlinePath() . "\">";
             $html .= "</a>";
 
-            $html .= "<h1>" . _("Lap Records") . "</h1>";
-            $html .= "<h2>GT3</h2>";
-            $html .= "<h2>GT4</h2>";
+            // track records
+            $html .= "<h1>" . _("Track Records") . "</h1>";
+            $html .= "<button type=\"button\" trackId=\"" . $track->id() . "\" onclick=\"TrackLoadRecords(this)\">" . _("Load Track Records") . "</button>";
+            $html .= "<span id=\"TrackRecordsList\"></span>";
 
 
         } else {

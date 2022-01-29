@@ -108,6 +108,7 @@ class ACswui  {
             $p = new \Parameter\ParamSpecialUserFormatDate(NULL, $pc, "UserFormatDate", _("Date/Time Format"), _("How shal date-times be presented"));
             $p = new \Parameter\ParamSpecialUserTimezone(NULL, $pc, "UserTimezone", _("Timezone"), _("Define your preferred timezone"));
             $p = new \Parameter\ParamColor(NULL, $pc, "UserColor", _("Color"), _("Your preferred color to better identify you in diagrams"));
+            $p = new \Parameter\ParamBool(NULL, $pc, "UserRecordsSkipPrivate",_("Skip Private Records"), _("Skip users which do not allow to show private information in car/track records tables"), "", TRUE);
 
             $coll = new \Parameter\Collection(NULL, $pc, "UserLaptimeDistriDia", _("Laptime Distribution Diagrams"), _("Options to adjust the laptime distribution diagrams"));
             $p = new \Parameter\ParamInt(NULL, $coll, "UserLaptimeDistriDiaMaxDelta", _("Max Delta"), _("Defines the maximum of the x-axis (how much seconds to show)"), "s", 10);

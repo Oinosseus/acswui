@@ -13,6 +13,7 @@ class Track extends DbEntry {
     private static $ListTracksNDeprConf = NULL;   // excluding depracated, including configs
     private static $ListTracksNDeprNConf = NULL;  // excluding deprecated, excluding configs
 
+    private $BestTimes = array();
     private $TrackLocation = NULL;
     private $Config = NULL;
     private $Name = NULL;
@@ -40,6 +41,29 @@ class Track extends DbEntry {
     //! @return The name of the author of this mod
     public function author() {
         return $this->loadColumn("Author");
+    }
+
+
+    //! @return
+    public function bestLaps(CarClass $cc) {
+
+        if (!array_key_exists($cc->id(), $this->BestTimes)) {
+            $this->BestTimes[$cc->id()] = array();
+
+            $found_driver_ids = array();
+            $query = "SELECT Laps.Id, Laps.User FROM `Laps` INNER JOIN Sessions ON Sessions.Id = Laps.Session INNER JOIN CarSkins On CarSkins.Id = Laps.CarSkin INNER JOIN CarClassesMap ON CarSkins.Car = CarClassesMap.Car WHERE Sessions.Track = " . $this->id() . " AND Laps.Cuts = 0 AND CarClassesMap.CarClass = " . $cc->id() . " ORDER BY Laptime ASC;";
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $user_id = $row['User'];
+                if (!in_array($user_id, $found_driver_ids)) {
+                    $found_driver_ids[] = $user_id;
+                    $lap = Lap::fromId($row['Id']);
+                    $this->BestTimes[$cc->id()][] = $lap;
+                }
+            }
+
+        }
+
+        return $this->BestTimes[$cc->id()];
     }
 
 
