@@ -106,14 +106,9 @@ class SessionData extends \Core\JsonContent {
             $data_row[] = sprintf("%0.1f", $c->speed()) . " km/h";
 
             $distance = $session->drivenDistance($c->user());
-            if ($distance > 0) {
-                $sf_coll = \Core\ACswui::getParam(($c instanceof \DbEntry\CollisionEnv) ? "DriverRankingSfCe" : "DriverRankingSfCc");
-                $sf_coll *= $c->speed() / \Core\ACswui::getParam("DriverRankingCollNormSpeed");
-                $sf_coll *= 1e6 / $distance;
-                $data_row[] = sprintf("%0.4f", $sf_coll);
-            } else {
-                $data_row[] = "&#x221e;";
-            }
+            $sf_coll = \Core\ACswui::getParam(($c instanceof \DbEntry\CollisionEnv) ? "DriverRankingSfCe" : "DriverRankingSfCc");
+            $sf_coll *= $c->speed() / \Core\ACswui::getParam("DriverRankingCollNormSpeed");
+            $data_row[] = sprintf("%0.4f", $sf_coll);
 
             $data_row[] = $c->id();
 
@@ -139,7 +134,6 @@ class SessionData extends \Core\JsonContent {
         $header[] = _("Ballast");
         $header[] = _("Restrictor");
         $header[] = _("Traction");
-        $header[] = _("Safety-Points");
         $header[] = _("Lap ID");
         $data['Header'] = $header;
 
@@ -166,11 +160,6 @@ class SessionData extends \Core\JsonContent {
             $html .= "<td>" . $lap->ballast() . " kg</td>";
             $html .= "<td>" . $lap->restrictor() . " &percnt;</td>";
             $html .= "<td>" . sprintf("%0.1f", 100 * $lap->grip()) . " &percnt;</td>";
-
-            $sf_ct = \Core\ACswui::getParam("DriverRankingSfCt");
-            $sf_ct *= 1e6 / $distance;
-            $html .= "<td>" . sprintf("%0.4f", $sf_ct) . "</td>";
-
             $html .= "<td>" . $lap->id() . "</td>";
 
             $data['Rows'][] = $html;
