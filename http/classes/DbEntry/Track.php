@@ -44,7 +44,7 @@ class Track extends DbEntry {
     }
 
 
-    //! @return
+    //! @return An array of best laptiumes of this track for a certain car class
     public function bestLaps(CarClass $cc) {
 
         if (!array_key_exists($cc->id(), $this->BestTimes)) {

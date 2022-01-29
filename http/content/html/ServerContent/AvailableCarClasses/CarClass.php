@@ -84,7 +84,10 @@ class CarClass extends \core\HtmlContent {
         if ($this->CanEdit && array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "AddCars") {
             return $this->showAddCars();
         } else {
-            return $this->showCarClassOverview();
+            $html = "";
+            $html .= $this->showCarClassOverview();
+            $html .= $this->showRecords();
+            return $html;
         }
     }
 
@@ -221,4 +224,11 @@ class CarClass extends \core\HtmlContent {
     }
 
 
+    private function showRecords() {
+        $html = "";
+        $html .= "<h1>" . _("CarClass Records") . "</h1>";
+        $html .= "<button type=\"button\" carClassId=\"" . $this->CarClass->id() . "\" onclick=\"CarClassLoadRecords(this)\">" . _("Load CarClass Records") . "</button>";
+        $html .= "<span id=\"CarClassRecordsList\"></span>";
+        return $html;
+    }
 }

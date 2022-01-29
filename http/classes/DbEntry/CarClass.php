@@ -12,6 +12,7 @@ class CarClass extends DbEntry {
 //     private $Description = NULL;
 
     private $BallastMap = NULL;
+    private $BestTimes = array();
     private $RestrictorMap = NULL;
     private $ValidCarIds = NULL;
     private $Teams = NULL;
@@ -76,6 +77,30 @@ class CarClass extends DbEntry {
     }
 
 
+    //! @return An array of best laptiumes of this carclass on a certain track
+    public function bestLaps(Track $track) {
+
+        if (!array_key_exists($track->id(), $this->BestTimes)) {
+            $this->BestTimes[$track->id()] = array();
+
+            $found_driver_ids = array();
+            //! @todo Find better query to have unique Laps.User in the response. This could increase speed significantly
+            $query = "SELECT Laps.Id, Laps.User FROM `Laps` INNER JOIN Sessions ON Sessions.Id = Laps.Session INNER JOIN CarSkins On CarSkins.Id = Laps.CarSkin INNER JOIN CarClassesMap ON CarSkins.Car = CarClassesMap.Car WHERE Sessions.Track = " . $track->id() . " AND Laps.Cuts = 0 AND CarClassesMap.CarClass = " . $this->id() . " ORDER BY Laptime ASC;";
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $user_id = $row['User'];
+                if (!in_array($user_id, $found_driver_ids)) {
+                    $found_driver_ids[] = $user_id;
+                    $lap = Lap::fromId($row['Id']);
+                    $this->BestTimes[$track->id()][] = $lap;
+                }
+            }
+
+        }
+
+        return $this->BestTimes[$track->id()];
+    }
+
+
     //! @return A list of Car objects (ordered by car name)
     public function cars() {
 
@@ -95,17 +120,6 @@ class CarClass extends DbEntry {
         return $this->Cars;
     }
 
-
-//     private function clearCache() {
-//         $this->Name = NULL;
-//         $this->Cars = NULL;
-//
-//         $this->BallastMap = NULL;
-//         $this->RestrictorMap = NULL;
-//         $this->OccupationMap = NULL;
-//
-//         CarClass::$CarClassesList = NULL;
-//     }
 
     /**
      * Create a new car class in the database
