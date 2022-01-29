@@ -208,6 +208,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnString("Users", "Steam64GUID", 50)
         self.__db.appendColumnUInt("Users", "CurrentSession")
         self.__db.appendColumnText("Users", "ParameterData")
+        self.__db.appendColumnDateTime("Users", 'LastLogin')
 
         # check table Groups
         Verbosity(verb).print("check database table `Groups`")

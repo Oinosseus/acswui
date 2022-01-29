@@ -169,11 +169,19 @@ class InstallerCars(object) :
             if match:
                 weight = int(match.group(1)) * 1e3 + int(match.group(2))
 
-        # option 1 (found at legion_mclaren_f1gtr_longtail)
+        # option 3 (found at legion_mclaren_f1gtr_longtail)
         if weight is None:
             match = re.match("([0-9]*)\*\s*[kK][gG]", weight_string)
             if match:
                 weight = int(match.group(1))
+
+        # option 4 (found at btcc_alfa_romeo_giulietta)
+        # no units
+        if weight is None:
+            try:
+                weight = int(weight_string)
+            except ValueError:
+                weight = None
 
         # check if weight could be determined
         if weight is None:
