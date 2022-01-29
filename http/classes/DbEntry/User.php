@@ -212,6 +212,10 @@ class User extends DbEntry { #implements JsonSerializable {
      * @return An object by its database Id
      */
     public static function fromId(int $id) {
+        if ($id == 0) {  // root user
+            return new User(0);
+        }
+
         return parent::getCachedObject("Users", "User", $id);
     }
 
