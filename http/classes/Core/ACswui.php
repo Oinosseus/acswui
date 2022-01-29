@@ -82,16 +82,16 @@ class ACswui  {
 
             // safety
             $coll = new \Parameter\Collection(NULL, $pc, "DriverRankingSf", _("Safety"), _("Settings for penalty points that drivers get"));
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCt", _("Cuts"), _("Points for amount of cuts that were made per driven distance"), "Points/Cut/Mm", -0.1);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCt", _("Cuts"), _("Points for amount of cuts that were made"), "Points/Cut", -1.0);
             $p->setMin(-9999);
             $p->setMax(0);
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCe", _("Collision Environment"), _("Points for colliding with the environment per driven distance"), "Points/Collision/Nomspeed/Mm", -2.0);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCe", _("Collision Environment"), _("Points for colliding with the environment"), "Points/Normspeed-Collision", -2.0);
             $p->setMin(-9999);
             $p->setMax(0);
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCc", _("Collision Cars"), _("Points for colliding with other cars per driven distance"), "Points/Collision/Nomspeed/Mm", -5.0);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCc", _("Collision Cars"), _("Points for colliding with other cars"), "Points/Normspeed-Collision", -5.0);
             $p->setMin(-9999);
             $p->setMax(0);
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingCollNormSpeed", _("Nominal Collision-Speed"), _("Nominal speed at which collision a collsion points counts nominal"), "km/h", 50.0);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingCollNormSpeed", _("Nominal Collision-Speed"), _("Nominal speed at which collision a collsion points counts nominal"), "km/h", 100.0);
             $p->setMin(0);
             $p->setMax(999);
             $p = new \Parameter\ParamBool(NULL, $coll, "DriverRankingSfAP", _("Amnesty in Practice"), _("If enabled, safety penalties are not given for pure practice sessions (sessions without succeeding qualifying/race)"), "", TRUE);
@@ -108,12 +108,15 @@ class ACswui  {
             $p = new \Parameter\ParamSpecialUserFormatDate(NULL, $pc, "UserFormatDate", _("Date/Time Format"), _("How shal date-times be presented"));
             $p = new \Parameter\ParamSpecialUserTimezone(NULL, $pc, "UserTimezone", _("Timezone"), _("Define your preferred timezone"));
             $p = new \Parameter\ParamColor(NULL, $pc, "UserColor", _("Color"), _("Your preferred color to better identify you in diagrams"));
-            $p->setValue(sprintf("#%06x", rand(0, 2**24 - 1)));
 
             $coll = new \Parameter\Collection(NULL, $pc, "UserLaptimeDistriDia", _("Laptime Distribution Diagrams"), _("Options to adjust the laptime distribution diagrams"));
             $p = new \Parameter\ParamInt(NULL, $coll, "UserLaptimeDistriDiaMaxDelta", _("Max Delta"), _("Defines the maximum of the x-axis (how much seconds to show)"), "s", 10);
             $p->setMin(1);
             $p->setMax(300);
+            $p = new \Parameter\ParamEnumMulti(NULL, $coll, "UserLaptimeDistriDiaAxis", _("Time Axis"), _("The time axis (distance to best session laptime) can be drawn logarithmic or linear"));
+            new \Parameter\EnumItem($p, 'linear',  _("Linear"));
+            new \Parameter\EnumItem($p, 'logarithmic',  _("Logarithmic"));
+            $p->setValue("linear");
             $p = new \Parameter\ParamEnumMulti(NULL, $coll, "UserLaptimeDistriDiaType", _("Available Types"), _("Select which options shall be available for laptime distribution diagrams (just prevents to click wrong buttons)"));
             new \Parameter\EnumItem($p, 'hist',  _("Histogram"));
             new \Parameter\EnumItem($p, 'gauss',  _("Gaussian"));
@@ -142,6 +145,7 @@ class ACswui  {
                 \Core\Log::debug("Config file '$file_path' does not exist.");
             }
         }
+
 
         return ACswui::$ParameterCollection;
     }

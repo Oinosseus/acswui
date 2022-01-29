@@ -27,4 +27,11 @@ class ParamColor extends Parameter {
         $value = $this->value();
         return "<div style=\"background-color: $value; margin-right:auto; margin-left:auto; width: 2em; height:1em;\">&nbsp;</div>";
     }
+
+
+    //! return random color if no color is specified
+    public function value() {
+        $parent_value = parent::value();
+        return ($parent_value == "") ? sprintf("#%06x", rand(0, 2**24 - 1)) : $parent_value;
+    }
 }

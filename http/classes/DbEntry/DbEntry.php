@@ -93,9 +93,12 @@ abstract class DbEntry {
      *         return parent::getCachedObject("DbTableName", "InheritedClassName", $id);
      *     }
      *
+     * If the object does not exist in the database, this will return NULL
+     *
      * @param $tablename The name of the database table that is correlated to the class
      * @param $classname The name of the class that inherits DbEntry (without namespace)
      * @param $id The database table row Id to construct the requested object from
+     * @return The requested object
      */
     protected static function getCachedObject(string $tablename, string $classname, int $id) {
 
@@ -106,8 +109,15 @@ abstract class DbEntry {
 
         // create objects cache
         if (!array_key_exists($id, DbEntry::$AllEntriesCache[$tablename])) {
-            $classname = "\\dbentry\\$classname";
-            $obj = new $classname($id);
+
+            // check if existent
+            $res = \Core\Database::fetch($tablename, ['Id'], ['Id'=>$id]);
+            if (count($res) == 0) {
+                $obj = NULL;
+            } else {
+                $classname = "\\dbentry\\$classname";
+                $obj = new $classname($id);
+            }
             DbEntry::$AllEntriesCache[$tablename][$id] = $obj;
         }
 

@@ -112,6 +112,38 @@ class User extends DbEntry { #implements JsonSerializable {
 
 
     /**
+     * @param $distance A distance in meters
+     * @return A string with formated distance
+     */
+    public function formatDistance(int $distance) {
+
+        // Giga
+        if ($distance >= 1e9)
+            return sprintf("%0.2f Gm", $distance / 1e9);
+
+        // Mega
+        else if ($distance >= 100e6)
+            return sprintf("%0.0f Mm", $distance / 1e6);
+        else if ($distance >= 10e6)
+            return sprintf("%0.1f Mm", $distance / 1e6);
+        else if ($distance >= 1e6)
+            return sprintf("%0.2f Mm", $distance / 1e6);
+
+        // kilo
+        else if ($distance >= 100e3)
+            return sprintf("%0.0f km", $distance / 1e3);
+        else if ($distance >= 10e3)
+            return sprintf("%0.1f km", $distance / 1e3);
+        else if ($distance >= 1e3)
+            return sprintf("%0.2f km", $distance / 1e3);
+
+        // meter
+        else
+            return $distance . " m";
+    }
+
+
+    /**
      * @param $laptime Laptime in milliseconds
      * @return A string with formated laptime
      */

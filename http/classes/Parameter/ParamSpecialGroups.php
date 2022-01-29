@@ -31,4 +31,7 @@ final class ParamSpecialGroups extends ParamEnumMulti {
         return FALSE;
     }
 
+    protected function cloneXtraAttributes($base) {
+        // overload to prevent copying enum itmes
+    }
 }

@@ -18,4 +18,7 @@ final class ParamSpecialWeathers extends ParamEnumMulti {
         $this->setValue([]);
     }
 
+    protected function cloneXtraAttributes($base) {
+        // overload to prevent copying enum itmes
+    }
 }

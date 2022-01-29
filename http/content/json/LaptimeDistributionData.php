@@ -6,6 +6,7 @@ class LaptimeDistributionData extends \Core\JsonContent {
 
 
     public function __construct() {
+        $this->requirePermission("Json");
     }
 
 

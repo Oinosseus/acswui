@@ -14,6 +14,8 @@ class SessionOverview extends \core\HtmlContent {
         parent::__construct(_("Overview"),  "Session OVerview");
         $this->requirePermission("Sessions_View");
         $this->addScript("laptime_ditribution_diagram.js");
+        $this->addScript("session_position_diagram.js");
+        $this->addScript("session_overview.js");
     }
 
 
@@ -48,6 +50,8 @@ class SessionOverview extends \core\HtmlContent {
         $html .= $this->sessionSlector();
 
         if ($this->CurrentSession !== NULL) {
+            $html .= $this->listSessionInformation();
+            $html .= $this->listResults();
             $html .= $this->listBestlap();
             $html .= $this->listCollisions();
             $html .= $this->listLaps();
@@ -67,7 +71,8 @@ class SessionOverview extends \core\HtmlContent {
         $axis_y_title = _("Driven laps [in percent]");
         $axis_x_title = _("Laptime distance to best lap in session [in seconds]");
         $max_delta = $user->getParam("UserLaptimeDistriDiaMaxDelta");
-        $html .= "<canvas width=\"100\" height=\"20\" axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" maxDelta=\"$max_delta\"></canvas>";
+        $axis_type = $user->getParam("UserLaptimeDistriDiaAxis");
+        $html .= "<canvas axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" maxDelta=\"$max_delta\" axisType=\"$axis_type\"></canvas>";
         $html .= "</div>";
 
         // header
@@ -139,91 +144,136 @@ class SessionOverview extends \core\HtmlContent {
 
 
     private function listCollisions() {
-        $user = \core\UserManager::currentUser();
-
         $html = "<h1>" . _("Collisions") . "</h1>";
-        $html .= "<table>";
-
-        // header
-        $html .= "<tr>";
-        $html .= "<th>" . _("Timestamp") . "</th>";
-        $html .= "<th>" . _("Suspect") . "</th>";
-        $html .= "<th>" . _("Victim") . "</th>";
-        $html .= "<th>" . _("Speed") . "</th>";
-        $html .= "<th>" . _("Safety-Points") . "</th>";
-        $html .= "<th>" . _("Id") . "</th>";
-        $html .= "<tr>";
-
-        $collisions = $this->CurrentSession->collisions();
-        for ($i = (count($collisions) - 1); $i >= 0; --$i) {
-            $c = $collisions[$i];
-
-            $html .= "<tr>";
-            $html .= "<td>" . $user->formatDateTime($c->timestamp()) . "</td>";
-            $html .= "<td>" . $c->user()->html() . "</td>";
-            $html .= "<td>" . (($c instanceof \DbEntry\CollisionCar) ? $c->otheruser()->html() : "" ) . "</td>";
-            $html .= "<td>" . sprintf("%0.1f", $c->speed()) . " km/h</td>";
-
-            $distance = $this->CurrentSession->drivenDistance($c->user());
-            if ($distance > 0) {
-                $sf_coll = \Core\ACswui::getParam("DriverRankingCollNormSpeed") * $c->speed();
-                $sf_coll *= \Core\ACswui::getParam(($c instanceof \DbEntry\CollisionEnv) ? "DriverRankingSfCe" : "DriverRankingSfCc");
-                $sf_coll /= $distance;
-                $html .= "<td>" . sprintf("%0.4f", $sf_coll) . "</td>";
-            } else {
-                $html .= "<td>&#x221e;</td>";
-            }
-
-            $html .= "<td>" . $c->id() . "</td>";
-            $html .= "</tr>";
-        }
-
-        $html .= "</table>";
+        $html .= "<button type=\"button\" onclick=\"SessionOverviewLoadCollisions(this)\" sessionId=\"" . $this->CurrentSession->id() . "\">" . _("Load Collisions") . "</button>";
+        $html .= "<table id=\"SessionCollisions\"></table>";
         return $html;
     }
 
 
     private function listLaps() {
-        $user = \core\UserManager::currentUser();
         $html = "<h1>" . _("All Laps") . "</h1>";
+        $html .= "<button type=\"button\" onclick=\"SessionOverviewLoadLaps(this)\" sessionId=\"" . $this->CurrentSession->id() . "\">" . _("Load Laps") . "</button>";
+        $html .= "<table id=\"SessionLaps\"></table>";
+        return $html;
+    }
+
+
+    private function listResults() {
+        $user = \core\UserManager::currentUser();
+        $html = "<h1>" . _("Session Results") . "</h1>";
+
+        // laptime diagram
+        $positions = count(\DbEntry\SessionResult::listSessionResults($this->CurrentSession));
+        $max_height = (1.2 * $positions + 6) . "em";
+        $html .= "<div id=\"SessionPositionDiagram\">";
+        $title = _("Session Position Diagram");
+        $axis_x_title = ($this->CurrentSession->type() == \DbEntry\Session::TypeRace) ? _("Laps") : _("Minutes");
+        $axis_y_title = _("Position");
+        $sid = $this->CurrentSession->id();
+        $height = $positions*5;
+        $html .= "<canvas axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" sessionId=\"$sid\" positions=\"$positions\" width=\"100\" height=\"$height\" style=\"max-height: $max_height;\"></canvas>";
+        $html .= "</div>";
+
         $html .= "<table>";
-
-        // header
         $html .= "<tr>";
-        $html .= "<th>" . _("Lap") . "</th>";
-        $html .= "<th>" . _("Laptime") . "</th>";
-        $html .= "<th><span title=\"" . _("Difference to session best lap") . "\">" . _("Delta") . "</span></th>";
-        $html .= "<th>" . _("Cuts") . "</th>";
-        $html .= "<th>" . _("Driver") . "</th>";
-        $html .= "<th>" . _("Car") . "</th>";
-        $html .= "<th>" . _("Ballast") . "</th>";
-        $html .= "<th>" . _("Restrictor") . "</th>";
-        $html .= "<th>" . _("Traction") . "</th>";
-        $html .= "<th>" . _("Lap ID") . "</th>";
+        $html .= "<th rowspan=\"2\">"  . _("Position") . "</th>";
+        $html .= "<th colspan=\"2\" rowspan=\"2\">"  . _("Driver") . "</th>";
+        $html .= "<th rowspan=\"2\">"  . _("Car") . "</th>";
+        $html .= "<th rowspan=\"2\">"  . _("Best Lap") . "</th>";
+        $html .= "<th rowspan=\"2\">"  . _("Total Time") . "</th>";
+        $html .= "<th rowspan=\"2\">"  . _("Ballast") . "</th>";
+        $html .= "<th rowspan=\"2\">"  . _("Restrictor") . "</th>";
+        $html .= "<th colspan=\"2\">"  . _("Driven") . "</th>";
+        $html .= "<th rowspan=\"2\">"  . _("Cuts") . "</th>";
+        $html .= "<th colspan=\"2\">"  . _("Collisions") . "</th>";
+        $html .= "<th rowspan=\"2\">"  . _("Ranking Points") . "</th>";
+        $html .= "</tr>";
+
+        $html .= "<tr>";
+        $html .= "<th>"  . _("Laps") . "</th>";
+        $html .= "<th>"  . _("Distance") . "</th>";
+        $html .= "<th>"  . _("Environment") . "</th>";
+        $html .= "<th>"  . _("Other Cars") . "</th>";
         $html .= "<tr>";
 
-        $laps = $this->CurrentSession->laps();
-        $bestlap = $this->CurrentSession->lapBest();
-        $besttime = ($bestlap) ? $bestlap->laptime() : 0;
-        for ($i = (count($laps) - 1); $i >= 0; --$i) {
-            $lap = $laps[$i];
+        // list all results
+        $results = $this->CurrentSession->results();
+        usort($results, "\DbEntry\SessionResult::comparePosition");
+        foreach ($results as $r) {
+            $html .= "<tr>";
+            $html .= "<td>" . $r->position() ."</td>";
 
-            $tr_css_class = ($lap->cuts() > 0) ? "InvalidLap" : "ValidLap";
-            $html .= "<tr class=\"$tr_css_class\">";
-            $html .= "<td>" . ($lap->id() - $laps[0]->id() + 1) . "</td>";
-            $html .= "<td>" . $user->formatLaptime($lap->laptime()) . "</td>";
-            $html .= "<td>" . $user->formatLaptimeDelta($lap->laptime() - $besttime) . "</td>";
-            $html .= "<td>" . $lap->cuts() . "</td>";
-            $html .= "<td>" . $lap->user()->html() . "</td>";
-            $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
-            $html .= "<td>" . $lap->ballast() . " kg</td>";
-            $html .= "<td>" . $lap->restrictor() . " &percnt;</td>";
-            $html .= "<td>" . sprintf("%0.1f", 100 * $lap->grip()) . " &percnt;</td>";
-            $html .= "<td>" . $lap->id() . "</td>";
-            $html .= "</tr>";
+            $html .= "<td class=\"SessionResultsDriverFlagCell\">" . $r->user()->parameterCollection()->child("UserCountry")->valueLabel() . "</td>";
+            $html .= "<td>" . $r->user()->html() . "</td>";
+            $html .= "</td>";
+
+            $html .= "<td class=\"SessionResultsCarSkinCell\">" . $r->carSkin()->html(TRUE, FALSE) ."</td>";
+            $html .= "<td>" . $user->formatLaptime($r->bestLaptime()) . "</td>";
+            $html .= "<td>" . $user->formatLaptime($r->totalTime()) . "</td>";
+            $html .= "<td>" . $r->ballast() . " kg</td>";
+            $html .= "<td>" . $r->restrictor() . " &percnt;</td>";
+            $html .= "<td>" . $r->amountLaps() . "</td>";
+            $html .= "<td>" . $user->formatDistance($r->amountLaps() * $r->session()->track()->length()) . "</td>";
+            $html .= "<td>" . $r->amountCuts() . "</td>";
+            $html .= "<td>" . $r->amountCollisionEnv() . "</td>";
+            $html .= "<td>" . $r->amountCollisionCar() . "</td>";
+
+            // ranking points
+            $rp = $r->rankingPoints();
+            $html .= "<td>";
+            $title =  "XP:" . $rp['XP']['Sum'] . "\n";
+            $title .= "SX:" . $rp['SX']['Sum'] . "\n";
+            $title .= "SF:" . $rp['SF']['Sum'];
+            $html .= "<span title=\"$title\">" . ($rp['XP']['Sum'] + $rp['SX']['Sum'] + $rp['SF']['Sum']) . "</span>";
+            $html .= "</td>";
+
+            $html .= "<tr>";
         }
-
         $html .= "</table>";
+
+        return $html;
+    }
+
+
+    private function listSessionInformation() {
+        $html = "<h1>" . _("Session Information") . "</h1>";
+
+        // predecessor/successor chain
+        $html .= "<div id=\"session_predecessor_chain\">";
+        $html .= $this->predecessorChain($this->CurrentSession);
+        $html .= $this->CurrentSession->name();
+        $html .= $this->successorChain($this->CurrentSession);
+        $html .= "</div>";
+
+        // information datalets
+        $html .= "<div id=\"SessionInformationDatalets\">";
+
+            if ($this->CurrentSession->serverSlot()) {
+                $html .= "<div>";
+                $html .= "<strong>" . _("Server Slot") . "</strong>";
+                $html .= $this->CurrentSession->serverSlot()->name();
+                $html .= "</div>";
+            }
+
+            $html .= "<div>";
+            $html .= "<strong>" . _("Grip") . "</strong>";
+            $html .= _("Max") . ": " . sprintf("%0.1f", 100 * $this->CurrentSession->grip()[1]) . "&percnt;<br>";
+            $html .= _("Min") . ": " . sprintf("%0.1f", 100 * $this->CurrentSession->grip()[0]) . "&percnt;";
+            $html .= "</div>";
+
+            $html .= $this->CurrentSession->track()->html();
+
+            $html .= "<div>";
+            $html .= "<strong>" . _("Weahter") . "</strong>";
+            $html .= _("Graphics") . ": " . $this->CurrentSession->weather() . "<br>";
+            $html .= _("Ambient") . ": " . $this->CurrentSession->tempAmb() . "&deg;C<br>";
+            $html .= _("Road") . ": " . $this->CurrentSession->tempRoad() . "&deg;C";
+            $html .= "</div>";
+
+        $html .= "</div>";
+
+
         return $html;
     }
 
@@ -262,7 +312,8 @@ class SessionOverview extends \core\HtmlContent {
             $html .= " [" . $s->id() . "] ";
             $html .= $user->formatDateTimeNoSeconds($s->timestamp());
             $html .= " (" . $s->typeChar() . ") ";
-            $html .= $s->name();
+            $html .= $s->name() . " @ ";
+            $html .= $s->track()->name();
             $html .= "</option>";
         }
         $html .= "</select>";
@@ -272,4 +323,34 @@ class SessionOverview extends \core\HtmlContent {
     }
 
 
+    private function predecessorChain(\DbEntry\Session $s) {
+        $html = "";
+
+        if ($s->predecessor() !== NULL) {
+
+            if ($s->predecessor()->predecessor() !== NULL)
+                $html .= $this->predecessorChain($s->predecessor());
+
+            $html .= $s->predecessor()->htmlName();
+            $html .= " -&gt; ";
+        }
+
+        return $html;
+    }
+
+
+    private function successorChain(\DbEntry\Session $s) {
+        $html = "";
+
+        if ($s->successor() !== NULL) {
+
+            $html .= " -&gt;";
+            $html .= $s->successor()->htmlName();
+
+            if ($s->successor()->successor() !== NULL)
+                $html .= $this->successorChain($s->successor());
+        }
+
+        return $html;
+    }
 }

@@ -84,6 +84,25 @@ class Lap extends DbEntry {
     }
 
 
+    //! @return The amount of minutes after session start when this lap was driven (float)
+    public function sessionMinutes() {
+        $delta = $this->timestamp()->diff($this->session()->timestamp());
+
+        if ($delta->y > 0 || $delta->m > 0) {
+            \Core\Log::error("Lap Id=" . $lap->id() . " timestamp is over a month older than the session!");
+        }
+
+        $delta_minutes  = $delta->d * 24 * 60;
+        $delta_minutes += $delta->h * 60;
+        $delta_minutes += $delta->i;
+        $delta_minutes += $delta->s / 60;
+        $delta_minutes += $delta->f / 60000;
+        $delta_minutes = ceil($delta_minutes);
+
+        return $delta_minutes;
+    }
+
+
     //! @return A DateTime object
     public function timestamp() {
         $dt = $this->loadColumn("Timestamp");
