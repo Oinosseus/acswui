@@ -68,7 +68,8 @@ class SessionData extends \Core\JsonContent {
             $data_user['Positions'] = array();
             $index = 0;
             foreach ($session->dynamicPositions($user) as $pos) {
-                $data_user['Positions'][] = array('x'=>$index, 'y'=>$pos);
+                if ($pos != 0)
+                    $data_user['Positions'][] = array('x'=>$index, 'y'=>$pos);
                 ++$index;
             }
 

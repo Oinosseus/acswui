@@ -369,11 +369,11 @@ class Session extends DbEntry {
             // race sessions
 
             // determine positions based on laps
-            if ($this->type() == 3) {
+            if ($this->type() == Session::TypeRace) {
 
                 // get positions of qualifying session
                 $predec = $this->predecessor();
-                if ($predec !== NULL && $predec->type() == 2) {
+                if ($predec !== NULL && $predec->type() == Session::TypeQualifying) {
                     $predec_results = $predec->results();
                     usort($predec_results, "\DbEntry\SessionResult::comparePosition");
                     foreach ($predec_results as $rslt) {
