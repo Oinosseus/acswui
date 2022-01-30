@@ -387,8 +387,11 @@ class User extends DbEntry { #implements JsonSerializable {
                     if (strpos($pref, $locale_short) !== False) {
                         \Core\Log::debug("preferred client language: ". $locale);
                         $this->PreferredUserLanguage = $locale;
+                        break;
                     }
                 }
+
+                if ($this->PreferredUserLanguage !== NULL) break;
             }
 
             // inform no language match found
