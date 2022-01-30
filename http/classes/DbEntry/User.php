@@ -22,6 +22,7 @@ class User extends DbEntry { #implements JsonSerializable {
     private static $UserList = NULL;
 
     private $CountLaps = NULL;
+    private $PreferredUserLanguage = NULL;
 
 
     /**
@@ -345,6 +346,60 @@ class User extends DbEntry { #implements JsonSerializable {
         }
 
         return User::$DriverList;
+    }
+
+
+    //! @return The preferred locale by this user
+    public function locale() {
+
+        // return directly set locale
+        $locale = $this->getParam("UserLocale");
+        if ($locale !== "auto") return $locale;
+
+        // auto detect locale
+        if ($this->PreferredUserLanguage == NULL) {
+
+            // check preferred browser languages
+            $preferred = array();
+            if (function_exists("apache_request_headers") && array_key_exists("Accept-Language", apache_request_headers())) {
+                $preferred = explode(",", apache_request_headers()["Accept-Language"]);
+            } else if (array_key_exists('HTTP_ACCEPT_LANGUAGE', $_SERVER)){
+                $preferred = explode(",", $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            } else {
+                \Core\Log::error("Cannot detect client languages!");
+            }
+
+            // decide for translation
+            foreach ($preferred as $pref) {
+
+                // remove qualifier
+                $pref_no_qual = strstr($pref, ";q=", True);
+                if ($pref_no_qual !== False) {
+                    $pref = $pref_no_qual;
+                }
+
+                // check against each available locales
+                foreach (\Core\Config::Locales as $locale) {
+
+                    $locale_short = explode("_", $locale)[0];
+
+                    // if match found return language directory
+                    if (strpos($pref, $locale_short) !== False) {
+                        \Core\Log::debug("preferred client language: ". $locale);
+                        $this->PreferredUserLanguage = $locale;
+                    }
+                }
+            }
+
+            // inform no language match found
+            if ($this->PreferredUserLanguage === NULL) {
+                $msg = "Could not find translation!\n";
+                $msg .= "Preferred translations: '" . implode("', '", $preferred) . "'\n";
+                \Core\Log::warning($msg);
+            }
+        }
+
+        return $this->PreferredUserLanguage;
     }
 
 

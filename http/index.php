@@ -34,6 +34,16 @@ session_start();
                            \Core\Config::DbDatabase);
 \Core\UserManager::initialize();
 
+// l10n
+$lang = \Core\USerManager::currentUser()->locale();
+$lang .= ".UTF-8";
+putenv("LANG=$lang");
+putenv("LANGUAGE=$lang");
+putenv("LC_ALL=$lang");
+setlocale(LC_ALL, $lang);
+bindtextdomain("acswui", "./locale");
+textdomain("acswui");
+
 // Setup template
 if (array_key_exists("JsonContent", $_GET)) {
     echo \Core\JsonContent::getContent();

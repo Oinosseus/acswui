@@ -317,7 +317,7 @@ class ServerPreset extends DbEntry {
                 new \Parameter\EnumItem($p, 1, _("Teleport"));
                 new \Parameter\EnumItem($p, 2, _("Drivethru"));
                 $p->setValue(2);
-                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerTyresOut", _("Allowed Tyres Out"), _("Amount of tyres that are allowed to cross the driving line"), "", 2);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerTyresOut", _("Allowed Tyres Out"), _("Amount of tyres that are allowed to cross the driving line"), _("Tyres"), 2);
                 $p->setMin(0);
                 $p->setMax(4);
 

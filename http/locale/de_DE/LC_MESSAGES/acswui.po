@@ -2,11 +2,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Thomas Weinhold <Thomas.Weinhold@stratoinos.de>, 2021.
+#: http/classes/Parameter/ParamSpecialUserCountry.php:10
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-23 15:13+0200\n"
+"POT-Creation-Date: 2022-01-29 23:57+0100\n"
 "PO-Revision-Date: 2021-05-23 15:34+0200\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
@@ -17,892 +18,3315 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 21.04.1\n"
 
-#: http/classes/cWebhooks.php:19 http/classes/cWebhooks.php:58
-msgid "Server Preset"
-msgstr "Server Preset"
+#: http/classes/Core/ACswui.php:33
+msgid "ACswui Settings"
+msgstr "ACswui Einstellungen"
 
-#: http/classes/cWebhooks.php:20 http/classes/cWebhooks.php:59
-#: http/contents/aa_user/polls.php:613 http/contents/aa_user/racepoll.php:217
-#: http/contents/zm_session/queue.php:54
-#: http/contents/zm_session/schedule.php:54
-msgid "Car Class"
-msgstr "Fahrzeugklasse"
+#: http/classes/Core/ACswui.php:33
+msgid "Settings to configure the ACswui system"
+msgstr "Einstellungen um das ACswui System zu konfigurieren"
 
-#: http/classes/cWebhooks.php:21 http/classes/cWebhooks.php:60
-#: http/contents/aa_user/polls.php:575 http/contents/zm_session/queue.php:55
-#: http/contents/zm_session/schedule.php:55
-#: http/contents/zm_session/history.php:200
-#: http/contents/zm_session/overview.php:63
-#: http/contents/za_server/session_history.php:191
-msgid "Track"
-msgstr "Strecke"
+#: http/classes/Core/ACswui.php:39
+msgid "Non-Active Driving Days"
+msgstr "Inaktive Fahrtage"
 
-#: http/classes/db_wrapper/cSession.php:449
-msgid "Booking"
-msgstr "Reservierung"
+#: http/classes/Core/ACswui.php:39
+msgid ""
+"When the last lap of a user is longer days ago than this value, he or she is "
+"considered to be an inactive driver"
+msgstr ""
+"When die letzte gefahrene Runde von Benutzer:innen älter ist, als dieser wert,"
+"werden sie als inaktiver Fahrer betrachtet"
 
-#: http/classes/db_wrapper/cSession.php:451
-msgid "Practice"
-msgstr "Training"
+#: http/classes/Core/ACswui.php:42
+msgid "Non-Active Community Login Days"
+msgstr "Inaktive Community Tage"
 
-#: http/classes/db_wrapper/cSession.php:453
-msgid "Qualifying"
-msgstr "Qualifying"
+#: http/classes/Core/ACswui.php:42
+msgid ""
+"When a user has not logged in into the system for this amount of days he or "
+"she is not considered to be a community member\n"
+"Additionally an user must be an active driver to be considered as community "
+"member"
+msgstr ""
+"Wenn Bentuzer:innen sich länger nicht anmelden als dieser Wert an Tagen, werden sie nicht mehr als Community Mitglieder betrachtet."
+"Zusätzlich müssen Benutzer:innen aktive Fahrer sein um als Community Mitglied zu zählen."
 
-#: http/classes/db_wrapper/cSession.php:455
-msgid "Race"
-msgstr "Rennen"
 
-#: http/contents/zz_admin/users.php:6
-msgid "Users"
-msgstr "Benutzer"
-
-#: http/contents/zz_admin/users.php:7
-msgid "Users Management"
-msgstr "Benutzerverwaltung"
-
-#: http/contents/zz_admin/users.php:36 http/contents/aa_user.php:27
-#: http/contents/aa_user.php:40 http/contents/aa_user.php:49
-msgid "Login"
-msgstr "Login"
-
-#: http/contents/zz_admin/users.php:37 http/contents/aa_user/chpwd.php:6
-#: http/contents/aa_user.php:44
-msgid "Password"
-msgstr "Passwort"
-
-#: http/contents/zz_admin/users.php:39
-msgid "Color"
-msgstr "Farbe"
-
-#: http/contents/zz_admin/users.php:77 http/contents/zz_admin/groups.php:72
-msgid "save all"
-msgstr "alle speichern"
-
-#: http/contents/zz_admin/groups.php:6
-msgid "Groups"
-msgstr "Gruppen"
-
-#: http/contents/zz_admin/groups.php:7
-msgid "Groups Management"
-msgstr "Gruppenverwaltung"
-
-#: http/contents/zz_admin/groups.php:46
-msgid "Group"
-msgstr "Gruppe"
-
-#: http/contents/zz_admin/groups.php:70
-#: http/contents/bm_car_classes/aa_carclass_management.php:179
-msgid "delete"
-msgstr "löschen"
-
-#: http/contents/sa_statistics/tracks_popular.php:6
-msgid "Popular Tracks"
-msgstr "Beliebte Strecken"
-
-#: http/contents/sa_statistics/records_track.php:9
-msgid "Track Records"
-msgstr "Streckenrekorde"
-
-#: http/contents/sa_statistics/records_track.php:48
-#: http/contents/sa_statistics/records_car.php:47
-#: http/contents/zm_session/history.php:294
-#: http/contents/zm_session/history.php:373
-#: http/contents/zm_session/overview.php:119
-#: http/contents/za_server/session_history.php:285
-#: http/contents/za_server/session_history.php:364
-msgid "Laptime"
-msgstr "Rundenzeit"
-
-#: http/contents/sa_statistics/records_track.php:48
-#: http/contents/sa_statistics/records_car.php:47
-#: http/contents/zm_session/history.php:294
-#: http/contents/zm_session/overview.php:119
-#: http/contents/za_server/session_history.php:285
-msgid "Delta"
-msgstr "Differenz"
-
-#: http/contents/sa_statistics/records_track.php:48
-#: http/contents/sa_statistics/records_car.php:47
-#: http/contents/aa_user/driver_ranking.php:167
-#: http/contents/aa_user/racepoll.php:124
-#: http/contents/zm_session/history.php:242
-#: http/contents/zm_session/history.php:294
-#: http/contents/zm_session/history.php:338
-#: http/contents/zm_session/history.php:373
-#: http/contents/zm_session/overview.php:89
-#: http/contents/zm_session/overview.php:119
-#: http/contents/za_server/session_history.php:233
-#: http/contents/za_server/session_history.php:285
-#: http/contents/za_server/session_history.php:329
-#: http/contents/za_server/session_history.php:364
-msgid "Driver"
-msgstr "Fahrer"
-
-#: http/contents/sa_statistics/records_track.php:48
-#: http/contents/sa_statistics/records_car.php:47
-#: http/contents/zm_session/history.php:243
-#: http/contents/zm_session/history.php:294
-#: http/contents/zm_session/history.php:373
-#: http/contents/zm_session/overview.php:119
-#: http/contents/za_server/session_history.php:234
-#: http/contents/za_server/session_history.php:285
-#: http/contents/za_server/session_history.php:364
-#: http/contents/bm_car_classes/aa_carclass_management.php:162
-msgid "Car"
-msgstr "Auto"
-
-#: http/contents/sa_statistics/records_track.php:48
-#: http/contents/sa_statistics/records_car.php:47
-#: http/contents/zm_session/history.php:246
-#: http/contents/zm_session/history.php:294
-#: http/contents/zm_session/history.php:373
-#: http/contents/zm_session/overview.php:119
-#: http/contents/za_server/session_history.php:237
-#: http/contents/za_server/session_history.php:285
-#: http/contents/za_server/session_history.php:364
-#: http/contents/bm_car_classes/aa_carclass_management.php:163
-msgid "Ballast"
-msgstr "Gewicht"
-
-#: http/contents/sa_statistics/records_track.php:48
-#: http/contents/sa_statistics/records_car.php:47
-#: http/contents/zm_session/history.php:247
-#: http/contents/zm_session/history.php:294
-#: http/contents/zm_session/history.php:373
-#: http/contents/zm_session/overview.php:119
-#: http/contents/za_server/session_history.php:238
-#: http/contents/za_server/session_history.php:285
-#: http/contents/za_server/session_history.php:364
-#: http/contents/bm_car_classes/aa_carclass_management.php:164
-msgid "Restrictor"
-msgstr "Begrenzer"
-
-#: http/contents/sa_statistics/records_track.php:48
-#: http/contents/sa_statistics/records_car.php:47
-#: http/contents/zm_session/history.php:203
-#: http/contents/zm_session/history.php:294
-#: http/contents/zm_session/history.php:373
-#: http/contents/zm_session/overview.php:66
-#: http/contents/zm_session/overview.php:119
-#: http/contents/za_server/session_history.php:194
-#: http/contents/za_server/session_history.php:285
-#: http/contents/za_server/session_history.php:364
-msgid "Grip"
-msgstr "Traktion"
-
-#: http/contents/sa_statistics/records_track.php:48
-#: http/contents/sa_statistics/records_car.php:47
-#: http/contents/zm_session/schedule.php:48
-msgid "Date"
-msgstr "Datum"
-
-#: http/contents/sa_statistics/records_track.php:48
-#: http/contents/sa_statistics/records_car.php:47
-msgid "Session / Lap"
-msgstr "Session / Runden"
-
-#: http/contents/sa_statistics/records_car.php:8
-msgid "Car Records"
-msgstr "Fahrzeugrekorde"
-
-#: http/contents/sa_statistics/carclasses_popular.php:6
-msgid "Popular Car Classes"
-msgstr "Beliebte Fahrzeugklassen"
-
-#: http/contents/aa_user/driver_ranking.php:9
+#: http/classes/Core/ACswui.php:51
 msgid "Driver Ranking"
 msgstr "Fahrerwertung"
 
-#: http/contents/aa_user/driver_ranking.php:47
-#: http/contents/aa_user/driver_ranking.php:108
-msgid "Weeks"
-msgstr "Wochen"
+#: http/classes/Core/ACswui.php:51
+msgid "Settings for driver ranking"
+msgstr "Einstellungen für die Fahrerwertung"
 
-#: http/contents/aa_user/driver_ranking.php:166
-#: http/contents/zm_session/history.php:241
-#: http/contents/za_server/session_history.php:232
-msgid "Position"
-msgstr "Position"
+#: http/classes/Core/ACswui.php:52
+msgid "Days"
+msgstr "Tage"
 
-#: http/contents/aa_user/driver_ranking.php:171
-#: http/contents/aa_user/driver_ranking.php:255
-msgid "Score"
-msgstr "Punkte"
-
-#: http/contents/aa_user/driver_ranking.php:172
-#: http/contents/zm_session/history.php:294
-#: http/contents/za_server/session_history.php:285
-msgid "Show"
-msgstr "Anzeigen"
-
-#: http/contents/aa_user/driver_ranking.php:219
-msgid "Mean Value"
-msgstr "Mittelwert"
-
-#: http/contents/aa_user/driver_ranking.php:243
-#: http/contents/aa_user/driver_ranking.php:256
-#: http/contents/aa_user/polls.php:266
-msgid "Description"
-msgstr "Beschreibung"
-
-#: http/contents/aa_user/driver_ranking.php:245
+#: http/classes/Core/ACswui.php:52
+#, fuzzy
 msgid ""
-"Driver ranking points are only cummulated for server runs with race "
-"sessions.\n"
-"                    That means for succeeding Practice->Qualifying->Race, "
-"Qualifying->Race or Race-only sessions.\n"
-"                    Pure practice or qualifying sessions without a race "
-"session are ignored."
+"Amount of days in the past over which the driver ranking shall be calculated"
 msgstr ""
-"Punkte für die Fahrerwertung werden nur gezählt, wenn auch ein Rennen statt"
-" fand. "
-"Das bedeutet nur zusammenhängende Sessions mit Training, Qualifying und"
-" Rennen oder Sessions mit Qualifying und Rennen. "
-"Reine Trainings- oder Qualifying-Sessions ohne nachfolgende Rennen werden"
-" ignoriert."
+"Anzahl der vergangen Tage, in denen Sessions in die Berechnung einbezogen werden."
 
-#: http/contents/aa_user/driver_ranking.php:249
-msgid "Of couse SX-BT is not effected from this"
-msgstr "Natürlich ist SX-BT davon nicht betroffen"
+#: http/classes/Core/ACswui.php:57
+msgid "Experience"
+msgstr "Erfahrung"
 
-#: http/contents/aa_user/driver_ranking.php:254
-msgid "Symbol"
-msgstr "Symbol"
+#: http/classes/Core/ACswui.php:57
+msgid "Drivers earn experience when completing laps"
+msgstr "Fahrer:innen gewinnen an Erfahrung durch Absolvieren von Runden."
 
-#: http/contents/aa_user/driver_ranking.php:264
-msgid "Experience from driven race length"
-msgstr "Erfahrung von gefahrener Renndistanz"
+#: http/classes/Core/ACswui.php:58 http/classes/DbEntry/ServerPreset.php:246
+#: http/content/html/W_Sessions/SessionOverview.php:291
+msgid "Practice"
+msgstr "Training"
 
-#: http/contents/aa_user/driver_ranking.php:270
-msgid "Experience from driven qualifying length"
+#: http/classes/Core/ACswui.php:58
+#, fuzzy
+msgid "Earned experience points by driven distance in practice"
+msgstr "Erfahrungspunkte durch Trainingsrunden"
+
+#: http/classes/Core/ACswui.php:61 http/classes/Core/ACswui.php:76
+#: http/classes/DbEntry/ServerPreset.php:257
+#: http/classes/DbEntry/ServerPreset.php:600
+#: http/content/html/W_Sessions/SessionOverview.php:295
+msgid "Qualifying"
+msgstr "Qualifikation"
+
+#: http/classes/Core/ACswui.php:61
+#, fuzzy
+msgid "Earned experience points by driven distance in qualifying"
 msgstr "Erfahrung von gefahrener Qualifikationsdistanz"
 
-#: http/contents/aa_user/driver_ranking.php:276
-msgid "Experience from driven practice length"
-msgstr "Erfahrung von gefahrener Übungsdistanz"
+#: http/classes/Core/ACswui.php:64 http/classes/Core/ACswui.php:79
+#: http/classes/DbEntry/ServerPreset.php:271
+#: http/classes/DbEntry/ServerPreset.php:603
+#: http/content/html/W_Sessions/SessionOverview.php:299
+msgid "Race"
+msgstr "Rennen"
 
-#: http/contents/aa_user/driver_ranking.php:285
-msgid "Success points for race positions (leading ahead another driver)."
-msgstr ""
-"Erfolgspunkte für Führungspositionen im Rennen (Führend vor einem anderen"
-" Fahrer)."
+#: http/classes/Core/ACswui.php:64
+msgid "Earned experience points by driven distance in races"
+msgstr "Gewonne Erfahrung durch Rennrunden"
 
-#: http/contents/aa_user/driver_ranking.php:291
-msgid "Success points for qualifying positions (leading ahead another driver)."
-msgstr ""
-"Erfolgspunkte für Führungspositionen in der Qualifikation (Führend vor einem"
-" anderen Fahrer)."
+#: http/classes/Core/ACswui.php:69
+msgid "Success"
+msgstr "Erfolg"
 
-#: http/contents/aa_user/driver_ranking.php:297
-msgid "Success points for best time in a race session."
-msgstr "Erfolgspunkte für Bestzeit im Rennen."
+#: http/classes/Core/ACswui.php:69
+msgid "Settings how drivers earn points for their success"
+msgstr "Einstellungen, wie Fahrer:innen Erfolgspunkte erlangen."
 
-#: http/contents/aa_user/driver_ranking.php:303
+#: http/classes/Core/ACswui.php:70
+#, fuzzy
+msgid "Best Time"
+msgstr "Bestzeit"
+
+#: http/classes/Core/ACswui.php:70
+#, fuzzy
 msgid ""
-"Success points for overall best time per track per car class (leading ahead "
-"another driver)."
+"Points for best times per track and car class (per leading position prior to "
+"another driver)"
 msgstr ""
-"Erfogspunkte für absolute Bestzeiten pro Strecke, pro Fahrzeugklasse "
-" (Führend vor einem anderen Fahrer)."
+"Erfogspunkte für absolute Bestzeiten pro Strecke, pro Fahrzeugklasse  "
+"(Führend vor anderen Fahrer:innen)."
 
-#: http/contents/aa_user/driver_ranking.php:312
-msgid "Safety deduction points for cuts."
-msgstr "Sicherheitspunktabzug für verlassen der Strecke."
+#: http/classes/Core/ACswui.php:73
+#, fuzzy
+msgid "Race Time"
+msgstr "Rennzeit"
 
-#: http/contents/aa_user/driver_ranking.php:318
-msgid "Safety deduction points for crashing with the environment"
-msgstr "Sicherheitspunktabzug für Unfälle mit Umgebungsobjekten."
+#: http/classes/Core/ACswui.php:73
+#, fuzzy
+msgid "Points for fastest lap in a race"
+msgstr "Punkte für schnellste Runde im Rennen."
 
-#: http/contents/aa_user/driver_ranking.php:324
-msgid "Safety deduction points for crashing with another car"
-msgstr "Sicherheitspunktabzug für Unfälle mit anderen Autos."
-
-#: http/contents/aa_user/driver_ranking.php:333
+#: http/classes/Core/ACswui.php:76
+#, fuzzy
 msgid ""
-"Amount of days in the past where sessions are integrated in latest ranking "
-"calculation."
+"Points for positions in qualifying sessions (per leading position prior to "
+"another driver)"
 msgstr ""
-"Anzahl der vergangen Tage, in denen Sessions in die Berechnung einbezogen"
-" werden."
-
-#: http/contents/aa_user/polls.php:13
-msgid "Polls"
-msgstr "Umfragen"
-
-#: http/contents/aa_user/polls.php:185 http/contents/zm_session/queue.php:47
-#: http/contents/zm_session/schedule.php:47
-msgid "Id"
-msgstr "Id"
-
-#: http/contents/aa_user/polls.php:186 http/contents/aa_user/polls.php:253
-#: http/contents/zm_session/queue.php:50
-#: http/contents/zm_session/schedule.php:51
-msgid "Name"
-msgstr "Name"
-
-#: http/contents/aa_user/polls.php:187
-msgid "Creator"
-msgstr "Ersteller"
-
-#: http/contents/aa_user/polls.php:188
-msgid "Votes"
-msgstr "Stimmen"
-
-#: http/contents/aa_user/polls.php:189
-msgid "Closing Date"
-msgstr "Schließzeit"
-
-#: http/contents/aa_user/polls.php:191 http/contents/aa_user/polls.php:209
-msgid "Edit"
-msgstr "Editieren"
-
-#: http/contents/aa_user/polls.php:222
-msgid "Create New Poll"
-msgstr "Neue Umfrage Erstellen"
-
-#: http/contents/aa_user/polls.php:241 http/contents/aa_user/polls.php:477
-#: http/contents/aa_user/racepoll.php:33
-msgid "Save Poll"
-msgstr "Umfrage Speichern"
-
-#: http/contents/aa_user/polls.php:250
-msgid "General Settings"
-msgstr "Allgemeine Einstellungen"
-
-#: http/contents/aa_user/polls.php:256
-msgid "Secret Poll"
-msgstr "Geheime Umfrage"
-
-#: http/contents/aa_user/polls.php:260
-msgid "Poll Closing"
-msgstr "Umfrage Schließung"
-
-#: http/contents/aa_user/polls.php:280 http/contents/za_server/tracks.php:6
-msgid "Tracks"
-msgstr "Strecken"
-
-#: http/contents/aa_user/polls.php:283
-msgid "Points for all Tracks"
-msgstr "Punkte für alle Strecken insgesamt"
-
-#: http/contents/aa_user/polls.php:286
-msgid "Points per Track"
-msgstr "Punkte pro Strecke"
-
-#: http/contents/aa_user/polls.php:308
-msgid "Add Tracks"
-msgstr "Strecke Hinzufügen"
-
-#: http/contents/aa_user/polls.php:318 http/contents/bm_car_classes.php:6
-msgid "Car Classes"
-msgstr "Fahrzeugklassen"
-
-#: http/contents/aa_user/polls.php:321
-msgid "Points for all Car Classes"
-msgstr "Punkte für alle Fahrzeugklassen zusammen"
-
-#: http/contents/aa_user/polls.php:324
-msgid "Points per Car Class"
-msgstr "Punkte pro Fahrzeugklasse"
-
-#: http/contents/aa_user/polls.php:346
-msgid "Add Car Class"
-msgstr "Fahrzeugklasse Hinzufügen"
-
-#: http/contents/aa_user/polls.php:367 http/contents/aa_user/polls.php:400
-#: http/contents/aa_user/polls.php:421 http/contents/aa_user/polls.php:446
-msgid "Save"
-msgstr "Speichern"
-
-#: http/contents/aa_user/polls.php:487 http/contents/aa_user/racepoll.php:254
-msgid "Vote Tracks"
-msgstr "Strecke Abstimmen"
-
-#: http/contents/aa_user/polls.php:490
-msgid "Points per track"
-msgstr "Punkte pro Strecke"
-
-#: http/contents/aa_user/polls.php:491 http/contents/aa_user/polls.php:531
-msgid "Points in sum"
-msgstr "Punkte in Summe"
-
-#: http/contents/aa_user/polls.php:492 http/contents/aa_user/polls.php:532
-msgid "Points left to vote"
-msgstr "Verbleibende Punkte zum Abstimmen"
-
-#: http/contents/aa_user/polls.php:527
-msgid "Vote Car Classes"
-msgstr "Fahrzeugklasse Abstimmen"
-
-#: http/contents/aa_user/polls.php:530
-msgid "Points per car class"
-msgstr "Punkte pro Fahrzeugklasse"
-
-#: http/contents/aa_user/polls.php:570
-msgid "Result Tracks"
-msgstr "Ergebnis Strecken"
-
-#: http/contents/aa_user/polls.php:573 http/contents/aa_user/polls.php:611
-msgid "Pos"
-msgstr "Pos"
-
-#: http/contents/aa_user/polls.php:574 http/contents/aa_user/polls.php:612
-msgid "Sum Points"
-msgstr "Summe Punkte"
-
-#: http/contents/aa_user/polls.php:576 http/contents/aa_user/polls.php:614
-msgid "Users Voted"
-msgstr "Benutzer Abgestimmt"
-
-#: http/contents/aa_user/polls.php:577 http/contents/aa_user/polls.php:615
-msgid "My Points"
-msgstr "Meine Punkte"
-
-#: http/contents/aa_user/polls.php:608
-msgid "Result CarClasses"
-msgstr "Ergebnis Fahrzeugklassen"
-
-#: http/contents/aa_user/chpwd.php:7
-msgid "Change Password"
-msgstr "Passwort Ändern"
-
-#: http/contents/aa_user/uqmu.php:8
-msgid "qumu"
-msgstr "uqmu"
-
-#: http/contents/aa_user/aa_profile.php:9
-msgid "Profile"
-msgstr "Profil"
-
-#: http/contents/aa_user/aa_profile.php:43
-msgid "Pirvacy"
-msgstr "Privatsphäre"
-
-#: http/contents/aa_user/aa_profile.php:57
-msgid "Personal Color"
-msgstr "Persönliche Farbe"
-
-#: http/contents/aa_user/aa_profile.php:61
-msgid "Preferred Locale"
-msgstr "Bevorzugte Lokalisierung"
-
-#: http/contents/aa_user/aa_profile.php:70
-msgid "requires re-login"
-msgstr "erfordert re-login"
-
-#: http/contents/aa_user/aa_profile.php:74
-msgid "Save Personal Data"
-msgstr "Persönliche Daten Speichern"
-
-#: http/contents/aa_user/racepoll.php:12 http/contents/aa_user/racepoll.php:13
-msgid "Race Poll"
-msgstr "Rennumfrage"
-
-#: http/contents/aa_user/racepoll.php:104
-msgid "Vote Race Date"
-msgstr "Renndatum Abstimmen"
-
-#: http/contents/aa_user/racepoll.php:116
-#: http/contents/aa_user/racepoll.php:282
-#: http/contents/zm_session/queue.php:141
-#: http/contents/zm_session/schedule.php:138
-msgid "Delete"
-msgstr "Löschen"
-
-#: http/contents/aa_user/racepoll.php:189
-msgid "New Date:"
-msgstr "Neues Datum:"
-
-#: http/contents/aa_user/racepoll.php:192
-msgid "Add Date"
-msgstr "Datum Hinzufügen"
-
-#: http/contents/aa_user/racepoll.php:201
-msgid "Vote Race Classes"
-msgstr "Fahrzeugklasse Abstimmen"
-
-#: http/contents/aa_user/racepoll.php:218
-msgid "My Score"
-msgstr "Meine Punkte"
-
-#: http/contents/aa_user/racepoll.php:219
-msgid "Overall Score"
-msgstr "Gesamtpunkzahl"
-
-#: http/contents/aa_user/racepoll.php:302
-msgid "Add Track"
-msgstr "Strecke Hinzufügen"
-
-#: http/contents/zm_session/queue.php:9
-msgid "Queue"
-msgstr "Schleife"
-
-#: http/contents/zm_session/queue.php:33 http/contents/zm_session/queue.php:36
-msgid "Save Session Queue"
-msgstr "Session Schleife Speichern"
-
-#: http/contents/zm_session/queue.php:48
-msgid "Enable Queue Item"
-msgstr "Aktiviere Schleifenelement"
-
-#: http/contents/zm_session/queue.php:49
-#: http/contents/zm_session/schedule.php:52
-msgid "Enable Seat Occupations"
-msgstr "Sitzbelegung Aktivieren"
-
-#: http/contents/zm_session/queue.php:51
-#: http/contents/zm_session/schedule.php:56
-msgid "Slot"
-msgstr "Slot"
-
-#: http/contents/zm_session/queue.php:52
-#: http/contents/zm_session/schedule.php:53
-msgid "Preset"
-msgstr "Preset"
-
-#: http/contents/zm_session/queue.php:53
-#: http/contents/zm_session/schedule.php:50
-msgid "Duration"
-msgstr "Dauer"
-
-#: http/contents/zm_session/queue.php:159
-msgid "Create New Queue Item"
-msgstr "Neues Schleifenelement Erstellen"
-
-#: http/contents/zm_session/schedule.php:9
-msgid "Schedule"
-msgstr "Zeitplan"
-
-#: http/contents/zm_session/schedule.php:33
-#: http/contents/zm_session/schedule.php:36
-msgid "Save Session Schedule"
-msgstr "Session Zeitplan Speichern"
-
-#: http/contents/zm_session/schedule.php:49
-#: http/contents/zm_session/history.php:201
-#: http/contents/zm_session/overview.php:64
-#: http/contents/za_server/session_history.php:192
-msgid "Time"
-msgstr "Zeit"
-
-#: http/contents/zm_session/schedule.php:67
-msgid "Scheduled Sessions"
-msgstr "Geplante Sessions"
-
-#: http/contents/zm_session/schedule.php:155
-msgid "Create New Schedule Item"
-msgstr "Neues Zeitplanelement Erstellen"
-
-#: http/contents/zm_session/history.php:12
-msgid "History"
-msgstr "Sessions"
-
-#: http/contents/zm_session/history.php:95
-#: http/contents/za_server/session_history.php:93
-msgid "Session Select"
-msgstr "Session Auswählen"
-
-#: http/contents/zm_session/history.php:140
-#: http/contents/za_server/session_history.php:138
-msgid "any Track"
-msgstr "jede Strecke"
-
-#: http/contents/zm_session/history.php:186
-#: http/contents/zm_session/overview.php:56
-#: http/contents/za_server/session_history.php:184
-msgid "Session Info"
-msgstr "Session Information"
-
-#: http/contents/zm_session/history.php:199
-#: http/contents/zm_session/overview.php:62
-#: http/contents/za_server/session_history.php:190
-msgid "Server/Session Name"
-msgstr "Server/Session Name"
-
-#: http/contents/zm_session/history.php:201
-#: http/contents/zm_session/history.php:254
-#: http/contents/zm_session/history.php:466
-#: http/contents/zm_session/overview.php:64
-#: http/contents/za_server/session_history.php:192
-#: http/contents/za_server/session_history.php:245
-#: http/contents/za_server/session_history.php:457
-msgid "Laps"
-msgstr "Runden"
-
-#: http/contents/zm_session/history.php:202
-#: http/contents/zm_session/overview.php:65
-#: http/contents/za_server/session_history.php:193
-msgid "Temp Amb / Road"
-msgstr "Temp. Umgebung / Strecke"
-
-#: http/contents/zm_session/history.php:230
-#: http/contents/za_server/session_history.php:221
-msgid "Session Results"
-msgstr "Session Ergebnisse"
-
-#: http/contents/zm_session/history.php:244
-#: http/contents/za_server/session_history.php:235
-msgid "Best Lap"
-msgstr "Beste Runde"
-
-#: http/contents/zm_session/history.php:245
-#: http/contents/za_server/session_history.php:236
-msgid "Total Time"
-msgstr "Gesamtzeit"
-
-#: http/contents/zm_session/history.php:248
-#: http/contents/zm_session/overview.php:90
-#: http/contents/za_server/session_history.php:239
-msgid "Driven"
-msgstr "Gefahren"
-
-#: http/contents/zm_session/history.php:249
-#: http/contents/zm_session/history.php:294
-#: http/contents/zm_session/history.php:373
-#: http/contents/zm_session/overview.php:119
-#: http/contents/za_server/session_history.php:240
-#: http/contents/za_server/session_history.php:285
-#: http/contents/za_server/session_history.php:364
+"Punkte für Führungspositionen in der Qualifikation (Führend vor anderen Fahrer:innen)."
+
+#: http/classes/Core/ACswui.php:79
+#, fuzzy
+msgid ""
+"Points for positions in race sessions (per leading position prior to another "
+"driver)"
+msgstr ""
+"Punkte für Führungspositionen im Rennen (Führend vor anderen Fahrer:innen)."
+
+#: http/classes/Core/ACswui.php:84
+msgid "Safety"
+msgstr "Sicherheit"
+
+#: http/classes/Core/ACswui.php:84
+msgid "Settings for penalty points that drivers get"
+msgstr "Einstellungen für Strafpunkte die Fahrer:innen bekommen"
+
+#: http/classes/Core/ACswui.php:85 http/content/json/SessionData.php:132
+#: http/content/html/W_Sessions/SessionOverview.php:84
+#: http/content/html/W_Sessions/SessionOverview.php:188
 msgid "Cuts"
 msgstr "Schnitte"
 
-#: http/contents/zm_session/history.php:250
-#: http/contents/zm_session/history.php:334
-#: http/contents/za_server/session_history.php:241
-#: http/contents/za_server/session_history.php:325
-msgid "Collisions"
-msgstr "Kollisionen"
+#: http/classes/Core/ACswui.php:85
+msgid "Points for amount of cuts that were made"
+msgstr "Punkte für überschreiten der Streckenbegrenzung"
 
-#: http/contents/zm_session/history.php:255
-#: http/contents/za_server/session_history.php:246
-msgid "Distance"
-msgstr "Entfernung"
+#: http/classes/Core/ACswui.php:88
+#, fuzzy
+msgid "Collision Environment"
+msgstr "Kollision Umgebung"
 
-#: http/contents/zm_session/history.php:256
-#: http/contents/za_server/session_history.php:247
+#: http/classes/Core/ACswui.php:88
+#, fuzzy
+msgid "Points for colliding with the environment"
+msgstr "Punkte für Kollisionen mit der Umgebung"
+
+#: http/classes/Core/ACswui.php:91
+#, fuzzy
+msgid "Collision Cars"
+msgstr "Kollision Fahrzeuge"
+
+#: http/classes/Core/ACswui.php:91
+#, fuzzy
+msgid "Points for colliding with other cars"
+msgstr "Punkte für Kollisionen mit anderen Fahrzeugen."
+
+#: http/classes/Core/ACswui.php:94
+msgid "Nominal Collision-Speed"
+msgstr "Nominale Kollisionsgeschwindigkeit"
+
+#: http/classes/Core/ACswui.php:94
+msgid "Nominal speed at which collision a collsion points counts nominal"
+msgstr "Geschwindigkeit, zu der Kollisionen normiert werden."
+
+#: http/classes/Core/ACswui.php:97
+msgid "Amnesty in Practice"
+msgstr "Amnestie im Training"
+
+#: http/classes/Core/ACswui.php:97
+msgid ""
+"If enabled, safety penalties are not given for pure practice sessions "
+"(sessions without succeeding qualifying/race)"
+msgstr "When aktiv, werden Strafpunkte nicht für reine Trainings-Sessions vergeben "
+"(Sessions ohne nachfolgende Qualifikation/Rennen)"
+
+#: http/classes/Core/ACswui.php:104 http/content/html/B_User/UserSettings.php:8
+#, fuzzy
+msgid "User Settings"
+msgstr "Benutzer Einstellungen"
+
+#: http/classes/Core/ACswui.php:104
+msgid "Settings for users"
+msgstr "Einstellungen für Benutzer"
+
+#: http/classes/Core/ACswui.php:105
+msgid "Locale"
+msgstr "Lokalisierung"
+
+#: http/classes/Core/ACswui.php:105
+msgid "Localization settings"
+msgstr "Lakalisationseinstellung"
+
+#: http/classes/Core/ACswui.php:106
+#, fuzzy
+msgid "Privacy"
+msgstr "Privatsphäre"
+
+#: http/classes/Core/ACswui.php:106
+msgid ""
+"Privacy settings\n"
+"'Private' means nobody can identify me\n"
+"'Community' means that all active drivers, which actively use the ACswui "
+"system, can identify me - as long as I use the ACswui system as well\n"
+"'Active Drivers' means that all other active drivers can identify me - as "
+"long as I am an active driver as well\n"
+"'Public' means everyone can identify me"
+msgstr ""
+"'Privat' bedeutet, keiner kann mich identifizieren\n"
+"'Community' bedeutet, alle aktiven Fahrer:innen, können mich identifizieren - so lange ich selbst das ACswui System nutze"
+"'Aktive Fahrer' bedeutet, alle aktiven Fahrer:innen, können mich identifizieren - so lange ich selbst aktiver Fahrer bin"
+"'Öffentlich' bedeutet, jeder kann mich identifizieren"
+
+
+#: http/classes/Core/ACswui.php:107
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:25
+#: http/content/html/B_User/UserProfile.php:41
+msgid "Country"
+msgstr "Land"
+
+#: http/classes/Core/ACswui.php:107
+msgid "Select which country you want to represent"
+msgstr "Wähle, welches Land du repräsentieren möchtest"
+
+#: http/classes/Core/ACswui.php:108
+msgid "Date/Time Format"
+msgstr "Datum/Zeit Format"
+
+#: http/classes/Core/ACswui.php:108
+msgid "How shal date-times be presented"
+msgstr "Wähle, wie Datum/Zeit präsentiert werden sollen"
+
+#: http/classes/Core/ACswui.php:109
+#, fuzzy
+msgid "Timezone"
+msgstr "Zeitzone"
+
+#: http/classes/Core/ACswui.php:109
+msgid "Define your preferred timezone"
+msgstr "Wähle deine präferierte Zeitzone"
+
+#: http/classes/Core/ACswui.php:110
+msgid "Color"
+msgstr "Farbe"
+
+#: http/classes/Core/ACswui.php:110
+msgid "Your preferred color to better identify you in diagrams"
+msgstr "Wähle deine präferierte Farbe aus, die in Diagrammen verwendet werden soll."
+
+#: http/classes/Core/ACswui.php:111
+#, fuzzy
+msgid "Skip Private Records"
+msgstr "Überspringe Private Rekorde"
+
+#: http/classes/Core/ACswui.php:111
+msgid ""
+"Skip users which do not allow to show private information in car/track "
+"records tables"
+msgstr ""
+"Blende Fahrer:innen in Rekordtabellen aus, die nicht identifiziert werden wollen (bessere Übersicht)."
+
+#: http/classes/Core/ACswui.php:113
+#, fuzzy
+msgid "Laptime Distribution Diagrams"
+msgstr "Rundenzeitenverteilungsdiagramm"
+
+#: http/classes/Core/ACswui.php:113
+msgid "Options to adjust the laptime distribution diagrams"
+msgstr "Optionen um das Rundenzeitenverteilungsdiagramm einszustellen"
+
+#: http/classes/Core/ACswui.php:114
+#, fuzzy
+msgid "Max Delta"
+msgstr "Maximale Differenz"
+
+#: http/classes/Core/ACswui.php:114
+msgid "Defines the maximum of the x-axis (how much seconds to show)"
+msgstr "Definiert das Maximum der X-Achse (wieviele Sekunden angezeigt werden)"
+
+#: http/classes/Core/ACswui.php:117
+#, fuzzy
+msgid "Time Axis"
+msgstr "Zeitachse"
+
+#: http/classes/Core/ACswui.php:117
+msgid ""
+"The time axis (distance to best session laptime) can be drawn logarithmic or "
+"linear"
+msgstr ""
+"Die Zeitachse (Abstand zur Session-Bestzeit) cann logarithmisch oder linear dargestellt werden."
+
+#: http/classes/Core/ACswui.php:118
+msgid "Linear"
+msgstr "Linear"
+
+#: http/classes/Core/ACswui.php:119
+msgid "Logarithmic"
+msgstr "Logarithmisch"
+
+#: http/classes/Core/ACswui.php:121
+#, fuzzy
+msgid "Available Types"
+msgstr "Typen"
+
+#: http/classes/Core/ACswui.php:121
+msgid ""
+"Select which options shall be available for laptime distribution diagrams "
+"(just prevents to click wrong buttons)"
+msgstr ""
+"Wähle, welche Typen für Rundenzeitenverteilungsdiagramme angeboten werden sollen "
+"(Reduktion hilf den richtigen Button zu treffen)"
+
+#: http/classes/Core/ACswui.php:122
+#, fuzzy
+msgid "Histogram"
+msgstr "Histogramm"
+
+#: http/classes/Core/ACswui.php:123
+msgid "Gaussian"
+msgstr "Gaußverteilung"
+
+#: http/classes/Core/UserManager.php:64
+#, fuzzy
+msgid "Logout"
+msgstr "logout"
+
+#: http/classes/Core/UserManager.php:68 http/content/html/B_User.php:20
+msgid "Login via Steam"
+msgstr "Mit Steam einloggen"
+
+#: http/classes/Core/ServerSlot.php:85
+#, fuzzy
+msgid "Base Settings"
+msgstr "Basiseinstellungen"
+
+#: http/classes/Core/ServerSlot.php:100
+#: http/content/html/T_Settings/ServerSlots.php:100
+#: http/content/html/W_Sessions/SessionOverview.php:254
+#, fuzzy
+msgid "Server Slot"
+msgstr "Server Slot"
+
+#: http/classes/Core/ServerSlot.php:100
+msgid "Collection of server slot settings"
+msgstr "Sammlung von Server-Slot Einstellungen"
+
+#: http/classes/Core/ServerSlot.php:106
+#, fuzzy
+msgid "acServer"
+msgstr "AC-Server"
+
+#: http/classes/Core/ServerSlot.php:106
+msgid "Settings for the actual acServer"
+msgstr "Einstellungen für den eigentlichen Assetto-Corsa-Server"
+
+#: http/classes/Core/ServerSlot.php:109 http/classes/Core/ServerSlot.php:150
+msgid "General Settings"
+msgstr "Allgemeine Einstellungen"
+
+#: http/classes/Core/ServerSlot.php:109 http/classes/Core/ServerSlot.php:150
+#, fuzzy
+msgid "General settings for Real Penalty"
+msgstr "Allgemeine Einstellungen für Real-Penalty"
+
+#: http/classes/Core/ServerSlot.php:110
+#: http/classes/DbEntry/ServerPreset.php:177
+#: http/classes/DbEntry/ServerPreset.php:240
+#: http/classes/DbEntry/ServerPreset.php:247
+#: http/classes/DbEntry/ServerPreset.php:258
+#: http/classes/DbEntry/ServerPreset.php:272
+#: http/classes/DbEntry/Weather.php:148
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:34
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:38
+#: http/content/html/B_User/UserProfile.php:23
+#: http/content/html/T_Settings/ServerSlots.php:101
+msgid "Name"
+msgstr "Name"
+
+#: http/classes/Core/ServerSlot.php:110
+msgid "An arbitrary name for the server (shown in lobby)"
+msgstr "Ein beliebiger Name für den Server (wird in der Lobby angezeigt)"
+
+#: http/classes/Core/ServerSlot.php:113 http/classes/Core/ServerSlot.php:178
+msgid "Internet Ports"
+msgstr "Internet Ports"
+
+#: http/classes/Core/ServerSlot.php:113
+msgid "Internet protocol port numbers for the AC server"
+msgstr "Internet Protokoll Nummern für den AC-Server"
+
+#: http/classes/Core/ServerSlot.php:114
+msgid "UDP port number: open this port on your server's firewall"
+msgstr "UDP Port: Öffne diesen in deiner Server Firewall"
+
+#: http/classes/Core/ServerSlot.php:117
+msgid "TCP port number: open this port on your server's firewall"
+msgstr "TCP Port: Öffne diesen in deiner Server Firewall"
+
+#: http/classes/Core/ServerSlot.php:120
+msgid ""
+"Lobby port number: open these ports (both UDP and TCP) on your server's "
+"firewall"
+msgstr ""
+"Lobby Port: Öffne beide (TCP/UDP) in deiner Server Firewall"
+
+#: http/classes/Core/ServerSlot.php:125 http/classes/Core/ServerSlot.php:167
+#: http/classes/Core/ServerSlot.php:191
+msgid "Plugin Ports"
+msgstr "Plugin Ports"
+
+#: http/classes/Core/ServerSlot.php:125 http/classes/Core/ServerSlot.php:167
+#: http/classes/Core/ServerSlot.php:191
+msgid "UDP plugin port settings"
+msgstr "UDP Plugin Port Einstellungen"
+
+#: http/classes/Core/ServerSlot.php:127
+msgid "Remote UDP port for external plugins"
+msgstr "Fernzugriffs-Port für externe Plugins"
+
+#: http/classes/Core/ServerSlot.php:132
+msgid "Performance"
+msgstr "Leistung"
+
+#: http/classes/Core/ServerSlot.php:132
+msgid "Settings that affect the transfer performance / quality"
+msgstr "Einstellungen welche die Transferleistung / Qualität beeinflussen"
+
+#: http/classes/Core/ServerSlot.php:133
+msgid "Client Interval"
+msgstr "Client Frequenz"
+
+#: http/classes/Core/ServerSlot.php:133
+msgid ""
+"Refresh rate of packet sending by the server. 10Hz = ~100ms. Higher number = "
+"higher MP quality = higher bandwidth resources needed. Really high values "
+"can create connection issues"
+msgstr ""
+"Aktualisierungsrate für Pakete die vom Server zum Spieler gesendet werden."
+"Größere Werte bedeuten bessere Qualität, benötigen aber auch mehr Bandbreite."
+"Sehr hohe Werte können Verbindungsprobleme herbeiführen:"
+
+
+#: http/classes/Core/ServerSlot.php:136
+msgid "Number of Threads"
+msgstr "Anzahl der Threads"
+
+#: http/classes/Core/ServerSlot.php:136
+msgid "Number of threads to run on"
+msgstr "Anzahl der CPU Threads, die vom AC-Server verwendet werden sollen."
+
+#: http/classes/Core/ServerSlot.php:139
+msgid "Max Clients"
+msgstr "Maximale Spieler"
+
+#: http/classes/Core/ServerSlot.php:139
+msgid "Max number of clients"
+msgstr "Maximale Anzahl an Spielern"
+
+#: http/classes/Core/ServerSlot.php:147
+msgid "Real Penalty Plugin"
+msgstr "Real-Penalty Plugin"
+
+#: http/classes/Core/ServerSlot.php:147
+msgid "Settings for the Real Penalty plugin"
+msgstr "Einstellungen für das Real-Penalty-Plugin"
+
+#: http/classes/Core/ServerSlot.php:152
+msgid "Enable RP"
+msgstr "Aktiviere RP"
+
+#: http/classes/Core/ServerSlot.php:152
+msgid "Wheather to use Real Penalty for this slot or not"
+msgstr "Ob Real-Penalty für diesen Server-Slot verwendet werden soll."
+
+#: http/classes/Core/ServerSlot.php:154
+msgid "Product Key"
+msgstr "Produkt Schlüssel"
+
+#: http/classes/Core/ServerSlot.php:154
+msgid ""
+"Personal key, received after the Patreon subscription: https://www.patreon."
+"com/DavideBolognesi"
+msgstr ""
+"Persönlicher Schlüssel, der nach Patreon Abbonnement erhalten wird: https://www.patreon.com/DavideBolognesi"
+
+#: http/classes/Core/ServerSlot.php:156
+#, fuzzy
+msgid "Admin Passwort"
+msgstr "Administrator Passwort"
+
+#: http/classes/Core/ServerSlot.php:156
+msgid "Password only for app 'Real Penalty - admin'"
+msgstr "Passwort, nur für die 'Real Penalty - admin' App"
+
+#: http/classes/Core/ServerSlot.php:158
+msgid "First Check"
+msgstr "Erste Prüfung"
+
+#: http/classes/Core/ServerSlot.php:158
+msgid ""
+"Delay (seconds) after connection of new driver for the first check (app + "
+"sol). Default 5"
+msgstr ""
+"Verzögerung (Sekunden) nachder bei neuen Fahrer:innen die App und SOL das erste mal geprüft wird."
+
+#: http/classes/Core/ServerSlot.php:162
+msgid "Check Frequency"
+msgstr "Überprüfungsfrequenz"
+
+#: http/classes/Core/ServerSlot.php:162
+msgid "Frequency (second) for APP, SOL and CSP check. Default 60"
+msgstr "Überprüfungsfrequenz (Sekunden) für die App, SOL und CSP."
+
+#: http/classes/Core/ServerSlot.php:169 http/classes/Core/ServerSlot.php:193
+msgid "Local UDP port to communicate with the acServer"
+msgstr "Lokaler UDP Port um mit dem AC-Server zu kommunizieren"
+
+#: http/classes/Core/ServerSlot.php:173
+msgid "Remote UDP port for additional plugins"
+msgstr "Entfernter UDP Port für zusätzliche Plugins"
+
+#: http/classes/Core/ServerSlot.php:178
+msgid "Port settings open to the internet"
+msgstr "Einstellungen für offen Internet-Ports"
+
+#: http/classes/Core/ServerSlot.php:180
+msgid "UDP to communicate with RP client app"
+msgstr "UDP Port zur Kommunikation mit der RP Spieler-App"
+
+#: http/classes/Core/ServerSlot.php:188
+msgid "ACswui Plugin"
+msgstr "ACswui Plugin"
+
+#: http/classes/Core/ServerSlot.php:188
+msgid "Settings for the ACswui plugin"
+msgstr "Einstellungen für das ACswui Plugin"
+
+#: http/classes/Core/HtmlContent.php:285
+msgid "Delete Column Entry"
+msgstr "Spalte Löschen"
+
+#: http/classes/Core/HtmlContent.php:286
+msgid "Not Delete Column Entry"
+msgstr "Spalte nicht Löschen"
+
+#: http/classes/Core/HtmlContent.php:304
+msgid "Delete Row Entry"
+msgstr "Zeile Löschen"
+
+#: http/classes/Core/HtmlContent.php:305
+msgid "Not Delete Row Entry"
+msgstr "Zeile nicht Löschen"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:22
+msgid "(AC) Heavy Fog"
+msgstr "(AC) Starker Nebel"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:23
+msgid "(AC) Light Fog"
+msgstr "(AC) Leichter Nebel"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:24
+msgid "(AC) Clear"
+msgstr "(AC) Klar"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:25
+msgid "(AC) Mid Clear"
+msgstr "(AC) Mäßig Klar"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:26
+msgid "(AC) Light Clouds"
+msgstr "(AC) Leichte Bewölkung"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:27
+msgid "(AC) Mid Clouds"
+msgstr "(AC) Mäßige Bewölkung"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:28
+msgid "(AC) Heavy Clouds"
+msgstr "(AC) Starke Bewölkung"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:31
+msgid "(CSP) Light Thunderstorm"
+msgstr "(CSP) Leichtes Gewitter"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:32
+msgid "(CSP) Thunderstorm"
+msgstr "(CS) Gewitter"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:33
+msgid "(CSP) Heavy Thunderstorm"
+msgstr "(CSP) Starkes Gewitter"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:34
+msgid "(CSP) Light Drizzle"
+msgstr "(CSP) Leichter Nieselregen"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:35
+msgid "(CSP) Drizzle"
+msgstr "(CSP) Nieselregen"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:36
+msgid "(CSP) Heavy Drizzle"
+msgstr "(CSP) Starker Nieselregen"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:37
+msgid "(CSP) Light Rain"
+msgstr "(CSP) Leichter Regen"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:38
+msgid "(CSP) Rain"
+msgstr "(CSP) Regen"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:39
+msgid "(CSP) Heavy Rain"
+msgstr "(CS) Starker Regen"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:40
+msgid "(CSP) Light Snow"
+msgstr "(CSP) Leichter Schnee"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:41
+msgid "(CSP) Snow"
+msgstr "(CSP) Schnee"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:42
+msgid "(CSP) Heavy Snow"
+msgstr "(CSP) Starker Schnee"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:43
+msgid "(CSP) Light Sleet"
+msgstr "(CSP) Graupeln"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:44
+msgid "(CSP) Sleet"
+msgstr "(CSP) Hagel"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:45
+msgid "(CSP) Heavy Sleet"
+msgstr "(CSP) Starker Hagel"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:46
+msgid "(CSP) Clear"
+msgstr "(CSP) Keine Bewölkung"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:47
+msgid "(CSP) Few Clear"
+msgstr "(CSP) Wenig Bewölkung"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:48
+msgid "(CSP) Scattered Clouds"
+msgstr "(CSP) Aufgelockert"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:49
+msgid "(CSP) Broken Clouds"
+msgstr "(CSP) Wechselnd Bewölkt"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:50
+msgid "(CSP) Overcast Clouds"
+msgstr "(CSP) Bewölkt"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:51
+msgid "(CSP) Fog"
+msgstr "(CSP) Nebel"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:52
+msgid "(CSP) Mist"
+msgstr "(CSP) Dunstig"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:53
+msgid "(CSP) Smoke"
+msgstr "(CSP) Rauch"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:54
+msgid "(CSP) Haze"
+msgstr "(CSP) Dunstig"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:55
+msgid "(CSP) Sand"
+msgstr "(CSP) Sand"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:56
+msgid "(CSP) Dust"
+msgstr "(CSP) Staub"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:57
+msgid "(CSP) Squalls"
+msgstr "(CSP) Sturm"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:58
+msgid "(CSP) Tornado"
+msgstr "(CSP) Tornado"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:59
+msgid "(CSP) Hurricane"
+msgstr "(CSP) Orkan"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:60
+msgid "(CSP) Cold"
+msgstr "(CSP) Kalt"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:61
+msgid "(CSP) Hot"
+msgstr "(CSP) Heiß"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:62
+msgid "(CSP) Windy"
+msgstr "(CSP) Windig"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:63
+msgid "(CSP) Hail"
+msgstr "(CSP) Prasseln"
+
+#: http/classes/Parameter/ParamSpecialWeatherGraphic.php:64
+msgid "(CSP) None"
+msgstr "(CSP) Nichts"
+
+#: http/classes/Parameter/ParamSpecialUserPrivacy.php:10
+msgid "Public"
+msgstr "Öffentlich"
+
+#: http/classes/Parameter/ParamSpecialUserPrivacy.php:11
+#, fuzzy
+msgid "Active Driver"
+msgstr "Aktive Fahrer"
+
+#: http/classes/Parameter/ParamSpecialUserPrivacy.php:12
+msgid "Community"
+msgstr "Community"
+
+#: http/classes/Parameter/ParamSpecialUserPrivacy.php:13
+msgid "Private"
+msgstr "Privat"
+
+#: http/classes/Parameter/ParamSpecialTyres.php:15
+msgid "Hard"
+msgstr "Hart"
+
+#: http/classes/Parameter/ParamSpecialTyres.php:16
+msgid "Intermediate"
+msgstr "Intermediates"
+
+#: http/classes/Parameter/ParamSpecialTyres.php:17
+msgid "Medium"
+msgstr "Medium"
+
+#: http/classes/Parameter/ParamSpecialTyres.php:18
+msgid "Soft"
+msgstr "Weich"
+
+#: http/classes/Parameter/ParamSpecialTyres.php:19
+msgid "Street"
+msgstr "Straße"
+
+#: http/classes/Parameter/ParamSpecialTyres.php:20
+msgid "Vintage"
+msgstr "Retro"
+
+#: http/classes/Parameter/Collection.php:251
+msgid "Value currently inherited from from base parameter"
+msgstr "Wert wird aktuell von Basisparemter übernommen"
+
+#: http/classes/Parameter/Collection.php:252
+msgid "Value currently defined locally"
+msgstr "Wert ist aktuell lokal definiert"
+
+#: http/classes/Parameter/Collection.php:262
+msgid "Hidden for derived parameters"
+msgstr "Versteckt für abeleitete Parameter"
+
+#: http/classes/Parameter/Collection.php:264
+msgid "Read-only for derived parameters"
+msgstr "Nur Lesbar für abgeleitete Parameter"
+
+#: http/classes/Parameter/Collection.php:266
+msgid "Derived parameters can change this value"
+msgstr "Abgeleitete Parameter können diesen Wert ändern."
+
+#: http/classes/Parameter/ParamSpecialUserTimezone.php:10
+#, fuzzy
+msgid "Server Time"
+msgstr "Server-Zeit"
+
+#: http/classes/Parameter/ParamSpecialPenaltyType.php:24
+#, fuzzy
+msgid "Drivetru"
+msgstr "Boxendurchfahrt"
+
+#: http/classes/Parameter/ParamSpecialPenaltyType.php:25
+msgid "Stop&amp;Go 1s"
+msgstr "Stop & Go 1s"
+
+#: http/classes/Parameter/ParamSpecialPenaltyType.php:26
+msgid "Stop&amp;Go 2s"
+msgstr "Stop & Go 2s"
+
+#: http/classes/Parameter/ParamSpecialPenaltyType.php:27
+msgid "Stop&amp;Go 3s"
+msgstr "Stop & Go 3s"
+
+#: http/classes/Parameter/ParamSpecialPenaltyType.php:28
+msgid "Stop&amp;Go 5s"
+msgstr "Stop & Go 5s"
+
+#: http/classes/Parameter/ParamSpecialPenaltyType.php:29
+msgid "Stop&amp;Go 10s"
+msgstr "Stop & Go 10s"
+
+#: http/classes/Parameter/ParamSpecialPenaltyType.php:30
+msgid "Stop&amp;Go 15s"
+msgstr "Stop & Go 15s"
+
+#: http/classes/Parameter/ParamSpecialPenaltyType.php:31
+msgid "Stop&amp;Go 20s"
+msgstr "Stop & Go 20s"
+
+#: http/classes/Parameter/ParamSpecialPenaltyType.php:32
+msgid "Stop&amp;Go 25s"
+msgstr "Stop & Go 25s"
+
+#: http/classes/Parameter/ParamSpecialPenaltyType.php:33
+msgid "Stop&amp;Go 30s"
+msgstr "Stop & Go 30s"
+
+#: http/classes/Parameter/ParamSpecialPenaltyType.php:36
+#, fuzzy
+msgid "Disqualify"
+msgstr "Disqualifizierung"
+
+#: http/classes/Parameter/ParamSpecialLocale.php:12
+msgid "auto detect"
+msgstr "Automatisch Erkennen"
+
+#: http/classes/DbEntry/ServerPreset.php:150
+#: http/classes/DbEntry/Weather.php:127
+msgid "Factory Default"
+msgstr "Werkseinstellung"
+
+#: http/classes/DbEntry/ServerPreset.php:169
+msgid "Root"
+msgstr "Basis"
+
+#: http/classes/DbEntry/ServerPreset.php:169
+msgid "Collection of server preset settings"
+msgstr "Sammlung von Einstellung für Server-Presets"
+
+#: http/classes/DbEntry/ServerPreset.php:176
+#: http/content/html/T_Settings/ACswui.php:11
+msgid "ACswui"
+msgstr "ACswui"
+
+#: http/classes/DbEntry/ServerPreset.php:176
+#, fuzzy
+msgid "General settings for the preset"
+msgstr "Allgemeine Einstellungen für das Preset"
+
+#: http/classes/DbEntry/ServerPreset.php:177
+#, fuzzy
+msgid "Name of the preset"
+msgstr "Name des Presets"
+
+#: http/classes/DbEntry/ServerPreset.php:178
+msgid "Preseved Kick"
+msgstr "Reservierungs-Kick"
+
+#: http/classes/DbEntry/ServerPreset.php:178
+msgid ""
+"Kick drivers if they join with a car from the entry list that is preserved "
+"for other drivers."
+msgstr ""
+"Fahrer:innen vom Server stoßen, die ein Fahrzeug belegen, dass für andere Fahrer:innen reserviert ist."
+
+#: http/classes/DbEntry/ServerPreset.php:179
+msgid "Users"
+msgstr "Benutzer"
+
+#: http/classes/DbEntry/ServerPreset.php:179
+msgid "Which user groups are allowed to use this preset"
+msgstr "Welche Benutzergruppen dürfen dieses Preset nutzen."
+
+#: http/classes/DbEntry/ServerPreset.php:187
+#, fuzzy
+msgid "AC Server"
+msgstr "AC Server"
+
+#: http/classes/DbEntry/ServerPreset.php:187
+msgid "Assetto Corsa Server Sesstings"
+msgstr "Assetto Corsa Server Einstellungen"
+
+#: http/classes/DbEntry/ServerPreset.php:193
+#: http/classes/DbEntry/ServerPreset.php:394
+#: http/classes/DbEntry/ServerPreset.php:485
+#, fuzzy
+msgid "General"
+msgstr "Generell"
+
+#: http/classes/DbEntry/ServerPreset.php:193
+#, fuzzy
+msgid "General settings for the AC server"
+msgstr "Allgemeine Einstellungen für den AC-Server"
+
+#: http/classes/DbEntry/ServerPreset.php:196
+msgid "Pickup Mode"
+msgstr "Pickup Modus"
+
+#: http/classes/DbEntry/ServerPreset.php:196
+msgid ""
+"If 0 the server start in booking mode (do not use it). Warning: in pickup "
+"mode you have to list only a circuit under TRACK and you need to list a "
+"least one car in the entry_list"
+msgstr ""
+"Wenn '0' startet der Server im 'Booking' Modus (nicht verwenden)."
+
+#: http/classes/DbEntry/ServerPreset.php:197
+msgid "Locked Entries"
+msgstr "Fixierte Einträge"
+
+#: http/classes/DbEntry/ServerPreset.php:197
+msgid ""
+"same as in booking mode, only players already included in the entry list can "
+"join the server (password not needed)."
+msgstr ""
+"Das gleiche wie im 'Booking Mode', nur Fahrer:innen die bereits in der Fahrerliste "
+"stehen kommen auf den Server (Password wird nicht benötigt)"
+
+#: http/classes/DbEntry/ServerPreset.php:198
+msgid "Legal Tyres"
+msgstr "Erlaubte Reifen"
+
+#: http/classes/DbEntry/ServerPreset.php:198
+msgid ""
+"List of the tyre's that will be allowed in the server (unselect all to allow "
+"all)."
+msgstr ""
+"Liste an Reifentypen, die zu fahren erlaubt sind "
+"(Keinen auswählen um alle zu erlauben)."
+
+#: http/classes/DbEntry/ServerPreset.php:199
+msgid "Result Screen Time"
+msgstr "Zeit Ergebnisanzeige"
+
+#: http/classes/DbEntry/ServerPreset.php:199
+msgid "seconds of result screen between racing sessions."
+msgstr "Zeit (Sekunden) zwischen den Sessions um die Ergebnisse anzuzeigen."
+
+#: http/classes/DbEntry/ServerPreset.php:204
+#: http/content/html/W_Sessions/SessionOverview.php:196
 msgid "Environment"
 msgstr "Umgebung"
 
-#: http/contents/zm_session/history.php:257
-#: http/contents/za_server/session_history.php:248
-msgid "Other Car"
-msgstr "Anderes Auto"
+#: http/classes/DbEntry/ServerPreset.php:205
+#, fuzzy
+msgid "Session Start Time"
+msgstr "Session Startzeit"
 
-#: http/contents/zm_session/history.php:288
-#: http/contents/za_server/session_history.php:279
-msgid "Fastest Laps"
-msgstr "Schnellste Runde"
+#: http/classes/DbEntry/ServerPreset.php:205
+msgid ""
+"Time at when the session shall start (vanilla AC will clip to the range "
+"08:00 .. 18:00, only CSP weather can go beyond)"
+msgstr ""
+"Zeit wann die Session beginne soll."
+"Original Assetto Corsa begrenzt die Zeit auf 8Uhr bis 18Uhr."
+"Nur mit CSP-Wetter kann man diese Begrenzung überschreiten."
 
-#: http/contents/zm_session/history.php:294
-#: http/contents/zm_session/history.php:373
-#: http/contents/zm_session/overview.php:119
-#: http/contents/za_server/session_history.php:285
-#: http/contents/za_server/session_history.php:364
-msgid "Lap"
-msgstr "Runde"
+#: http/classes/DbEntry/ServerPreset.php:206
+msgid "Time Multiplier"
+msgstr "Zeitmultiplikator"
 
-#: http/contents/zm_session/history.php:339
-#: http/contents/za_server/session_history.php:330
-msgid "Other Driver"
-msgstr "Anderer Fahrer"
+#: http/classes/DbEntry/ServerPreset.php:206
+msgid "multiplier for the time of day"
+msgstr "Multiplikator für das verstreichen der Zeit in der Session"
 
-#: http/contents/zm_session/history.php:340
-#: http/contents/za_server/session_history.php:331
-msgid "Speed"
-msgstr "Geschwindigkeit"
+#: http/classes/DbEntry/ServerPreset.php:211
+msgid "Voting"
+msgstr "Abstimmung"
 
-#: http/contents/zm_session/history.php:341
-#: http/contents/za_server/session_history.php:332
-msgid "Timestamp"
-msgstr "Zeitstempel"
+#: http/classes/DbEntry/ServerPreset.php:212
+msgid "Kick Quorum"
+msgstr "Kick Quorum"
 
-#: http/contents/zm_session/history.php:370
-#: http/contents/za_server/session_history.php:361
-msgid "All Laps"
-msgstr "Alle Runden"
+#: http/classes/DbEntry/ServerPreset.php:212
+msgid "Percentage that is required for the kick vote to pass"
+msgstr "Prozentsatz, der nötig ist um andere Fahrer:innen vom Server zu stoßen."
 
-#: http/contents/zm_session/history.php:373
-#: http/contents/za_server/session_history.php:364
-msgid "Lap Id"
-msgstr "Runden-ID"
+#: http/classes/DbEntry/ServerPreset.php:215
+msgid "Blacklist Mode"
+msgstr "Sperrlisten Modus"
 
-#: http/contents/zm_session/history.php:466
-#: http/contents/za_server/session_history.php:457
-msgid "Minutes"
-msgstr "Minuten"
+#: http/classes/DbEntry/ServerPreset.php:215
+msgid ""
+"0 = normal kick, kicked player can rejoin; 1 = kicked player cannot rejoin "
+"until server restart; 2 = kick player and add to blacklist.txt, kicked "
+"player can not rejoin unless removed from blacklist (Better to use ban_id "
+"command rather than set this)."
+msgstr ""
+"'Neu Verbinden' = Fahrer:in kann gleich wieder auf den Server zurück kommen "
+"'Server Neustart' = Fahrer:in kann erst nach Server Neustart zurück kommen"
 
-#: http/contents/zm_session/history.php:605
-#: http/contents/za_server/session_history.php:593
-msgid "Laptime Distribution"
-msgstr "Rundenzeit Verteilung"
+#: http/classes/DbEntry/ServerPreset.php:216
+msgid "Rejoin"
+msgstr "Neu Verbinden"
 
-#: http/contents/zm_session/control.php:7
-msgid "Control"
-msgstr "Kontrolle"
+#: http/classes/DbEntry/ServerPreset.php:217
+#, fuzzy
+msgid "Server Restart"
+msgstr "Server Neustart"
 
-#: http/contents/zm_session/control.php:148
-msgid "Stop Server"
-msgstr "Server Anhalten"
+#: http/classes/DbEntry/ServerPreset.php:221
+msgid "Voting Quorum"
+msgstr "Quorum"
 
-#: http/contents/zm_session/control.php:152
-msgid "Kill Server"
-msgstr "Server Abbrechen"
+#: http/classes/DbEntry/ServerPreset.php:221
+msgid "Percentage that is required for the session vote to pass"
+msgstr "Prozentsatz der nötog ist, für eine erfolgreiche Abstimmung"
 
-#: http/contents/zm_session/control.php:203
-msgid "Start Server"
-msgstr "Server Starten"
+#: http/classes/DbEntry/ServerPreset.php:224
+#, fuzzy
+msgid "Vote Duration"
+msgstr "Dauer"
 
-#: http/contents/zm_session/overview.php:9
-msgid "Overview"
-msgstr "Übersicht"
+#: http/classes/DbEntry/ServerPreset.php:224
+msgid "Vote length in seconds"
+msgstr "Dauer der Abstimmung in Sekunden"
 
-#: http/contents/zm_session/overview.php:115
-msgid "Leaderboard"
-msgstr "Führungsliste"
+#: http/classes/DbEntry/ServerPreset.php:229
+#: http/classes/DbEntry/Weather.php:146
+msgid "Weather"
+msgstr "Wetter"
 
-#: http/contents/za_server/cars.php:8
-msgid "Cars"
-msgstr "Fahrzeuge"
+#: http/classes/DbEntry/ServerPreset.php:230
+#: http/content/html/T_Settings/Weathers.php:12
+msgid "Weathers"
+msgstr "Wetter"
 
-#: http/contents/za_server/session_history.php:12
+#: http/classes/DbEntry/ServerPreset.php:230
+msgid "Select which weathers shall be used on the server"
+msgstr "Wähle welche Wetter auf dem Server verwendet werden sollen"
+
+#: http/classes/DbEntry/ServerPreset.php:236
+#: http/content/html/W_Sessions.php:10
 msgid "Sessions"
 msgstr "Sessions"
 
-#: http/contents/za_server/presets.php:10
-msgid "Presets"
-msgstr "Presets"
+#: http/classes/DbEntry/ServerPreset.php:236
+#, fuzzy
+msgid "Session Settings"
+msgstr "Session Einstellungen"
 
-#: http/contents/za_server/presets.php:122
-msgid "Save Preset"
-msgstr "Preset Speichern"
+#: http/classes/DbEntry/ServerPreset.php:239
+msgid "Booking"
+msgstr "Reservierung"
 
-#: http/contents/za_server/presets.php:124
-msgid "Save As New Preset"
-msgstr "Als neues Preset speichern"
+#: http/classes/DbEntry/ServerPreset.php:239
+msgid "Settings for Booking Session"
+msgstr "Einstellungen für die Reservierung"
 
-#: http/contents/za_server/presets.php:128
-msgid "Delete this preset"
-msgstr "Diese Preset löschen"
+#: http/classes/DbEntry/ServerPreset.php:240
+#: http/classes/DbEntry/ServerPreset.php:247
+#: http/classes/DbEntry/ServerPreset.php:258
+#: http/classes/DbEntry/ServerPreset.php:272
+msgid "Name of the session"
+msgstr "Name der Session"
 
-#: http/contents/za_server/test.php:6
-msgid "Test"
-msgstr "Test"
+#: http/classes/DbEntry/ServerPreset.php:241
+#: http/classes/DbEntry/ServerPreset.php:248
+#: http/classes/DbEntry/ServerPreset.php:259
+#: http/classes/DbEntry/ServerPreset.php:276
+msgid "Time"
+msgstr "Zeit"
 
-#: http/contents/aa_user.php:6
-msgid "User"
-msgstr "Benutzer"
+#: http/classes/DbEntry/ServerPreset.php:241
+#: http/classes/DbEntry/ServerPreset.php:248
+#: http/classes/DbEntry/ServerPreset.php:259
+msgid "Duration of session in Minutes"
+msgstr "Dauer der Session in Minuten"
 
-#: http/contents/aa_user.php:32
-msgid "logout"
-msgstr "logout"
+#: http/classes/DbEntry/ServerPreset.php:246
+msgid "Settings for Practice Session"
+msgstr "Einstellungen für die Trainings-Session"
 
-#: http/contents/dd_championship.php:6
-msgid "Championship"
-msgstr "Meisterschaft"
+#: http/classes/DbEntry/ServerPreset.php:251
+#: http/classes/DbEntry/ServerPreset.php:262
+#: http/classes/DbEntry/ServerPreset.php:282
+msgid "Is Open"
+msgstr "Zugang"
 
-#: http/contents/zz_admin.php:6
+#: http/classes/DbEntry/ServerPreset.php:251
+#: http/classes/DbEntry/ServerPreset.php:262
+#: http/classes/DbEntry/ServerPreset.php:282
+msgid "Either Session can be joined"
+msgstr "Ob Fahrer:innen der Session beitreten können"
+
+#: http/classes/DbEntry/ServerPreset.php:252
+#: http/classes/DbEntry/ServerPreset.php:263
+#: http/classes/DbEntry/ServerPreset.php:283
+msgid "No Join"
+msgstr "Kein Zutritt"
+
+#: http/classes/DbEntry/ServerPreset.php:253
+#: http/classes/DbEntry/ServerPreset.php:264
+#: http/classes/DbEntry/ServerPreset.php:284
+msgid "Free Join"
+msgstr "Freier Zutritt"
+
+#: http/classes/DbEntry/ServerPreset.php:257
+msgid "Settings for Qualifying Session"
+msgstr "Einstellunken für die Qualifikations-Session"
+
+#: http/classes/DbEntry/ServerPreset.php:266
+msgid "Wait"
+msgstr "Warten"
+
+#: http/classes/DbEntry/ServerPreset.php:266
+#, php-format
+msgid ""
+"this is the factor to calculate the remaining time in a qualify session "
+"after the session is ended: 120 means that 120% of the session fastest lap "
+"remains to end the current lap."
+msgstr ""
+"Dies ist ein Faktor um den die Qualifikation maximal verlängert werden darf um die aktuelle Runde von Fahrer:innen zu beenden. "
+"Definiert in Prozent der bisher besten Rundenzeit."
+
+#: http/classes/DbEntry/ServerPreset.php:271
+msgid "Settings for Race Session"
+msgstr "Einstellungen für die Renn-Session"
+
+#: http/classes/DbEntry/ServerPreset.php:273
+#: http/content/html/W_Sessions/SessionOverview.php:171
+#: http/content/html/W_Sessions/SessionOverview.php:194
+msgid "Laps"
+msgstr "Runden"
+
+#: http/classes/DbEntry/ServerPreset.php:273
+msgid "Amount of Laps for the race"
+msgstr "Dauer des Rennens in Runden"
+
+#: http/classes/DbEntry/ServerPreset.php:276
+msgid "Amount of Minutes for the race (only if Laps=0)"
+msgstr "Dauer des Rennens in Minuten (nur wenn Runden=0)"
+
+#: http/classes/DbEntry/ServerPreset.php:279
+#: http/classes/DbEntry/ServerPreset.php:734
+#, fuzzy
+msgid "Wait Time"
+msgstr "Wartezeit"
+
+#: http/classes/DbEntry/ServerPreset.php:279
+msgid "Seconds before start of the Session"
+msgstr "Wartezeit in Sekunden vor dem Start der Session"
+
+#: http/classes/DbEntry/ServerPreset.php:285
+msgid "Join 20s"
+msgstr "Zugang 20s"
+
+#: http/classes/DbEntry/ServerPreset.php:287
+#, fuzzy
+msgid "Over Time"
+msgstr "Nachfahrzeit"
+
+#: http/classes/DbEntry/ServerPreset.php:287
+msgid ""
+"Time remaining in seconds to finish the race from the moment the first one "
+"passes on the finish line"
+msgstr ""
+"Maximale Zeit (in Sekunden) um das Rennen zu beenden, nachdem der Führende die Ziellinie überfahren hat."
+
+#: http/classes/DbEntry/ServerPreset.php:290
+msgid "Pit Window Open"
+msgstr "Boxenfenster Öffnet"
+
+#: http/classes/DbEntry/ServerPreset.php:290
+msgid "Pit window open at lap/minute (depends on the race mode)"
+msgstr "Wann das Boxenfenster öffnet (Runde/Minute)"
+
+#: http/classes/DbEntry/ServerPreset.php:293
+msgid "Pit Window Close"
+msgstr "Boxenfenster Schließt"
+
+#: http/classes/DbEntry/ServerPreset.php:293
+msgid "Pit window closes at lap/minute (depends on the race mode)"
+msgstr "Wann das Boxenfenster schließt (Runde/Minute)"
+
+#: http/classes/DbEntry/ServerPreset.php:296
+msgid "Reversed Grid"
+msgstr "Invertierter Start"
+
+#: http/classes/DbEntry/ServerPreset.php:296
+msgid ""
+"0 = no additional race, 1toX = only those position will be reversed for the "
+"next race, -1 = all the position will be reversed (Retired players will be "
+"on the last positions)"
+msgstr ""
+"'Nein' - Kein zusätzliches Rennen mit invertiertem Start"
+"'Alle' - Alle Platze werden invertiert (außer DNF Fahrer:innen)"
+"1..20 - Nur die ersten x-Positionen werden invertiert."
+
+
+#: http/classes/DbEntry/ServerPreset.php:297
+#: http/classes/DbEntry/ServerPreset.php:345
+msgid "No"
+msgstr "Nein"
+
+#: http/classes/DbEntry/ServerPreset.php:298
+msgid "All"
+msgstr "Alle"
+
+#: http/classes/DbEntry/ServerPreset.php:299
+#, fuzzy
+msgid "Positions"
+msgstr "Positionen"
+
+#: http/classes/DbEntry/ServerPreset.php:301
+msgid "Extra Lap"
+msgstr "Extra Runde"
+
+#: http/classes/DbEntry/ServerPreset.php:301
+msgid ""
+"if it's a timed race, with 1 the race will not end when the time is over and "
+"the leader crosses the line, but the latter will be forced to drive another "
+"extra lap."
+msgstr ""
+"Nach abgelaufener Zeit eine weitere Runde fahren bis zur Ziellinie."
+
+#: http/classes/DbEntry/ServerPreset.php:307
+msgid "Realism"
+msgstr "Realismus"
+
+#: http/classes/DbEntry/ServerPreset.php:307
+#, fuzzy
+msgid "Realism Settings"
+msgstr "Realismus Einstellungen"
+
+#: http/classes/DbEntry/ServerPreset.php:310
+msgid "Penalties"
+msgstr "Strafen"
+
+#: http/classes/DbEntry/ServerPreset.php:311
+msgid "Race Gas Penalty"
+msgstr "Race Gas Penalty"
+# WTF ???
+
+#: http/classes/DbEntry/ServerPreset.php:311
+msgid ""
+"0  any cut will be penalized with the gas cut message; 1 no penalization "
+"will be forced, but cuts will be saved in the race result json."
+msgstr ""
+"Wenn aktiv, wird jedes Verlassen der Streckenbegrenzung bestraft"
+
+#: http/classes/DbEntry/ServerPreset.php:312
+msgid "Max Contacts"
+msgstr "Maximale Kontakte"
+
+#: http/classes/DbEntry/ServerPreset.php:312
+msgid "If a driver has more contacts per kilometer he will be reset to pit"
+msgstr "Haben Fahrer:innen mehr Kontakte pro kilometer, werden sie an die Box zurück gesetzt"
+
+#: http/classes/DbEntry/ServerPreset.php:315
+#, fuzzy
+msgid "Start Rule"
+msgstr "Startregel"
+
+#: http/classes/DbEntry/ServerPreset.php:315
+msgid ""
+"0 is car locked until start;   1 is teleport   ; 2 is drivethru (if race has "
+"3 or less laps then the Teleport penalty is enabled)"
+msgstr ""
+"'Gesperrt' - Fahrzeuge sind gesperrt bis zum Rennstart"
+"'Teleportieren' - Fahrer:innen werden bei Frühstart an die Box zurück gesetzt"
+"'Drivetru' - Fahrer:innen müssen bei Frühstart einmal durch die Box fahren"
+
+
+#: http/classes/DbEntry/ServerPreset.php:316
+msgid "Locked"
+msgstr "Gesperrt"
+
+#: http/classes/DbEntry/ServerPreset.php:317
+#: http/classes/DbEntry/ServerPreset.php:470
+msgid "Teleport"
+msgstr "Teleportieren"
+
+#: http/classes/DbEntry/ServerPreset.php:318
+#, fuzzy
+msgid "Drivethru"
+msgstr "Drivetru"
+
+#: http/classes/DbEntry/ServerPreset.php:320
+msgid "Allowed Tyres Out"
+msgstr "Streckenbegrenzung"
+
+#: http/classes/DbEntry/ServerPreset.php:320
+msgid "Amount of tyres that are allowed to cross the driving line"
+msgstr "Anzahl der Reifen, die sich außerhalb der Streckenbegrenzung befinden dürfen"
+
+#: http/classes/DbEntry/ServerPreset.php:325
+msgid "Driving Aids"
+msgstr "Fahrhilfen"
+
+#: http/classes/DbEntry/ServerPreset.php:325
+msgid "Allowance of systems that support drivability"
+msgstr "Unterstüzung zur Fahrbarkeit"
+
+#: http/classes/DbEntry/ServerPreset.php:326
+msgid "ABS"
+msgstr "ABS"
+
+#: http/classes/DbEntry/ServerPreset.php:326
+msgid "Anti-Lock Braking System"
+msgstr "Antiblockiersystem"
+
+#: http/classes/DbEntry/ServerPreset.php:327
+#: http/classes/DbEntry/ServerPreset.php:332
+#: http/classes/DbEntry/ServerPreset.php:337
+#: http/classes/DbEntry/ServerPreset.php:341
+msgid "Disabled"
+msgstr "Deaktiviert"
+
+#: http/classes/DbEntry/ServerPreset.php:328
+#: http/classes/DbEntry/ServerPreset.php:333
+msgid "Car Dependent"
+msgstr "Fahrzeugabhängig"
+
+#: http/classes/DbEntry/ServerPreset.php:329
+#: http/classes/DbEntry/ServerPreset.php:334
+msgid "Enabled"
+msgstr "Aktiviert"
+
+#: http/classes/DbEntry/ServerPreset.php:331
+msgid "TC"
+msgstr "ASR"
+
+#: http/classes/DbEntry/ServerPreset.php:331
+#, fuzzy
+msgid "Traction Control"
+msgstr "Antriebsschlupfregelung"
+
+#: http/classes/DbEntry/ServerPreset.php:336
+msgid "ESC"
+msgstr "ESP"
+
+#: http/classes/DbEntry/ServerPreset.php:336
+msgid "Electronic Stability Control"
+msgstr "Elektronisches Stabilitätsprogramm"
+
+#: http/classes/DbEntry/ServerPreset.php:338
+#: http/classes/DbEntry/ServerPreset.php:342
+msgid "Allow"
+msgstr "Erlauben"
+
+#: http/classes/DbEntry/ServerPreset.php:340
+msgid "Automatic Clutch"
+msgstr "Automatische Kupplung"
+
+#: http/classes/DbEntry/ServerPreset.php:340
+msgid "Automatic Clutch Assist"
+msgstr "Automatische Kupplung"
+
+#: http/classes/DbEntry/ServerPreset.php:344
+msgid "Tyre Blankets"
+msgstr "Reifen Heizdecken"
+
+#: http/classes/DbEntry/ServerPreset.php:344
+msgid ""
+"At the start of the session or after the pitstop the tyre will have the the "
+"optimal temperature"
+msgstr "Wenn aktiv, haben die Reifen beim Start bereits die optimale Temperatur"
+
+#: http/classes/DbEntry/ServerPreset.php:346
+msgid "Yes"
+msgstr "Ja"
+
+#: http/classes/DbEntry/ServerPreset.php:348
+msgid "Virtual Mirror"
+msgstr "Virtueller Spiegel"
+
+#: http/classes/DbEntry/ServerPreset.php:348
+msgid "With this setting the virtual mirror can be forced for every driver."
+msgstr "Mit dieser Einstellung kann der virtuelle Spiegel erzwungen werden"
+
+#: http/classes/DbEntry/ServerPreset.php:349
+msgid "Optional"
+msgstr "Optional"
+
+#: http/classes/DbEntry/ServerPreset.php:350
+msgid "Forced"
+msgstr "Erzwungen"
+
+#: http/classes/DbEntry/ServerPreset.php:354
+msgid "Physics"
+msgstr "Physik"
+
+#: http/classes/DbEntry/ServerPreset.php:354
+msgid "Adjustment constants of physics"
+msgstr "Physikalische Einstellungen"
+
+#: http/classes/DbEntry/ServerPreset.php:355
+msgid "Fuel Rate"
+msgstr "Spritverbrauch"
+
+#: http/classes/DbEntry/ServerPreset.php:355
+msgid "Fuel usage from 0 (no fuel usage) to XXX (100 is the realistic one)"
+msgstr "Spritverbrauch in Prozent (100% entspricht dem realistischen Verbrauch)"
+
+#: http/classes/DbEntry/ServerPreset.php:358
+msgid "Damage Multiplier"
+msgstr "Schaden"
+
+#: http/classes/DbEntry/ServerPreset.php:358
+msgid "Damage from 0 (no damage) to 100 (full damage)"
+msgstr "Schaden in Prozent (100% entspricht dem realistischen Schaden)"
+
+#: http/classes/DbEntry/ServerPreset.php:361
+msgid "Tyre Wear Rate"
+msgstr "Reifenverschleiß"
+
+#: http/classes/DbEntry/ServerPreset.php:361
+msgid "Tyre wear from 0 (no tyre wear) to XXX (100 is the realistic one)"
+msgstr "Reifenverscleiß in Prozent (100% entspricht realistischem Verschleiß)"
+
+#: http/classes/DbEntry/ServerPreset.php:366
+#, fuzzy
+msgid "Dynamic Track"
+msgstr "Dynamischer Grip"
+
+#: http/classes/DbEntry/ServerPreset.php:366
+msgid "Dynamic Grip Level of the Track"
+msgstr "Dynamische Traktionsbedingungen auf der Strecke"
+
+#: http/classes/DbEntry/ServerPreset.php:367
+#, fuzzy
+msgid "Start Grip"
+msgstr "Beginn"
+
+#: http/classes/DbEntry/ServerPreset.php:367
+msgid "Amount of Grip at session start"
+msgstr "Traktion zu beginn der Session"
+
+#: http/classes/DbEntry/ServerPreset.php:370
+msgid "Randomness"
+msgstr "Zufälligkeit"
+
+#: http/classes/DbEntry/ServerPreset.php:370
+msgid "Level of randomness added to the start grip"
+msgstr "Zufällige Abweichung der Traktion zu Beginn der Session"
+
+#: http/classes/DbEntry/ServerPreset.php:373
+msgid "Lap Gain"
+msgstr "Anstieg"
+
+#: http/classes/DbEntry/ServerPreset.php:373
+msgid "How many laps are needed to increase the grip by 1%"
+msgstr "Die Anzahl der gefahrenen Runden um die Traktion um 1% zu erhöhen."
+
+#: http/classes/DbEntry/ServerPreset.php:376
+#, fuzzy
+msgid "Session Transfer"
+msgstr "Session Transfer"
+
+#: http/classes/DbEntry/ServerPreset.php:376
+msgid ""
+"How much of the gained grip is to be added to the next session 100 -> all "
+"the gained grip. Example: difference between starting (90) and ending (96) "
+"grip in the session = 6%, with session_transfer = 50 then the next session "
+"is going to start with 93."
+msgstr ""
+"Wieviel des Zugewinns an Traktion zur nächsten Session übernommen werden soll."
+"Beispiel: Traktionsgewinn von Beginn bei 90% und zu Ende 96% (6& Zuwachs)."
+"Bei 50% Transfer wird die nächste Session mit 93% starten."
+
+#: http/classes/DbEntry/ServerPreset.php:385
+msgid "Real Penalty"
+msgstr "Real Penalty"
+
+#: http/classes/DbEntry/ServerPreset.php:385
+msgid "Real Penalty Plugin Sesstings"
+msgstr "eal Penalty Plugin Sesstings"
+
+#: http/classes/DbEntry/ServerPreset.php:391
+#, fuzzy
+msgid "AC Settings"
+msgstr "Asessto Corsa Einstellungen"
+
+#: http/classes/DbEntry/ServerPreset.php:395
+msgid "Cockpit Camera"
+msgstr "Cockpit Kamera"
+
+#: http/classes/DbEntry/ServerPreset.php:396
+msgid "Weather Checksum"
+msgstr "Wetter Prüfsumme"
+
+#: http/classes/DbEntry/ServerPreset.php:397
+msgid "SOL Mandatory"
+msgstr "SOL Erforderlich"
+
+#: http/classes/DbEntry/ServerPreset.php:398
+msgid "CSP Mandatory"
+msgstr "CSP Erforderlich"
+
+#: http/classes/DbEntry/ServerPreset.php:401
+msgid "Safety Car"
+msgstr "Safety Car"
+
+#: http/classes/DbEntry/ServerPreset.php:402
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:11
+#, fuzzy
+msgid "Car Model"
+msgstr "Fahrzeug"
+
+#: http/classes/DbEntry/ServerPreset.php:402
+msgid "Car model of safety car (folder name in assettocorsa/content/cars)"
+msgstr "Fahrzeugmodell für das Safetycar (Ordnername in assettocorsa/content/cars)"
+
+#: http/classes/DbEntry/ServerPreset.php:403
+msgid "Sart Behind SC"
+msgstr "Start Hinter SC"
+
+#: http/classes/DbEntry/ServerPreset.php:404
+msgid "Normalized Light Off Position"
+msgstr "Normierte Licht-Aus Position"
+
+#: http/classes/DbEntry/ServerPreset.php:404
+msgid ""
+"Rolling start: normalized position (rance 0-1 - 0 = start of first lap, 1 = "
+"end of first lap) of the first driver during rolling start when the app "
+"switchs off the SC signal."
+msgstr ""
+# WTF???
+
+#: http/classes/DbEntry/ServerPreset.php:407
+msgid "Normalized Start Position"
+msgstr "Normalisierte Startposition"
+
+#: http/classes/DbEntry/ServerPreset.php:407
+msgid ""
+"Rolling start: normalized position (racege 0 - 1.xx - 0 = start of first "
+"lap, 1 = end of first lap, >1 during second lap) of the first driver during "
+"rolling start when the app switchs on the red signal\n"
+"START_NORMALIZED_POSITION must be greater than LIGHT_OFF_NORMALIZED_POSITION"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:410
+msgid "Green Light Delay"
+msgstr "Grünes-Licht-Verzögerung"
+
+#: http/classes/DbEntry/ServerPreset.php:410
+msgid ""
+"Rolling start: delay of the green light after red signal (seconds). Default "
+"2.5"
+msgstr ""
+"Bei fliegendem Start: Verzögerung nach dem Roten Licht, bis Grün kommt"
+
+#: http/classes/DbEntry/ServerPreset.php:415
+msgid "No Penalty"
+msgstr "Keine Strafe"
+
+#: http/classes/DbEntry/ServerPreset.php:416
+#: http/classes/DbEntry/ServerPreset.php:421
+msgid "GUIDs"
+msgstr "GUIDs"
+
+#: http/classes/DbEntry/ServerPreset.php:416
+msgid ""
+"List of the Steam GUIDs (seperated by a semicolon) that can connect to the "
+"server without the app and sol (for example \"Race Direction\" or for \"Live"
+"\") "
+msgstr ""
+"Liste von Steam GUIDs (getrennt durch Semikolon), die zum Server verbinden können,"
+"ohne RP App und SOL installiert zu haben."
+"Zum Beispiel für Rennleitung oder Live-Aufnahmen"
+
+#: http/classes/DbEntry/ServerPreset.php:417
+msgid "Cars"
+msgstr "Fahrzeuge"
+
+#: http/classes/DbEntry/ServerPreset.php:417
+msgid ""
+"List of car models (seperated by a semicolon) wihtout penalties and checks.\n"
+"Example: Cars=car_name1;car_name2,car_name3"
+msgstr ""
+"Liste and Fahrzeugmodellen (gentrennt durch Semikolon), ohne Strafen und Prüfungen."
+
+#: http/classes/DbEntry/ServerPreset.php:420
 msgid "Admin"
 msgstr "Administrator"
 
-#: http/contents/za_server.php:6
-msgid "Server"
-msgstr "Server"
+#: http/classes/DbEntry/ServerPreset.php:421
+msgid ""
+"list of the Steam GUIDs. This drivers can send \"commands\" to the server "
+"via chat"
+msgstr ""
+"Liste an Steam GUIDs, welche Kommandos an den Server senden dürfen (im Chat)"
 
-#: http/contents/zm_session.php:12
+#: http/classes/DbEntry/ServerPreset.php:424
+msgid "Helicorsa"
+msgstr "Helicorsa"
+
+#: http/classes/DbEntry/ServerPreset.php:425
+msgid "Mandatory"
+msgstr "Erforderlich"
+
+#: http/classes/DbEntry/ServerPreset.php:426
+#, fuzzy
+msgid "Distance Threshold"
+msgstr "Entfernungsschwelle"
+
+#: http/classes/DbEntry/ServerPreset.php:426
+msgid "Distance threshold: How far away are the cars we paint?"
+msgstr "Wie weit weg werden Autos dargestellt"
+
+#: http/classes/DbEntry/ServerPreset.php:429
+msgid "World Zoom"
+msgstr "Welt Zoom"
+
+#: http/classes/DbEntry/ServerPreset.php:429
+msgid " world coordinates zoom or how big the bars are"
+msgstr "Welt Koordinaten Zoom - oder, wie groß die Autos sein sollen."
+
+#: http/classes/DbEntry/ServerPreset.php:432
+msgid "Opacity Threshold"
+msgstr "Transparenz Schwelle"
+
+#: http/classes/DbEntry/ServerPreset.php:432
+msgid ""
+"Opacity threshold: At wich distance (in meters) should the cars start to "
+"fade?"
+msgstr "Bei welcher Distanz (in Metern) die Autos ausblenden sollen"
+
+#: http/classes/DbEntry/ServerPreset.php:435
+msgid "Front Fadeout Arc"
+msgstr "Vorderer Ausblendebogen"
+
+#: http/classes/DbEntry/ServerPreset.php:435
+msgid ""
+"fade out cars in front of the player in an arc of X degrees (0 to disable)"
+msgstr "Fahrzeuge vor Fahrer:innen werden in einem Winkel von X-Grad ausgeblendet ('0' zum deaktivieren)"
+
+#: http/classes/DbEntry/ServerPreset.php:438
+msgid "Front Fade Angle"
+msgstr "Vorderer Ausblendewinkel"
+
+#: http/classes/DbEntry/ServerPreset.php:438
+msgid ""
+"if a car in front is faded out, how soft should it fade? (again in degrees, "
+"0 to disable = on/off, 10? is default and quite nice)"
+msgstr ""
+"Wenn ein vorfahrendes Fahrzeug ausgeblendet wird, wie weich soll das geschehen? "
+"(Wieder in Grad, '0' zum deaktivieren)"
+
+#: http/classes/DbEntry/ServerPreset.php:441
+msgid "Car Length"
+msgstr "Fahrzeuglänge"
+
+#: http/classes/DbEntry/ServerPreset.php:441
+#: http/classes/DbEntry/ServerPreset.php:444
+msgid ""
+"Real Penalty reads the size of the cars from collider. Only if enable to do "
+"it because some error it use this option. Default 4.3/1.8"
+msgstr ""
+"Real Penalty erkennt die Fahrzeuggröße am 'collider'. "
+# WTF??
+
+#: http/classes/DbEntry/ServerPreset.php:444
+msgid "Car Width"
+msgstr "Fahrzeugbreite"
+
+#: http/classes/DbEntry/ServerPreset.php:449
+#, fuzzy
+msgid "Driver Swap"
+msgstr "Fahrerwechsel"
+
+#: http/classes/DbEntry/ServerPreset.php:450
+#: http/classes/DbEntry/ServerPreset.php:501
+msgid "Enable"
+msgstr "Aktiveren"
+
+#: http/classes/DbEntry/ServerPreset.php:451
+#, fuzzy
+msgid "Min Time"
+msgstr "Minimale Zeit"
+
+#: http/classes/DbEntry/ServerPreset.php:451
+msgid ""
+"Min swap time (pit lane time) in seconds. Wihtout this value the swap does "
+"not work! No default"
+msgstr ""
+"Minimale Wechselzeit (Boxenzeit) in Sekunden. "
+"Ohne diese Zeit funktioniert der Wechsel nicht."
+
+#: http/classes/DbEntry/ServerPreset.php:454
+msgid "Min Count"
+msgstr "Minimale Anzahl"
+
+#: http/classes/DbEntry/ServerPreset.php:454
+msgid ""
+"min mandatory swap count for every team until the end of the race . Wihtout "
+"this value the swap does not work! Zero is also ok! No default"
+msgstr ""
+"Minimal notwendige Fahrerwechsel für jedes Team bis zum Ende des Rennens."
+"Ohne diesen Wert funktioniert der Fahrerwechsel nicht."
+"Null ist ein gültiger Wert."
+
+#: http/classes/DbEntry/ServerPreset.php:457
+msgid "Enable Penalty"
+msgstr "Strafe Aktivieren"
+
+#: http/classes/DbEntry/ServerPreset.php:458
+#, fuzzy
+msgid "Penalty Time"
+msgstr "Strafzeit"
+
+#: http/classes/DbEntry/ServerPreset.php:458
+msgid ""
+"Only if enable_penalty = true. Additional penalty time for each invalid swap "
+"(for stop&go or to the final time) for each wrong swap."
+msgstr ""
+"Zusätzliche Zeit für jeden ungültigen Fahrerwechsel"
+
+#: http/classes/DbEntry/ServerPreset.php:461
+msgid "Penalty During Race"
+msgstr "Strafen im Rennen"
+
+#: http/classes/DbEntry/ServerPreset.php:462
+msgid "Convert Time Penalty"
+msgstr "Zeitstrafen Wandeln"
+
+#: http/classes/DbEntry/ServerPreset.php:463
+msgid "Convert Race Penalty"
+msgstr "Rennstrafen Wandeln"
+
+#: http/classes/DbEntry/ServerPreset.php:464
+msgid "Disqualify Time"
+msgstr "Disqualifizierungszeit"
+
+#: http/classes/DbEntry/ServerPreset.php:464
+#, php-format
+msgid ""
+"Only if enable_penalty = true. Disqualify if the team completes the swap and "
+"the remaining time > disqualify_time.\n"
+"Example: 50% of Min-Time"
+msgstr ""
+"Disqualifizieren, wenn das Team den Fahrerwechsel druchführt und die verbleibende Zeit kürzer ist."
+
+#: http/classes/DbEntry/ServerPreset.php:467
+#, fuzzy
+msgid "Driver Change"
+msgstr "Fahrerwechsel"
+
+#: http/classes/DbEntry/ServerPreset.php:471
+#, fuzzy
+msgid "Max Distance"
+msgstr "Maximale Entfernung"
+
+#: http/classes/DbEntry/ServerPreset.php:471
+msgid ""
+"Permitted max distance from the pit for teleport. Default 10\n"
+"This value is valid only inside the pit lane! Every teleport from the track "
+"is not allowed! "
+msgstr ""
+"Maximale Entfernung zur Box für den Teleport. "
+"nur gültig in der Box - jeder Teleport auf der Stracke ist nicht erlaubt."
+
+#: http/classes/DbEntry/ServerPreset.php:474
+#, fuzzy
+msgid "Practice Enabled"
+msgstr "Training Aktiviert"
+
+#: http/classes/DbEntry/ServerPreset.php:475
+#, fuzzy
+msgid "Qualify Enabled"
+msgstr "Qualifikation Aktiviert"
+
+#: http/classes/DbEntry/ServerPreset.php:476
+msgid "Race Enabled"
+msgstr "Rennen Aktiviert"
+
+#: http/classes/DbEntry/ServerPreset.php:482
+#, fuzzy
+msgid "Penalty Settings"
+msgstr "Straf-Einstellungen"
+
+#: http/classes/DbEntry/ServerPreset.php:486
+msgid "Laps To Take Penalty"
+msgstr "Runden zur Büße"
+
+#: http/classes/DbEntry/ServerPreset.php:486
+msgid ""
+"How many laps a driver has to take a penalty in. Default 3 (if "
+"LAPS_TO_TAKE_PENALTY > 2 --> Jump start is always 2 for AC limit!)"
+msgstr ""
+"Anzahl der Runden, innerhalb der Fahrer:innen eine Strafe verbüßen müssen."
+
+#: http/classes/DbEntry/ServerPreset.php:489
+msgid "Penalty Seconds"
+msgstr "Strafsekunden"
+
+#: http/classes/DbEntry/ServerPreset.php:489
+msgid ""
+"Number of seconds to add manually to the final race result for all penalties "
+"not taken during the race."
+msgstr ""
+"Anzahl an Sekunden, die dem Rennergebnis hinzugefügt werden, für jede nicht verbüßte Strafe"
+
+#: http/classes/DbEntry/ServerPreset.php:492
+msgid "Last Time Without Penalty"
+msgstr "Letzte Zeit Ohne Strafe"
+
+#: http/classes/DbEntry/ServerPreset.php:492
+msgid ""
+"Only for Time Race - Seconds at and of race to end race time (remembere the "
+"optional +1 lap is extra) without mandatory penalty\n"
+"All panalties not taken ----> Panlty seconds to add to the final race time "
+"(in chat and log). Default 360 (6 minutes)\n"
+"IMPORTAN! Adjust this value in according to the track, the cars and the "
+"additional lap (ca. 3/5 laps but in according to LAPS_TO_TAKE_PENALTY)."
+msgstr ""
+
+
+#: http/classes/DbEntry/ServerPreset.php:495
+msgid "Last Laps Without Penalty"
+msgstr "Letzte Runden Ohne Strafe"
+
+#: http/classes/DbEntry/ServerPreset.php:495
+msgid ""
+"If a divers gets a penalty in the last N laps (N = LAPS_TO_TAKE_PENALTY + "
+"LAST_LAPS_WITHOUT_PENALTY) can drive to the end of the race without taking "
+"it but receive time penalty! (Drive through = PENALTY_SECONDS, Stop & GO 10 "
+"= PENALTY_SECONDS + 10, .......)."
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:500
+msgid "Cutting"
+msgstr "Schneiden"
+
+#: http/classes/DbEntry/ServerPreset.php:502
+msgid "During Safety Car"
+msgstr "Während Safety Car"
+
+#: http/classes/DbEntry/ServerPreset.php:503
+msgid "Total Cut Warnings"
+msgstr "Anzahl Warnungen"
+
+#: http/classes/DbEntry/ServerPreset.php:503
+msgid "How many warnings are allowed before a penalty is given."
+msgstr "Wieviele Warnungen werden gezeigt bevor eine Strafe erlassen wird."
+
+#: http/classes/DbEntry/ServerPreset.php:506
+msgid "Tyre Dirt"
+msgstr "Reifen Schmutz"
+
+#: http/classes/DbEntry/ServerPreset.php:507
+#: http/classes/DbEntry/ServerPreset.php:586
+#: http/classes/DbEntry/Weather.php:168
+msgid "Minimum Speed"
+msgstr "Minimale Geschwindigkeit"
+
+#: http/classes/DbEntry/ServerPreset.php:507
+msgid "The minimum speed, in kph, that will trigger a cut."
+msgstr "Die minimale Geschwindigkeit in km/h, die einen Schnitt verlangt"
+
+#: http/classes/DbEntry/ServerPreset.php:510
+msgid "Seconds Between Cuts"
+msgstr "Sekunden zwischen Schnitten"
+
+#: http/classes/DbEntry/ServerPreset.php:510
+msgid "You won't get a cut until this many seconds after the last one."
+msgstr "Es wird keine Schnitt erkannt für so viele Sekunden bis zum letzten Schnitt."
+
+#: http/classes/DbEntry/ServerPreset.php:513
+msgid "Maximum Time"
+msgstr "Maximale Zeit"
+
+#: http/classes/DbEntry/ServerPreset.php:513
+msgid ""
+"The maximum time cut (in seconds) to trigger a warning. If you make this too "
+"long, off-track accidents may trigger cut warnings."
+msgstr ""
+"Die maximale Zeit (in Sekunden) die beim Verlassen der Strecke als Schnitt gelten. "
+"Wenn dieser Wert zu groß ist, werden Unfälle als Schnitte erkannt."
+
+#: http/classes/DbEntry/ServerPreset.php:516
+msgid "Min Slowdown Ratio"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:516
+#, php-format
+msgid ""
+"The minimum ratio of speed at leaving the track to speed at re-entering the "
+"track that will trigger a warning.\n"
+"A speed ratio under this means that the car has slowed, and negated any "
+"advantage gained, and a warning won't be triggered.\n"
+"0.9 means the car is re-entering the track at 90% of the speed at which it "
+"left it.\n"
+"A value < 1 means the car has slowed during the cut; a value > 1 means the "
+"car has sped up. Default 0.9."
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:519
+msgid "Qual Slow Down Speed"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:519
+msgid ""
+"Slowing down to this speed (kph) will make the \"INVALID LAP, SLOW DOWN\" "
+"message in qualifying go away. Default 50."
+msgstr ""
+"Bei Unterscheiten dieser Geschwindigkeit (in km/h) verschwindet die Warn-nachricht während der Qualifikation"
+
+#: http/classes/DbEntry/ServerPreset.php:522
+msgid "Qual Max Sector Out Speed"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:522
+msgid ""
+"Initial qualify max allowed speed on the start line after cutting in the "
+"last corner. Default 150 \n"
+"IMPORTAN! Adjust this value in according to the track and the cars!!!!!!!!!"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:525
+msgid "Qual Slowdown Ratio"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:525
+msgid ""
+"Ratio of the QUALIFY_MAX_SECTOR_OUT_SPEED. Default 0.99\n"
+"The max allowed speed on the start line after cutting  =\n"
+"QUALIFY_MAX_SECTOR_OUT_SPEED (other new max speed of driver) * "
+"QUALIFY_SLOW_DOWN_SPEED_RATIO"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:528
+msgid "Post Cutting Time"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:528
+msgid ""
+"Bonus time after reentering on the track. If speed decreses in this time --> "
+"No cutting! Default 2.\n"
+"Set to 0 to have cutting checks similar to PLP (no check after re-entering "
+"the track)"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:531
+#: http/classes/DbEntry/ServerPreset.php:557
+#: http/classes/DbEntry/ServerPreset.php:579
+msgid "Penalty Type"
+msgstr "Strafe"
+
+#: http/classes/DbEntry/ServerPreset.php:531
+msgid "Penalty type for cutting."
+msgstr "Strafe für Schneiden"
+
+#: http/classes/DbEntry/ServerPreset.php:534
+#: http/classes/DbEntry/ServerPreset.php:535
+#, fuzzy
+msgid "Speeding"
+msgstr "Geschwindigkeitsüberschreitung"
+
+#: http/classes/DbEntry/ServerPreset.php:536
+msgid "Pit Lane Speed"
+msgstr "Geschwindigkeit Boxenlinie"
+
+#: http/classes/DbEntry/ServerPreset.php:536
+msgid ""
+"The speed, in kph, above which you will be deemed to be speeding in pits. "
+"Make this higher to give more leniency on pit lane entry."
+msgstr ""
+"Die Geschwindigkeit (in km/h) ab der eine Überschreitung zählt. "
+"Dies kann erhöht werden um mehr Toleranz zu gewähren:"
+
+#: http/classes/DbEntry/ServerPreset.php:539
+#: http/classes/DbEntry/ServerPreset.php:561
+msgid "Penalty Type 0"
+msgstr "Strafe 0"
+
+#: http/classes/DbEntry/ServerPreset.php:539
+#: http/classes/DbEntry/ServerPreset.php:543
+#: http/classes/DbEntry/ServerPreset.php:548
+#: http/classes/DbEntry/ServerPreset.php:557
+#: http/classes/DbEntry/ServerPreset.php:561
+#: http/classes/DbEntry/ServerPreset.php:565
+#: http/classes/DbEntry/ServerPreset.php:570
+#: http/classes/DbEntry/ServerPreset.php:579
+msgid "Penalty type for speeding"
+msgstr "Strafe für Überschnell"
+
+#: http/classes/DbEntry/ServerPreset.php:540
+#: http/classes/DbEntry/ServerPreset.php:562
+msgid "Speed Limit 0"
+msgstr "Geschwindigkeitsbegrenzung 0"
+
+#: http/classes/DbEntry/ServerPreset.php:543
+#: http/classes/DbEntry/ServerPreset.php:565
+msgid "Strafe 1"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:545
+#: http/classes/DbEntry/ServerPreset.php:567
+msgid "Geschwindigkeitsbegrenzung 1"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:548
+#: http/classes/DbEntry/ServerPreset.php:570
+msgid "Strafe 2"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:550
+#: http/classes/DbEntry/ServerPreset.php:572
+msgid "Geschwindigkeitsbegrenzung 2"
+msgstr ""
+
+#: http/classes/DbEntry/ServerPreset.php:555
+#: http/classes/DbEntry/ServerPreset.php:556
+#, fuzzy
+msgid "Crossing"
+msgstr "Überschreitung"
+
+#: http/classes/DbEntry/ServerPreset.php:560
+msgid "Jump Start"
+msgstr "Frühstart"
+
+#: http/classes/DbEntry/ServerPreset.php:577
+msgid "DRS"
+msgstr "DRS"
+
+#: http/classes/DbEntry/ServerPreset.php:578
+#, fuzzy
+msgid "Drs"
+msgstr "DRS"
+
+#: http/classes/DbEntry/ServerPreset.php:580
+#, fuzzy
+msgid "Gap"
+msgstr "Abstand"
+
+#: http/classes/DbEntry/ServerPreset.php:580
+msgid "Max gap in seconds from front car."
+msgstr "Maximaler Abstand zum vorfahrenden Fahrzeug"
+
+#: http/classes/DbEntry/ServerPreset.php:583
+#, fuzzy
+msgid "Enabled After"
+msgstr "Aktiviere Nach"
+
+#: http/classes/DbEntry/ServerPreset.php:583
+msgid ""
+"DRS enabled after N lap from start (+1 if rolling start with SC - file "
+"ac_settings.ini)."
+msgstr ""
+"DRS aktiviert nach N-Runden nach Start (+1 für fliegenden Start)"
+
+#: http/classes/DbEntry/ServerPreset.php:586
+msgid "IF the car speed < MIN SPEED no penaly for illegal DRS use."
+msgstr "Wenn die Geschwindigkeit kleiner als Mininale-Geschwindigkeit, keine Strafe für falsche DRS Anwendung"
+
+#: http/classes/DbEntry/ServerPreset.php:589
+#, fuzzy
+msgid "Bonus Time"
+msgstr "Zusatzzeit"
+
+#: http/classes/DbEntry/ServerPreset.php:589
+msgid ""
+"How many seconds the DRS can remain open during each illegal use before the "
+"penalty."
+msgstr "Wieviele Sekunden darf das DRS aktiviert sein, bevor eine Strafe erhoben wird."
+
+#: http/classes/DbEntry/ServerPreset.php:592
+msgid "Illegal Uses"
+msgstr "Falsche Anwendungen"
+
+#: http/classes/DbEntry/ServerPreset.php:592
+msgid ""
+"How many time the driver can open the illegal DRS in each sector before the "
+"penalty."
+msgstr ""
+"Wie oft darf ein Fahrer:in das DRS pro Sektor falsch aktrivieren befor eine Strafe erhoben wird"
+
+#: http/classes/DbEntry/ServerPreset.php:595
+msgid "During Safetycar"
+msgstr "Während Safetycar"
+
+#: http/classes/DbEntry/ServerPreset.php:596
+#, fuzzy
+msgid "Omit Cars"
+msgstr "Ignorierte Autos"
+
+#: http/classes/DbEntry/ServerPreset.php:596
+msgid ""
+"List of cars wihtout DRS (sorry, no information from AC available)\n"
+"if all cars are without DRS set ENABLE_DRS_PENALTIES in General to false!!!"
+msgstr ""
+"Liste von allen Fahrzeugen ohne DRS. "
+"Wenn alle Fahrzeuge kein DRS haben, besser die DRS Überwachung generell deaktivieren"
+
+#: http/classes/DbEntry/ServerPreset.php:599
+msgid "Blue Flag"
+msgstr "Blaue Flagge"
+
+#: http/classes/DbEntry/ServerPreset.php:600
+msgid "Time distance (seconds) to show the blue flag in qualifying."
+msgstr "Zeitabstand (in Sekuden) während der Qualifikation ab der eine blaue Flagge gezeigt wird."
+
+#: http/classes/DbEntry/ServerPreset.php:603
+msgid "Time distance (seconds) to show the blue flag in race."
+msgstr "Zeitabstand (in Sekuden) während des Rennens ab der eine blaue Flagge gezeigt wird."
+
+#: http/classes/DbEntry/ServerPreset.php:699
+#: http/classes/DbEntry/ServerPreset.php:717
+#: http/classes/DbEntry/ServerPreset.php:763
+#, fuzzy
+msgid "Result Screen"
+msgstr "Ergebnis Anzeige"
+
+#: http/classes/DbEntry/ServerPreset.php:772
+msgid "End"
+msgstr "Ende"
+
+#: http/classes/DbEntry/Weather.php:146
+msgid "Collection of weather settings"
+msgstr "Sammlung von Wettereinstellungen"
+
+#: http/classes/DbEntry/Weather.php:148
+msgid "Arbitrary name for this weather"
+msgstr "beliebiger name für das Wetter"
+
+#: http/classes/DbEntry/Weather.php:149
+#: http/content/html/T_Settings/Weathers.php:122
+msgid "Graphic"
+msgstr "Grafik"
+
+#: http/classes/DbEntry/Weather.php:149
+msgid ""
+"it's exactly one of the folder name that you find into \"content\\weather\" "
+"directory"
+msgstr "Ist exakt der Ordnername aus content/weather/"
+
+#: http/classes/DbEntry/Weather.php:152
+msgid "Temperatures"
+msgstr "Temperaturen"
+
+#: http/classes/DbEntry/Weather.php:152
+msgid "Environment temperature settings"
+msgstr "Einstellungen für Umgebungstemperatur"
+
+#: http/classes/DbEntry/Weather.php:153
+msgid "Ambient Base"
+msgstr "Umgebung Nominal"
+
+#: http/classes/DbEntry/Weather.php:153
+msgid "temperature of the Ambient"
+msgstr "Temperatur der Umgebung"
+
+#: http/classes/DbEntry/Weather.php:156
+msgid "Ambient Variation"
+msgstr "Umgebung Variation"
+
+#: http/classes/DbEntry/Weather.php:156
+msgid ""
+"variation of the ambient's temperature. In this example final ambient's "
+"temperature can be 16 or 20"
+msgstr ""
+"Variation der Umgebungstemperatur."
+
+#: http/classes/DbEntry/Weather.php:159
+msgid "Road Relative"
+msgstr "Straße, Relativ"
+
+#: http/classes/DbEntry/Weather.php:159
+msgid ""
+"Relative road temperature: this value will be added to the final ambient "
+"temp. In this example the road temperature will be between 22 (16 + 6) and "
+"26 (20 + 6). It can be negative."
+msgstr ""
+"Straßentemperatur, relativ zur Umgebung."
+
+#: http/classes/DbEntry/Weather.php:162
+msgid "Road Variation"
+msgstr "Straße Variation"
+
+#: http/classes/DbEntry/Weather.php:162
+msgid "variation of the road's temperature. Like the ambient one"
+msgstr "Variation der relativen Straßentemperatur"
+
+#: http/classes/DbEntry/Weather.php:167
+msgid "Wind"
+msgstr "Wind"
+
+#: http/classes/DbEntry/Weather.php:167
+#, fuzzy
+msgid "Environment wind settings"
+msgstr "Wind Einstellungen"
+
+#: http/classes/DbEntry/Weather.php:168
+msgid "Min speed of the session possible"
+msgstr ""
+
+#: http/classes/DbEntry/Weather.php:171
+msgid "Maximum Speed"
+msgstr "Maximale Geschwindigkeit"
+
+#: http/classes/DbEntry/Weather.php:171
+msgid "Max speed of session possible (max 40)"
+msgstr "Maximale Windgeschwindigkeit der Session (max. 40)"
+
+#: http/classes/DbEntry/Weather.php:174
+#, fuzzy
+msgid "Direction"
+msgstr "Richtung"
+
+#: http/classes/DbEntry/Weather.php:174
+msgid ""
+"base direction of the wind (wind is pointing at); 0 = North, 90 = East etc"
+msgstr "Nominale Windrichtung (0 = Norden, 90 = Osten, ...)"
+
+#: http/classes/DbEntry/Weather.php:177
+#, fuzzy
+msgid "Direction Variation"
+msgstr "Richtung Variation"
+
+#: http/classes/DbEntry/Weather.php:177
+msgid "variation (+ or -) of the base direction"
+msgstr "Variation der Windrichtung (+-) zur nominalen Windrichtung"
+
+#: http/classes/DbEntry/User.php:414
+msgid "Guest"
+msgstr "Gast"
+
+#: http/classes/DbEntry/Car.php:218
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:40
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:148
+msgid "Torque"
+msgstr "Drehmoment"
+
+#: http/classes/DbEntry/Car.php:233
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:41
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:149
+msgid "Power"
+msgstr "Leistung"
+
+#: http/classes/DbEntry/Car.php:247
+msgid "Revolutions"
+msgstr "Umdrehungen"
+
+#: http/content/json/SessionData.php:89
+msgid "Timestamp"
+msgstr "Zeitstempel"
+
+#: http/content/json/SessionData.php:90
+msgid "Suspect"
+msgstr "Täter"
+
+#: http/content/json/SessionData.php:91
+msgid "Victim"
+msgstr "Opfer"
+
+#: http/content/json/SessionData.php:92
+msgid "Speed"
+msgstr "Geschwindigkeit"
+
+#: http/content/json/SessionData.php:93
+#, fuzzy
+msgid "Safety-Points"
+msgstr "Strafpunkte"
+
+#: http/content/json/SessionData.php:94
+#, fuzzy
+msgid "Collision Id"
+msgstr "Kollision ID"
+
+#: http/content/json/SessionData.php:129 http/content/json/TrackRecords.php:49
+#: http/content/json/CarClassRecords.php:49
+#: http/content/html/W_Sessions/SessionOverview.php:89
+msgid "Lap"
+msgstr "Runde"
+
+#: http/content/json/SessionData.php:130 http/content/json/TrackRecords.php:40
+#: http/content/json/CarClassRecords.php:40
+#: http/content/html/W_Sessions/SessionOverview.php:82
+msgid "Laptime"
+msgstr "Rundenzeit"
+
+#: http/content/json/SessionData.php:131
+msgid "Difference to session best lap"
+msgstr "Abstand zur Bestzeit der Session"
+
+#: http/content/json/SessionData.php:131 http/content/json/TrackRecords.php:41
+#: http/content/json/CarClassRecords.php:41
+#: http/content/html/W_Sessions/SessionOverview.php:83
+msgid "Delta"
+msgstr "Differenz"
+
+#: http/content/json/SessionData.php:133 http/content/json/TrackRecords.php:42
+#: http/content/json/CarClassRecords.php:42
+#: http/content/html/W_Sessions/SessionOverview.php:81
+#: http/content/html/W_Sessions/SessionOverview.php:181
+msgid "Driver"
+msgstr "Fahrer"
+
+#: http/content/json/SessionData.php:134 http/content/json/TrackRecords.php:43
+#: http/content/json/TrackRecords.php:73
+#: http/content/json/CarClassRecords.php:43
+#: http/content/json/CarClassRecords.php:73
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:33
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:147
+#: http/content/html/W_Sessions/SessionOverview.php:85
+#: http/content/html/W_Sessions/SessionOverview.php:182
+msgid "Car"
+msgstr "Auto"
+
+#: http/content/json/SessionData.php:135 http/content/json/TrackRecords.php:44
+#: http/content/json/CarClassRecords.php:44
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:151
+#: http/content/html/W_Sessions/SessionOverview.php:86
+#: http/content/html/W_Sessions/SessionOverview.php:185
+msgid "Ballast"
+msgstr "Gewicht"
+
+#: http/content/json/SessionData.php:136 http/content/json/TrackRecords.php:45
+#: http/content/json/CarClassRecords.php:45
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:152
+#: http/content/html/W_Sessions/SessionOverview.php:87
+#: http/content/html/W_Sessions/SessionOverview.php:186
+msgid "Restrictor"
+msgstr "Begrenzer"
+
+#: http/content/json/SessionData.php:137
+#, fuzzy
+msgid "Traction"
+msgstr "Traktion"
+
+#: http/content/json/SessionData.php:138
+#, fuzzy
+msgid "Lap ID"
+msgstr "Runde ID"
+
+#: http/content/json/TrackRecords.php:39
+#: http/content/json/CarClassRecords.php:39
+#: http/content/html/W_Sessions/SessionOverview.php:172
+#: http/content/html/W_Sessions/SessionOverview.php:180
+#, fuzzy
+msgid "Position"
+msgstr "Position"
+
+#: http/content/json/TrackRecords.php:46
+#: http/content/json/CarClassRecords.php:46
+#: http/content/html/W_Sessions/SessionOverview.php:88
+#: http/content/html/W_Sessions/SessionOverview.php:260
+msgid "Grip"
+msgstr "Traktion"
+
+#: http/content/json/TrackRecords.php:47
+#: http/content/json/CarClassRecords.php:47
+msgid "Date"
+msgstr "Datum"
+
+#: http/content/json/TrackRecords.php:48
+#: http/content/json/CarClassRecords.php:48
+#, fuzzy
 msgid "Session"
 msgstr "Session"
 
-#: http/contents/zm_session.php:37
-msgid "Offline"
-msgstr "Offline"
+#: http/content/html/Z_Test.php:8
+#, fuzzy
+msgid "Testing"
+msgstr "Test"
 
-#: http/contents/sa_statistics.php:6
-msgid "Statistics"
-msgstr "Statistik"
+#: http/content/html/Z_Test.php:8
+msgid "Tests for Development"
+msgstr ""
 
-#: http/contents/sa_statistics.php:68
-msgid "Drivers"
-msgstr "Fahrer"
+#: http/content/html/Z_About.php:8
+msgid "About"
+msgstr "Über"
 
-#: http/contents/dd_championship/champ_mange.php:11
-#: http/contents/bm_car_classes/aa_carclass_management.php:6
-msgid "Manage"
-msgstr "Verwalten"
+#: http/content/html/Z_About.php:8
+msgid "About the ACswui System"
+msgstr "Über das ACswui System"
 
-#: http/contents/dd_championship/champ_mange.php:161
-msgid "Delete This Championship"
-msgstr "Diese Meisterschaft Löschen"
+#: http/content/html/T_Settings.php:8
+#: http/content/html/B_User/UserSettings.php:8
+#, fuzzy
+msgid "Settings"
+msgstr "Einstellungen"
 
-#: http/contents/dd_championship/champ_mange.php:163
-msgid "Create New Championship"
-msgstr "Neue Meisterschaft Erzeugen"
+#: http/content/html/ServerContent/AvailableCarClasses.php:10
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:69
+msgid "Car Classes"
+msgstr "Fahrzeugklassen"
 
-#: http/contents/dd_championship/champ_mange.php:173
-msgid "General Setup"
-msgstr "Generelle Einstellungen"
+#: http/content/html/ServerContent/AvailableCarClasses.php:10
+#, fuzzy
+msgid "Available Car Classes"
+msgstr "Verfügbare Fahrzeugklassen"
 
-#: http/contents/dd_championship/champ_mange.php:295
-msgid "Save Championship"
-msgstr "Meisterschaft Speichern"
+#: http/content/html/ServerContent/AvailableCarClasses.php:20
+#: http/content/html/ServerContent/AvailableCarClasses.php:30
+#, fuzzy
+msgid "New Car Class"
+msgstr "Neue Fahrzeugklasse"
 
-#: http/contents/bm_car_classes/aa_carclass_management.php:8
-msgid "Car Class Management"
-msgstr "Fahrzeugklassen Verwaltung"
+#: http/content/html/ServerContent/AvailableTrackLocations.php:8
+msgid "Tracks"
+msgstr "Strecken"
 
-#: http/contents/bm_car_classes/aa_carclass_management.php:59
-msgid "New Car Class Name"
-msgstr "Name der neuen Fahrzeugklasse"
+#: http/content/html/ServerContent/AvailableTrackLocations.php:8
+msgid "Available Track Locations"
+msgstr "Verfügbare Streckenstandorte"
 
-#: http/contents/bm_car_classes/aa_carclass_management.php:119
-msgid "Delete Car Class"
-msgstr "Fahrzeugklasse Löschen"
+#: http/content/html/ServerContent/AvailableTrackLocations.php:15
+msgid "Countries"
+msgstr "Länder"
 
-#: http/contents/bm_car_classes/aa_carclass_management.php:122
-msgid "Add New Car Class"
-msgstr "Neue Fahrzeugklasse Hinzufügen"
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:11
+msgid "Car Skin"
+msgstr "Lackierung"
 
-#: http/contents/bm_car_classes/aa_carclass_management.php:140
-msgid "General Car Class Setup"
-msgstr "Allgemeine Fahrzeugklassen Einstellungen"
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:31
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:36
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:25
+#, fuzzy
+msgid "General Info"
+msgstr "Allgemeine Info"
 
-#: http/contents/bm_car_classes/aa_carclass_management.php:145
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:32
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:37
+msgid "Brand"
+msgstr "Hersteller"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:35
+msgid "Number"
+msgstr "Nummer"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:36
+msgid "From 'team' attribute in ui_skin.json"
+msgstr "Vom 'team' Attribut in ui_skin.json"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:36
+msgid "Team"
+msgstr "Team"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:39
+msgid "From 'Steam64GUID' attribute in ui_skin.json"
+msgstr "Vom 'Steam64GUID' Attribute in ui_skin.json"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:39
+#, fuzzy
+msgid "Reservation"
+msgstr "Reservierung"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:45
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:47
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:34
+#, fuzzy
+msgid "Revision Info"
+msgstr "Revisionsinformation"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:46
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:48
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:37
+msgid "Database Id"
+msgstr "Datenbank ID"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:49
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:50
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:39
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:26
+msgid "Deprecated"
+msgstr "Obsolet"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:49
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:50
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:39
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:26
+msgid "yes"
+msgstr "Ja"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:39
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:150
+msgid "Weight"
+msgstr "Gewicht"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:42
+msgid "Specific Power"
+msgstr "Spezifische Leistung"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:43
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:153
+msgid "Harmonized Power"
+msgstr "Harmonisierte Leistung"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:61
+msgid "Car Skins"
+msgstr "Lackierungen"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:76
+msgid "This car is not used in any car class"
+msgstr "Dieses Fahrzeug wird in keiner Klasse verwendet"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand.php:9
+#, fuzzy
+msgid "Car Brand"
+msgstr "Fahrzeug Hersteller"
+
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:14
+msgid "Car Class"
+msgstr "Fahrzeugklasse"
+
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:14
+#, fuzzy
+msgid "Car CarClass"
+msgstr "Fahrzeug Klasse"
+
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:27
+#, fuzzy
+msgid "Car Class Deleted"
+msgstr "Fahrzeugklasse Gelöscht"
+
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:109
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:209
+#, fuzzy
+msgid "Add Cars"
+msgstr "Fahrzeuge Hinzufügen"
+
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:143
+msgid "Technical Data"
+msgstr "Technische Daten"
+
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:184
 msgid "Save Car Class"
 msgstr "Fahrzeugklasse Speichern"
 
-#: http/contents/bm_car_classes/aa_carclass_management.php:157
-msgid "Cars In This Class"
-msgstr "Fahrzeuge dieser Klasse"
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:189
+#: http/content/html/ServerContent/Teams.php:10
+#: http/content/html/B_User/UserProfile.php:44
+msgid "Teams"
+msgstr "Teams"
 
-#: http/contents/bm_car_classes/aa_carclass_management.php:192
-msgid "Add New Cars"
-msgstr "Neue Fahrzeuge Hinzufügen"
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:196
+#, fuzzy
+msgid "No teams in this car class"
+msgstr "Keine Teams in dieser Fahrzeugklasse"
 
-#: http/contents/bm_car_classes/aa_carclass_management.php:193
-msgid "Select below all cars that shall be added to the car class."
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:200
+#, fuzzy
+msgid "Cars Overview"
+msgstr "Fahrzeugübersicht"
+
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:218
+msgid "Delete Car Class"
+msgstr "Fahrzeugklasse Löschen"
+
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:229
+#, fuzzy
+msgid "CarClass Records"
+msgstr "Klassenrekorde"
+
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:230
+#, fuzzy
+msgid "Load CarClass Records"
+msgstr "Lade Klassenrekorde"
+
+#: http/content/html/ServerContent/Teams.php:18
+msgid ""
+"Teams are identified by the 'team' attribute in ui_skin.json of each car "
+"skin.\n"
+"                    To avoid presenting community unrelevant skins,\n"
+"                    only teams are respected where the 'Steam64GUID' "
+"attribute is given in the ui_skin.json.\n"
+"                    This 'Steam64GUID' attribute is specific for the ACswui "
+"system and identifies the preserved driver of the car skin.\n"
+"                   "
 msgstr ""
-"Wähle nachfolgend alle Fahrzeuge aus, die zu der Fahrzeugklasse hinzugefügt"
-" werden sollen."
+"Teams werden anhand des 'team' Attributs in ui_skin.json identifiziert.\n"
+"Um irrelevante Teams auszublenden, werden nur Teams berücksichtigt, wo das 'Steam64GUID' Attribut in ui_skin.json gesetzt ist."
+"Dieses 'Steam64GUID' Attribut ist speziell für das ACswui System und reserviert so, diesen Skin für bestimmte Fahrer:innen"
 
-#: http/contents/bm_car_classes/occupation.php:10
-msgid "Seat Occupation"
-msgstr "Sitzbelegung"
+#: http/content/html/ServerContent/Teams.php:57
+msgid "Tem Members"
+msgstr "Team Mitglieder"
 
-#: http/contents/bm_car_classes/occupation.php:75
-msgid "Current Occupations"
-msgstr "Aktuelle Belegung"
+#: http/content/html/ServerContent/Teams.php:64
+#, fuzzy
+msgid "Team Cars"
+msgstr "Team Fahrzeuge"
 
-#: http/contents/bm_car_classes/occupation.php:95
-msgid "Occupy Seat"
-msgstr "Sitz Belegen"
+#: http/content/html/ServerContent/Teams.php:72
+msgid "Unclassed Cars"
+msgstr "Nicht Klassifizierte Fahrzeuge"
 
-#: http/contents/bm_car_classes/occupation.php:98
-msgid "DELETE Seat Occupation"
-msgstr "Sitzbelegung Löschen"
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:8
+msgid "Track"
+msgstr "Strecke"
 
-#: http/contents/bm_car_classes/occupation.php:99
-msgid "Save Seat Occupation"
-msgstr "Sitzbelegung Speichern"
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:26
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:23
+msgid "Location Name"
+msgstr "Standort Name"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:27
+#, fuzzy
+msgid "Track Name"
+msgstr "Streckenname"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:28
+msgid "Length"
+msgstr "Länge"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:29
+msgid "Pits"
+msgstr "Boxen"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:30
+#: http/content/html/B_User/UserProfile.php:42
+#, fuzzy
+msgid "Driven Laps"
+msgstr "Gefahrene Runden"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:35
+#, fuzzy
+msgid "Version"
+msgstr "Version"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:36
+msgid "Author"
+msgstr "Author"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:55
+msgid "Track Records"
+msgstr "Streckenrekorde"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:56
+#, fuzzy
+msgid "Load Track Records"
+msgstr "Lade Streckenrekorde"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:8
+msgid "Track Location"
+msgstr "Streckenstandort"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:22
+msgid "Track Location Info"
+msgstr "Standort Information"
+
+#: http/content/html/ServerContent/AvailableBrands.php:8
+#, fuzzy
+msgid "Car Brands"
+msgstr "Fahrzeughersteller"
+
+#: http/content/html/ServerContent/AvailableBrands.php:8
+msgid "Available Car Brands"
+msgstr "Verfügbare Fahrzeughersteller"
+
+#: http/content/html/ServerContent.php:8
+msgid "Content"
+msgstr "Inhalte"
+
+#: http/content/html/ServerContent.php:8
+#, fuzzy
+msgid "Server Content"
+msgstr "Server Inhalte"
+
+#: http/content/html/B_User/UserManagement.php:8
+#, fuzzy
+msgid "User Management"
+msgstr "Benutzerverwaltung"
+
+#: http/content/html/B_User/UserManagement.php:72
+#, fuzzy
+msgid "Save All"
+msgstr "Alles Speichern"
+
+#: http/content/html/B_User/UserManagement.php:81
+msgid "Id"
+msgstr "ID"
+
+#: http/content/html/B_User/UserManagement.php:82
+msgid "Login"
+msgstr "Login"
+
+#: http/content/html/B_User/GroupManagement.php:10
+#, fuzzy
+msgid "Group Management"
+msgstr "Gruppenverwaltung"
+
+#: http/content/html/B_User/GroupManagement.php:67
+msgid "Group"
+msgstr "Gruppe"
+
+#: http/content/html/B_User/GroupManagement.php:78
+#, fuzzy
+msgid "New Group Name"
+msgstr "Name der neuen Gruppe"
+
+#: http/content/html/B_User/GroupManagement.php:97
+#, fuzzy
+msgid "Delete Group"
+msgstr "Gruppe Löschen"
+
+#: http/content/html/B_User/GroupManagement.php:109
+#: http/content/html/B_User/UserSettings.php:26
+#: http/content/html/T_Settings/ACswui.php:38
+msgid "Save"
+msgstr "Speichern"
+
+#: http/content/html/B_User/UserProfile.php:8
+msgid "Profile"
+msgstr "Profil"
+
+#: http/content/html/B_User/UserProfile.php:8
+#, fuzzy
+msgid "User Profile"
+msgstr "Benutzerprofil"
+
+#: http/content/html/B_User/UserProfile.php:22
+msgid "ID"
+msgstr "ID"
+
+#: http/content/html/B_User/UserProfile.php:26
+#, fuzzy
+msgid "User Groups"
+msgstr "Benutzergruppen"
+
+#: http/content/html/B_User/UserProfile.php:33
+#, fuzzy
+msgid "Last Login"
+msgstr "Letzter Login"
+
+#: http/content/html/B_User/UserProfile.php:35
+#, fuzzy
+msgid "Status"
+msgstr "Status"
+
+#: http/content/html/B_User/UserProfile.php:36
+msgid "active driver in community"
+msgstr "Aktive Fahrer in der Community"
+
+#: http/content/html/B_User/UserProfile.php:37
+#, fuzzy
+msgid "active driver"
+msgstr "Aktive Fahrer"
+
+#: http/content/html/B_User/UserProfile.php:38
+#, fuzzy
+msgid "inactive"
+msgstr "Inaktiv"
+
+#: http/content/html/B_User/UserProfile.php:52
+msgid "Privacy settings of the user does not allow to show any information."
+msgstr "Privatsphäreneinstellung des Benutzers erlaubt keine Darstellung von Informationen."
+
+#: http/content/html/T_Settings/ServerSlots.php:12
+#, fuzzy
+msgid "Slots"
+msgstr "Slots"
+
+#: http/content/html/T_Settings/ServerSlots.php:49
+#, fuzzy
+msgid "Save Slot Settings"
+msgstr "Slot Einstellungen Speichern"
+
+#: http/content/html/T_Settings/ServerSlots.php:58
+#, fuzzy
+msgid "Port Overview"
+msgstr "Port Übersicht"
+
+#: http/content/html/T_Settings/ServerSlots.php:59
+msgid ""
+"The following diagramm illustrates the communication sockets which are used "
+"locally and via WAN. All involved ports and protocols are shown. Save "
+"settings to get an updated picture"
+msgstr ""
+"Das folgende Diagramm zeigt welche Kommunikationsverbindungen benutzt werden - "
+"sowohl lokal als auch per WAN."
+"Alle involvierten Ports und Protokolle sind dargestellt."
+"Speichere die Einstellungen um das Diagramm zu aktualisieren."
+
+#: http/content/html/T_Settings/ServerSlots.php:60
+msgid ""
+"Be aware, that the internet TCP port of Real penalty is defined "
+"automatically from the acServer HTTP port + 27."
+msgstr ""
+"Ahte darauf, dass der Internet TCP-Port von Real Penalty automatisch definiert wird als "
+"AC-Server HTTP Port plus 27!"
+
+#: http/content/html/T_Settings/ServerSlots.php:96
+#, fuzzy
+msgid "Slot Management"
+msgstr "Slot Verwaltung"
+
+#: http/content/html/T_Settings/ServerPresets.php:12
+msgid "Presets"
+msgstr "Presets"
+
+#: http/content/html/T_Settings/ServerPresets.php:103
+msgid "Save Preset"
+msgstr "Preset Speichern"
+
+#: http/content/html/T_Settings/ServerPresets.php:108
+msgid "Schedule"
+msgstr "Zeitplan"
+
+#: http/content/html/T_Settings/ServerPresets.php:109
+#, fuzzy
+msgid "Long Schedule"
+msgstr "Ausführlicher Zeitplan"
+
+#: http/content/html/T_Settings/ServerPresets.php:110
+msgid "Save preset to update the schedule."
+msgstr "Preset speichern um den Zeitplan zu aktualisieren."
+
+#: http/content/html/T_Settings/ServerPresets.php:113
+#: http/content/html/T_Settings/ServerPresets.php:150
+#: http/content/html/W_Sessions.php:76
+msgid "Start"
+msgstr "Start"
+
+#: http/content/html/T_Settings/ServerPresets.php:114
+#: http/content/html/T_Settings/ServerPresets.php:151
+msgid "Entry"
+msgstr "Eintrag"
+
+#: http/content/html/T_Settings/ServerPresets.php:115
+#: http/content/html/T_Settings/ServerPresets.php:152
+msgid "Duration"
+msgstr "Dauer"
+
+#: http/content/html/T_Settings/ServerPresets.php:147
+#, fuzzy
+msgid "Short Schedule"
+msgstr "Zeitplan Kurzfassung"
+
+#: http/content/html/T_Settings/ServerPresets.php:182
+#, fuzzy
+msgid "Preset Management"
+msgstr "Preset Verwaltung"
+
+#: http/content/html/T_Settings/ServerPresets.php:187
+msgid "Server Preset"
+msgstr "Server Preset"
+
+#: http/content/html/T_Settings/ServerPresets.php:188
+#: http/content/html/T_Settings/Weathers.php:123
+msgid "Manage"
+msgstr "Verwalten"
+
+#: http/content/html/T_Settings/ServerPresets.php:199
+#: http/content/html/T_Settings/ServerPresets.php:237
+#, fuzzy
+msgid "Create new derived Preset"
+msgstr "Neues, abgeleitetes Preset erstellen"
+
+#: http/content/html/T_Settings/ServerPresets.php:209
+#, fuzzy
+msgid "Save Preset Management"
+msgstr "Preset-Verwaltung Speichern"
+
+#: http/content/html/T_Settings/Weathers.php:103
+#, fuzzy
+msgid "Save Weather"
+msgstr "Wetter Speichern"
+
+#: http/content/html/T_Settings/Weathers.php:116
+#, fuzzy
+msgid "Weather Management"
+msgstr "Wetter Verwaltung"
+
+#: http/content/html/T_Settings/Weathers.php:121
+#, fuzzy
+msgid "Server Weather"
+msgstr "Server Wetter"
+
+#: http/content/html/T_Settings/Weathers.php:135
+#: http/content/html/T_Settings/Weathers.php:180
+#, fuzzy
+msgid "Create new derived Weather"
+msgstr "Neues, abgeleitetes Wetter Erstellen"
+
+#: http/content/html/T_Settings/Weathers.php:145
+#, fuzzy
+msgid "Save Weather Management"
+msgstr "Wetter-Verwaltung Speichern"
+
+#: http/content/html/W_Sessions/SessionOverview.php:14
+msgid "Overview"
+msgstr "Übersicht"
+
+#: http/content/html/W_Sessions/SessionOverview.php:66
+#, fuzzy
+msgid "Best Laps"
+msgstr "Beste Runden"
+
+#: http/content/html/W_Sessions/SessionOverview.php:70
+#, fuzzy
+msgid "Laptime Distribution Diagram"
+msgstr "Rundenzeitenverteilungsdiagramm"
+
+#: http/content/html/W_Sessions/SessionOverview.php:71
+msgid "Driven laps [in percent]"
+msgstr "Gefahrene Runden [in Prozent]"
+
+#: http/content/html/W_Sessions/SessionOverview.php:72
+msgid "Laptime distance to best lap in session [in seconds]"
+msgstr "Abstand zur Besten Rundenzeit der Session [in Sekunden]"
+
+#: http/content/html/W_Sessions/SessionOverview.php:128
+#: http/content/html/W_Sessions/SessionOverview.php:132
+#, fuzzy
+msgid "Load Laptime Distribution Data"
+msgstr "Rundenzeitenverteilung laden"
+
+#: http/content/html/W_Sessions/SessionOverview.php:147
+#: http/content/html/W_Sessions/SessionOverview.php:189
+msgid "Collisions"
+msgstr "Kollisionen"
+
+#: http/content/html/W_Sessions/SessionOverview.php:148
+#, fuzzy
+msgid "Load Collisions"
+msgstr "Kollisionen Laden"
+
+#: http/content/html/W_Sessions/SessionOverview.php:155
+msgid "All Laps"
+msgstr "Alle Runden"
+
+#: http/content/html/W_Sessions/SessionOverview.php:156
+#, fuzzy
+msgid "Load Laps"
+msgstr "Runden Laden"
+
+#: http/content/html/W_Sessions/SessionOverview.php:164
+msgid "Session Results"
+msgstr "Session Ergebnisse"
+
+#: http/content/html/W_Sessions/SessionOverview.php:170
+#, fuzzy
+msgid "Session Position Diagram"
+msgstr "Session Positionsdiagramm"
+
+#: http/content/html/W_Sessions/SessionOverview.php:171
+msgid "Minutes"
+msgstr "Minuten"
+
+#: http/content/html/W_Sessions/SessionOverview.php:183
+#, fuzzy
+msgid "Best Lap"
+msgstr "Beste Runde"
+
+#: http/content/html/W_Sessions/SessionOverview.php:184
+#, fuzzy
+msgid "Total Time"
+msgstr "Gesamtzeit"
+
+#: http/content/html/W_Sessions/SessionOverview.php:187
+#, fuzzy
+msgid "Driven"
+msgstr "Gefahren"
+
+#: http/content/html/W_Sessions/SessionOverview.php:190
+msgid "Ranking Points"
+msgstr "Wertungspunkte"
+
+#: http/content/html/W_Sessions/SessionOverview.php:195
+#, fuzzy
+msgid "Distance"
+msgstr "Entfernung"
+
+#: http/content/html/W_Sessions/SessionOverview.php:197
+#, fuzzy
+msgid "Other Cars"
+msgstr "Andere Autos"
+
+#: http/content/html/W_Sessions/SessionOverview.php:240
+#, fuzzy
+msgid "Session Information"
+msgstr "Session Informationen"
+
+#: http/content/html/W_Sessions/SessionOverview.php:261
+msgid "Max"
+msgstr "Max"
+
+#: http/content/html/W_Sessions/SessionOverview.php:262
+#, fuzzy
+msgid "Min"
+msgstr "Min"
+
+#: http/content/html/W_Sessions/SessionOverview.php:268
+msgid "Weahter"
+msgstr "Wetter"
+
+#: http/content/html/W_Sessions/SessionOverview.php:269
+msgid "Graphics"
+msgstr "Grafik"
+
+#: http/content/html/W_Sessions/SessionOverview.php:270
+msgid "Ambient"
+msgstr "Umgebung"
+
+#: http/content/html/W_Sessions/SessionOverview.php:271
+msgid "Road"
+msgstr "Strecke"
+
+#: http/content/html/W_Sessions/SessionOverview.php:301
+msgid "Apply Filter"
+msgstr "Filter Anwenden"
+
+#: http/content/html/W_Sessions/SessionOverview.php:307
+msgid "Session Select"
+msgstr "Session Auswählen"
+
+#: http/content/html/A_Home.php:8
+msgid "Home"
+msgstr "Startseite"
+
+#: http/content/html/W_Sessions.php:48
+msgid "Stop"
+msgstr "Stop"
+
+#: http/content/html/B_User.php:8
+msgid "User"
+msgstr "Benutzer"
+
+#: http/content/html/B_User.php:8
+#, fuzzy
+msgid "User Options"
+msgstr "Benutzeroptionen"
+
+#: http/content/html/B_User.php:19
+#, fuzzy
+msgid "User Login"
+msgstr "Benutzer Anmelden"
+
+#: http/content/html/B_User.php:27
+#, fuzzy
+msgid "Root Login"
+msgstr "Root Login"
+
+#: http/content/html/B_User.php:30
+msgid "Login as Root"
+msgstr "Eingeloggt als Root"
+
+#: http/content/html/B_User.php:35
+#, fuzzy
+msgid "User Logout"
+msgstr "Benutzer Abmelden"
+
+#, fuzzy
+#~ msgid "Lap Records"
+#~ msgstr "Fahrzeugrekorde"
+
+#~ msgid "save all"
+#~ msgstr "alle speichern"
+
+#~ msgid "delete"
+#~ msgstr "löschen"
+
+#~ msgid "Popular Tracks"
+#~ msgstr "Beliebte Strecken"
+
+#~ msgid "Session / Lap"
+#~ msgstr "Session / Runden"
+
+#~ msgid "Weeks"
+#~ msgstr "Wochen"
+
+#~ msgid "Score"
+#~ msgstr "Punkte"
+
+#~ msgid "Show"
+#~ msgstr "Anzeigen"
+
+#~ msgid "Mean Value"
+#~ msgstr "Mittelwert"
+
+#~ msgid ""
+#~ "Driver ranking points are only cummulated for server runs with race "
+#~ "sessions.\n"
+#~ "                    That means for succeeding Practice->Qualifying->Race, "
+#~ "Qualifying->Race or Race-only sessions.\n"
+#~ "                    Pure practice or qualifying sessions without a race "
+#~ "session are ignored."
+#~ msgstr ""
+#~ "Punkte für die Fahrerwertung werden nur gezählt, wenn auch ein Rennen "
+#~ "statt fand. Das bedeutet nur zusammenhängende Sessions mit Training, "
+#~ "Qualifying und Rennen oder Sessions mit Qualifying und Rennen. Reine "
+#~ "Trainings- oder Qualifying-Sessions ohne nachfolgende Rennen werden "
+#~ "ignoriert."
+
+#~ msgid "Of couse SX-BT is not effected from this"
+#~ msgstr "Natürlich ist SX-BT davon nicht betroffen"
+
+#~ msgid "Symbol"
+#~ msgstr "Symbol"
+
+#~ msgid "Experience from driven race length"
+#~ msgstr "Erfahrung von gefahrener Renndistanz"
+
+#~ msgid "Success points for best time in a race session."
+#~ msgstr "Erfolgspunkte für Bestzeit im Rennen."
+
+#~ msgid "Safety deduction points for cuts."
+#~ msgstr "Sicherheitspunktabzug für verlassen der Strecke."
+
+#~ msgid "Polls"
+#~ msgstr "Umfragen"
+
+#~ msgid "Creator"
+#~ msgstr "Ersteller"
+
+#~ msgid "Votes"
+#~ msgstr "Stimmen"
+
+#~ msgid "Edit"
+#~ msgstr "Editieren"
+
+#~ msgid "Create New Poll"
+#~ msgstr "Neue Umfrage Erstellen"
+
+#~ msgid "Secret Poll"
+#~ msgstr "Geheime Umfrage"
+
+#~ msgid "Poll Closing"
+#~ msgstr "Umfrage Schließung"
+
+#~ msgid "Points per Track"
+#~ msgstr "Punkte pro Strecke"
+
+#~ msgid "Add Tracks"
+#~ msgstr "Strecke Hinzufügen"
+
+#~ msgid "Points for all Car Classes"
+#~ msgstr "Punkte für alle Fahrzeugklassen zusammen"
+
+#~ msgid "Points per Car Class"
+#~ msgstr "Punkte pro Fahrzeugklasse"
+
+#~ msgid "Add Car Class"
+#~ msgstr "Fahrzeugklasse Hinzufügen"
+
+#~ msgid "Vote Tracks"
+#~ msgstr "Strecke Abstimmen"
+
+#~ msgid "Points per track"
+#~ msgstr "Punkte pro Strecke"
+
+#~ msgid "Points in sum"
+#~ msgstr "Punkte in Summe"
+
+#~ msgid "Points left to vote"
+#~ msgstr "Verbleibende Punkte zum Abstimmen"
+
+#~ msgid "Pos"
+#~ msgstr "Pos"
+
+#~ msgid "Sum Points"
+#~ msgstr "Summe Punkte"
+
+#~ msgid "Result CarClasses"
+#~ msgstr "Ergebnis Fahrzeugklassen"
+
+#~ msgid "Change Password"
+#~ msgstr "Passwort Ändern"
+
+#~ msgid "qumu"
+#~ msgstr "uqmu"
+
+#~ msgid "Personal Color"
+#~ msgstr "Persönliche Farbe"
+
+#~ msgid "Preferred Locale"
+#~ msgstr "Bevorzugte Lokalisierung"
+
+#~ msgid "requires re-login"
+#~ msgstr "erfordert re-login"
+
+#~ msgid "Save Personal Data"
+#~ msgstr "Persönliche Daten Speichern"
+
+#~ msgid "Race Poll"
+#~ msgstr "Rennumfrage"
+
+#~ msgid "Vote Race Date"
+#~ msgstr "Renndatum Abstimmen"
+
+#~ msgid "New Date:"
+#~ msgstr "Neues Datum:"
+
+#~ msgid "Add Date"
+#~ msgstr "Datum Hinzufügen"
+
+#~ msgid "Vote Race Classes"
+#~ msgstr "Fahrzeugklasse Abstimmen"
+
+#~ msgid "My Score"
+#~ msgstr "Meine Punkte"
+
+#~ msgid "Overall Score"
+#~ msgstr "Gesamtpunkzahl"
+
+#~ msgid "Add Track"
+#~ msgstr "Strecke Hinzufügen"
+
+#~ msgid "Queue"
+#~ msgstr "Schleife"
+
+#~ msgid "Save Session Queue"
+#~ msgstr "Session Schleife Speichern"
+
+#~ msgid "Enable Seat Occupations"
+#~ msgstr "Sitzbelegung Aktivieren"
+
+#~ msgid "Preset"
+#~ msgstr "Preset"
+
+#~ msgid "Save Session Schedule"
+#~ msgstr "Session Zeitplan Speichern"
+
+#~ msgid "Scheduled Sessions"
+#~ msgstr "Geplante Sessions"
+
+#~ msgid "Create New Schedule Item"
+#~ msgstr "Neues Zeitplanelement Erstellen"
+
+#~ msgid "Server/Session Name"
+#~ msgstr "Server/Session Name"
+
+#~ msgid "Temp Amb / Road"
+#~ msgstr "Temp. Umgebung / Strecke"
+
+#~ msgid "Fastest Laps"
+#~ msgstr "Schnellste Runde"
+
+#~ msgid "Stop Server"
+#~ msgstr "Server Anhalten"
+
+#~ msgid "Kill Server"
+#~ msgstr "Server Abbrechen"
+
+#~ msgid "Leaderboard"
+#~ msgstr "Führungsliste"
+
+#~ msgid "Save As New Preset"
+#~ msgstr "Als neues Preset speichern"
+
+#~ msgid "Championship"
+#~ msgstr "Meisterschaft"
+
+#~ msgid "Offline"
+#~ msgstr "Offline"
+
+#~ msgid "Delete This Championship"
+#~ msgstr "Diese Meisterschaft Löschen"
+
+#~ msgid "Create New Championship"
+#~ msgstr "Neue Meisterschaft Erzeugen"
+
+#~ msgid "Save Championship"
+#~ msgstr "Meisterschaft Speichern"
+
+#~ msgid "Car Class Management"
+#~ msgstr "Fahrzeugklassen Verwaltung"
+
+#~ msgid "General Car Class Setup"
+#~ msgstr "Allgemeine Fahrzeugklassen Einstellungen"
+
+#~ msgid "Cars In This Class"
+#~ msgstr "Fahrzeuge dieser Klasse"
+
+#~ msgid "Select below all cars that shall be added to the car class."
+#~ msgstr ""
+#~ "Wähle nachfolgend alle Fahrzeuge aus, die zu der Fahrzeugklasse "
+#~ "hinzugefügt werden sollen."
+
+#~ msgid "Seat Occupation"
+#~ msgstr "Sitzbelegung"
+
+#~ msgid "Current Occupations"
+#~ msgstr "Aktuelle Belegung"
+
+#~ msgid "Occupy Seat"
+#~ msgstr "Sitz Belegen"
+
+#~ msgid "DELETE Seat Occupation"
+#~ msgstr "Sitzbelegung Löschen"
+
+#~ msgid "Save Seat Occupation"
+#~ msgstr "Sitzbelegung Speichern"
 
 #~ msgid "weeks"
 #~ msgstr "Wochen"
