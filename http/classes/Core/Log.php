@@ -83,7 +83,7 @@ class Log {
         }
 
         // log entry
-        if (Config::LogDebug) {
+        if (Config::LogDebug && array_key_exists("HtmlContent", $_GET)) {
             $html = "$message<br>";
             $html .= Log::getBacktrace("<br>");
             echo "<div class=\"DebugLog Error\">$html</div>";
@@ -102,7 +102,7 @@ class Log {
             return;
 
         // put message to warning file buffer
-        if (Config::LogDebug) {
+        if (Config::LogDebug && array_key_exists("HtmlContent", $_GET)) {
             $html = "$message<br>";
             $html .= Log::getBacktrace("<br>");
             echo "<div class=\"DebugLog Warning\">$html</div>";
@@ -124,7 +124,7 @@ class Log {
     //! Debug messages are output directly
     public static function debug($message) {
 
-        if (Config::LogDebug !== TRUE)
+        if (Config::LogDebug !== TRUE || !array_key_exists("HtmlContent", $_GET))
             return;
 
         // put message to warning file buffer

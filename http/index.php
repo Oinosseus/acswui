@@ -61,12 +61,10 @@ if (array_key_exists("JsonContent", $_GET)) {
 \Core\Database::shutdown();
 
 // finish log
-if (array_key_exists("HtmlContent", $_GET)) {
-    $duration_end = microtime(TRUE);
-    $duration_ms = 1e3 * ($duration_end - $duration_start);
-    $msg = sprintf("Execution duration: %0.1f ms", $duration_ms);
-    \Core\Log::debug($msg);
-}
+$duration_end = microtime(TRUE);
+$duration_ms = 1e3 * ($duration_end - $duration_start);
+$msg = sprintf("Execution duration: %0.1f ms", $duration_ms);
+\Core\Log::debug($msg);
 \Core\Log::shutdown();
 
 ?>
