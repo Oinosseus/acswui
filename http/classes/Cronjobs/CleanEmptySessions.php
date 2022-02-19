@@ -21,7 +21,7 @@ class CleanEmptySessions extends \Core\Cronjob {
         foreach ($res as $row) {
             $session_id = (int) $row['Id'];
 
-            if ($this->countLaps($session_id) == 0) $empty_session_ids[] = $session_id;
+            if ($this->sessionIsEmpty($session_id)) $empty_session_ids[] = $session_id;
         }
 
         // delete empty sessions
@@ -35,10 +35,21 @@ class CleanEmptySessions extends \Core\Cronjob {
     }
 
 
-    private function countLaps(int $session_id) {
+    //! @return TRUE If this session and all predecessors are empty, else FALSE
+    private function sessionIsEmpty($session_id) {
+
+        // check if predecessors are empty
+        $query = "SELECT Predecessor FROM Sessions WHERE Id = $session_id";
+        $res = \Core\Database::fetchRaw($query);
+        if (count($res) > 0) {
+            $predecessor_id = $res[0]['Predecessor'];
+            if (!$this->sessionIsEmpty($predecessor_id)) return FALSE;
+        }
+
+        // check if this session is empty
         $query = "SELECT COUNT(Id) FROM `Laps` WHERE SESSION = $session_id;";
         $res = \Core\Database::fetchRaw($query);
-        return (int) $res[0]['COUNT(Id)'];
+        return ($res[0]['COUNT(Id)'] == 0) ? TRUE : FALSE;
     }
 
 
