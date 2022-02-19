@@ -44,20 +44,38 @@ class Track extends DbEntry {
     }
 
 
-    //! @return An array of best laptiumes of this track for a certain car class
+    /**
+     * Determine the best laps per user on this track with a certain carclass
+     * @return An array of Lap objects with best laptiumes of this track for a certain car class
+     */
     public function bestLaps(CarClass $cc) {
 
         if (!array_key_exists($cc->id(), $this->BestTimes)) {
             $this->BestTimes[$cc->id()] = array();
 
-            $found_driver_ids = array();
-            $query = "SELECT Laps.Id, Laps.User FROM `Laps` INNER JOIN Sessions ON Sessions.Id = Laps.Session INNER JOIN CarSkins On CarSkins.Id = Laps.CarSkin INNER JOIN CarClassesMap ON CarSkins.Car = CarClassesMap.Car WHERE Sessions.Track = " . $this->id() . " AND Laps.Cuts = 0 AND CarClassesMap.CarClass = " . $cc->id() . " ORDER BY Laptime ASC;";
-            foreach (\Core\Database::fetchRaw($query) as $row) {
-                $user_id = $row['User'];
-                if (!in_array($user_id, $found_driver_ids)) {
-                    $found_driver_ids[] = $user_id;
-                    $lap = Lap::fromId($row['Id']);
-                    $this->BestTimes[$cc->id()][] = $lap;
+
+            // get from records file
+            $records_file = \Core\Config::AbsPathData . "/htcache/records_track.json";
+            if (file_exists($records_file)) {
+                $records = json_decode(file_get_contents($records_file), TRUE);
+                if (array_key_exists($this->id(), $records) && array_key_exists($cc->id(), $records[$this->id()])) {
+                    foreach ($records[$this->id()][$cc->id()] as $lap_id) {
+                        $this->BestTimes[$cc->id()][] = Lap::fromId($lap_id);
+                    }
+                }
+
+            // get from database
+            } else {
+
+                $found_driver_ids = array();
+                $query = "SELECT Laps.Id, Laps.User FROM `Laps` INNER JOIN Sessions ON Sessions.Id = Laps.Session INNER JOIN CarSkins On CarSkins.Id = Laps.CarSkin INNER JOIN CarClassesMap ON CarSkins.Car = CarClassesMap.Car WHERE Sessions.Track = " . $this->id() . " AND Laps.Cuts = 0 AND CarClassesMap.CarClass = " . $cc->id() . " ORDER BY Laptime ASC;";
+                foreach (\Core\Database::fetchRaw($query) as $row) {
+                    $user_id = $row['User'];
+                    if (!in_array($user_id, $found_driver_ids)) {
+                        $found_driver_ids[] = $user_id;
+                        $lap = Lap::fromId($row['Id']);
+                        $this->BestTimes[$cc->id()][] = $lap;
+                    }
                 }
             }
 

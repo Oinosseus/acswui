@@ -95,12 +95,13 @@ class InstallerTracks(object):
             else:
                 self.__db.updateRow("Tracks", existing_track_ids[0], {"Config": "", "Name": track_name, "Length": track_length, "Pitboxes": track_pitbxs, "Deprecated":0})
 
-            self._update_track_info(track_location_id, [track_name], [track_country])
+            self._update_track_info(track_location_id, [track_name], [track_country], [track_descr])
 
         # update track configs
         if os.path.isdir(track_path + "/ui"):
             track_names = []
             track_countries = []
+            track_descriptions = []
             for track_config in os.listdir(track_path + "/ui"):
                 if os.path.isdir(track_path + "/ui/" + track_config):
                     if os.path.isfile(track_path + "/ui/" + track_config + "/ui_track.json"):
@@ -115,6 +116,7 @@ class InstallerTracks(object):
                         track_country = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "country", "")
                         track_names.append(track_name)
                         track_countries.append(track_country)
+                        track_descriptions.append(track_descr)
 
                         existing_track_ids = self._find_track_ids(track_location_id, track_config)
                         table_fields = {"Location": track_location_id,
@@ -132,7 +134,7 @@ class InstallerTracks(object):
                             self.__db.updateRow("Tracks", existing_track_ids[0], table_fields)
 
             if len(track_names) > 0:
-                self._update_track_info(track_location_id, track_names, track_countries)
+                self._update_track_info(track_location_id, track_names, track_countries, track_descriptions)
 
 
 
@@ -152,7 +154,7 @@ class InstallerTracks(object):
 
 
 
-    def _update_track_info(self, track_location_id, track_names, track_countries):
+    def _update_track_info(self, track_location_id, track_names, track_countries, track_descriptions):
 
         def detect_location(track_names):
             track_location_name = ""
@@ -175,7 +177,6 @@ class InstallerTracks(object):
 
             return track_location_name
 
-
         # get location name
         track_location_name = detect_location(track_names)
         if track_location_name == "":
@@ -184,6 +185,19 @@ class InstallerTracks(object):
                 track_names[i] = track_names[i][::-1]
             track_location_name = detect_location(track_names)
             track_location_name = track_location_name[::-1]
+
+        # if still no track locations name found, try extract from track description
+        # occurred with track 'Croft' from author 'Legion'
+        if track_location_name == "":
+            track_location_name = detect_location(track_descriptions)
+        if track_location_name == "":
+            # reverse names
+            for i in range(len(track_descriptions)):
+                track_descriptions[i] = track_descriptions[i][::-1]
+            track_location_name = detect_location(track_descriptions)
+            track_location_name = track_location_name[::-1]
+        if len(track_location_name) == 0:
+            print("HERE", track_location_id, track_location_name, track_descriptions)
 
         # cleanup name
         track_location_name = track_location_name.strip()

@@ -19,6 +19,7 @@ final class ParamFloat extends ParamInt {
 
 
     final public function formatValue($value) {
+        $value = str_replace(",", ".", $value);
         return sprintf("%0.2f", $value);
     }
 }

@@ -249,8 +249,13 @@ class CommandInstall(Command):
         if not os.path.isdir(path_htcache):
             Verbosity(Verbosity(verb)).print("mkdirs " + path_htcache)
             self.mkdirs(path_htcache)
-        path_htdocs_src = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "http")
         shutil.copy(os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "docs", "slot_ports_optimized.svg"), os.path.join(path_htcache, "slot_ports_optimized.svg"))
+
+        # htcache/cronjobs
+        path_htcache_cronjobs = os.path.join(path_data, "htcache", "cronjobs")
+        if not os.path.isdir(path_htcache_cronjobs):
+            Verbosity(Verbosity(verb)).print("mkdirs " + path_htcache_cronjobs)
+            self.mkdirs(path_htcache_cronjobs)
 
         # acserver binaries
         path_srvpkg_acserver = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver")
@@ -342,14 +347,6 @@ class CommandInstall(Command):
         abspath_htdata = os.path.abspath(self.getGeneralArg('path-htdata'))
         abspath_acswui_py = os.path.abspath(os.path.join(abspath_acswui, "acswui.py"))
 
-        # driver ranking
-        driver_ranking = {"XP":{}, "SX":{}, "SF":{}, "DEF":{}}
-        driver_ranking_from_ini = self.getIniSection("DRIVER_RANKING")
-        for drfi_key in driver_ranking_from_ini.keys():
-            value = driver_ranking_from_ini[drfi_key]
-            group, key = drfi_key.upper().split("_")
-            driver_ranking[group][key] = value
-
         # scan locales
         locales = []
         path_locales = os.path.join(self.getGeneralArg('path-htdocs'), "locale")
@@ -370,6 +367,11 @@ class CommandInstall(Command):
         # country codes
         country_codes_json_string = subprocess.check_output(["curl", "https://flagcdn.com/en/codes.json"]).decode("utf-8")
         country_codes_json = json.loads(country_codes_json_string)
+
+        # driver ranking groups
+        drvrnkgrps = int(self.getGeneralArg('driver-ranking-groups'))
+        if drvrnkgrps < 1 or drvrnkgrps > 100:
+            raise ValueError("The INI file key 'driver-ranking-groups' must be in the range [1, 100]!")
 
 
 
@@ -415,8 +417,7 @@ class CommandInstall(Command):
             f.write("    const DWhSchSrvStrtGMntn = \"%s\";\n" % self.getIniSection("DISCORD_WEBHOOKS")['SCHEDULE_SERVER_START_MENTION_GROUPID'])
             f.write("\n")
             f.write("    // misc\n")
-            f.write("    const DriverRanking = %s;\n" % self.dict2php(driver_ranking))
-            #f.write("    const DriverRankingCummulateScanDays = %s;\n" % self.getIniSection("DRIVER_RANKING")['CummulateScanDays'])
+            f.write("    const DriverRankingGroups = %s;\n" % drvrnkgrps)
             f.write("}\n")
 
 
@@ -579,6 +580,7 @@ class CommandInstall(Command):
         permissions.append("ServerContent_Teams_View")
         permissions.append("ServerContent_Tracks_View")
         permissions.append("ServerContent_View")
+        permissions.append("User_DriverRanking_View")
         permissions.append("User_View")
         permissions.append("User_Settings")
         permissions.append("User_Groups_View")
@@ -597,6 +599,8 @@ class CommandInstall(Command):
         permissions.append("Sessions_View")
         permissions.append("Sessions_Control")
         permissions.append("Json")
+        permissions.append("Cronjobs_View")
+        permissions.append("Cronjobs_Force")
 
         # delete obsolete permissions
         for column in self.__db.columns("Groups"):

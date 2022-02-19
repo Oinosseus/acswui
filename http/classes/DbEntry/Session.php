@@ -79,6 +79,7 @@ class Session extends DbEntry {
 
     //! @return An array of User objects
     public function drivers() {
+        //! @todo Duplicates users()
         $drivers = array();
         $res = \Core\Database::fetchRaw("SELECT DISTINCT User FROM Laps WHERE Session = " . $this->id());
         foreach ($res as $row) $drivers[] = User::fromId($row['User']);
@@ -313,6 +314,7 @@ class Session extends DbEntry {
 
     //! @return A list of User objects of all users that have driven a lap in this session
     public function users() {
+        //! @todo Duplicates drivers()
         if ($this->Users === NULL) {
             $this->Users = array();
             $res = \Core\Database::fetchRaw("SELECT DISTINCT User FROM `Laps` WHERE Session = " . $this->id());

@@ -13,6 +13,7 @@ class User extends DbEntry { #implements JsonSerializable {
     private $Permissions = NULL;
     private $ParameterCollection = NULL;
 
+    private $LastLap = NULL;
     private $DaysSinceLastLap = NULL;
     private $DaysSinceLastLogin = NULL;
     private $Teams = NULL;
@@ -280,6 +281,19 @@ class User extends DbEntry { #implements JsonSerializable {
     //! @return True, if this represents the root user, else False
     public function isRoot() {
         return $this->id() === 0;
+    }
+
+
+    //! @return The Lap object of the last driven lap (or NULL)
+    public function lastLap() {
+        if ($this->LastLap === NULL) {
+            $query = "SELECT Id FROM Laps WHERE User=" . $this->id() . " ORDER BY Id DESC LIMIT 1;";
+            $res = \Core\Database::fetchRaw($query);
+            if (count($res) > 0) {
+                $this->LastLap = Lap::fromId($res[0]['Id']);
+            }
+        }
+        return $this->LastLap;
     }
 
 

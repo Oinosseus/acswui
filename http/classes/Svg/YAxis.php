@@ -15,10 +15,14 @@ class YAxis {
     private $YTick = NULL;
 
 
-    public function __construct(string $xml_id, string $extra_class) {
-        $this->ExtraClass = $xml_id;
+    /**
+     * @param $css_class Additional CSS class for the axis group
+     * @param $label Arbitrary name of the axis
+     */
+    public function __construct(string $css_class, string $label) {
+        $this->ExtraClass = $css_class;
         $this->IsLeft = TRUE;
-        $this->Label = $extra_class;
+        $this->Label = $label;
     }
 
 

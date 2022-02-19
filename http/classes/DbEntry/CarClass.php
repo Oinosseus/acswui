@@ -77,21 +77,35 @@ class CarClass extends DbEntry {
     }
 
 
-    //! @return An array of best laptiumes of this carclass on a certain track
+    //! @return An array of Lap objects with best laptiumes of this carclass on a certain track
     public function bestLaps(Track $track) {
 
         if (!array_key_exists($track->id(), $this->BestTimes)) {
             $this->BestTimes[$track->id()] = array();
 
-            $found_driver_ids = array();
-            //! @todo Find better query to have unique Laps.User in the response. This could increase speed significantly
-            $query = "SELECT Laps.Id, Laps.User FROM `Laps` INNER JOIN Sessions ON Sessions.Id = Laps.Session INNER JOIN CarSkins On CarSkins.Id = Laps.CarSkin INNER JOIN CarClassesMap ON CarSkins.Car = CarClassesMap.Car WHERE Sessions.Track = " . $track->id() . " AND Laps.Cuts = 0 AND CarClassesMap.CarClass = " . $this->id() . " ORDER BY Laptime ASC;";
-            foreach (\Core\Database::fetchRaw($query) as $row) {
-                $user_id = $row['User'];
-                if (!in_array($user_id, $found_driver_ids)) {
-                    $found_driver_ids[] = $user_id;
-                    $lap = Lap::fromId($row['Id']);
-                    $this->BestTimes[$track->id()][] = $lap;
+            // get from records file
+            $records_file = \Core\Config::AbsPathData . "/htcache/records_carclass.json";
+            if (file_exists($records_file)) {
+                $records = json_decode(file_get_contents($records_file), TRUE);
+                if (array_key_exists($this->id(), $records) && array_key_exists($track->id(), $records[$this->id()])) {
+                    foreach ($records[$this->id()][$track->id()] as $lap_id) {
+                        $this->BestTimes[$track->id()][] = Lap::fromId($lap_id);
+                    }
+                }
+
+            // get from database
+            } else {
+
+                $found_driver_ids = array();
+                //! @todo Find better query to have unique Laps.User in the response. This could increase speed significantly
+                $query = "SELECT Laps.Id, Laps.User FROM `Laps` INNER JOIN Sessions ON Sessions.Id = Laps.Session INNER JOIN CarSkins On CarSkins.Id = Laps.CarSkin INNER JOIN CarClassesMap ON CarSkins.Car = CarClassesMap.Car WHERE Sessions.Track = " . $track->id() . " AND Laps.Cuts = 0 AND CarClassesMap.CarClass = " . $this->id() . " ORDER BY Laptime ASC;";
+                foreach (\Core\Database::fetchRaw($query) as $row) {
+                    $user_id = $row['User'];
+                    if (!in_array($user_id, $found_driver_ids)) {
+                        $found_driver_ids[] = $user_id;
+                        $lap = Lap::fromId($row['Id']);
+                        $this->BestTimes[$track->id()][] = $lap;
+                    }
                 }
             }
 

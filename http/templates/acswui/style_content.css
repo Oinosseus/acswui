@@ -337,3 +337,17 @@ main.SessionOverview div#SessionInformationDatalets div {
 main.SessionOverview div#SessionInformationDatalets div strong {
     display: block;
 }
+
+
+
+/*****************************************************************************
+                          DriverRanking
+ *****************************************************************************/
+
+main.DriverRanking span.TrendRising {
+    color: var(--color-functional-success);
+}
+
+main.DriverRanking span.TrendFalling {
+    color: var(--color-functional-fail);
+}

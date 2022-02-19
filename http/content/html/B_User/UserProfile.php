@@ -32,6 +32,13 @@ class UserProfile extends \core\HtmlContent {
 
             $html .= "<strong>" . _("Last Login") . "</strong>: " . $user->formatDateTime($user->lastLogin()) . " (" . $user->daysSinceLastLogin() . "d)<br>";
 
+            $html .= "<strong>" . _("Last Lap") . "</strong>: ";
+            $lap = $user->lastLap();
+            if ($lap !== NULL) {
+                $html .= $user->formatDateTime($lap->timestamp()) . " (" . $user->daysSinceLastLap() . "d)";
+            }
+            $html .= "<br>";
+
             $html .= "<strong>" . _("Status") . "</strong>: ";
             if ($user->isDriver() && $user->isCommunity()) $html .= _("active driver in community");
             else if ($user->isDriver()) $html .= _("active driver");

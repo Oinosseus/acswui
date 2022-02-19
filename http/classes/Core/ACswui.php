@@ -28,18 +28,24 @@ class ACswui  {
     }
 
 
-    public function parameterCollection() {
+    public static function parameterCollection() {
         if (ACswui::$ParameterCollection === NULL) {
             $root_collection = new \Parameter\Collection(NULL, NULL, "ACswui", _("ACswui Settings"), _("Settings to configure the ACswui system"));
 
 
+
+
             // ----------------------------------------------------------------
-            //! @todo                   To Be Grouped
+            //                          System
             // ----------------------------------------------------------------
-            $p = new \Parameter\ParamInt(NULL, $root_collection, "NonActiveDrivingDays", _("Non-Active Driving Days"), _("When the last lap of a user is longer days ago than this value, he or she is considered to be an inactive driver"), "", 30);
+
+            $pc = new \Parameter\Collection(NULL, $root_collection, "System", _("System"), _("General system settings"));
+
+            $p = new \Parameter\ParamTime(NULL, $pc, "CronjobDailyExecutionTime", _("Cronjob Execution Time"), _("Time when daily cronjobs shall be executed (typically during night time)\nBe aware that this is server-time-zone"), "Server-Time", "03:30");
+            $p = new \Parameter\ParamInt(NULL, $pc, "NonActiveDrivingDays", _("Non-Active Driving Days"), _("When the last lap of a user is longer days ago than this value, he or she is considered to be an inactive driver"), "", 30);
             $p->setMin(1);
             $p->setMax(3650);
-            $p = new \Parameter\ParamInt(NULL, $root_collection, "CommunityLastLoginDays", _("Non-Active Community Login Days"), _("When a user has not logged in into the system for this amount of days he or she is not considered to be a community member\nAdditionally an user must be an active driver to be considered as community member"), "", 90);
+            $p = new \Parameter\ParamInt(NULL, $pc, "CommunityLastLoginDays", _("Non-Active Community Login Days"), _("When a user has not logged in into the system for this amount of days he or she is not considered to be a community member\nAdditionally an user must be an active driver to be considered as community member"), "", 90);
             $p->setMin(1);
             $p->setMax(3650);
 
@@ -49,13 +55,17 @@ class ACswui  {
             // ----------------------------------------------------------------
 
             $pc = new \Parameter\Collection(NULL, $root_collection, "DriverRanking", _("Driver Ranking"), _("Settings for driver ranking"));
-            $p = new \Parameter\ParamFloat(NULL, $pc, "DriverRankingDays", _("Days"), _("Amount of days in the past over which the driver ranking shall be calculated"), "d", 30);
+            $p = new \Parameter\ParamInt(NULL, $pc, "DriverRankingDays", _("Days"), _("Amount of days in the past over which the driver ranking shall be calculated"), "d", 30);
             $p->setMin(0);
             $p->setMax(999);
 
+            ///////////////////
+            //  Ranking Points
+            $pc2 = new \Parameter\Collection(NULL, $pc, "DriverRankingPoints", _("Ranking Points"), _("Adjusting ranking points"));
+
             // experience
-            $coll = new \Parameter\Collection(NULL, $pc, "DriverRankingXp", _("Experience"), _("Drivers earn experience when completing laps"));
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingXpP", _("Practice"), _("Earned experience points by driven distance in practice"), "Points/Mm", 3);
+            $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingXp", _("Experience"), _("Drivers earn experience when completing laps"));
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingXpP", _("Practice"), _("Earned experience points by driven distance in practice"), "Points/Mm", 1);
             $p->setMin(0);
             $p->setMax(9999);
             $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingXpQ", _("Qualifying"), _("Earned experience points by driven distance in qualifying"), "Points/Mm", 10);
@@ -66,7 +76,7 @@ class ACswui  {
             $p->setMax(9999);
 
             // success
-            $coll = new \Parameter\Collection(NULL, $pc, "DriverRankingSx", _("Success"), _("Settings how drivers earn points for their success"));
+            $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingSx", _("Success"), _("Settings how drivers earn points for their success"));
             $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxBt", _("Best Time"), _("Points for best times per track and car class (per leading position prior to another driver)"), "Points/Position", 0.1);
             $p->setMin(0);
             $p->setMax(9999);
@@ -81,20 +91,47 @@ class ACswui  {
             $p->setMax(9999);
 
             // safety
-            $coll = new \Parameter\Collection(NULL, $pc, "DriverRankingSf", _("Safety"), _("Settings for penalty points that drivers get"));
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCt", _("Cuts"), _("Points for amount of cuts that were made"), "Points/Cut", -1.0);
+            $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingSf", _("Safety"), _("Settings for penalty points that drivers get"));
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCt", _("Cuts"), _("Points for amount of cuts that were made"), "Points/Cut", -0.1);
             $p->setMin(-9999);
             $p->setMax(0);
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCe", _("Collision Environment"), _("Points for colliding with the environment"), "Points/Normspeed-Collision", -2.0);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCe", _("Collision Environment"), _("Points for colliding with the environment"), "Points/Normspeed-Collision", -1.0);
             $p->setMin(-9999);
             $p->setMax(0);
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCc", _("Collision Cars"), _("Points for colliding with other cars"), "Points/Normspeed-Collision", -5.0);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSfCc", _("Collision Cars"), _("Points for colliding with other cars"), "Points/Normspeed-Collision", -2.0);
             $p->setMin(-9999);
             $p->setMax(0);
             $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingCollNormSpeed", _("Nominal Collision-Speed"), _("Nominal speed at which collision a collsion points counts nominal"), "km/h", 100.0);
             $p->setMin(0);
             $p->setMax(999);
-            $p = new \Parameter\ParamBool(NULL, $coll, "DriverRankingSfAP", _("Amnesty in Practice"), _("If enabled, safety penalties are not given for pure practice sessions (sessions without succeeding qualifying/race)"), "", TRUE);
+            $p = new \Parameter\ParamBool(NULL, $coll, "DriverRankingSfAP", _("Amnesty in Practice"), _("If enabled, safety penalties are not given for practice sessions (only qualifying/race)"), "", TRUE);
+
+
+            ///////////////////
+            //  Ranking Groups
+            if (Config::DriverRankingGroups > 1) {
+                $pc2 = new \Parameter\Collection(NULL, $pc, "DriverRankingGroups", _("Ranking Groups"), _("Adjusting groups"));
+
+                $p = new \Parameter\ParamEnumMonthly(NULL, $pc2, "DriverRankingGroupCycle", _("Cycle Time"), _("Define how often the ranking groups shall be assigned"));
+                $p->setValue("1Mon;2Mon;3Mon;4Mon;5Mon");
+
+                $p = new \Parameter\ParamEnum(NULL, $pc2, "DriverRankingGroupType", _("Threshold Type"), _("points - A driver needs an amount of points to reach a group\ndrivers - a fix amount of top drivers per group\npercent - percentage of points from the absolute top driver"), "");
+                new \Parameter\EnumItem($p, "points", _("points"));
+                new \Parameter\EnumItem($p, "drivers", _("drivers"));
+                new \Parameter\EnumItem($p, "percent", _("percent"));
+                $p->setValue("points");
+
+                $i = 1;
+                for (; $i < Config::DriverRankingGroups; ++$i) {
+                    $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingGroup$i", _("Group") . " $i", _("Settings for a driver ranking group"));
+                    $p = new \Parameter\ParamString(NULL, $coll, "DriverRankingGroup$i". "Name", _("Name"), _("An arbitrary name for this group"), "", "Group $i");
+                    $p = new \Parameter\ParamInt(NULL, $coll, "DriverRankingGroup$i" . "Thld", _("Threshold"), _("The ranking threshold a driver needs to pass to enter this group"), "", 120 - 20 * $i);
+                }
+                $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingGroup$i", _("Group") . " $i", _("Settings for a driver ranking group"));
+                $p = new \Parameter\ParamString(NULL, $coll, "DriverRankingGroup$i". "Name", _("Name"), _("An arbitrary name for this group"), "", "Group $i");
+            }
+
+
 
 
             // ----------------------------------------------------------------
@@ -139,7 +176,7 @@ class ACswui  {
                     if ($data_array == NULL) {
                         \Core\Log::warning("Decoding NULL from json file '$file_path'.");
                     } else {
-                        $this->parameterCollection()->dataArrayImport($data_array);
+                        ACswui::$ParameterCollection->dataArrayImport($data_array);
                     }
                 }
             } else {

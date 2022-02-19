@@ -386,6 +386,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnFloat("DriverRanking", 'SF_CT')
         self.__db.appendColumnFloat("DriverRanking", 'SF_CE')
         self.__db.appendColumnFloat("DriverRanking", 'SF_CC')
+        self.__db.appendColumnUInt("DriverRanking", 'RankingGroup')
 
         # check table StatsGeneral
         Verbosity(verb).print("check database table `StatsGeneral`")

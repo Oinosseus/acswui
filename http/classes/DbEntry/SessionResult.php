@@ -130,7 +130,7 @@ class SessionResult extends DbEntry {
             }
 
         } else {
-            return SessionResult::compareBestLap($result1, $result2);
+            return SessionResult::compareBestLaptime($result1, $result2);
         }
     }
 
@@ -327,24 +327,26 @@ class SessionResult extends DbEntry {
             $this->RankingPoints['SX']['Sum'] = $this->RankingPoints['SX']['RT'] + $this->RankingPoints['SX']['R'] + $this->RankingPoints['SX']['Q'];
 
             // safety
-            $this->RankingPoints['SF']['CT'] = $this->amountCuts() * \Core\Acswui::getPAram('DriverRankingSfCt');
-            $normspeed_coll_env = 0;
-            $normspeed_coll_car = 0;
-            foreach ($this->session()->collisions() as $coll) {
-                if ($coll->user()->id() != $this->user()->id()) continue;
-                if  ($coll instanceof CollisionCar) {
-                    $normspeed_coll_car += $coll->speed();
-                } else if  ($coll instanceof CollisionEnv) {
-                    $normspeed_coll_env += $coll->speed();
-                } else {
-                    \Core\Log::error("Unknown collision class!");
+            if ($this->session()->type() != Session::TypePractice || \Core\ACswui::getPAram('DriverRankingSfAP') == FALSE) {
+                $this->RankingPoints['SF']['CT'] = $this->amountCuts() * \Core\Acswui::getPAram('DriverRankingSfCt');
+                $normspeed_coll_env = 0;
+                $normspeed_coll_car = 0;
+                foreach ($this->session()->collisions() as $coll) {
+                    if ($coll->user()->id() != $this->user()->id()) continue;
+                    if  ($coll instanceof CollisionCar) {
+                        $normspeed_coll_car += $coll->speed();
+                    } else if  ($coll instanceof CollisionEnv) {
+                        $normspeed_coll_env += $coll->speed();
+                    } else {
+                        \Core\Log::error("Unknown collision class!");
+                    }
                 }
+                $normspeed_coll_env /= \Core\Acswui::getPAram('DriverRankingCollNormSpeed');
+                $normspeed_coll_car /= \Core\Acswui::getPAram('DriverRankingCollNormSpeed');
+                $this->RankingPoints['SF']['CE'] = \Core\Acswui::getPAram('DriverRankingSfCe') * $normspeed_coll_env;
+                $this->RankingPoints['SF']['CC'] = \Core\Acswui::getPAram('DriverRankingSfCc') * $normspeed_coll_car;
+                $this->RankingPoints['SF']['Sum'] = $this->RankingPoints['SF']['CT'] + $this->RankingPoints['SF']['CE'] + $this->RankingPoints['SF']['CC'];
             }
-            $normspeed_coll_env /= \Core\Acswui::getPAram('DriverRankingCollNormSpeed');
-            $normspeed_coll_car /= \Core\Acswui::getPAram('DriverRankingCollNormSpeed');
-            $this->RankingPoints['SF']['CE'] = \Core\Acswui::getPAram('DriverRankingSfCe') * $normspeed_coll_env;
-            $this->RankingPoints['SF']['CC'] = \Core\Acswui::getPAram('DriverRankingSfCc') * $normspeed_coll_car;
-            $this->RankingPoints['SF']['Sum'] = $this->RankingPoints['SF']['CT'] + $this->RankingPoints['SF']['CE'] + $this->RankingPoints['SF']['CC'];
         }
 
 

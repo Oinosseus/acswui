@@ -178,16 +178,16 @@ class XYChart {
     }
 
 
-    /**
-     * The tick is used for grid and min/max axis calculation
-     */
-    public function setTick(int $x_tick, int $y_tick) {
-//         $this->XTick = $x_tick;
-//         $this->YTick = $y_tick;
-        foreach ([$this->YAxisLeft, $this->YAxisRight] as $ax) {
-            $ax->setTick($x_tick, $y_tick);
-        }
-    }
+//     /**
+//      * The tick is used for grid and min/max axis calculation
+//      */
+//     public function setTick(int $x_tick, int $y_tick) {
+// //         $this->XTick = $x_tick;
+// //         $this->YTick = $y_tick;
+//         foreach ([$this->YAxisLeft, $this->YAxisRight] as $ax) {
+//             $ax->setTick($x_tick, $y_tick);
+//         }
+//     }
 
 
 }

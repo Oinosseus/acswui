@@ -72,9 +72,10 @@ class Log {
     //! Error messages are written immediately without buffering.
     //! Logfile is locked -> multiple instances must wait for releasing.
     public static function error ($message) {
+        $html_debug_log = Config::LogDebug && array_key_exists("HtmlContent", $_GET);
 
         // open logfile for writing
-        if (Config::LogDebug !== TRUE && Log::$FileHandleError == 0) {
+        if (!$html_debug_log && Log::$FileHandleError == 0) {
             Log::$FileHandleError = fopen(Log::$FilePathError, 'a');
             flock(Log::$FileHandleError, LOCK_EX);
             fwrite(Log::$FileHandleError, "\n\n\n");
@@ -83,7 +84,7 @@ class Log {
         }
 
         // log entry
-        if (Config::LogDebug && array_key_exists("HtmlContent", $_GET)) {
+        if ($html_debug_log) {
             $html = "$message<br>";
             $html .= Log::getBacktrace("<br>");
             echo "<div class=\"DebugLog Error\">$html</div>";
@@ -97,12 +98,13 @@ class Log {
 
     //! Warning messages are bufferend. The logfile is written when class destructor is called.
     public static function warning ($message) {
+        $html_debug_log = Config::LogDebug && array_key_exists("HtmlContent", $_GET);
 
         if (Config::LogWarning !== TRUE)
             return;
 
         // put message to warning file buffer
-        if (Config::LogDebug && array_key_exists("HtmlContent", $_GET)) {
+        if ($html_debug_log) {
             $html = "$message<br>";
             $html .= Log::getBacktrace("<br>");
             echo "<div class=\"DebugLog Warning\">$html</div>";
@@ -117,14 +119,15 @@ class Log {
             }
 
             Log::$FileBufferWarning .= "\n$message\n";
-            fwrite(Log::$FileBufferWarning, Log::getBacktrace("\n"));
+            fwrite(Log::$FileHandleWarning, Log::getBacktrace("\n"));
         }
     }
 
     //! Debug messages are output directly
     public static function debug($message) {
+        $html_debug_log = Config::LogDebug && array_key_exists("HtmlContent", $_GET);
 
-        if (Config::LogDebug !== TRUE || !array_key_exists("HtmlContent", $_GET))
+        if (!$html_debug_log)
             return;
 
         // put message to warning file buffer

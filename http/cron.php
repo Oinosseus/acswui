@@ -1,92 +1,48 @@
 <?php
-// To increase verbosity call cron.php?VERBOSE
 
-error_reporting(-1);
+$duration_start = microtime(TRUE);
+
+// error reporting
+error_reporting(E_ALL | E_STRICT);
 if (ini_set('display_errors', '1') === false) {
     echo "ini_set for error display failed!";
     exit(1);
 }
 
-// execution performance
-$acswui_execution_start_date  = date("Y-m-d H:i:s");
-$acswui_execution_start_mtime = microtime(true);
+// autoload of class library
+spl_autoload_register(function($className) {
+    $className = str_replace("\\", DIRECTORY_SEPARATOR, $className);
+    $file_path = 'classes/' . $className . '.php';
+    if (file_exists($file_path)) include_once $file_path;
+});
 
-//session_start();
-
-
-
-// =====================
-//  = Include Library =
-// =====================
-
-include("includes.php");
-
-
-
-// =========================
-//  = Fundamental Objects =
-// =========================
-
-$acswuiConfig   = new cConfig();
-$acswuiLog      = new cLog($acswuiConfig->AbsPathData . "/logs_cron/");
-$acswuiLog->LogNotice("Execution start at " . $acswui_execution_start_date);
-$acswuiDatabase = new cDatabase();
-// $acswuiUser     = new cUser();
-
-
-
-// =======================
-//  = Cronjob Execution =
-// =======================
-
-// user information
-$executed_jobs = array();
-$not_executed_jobs = array();
-if (isset($_GET["VERBOSE"])) {
-    echo "<h1>Executed Jobs</h1>";
+// session control
+session_set_cookie_params(0);
+if (   ini_set('session.cookie_lifetime',  '0')  === false
+    || ini_set('session.use_cookies',      'On') === false
+    || ini_set('session.use_strict_mode',  'On') === false ) {
+    echo "ini_set for session failed!";
+    exit(1);
 }
+session_start();
 
-// scan cronjobs
-foreach (scandir("cronjobs",SCANDIR_SORT_ASCENDING) as $entry) {
+// initialize global singletons
+\Core\Log::initialize(\Core\Config::AbsPathData . "/logs_cron");
+\Core\Database::initialize(\Core\Config::DbHost,
+                           \Core\Config::DbUser,
+                           \Core\Config::DbPasswd,
+                           \Core\Config::DbDatabase);
+\Core\UserManager::initialize();
 
-    // only care for php files
-    if (substr($entry, -4, 4) != ".php") continue;
+// execute cronjobs
+\Core\Cronjob::checkExecute();
 
-    // import cronjob class
-    include("cronjobs/$entry");
-    $job_class_name = substr($entry, 0, strlen($entry) - 4);
+// deinitialization of global singletons
+\Core\Database::shutdown();
 
-    // execute cronjob
-    $job_object = new $job_class_name();
-    $job_executed = $job_object->check_execute();
-
-    // user information
-    if (isset($_GET["VERBOSE"])) {
-
-        if ($job_executed) {
-            echo "<h2>$job_class_name</h2>";
-            echo "Duration: " . $job_object->executionDuration() . "ms<br>";
-            echo $job_object->getLog();
-
-        } else {
-            $not_executed_jobs[] = $job_class_name;
-        }
-    }
-}
-
-// user information
-if (isset($_GET["VERBOSE"]) && count($not_executed_jobs) > 0) {
-    echo "<h1>Not Executed Jobs</h1>";
-    foreach ($not_executed_jobs as $job) {
-        echo "$job<br>";
-    }
-}
-
-
-// ======================
-//  = Finish Execution =
-// ======================
-
-$acswuiLog->LogNotice("Execution finished at " . date("Y-m-d H:i:s") . " in " . (microtime(true) - $acswui_execution_start_mtime) . " seconds");
-
-?>
+// finish log
+$duration_end = microtime(TRUE);
+$duration_ms = 1e3 * ($duration_end - $duration_start);
+$msg = sprintf("Execution duration: %0.1f ms", $duration_ms);
+\Core\Log::debug($msg);
+\Core\Log::shutdown();

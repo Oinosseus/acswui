@@ -4,6 +4,7 @@ import os.path
 import PIL
 import re
 import shutil
+import subprocess
 
 def parse_json(file_path, expected_keys=[]):
 
@@ -126,6 +127,7 @@ def generateHtmlImg(src_img_path, src_img_hover, dst_dir, db_id):
 
     # save as default preview
     img_htmlimg.save(path_htmlimg, "PNG")
+    subprocess.run(["chmod", "u+w", path_htmlimg])  # by unknown reason saved images are not modifyable, wich causes issues at re-install
 
     # merge existing outline
     img_outline = None
@@ -139,6 +141,7 @@ def generateHtmlImg(src_img_path, src_img_hover, dst_dir, db_id):
 
     # save hover image
     img_htmlimg.save(path_htmlimg_hover, "PNG")
+    subprocess.run(["chmod", "u+w", path_htmlimg_hover])  # by unknown reason saved images are not modifyable, wich causes issues at re-install
 
     # fallback solution if pillow cannot open preview image
     if img_preview is None and os.path.isfile(src_img_path):
