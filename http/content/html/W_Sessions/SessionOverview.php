@@ -280,7 +280,6 @@ class SessionOverview extends \core\HtmlContent {
 
     private function sessionSlector() {
         $html = "";
-        $user = \core\UserManager::currentUser();
 
         // filter select
         $html .= $this->newHtmlForm("POST");
@@ -306,19 +305,35 @@ class SessionOverview extends \core\HtmlContent {
         $html .= $this->newHtmlForm("GET");
         $html .= _("Session Select") . ": ";
         $html .= "<select name=\"SessionId\" onchange=\"this.form.submit()\">";
+        $current_session_listed = FALSE;
         foreach (\DbEntry\Session::listSessions($this->FilterShowRace, $this->FilterShowQualifying, $this->FilterShowPractice) as $s) {
-            $selected = ($this->CurrentSession !== NULL && $this->CurrentSession->id() == $s->id()) ? "selected=\"Yes\"" : "";
-            $html .= "<option value=\"" . $s->id() . "\" $selected>";
-            $html .= " [" . $s->id() . "] ";
-            $html .= $user->formatDateTimeNoSeconds($s->timestamp());
-            $html .= " (" . $s->typeChar() . ") ";
-            $html .= $s->name() . " @ ";
-            $html .= $s->track()->name();
-            $html .= "</option>";
+
+            // force insert current session if filtered out
+            if ($this->CurrentSession !== NULL && !$current_session_listed && $s->id() < $this->CurrentSession->id()) {
+                $html .= $this->sessionSlectorOption($this->CurrentSession);
+                $current_session_listed = TRUE;
+            }
+
+            $html .= $this->sessionSlectorOption($s);
         }
         $html .= "</select>";
 
         $html .= "</form>";
+        return $html;
+    }
+
+
+    private function sessionSlectorOption($session) {
+        $user = \core\UserManager::currentUser();
+        $html = "";
+        $selected = ($this->CurrentSession !== NULL && $this->CurrentSession->id() == $session->id()) ? "selected=\"Yes\"" : "";
+        $html .= "<option value=\"" . $session->id() . "\" $selected>";
+        $html .= " [" . $session->id() . "] ";
+        $html .= $user->formatDateTimeNoSeconds($session->timestamp());
+        $html .= " (" . $session->typeChar() . ") ";
+        $html .= $session->name() . " @ ";
+        $html .= $session->track()->name();
+        $html .= "</option>";
         return $html;
     }
 
