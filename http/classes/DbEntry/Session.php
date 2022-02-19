@@ -40,6 +40,14 @@ class Session extends DbEntry {
     }
 
 
+    //! @return The CarCLass object that was used (might be NULL if invalid
+    public function carClass() {
+        $id = (int) $this->loadColumn("CarClass");
+        if ($id < 1) return NULL;
+        return CarClass::fromId($id);
+    }
+
+
     //! @return A list of Collision objects from this session, ordered by timestamp
     public function collisions() {
         if ($this->Collisions === NULL) {
@@ -224,6 +232,14 @@ class Session extends DbEntry {
         }
 
         return $this->Results;
+    }
+
+
+    //! @return The ServerPreset object that was used (might be NULL if invalid
+    public function serverPreset() {
+        $id = (int) $this->loadColumn("ServerPreset");
+        if ($id < 1) return NULL;
+        return ServerPreset::fromId($id);
     }
 
 

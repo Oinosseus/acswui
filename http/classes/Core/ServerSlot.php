@@ -17,6 +17,12 @@ class ServerSlot {
     }
 
 
+    //! @return The string representation
+    public function __toString() {
+        return "ServerSlot[Id=" . $this->Id . " | " . $this->name() . "]";
+    }
+
+
     //! @return An array of ServerPreset objects that are children of this preset
     public function children() {
         if ($this->ChildSlots === NULL) {
@@ -28,6 +34,25 @@ class ServerSlot {
             }
         }
         return $this->ChildSlots;
+    }
+
+
+    //! @return The according Session object that currently runs on the slot (can be NULL)
+    public function currentSession() {
+        $session = NULL;
+
+        if ($this->online()) {
+
+            // find last session on this slot
+            $query = "SELECT Id FROM Sessions WHERE ServerSlot = " . $this->id() . " ORDER BY Id DESC LIMIT 1;";
+            $res = \Core\Database::fetchRaw($query);
+
+            if (count($res) == 1) {
+                $session = \DbEntry\Session::fromId($res[0]['Id']);
+            }
+        }
+
+        return $session;
     }
 
 
@@ -80,10 +105,19 @@ class ServerSlot {
     }
 
 
+    //! @return A list of all available ServerSlot objects
+    public static function listSlots() {
+        $list = array();
+        for ($i=1; $i <= \Core\Config::ServerSlotAmount; ++$i)
+            $list[] = ServerSlot::fromId($i);
+        return $list;
+    }
+
+
     //! @return The name of the preset
     public function name() {
         if ($this->id() === 0) return _("Base Settings");
-        else return "Slot " . $this->id();
+        else return $this->parameterCollection()->child("AcServerGeneralName")->valueLabel();
     }
 
 

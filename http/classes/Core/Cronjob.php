@@ -18,9 +18,10 @@ namespace Core;
 abstract class Cronjob {
 
     // execution intervals
-    public const IntervalDaily = 1;  //! Execute cronjob very day
+    public const IntervalAlways = 0; //! Execute cronjob everytime (works not in combination with other intervals)
+    public const IntervalLap = 1;  // execute cronjob after new laps have been driven
     public const IntervalSession = 2;  //! Execute cronjob after sessions have been closed
-    public const IntervalLap = 4;  // execute cronjob after new laps have been driven
+    public const IntervalDaily = 4;  //! Execute cronjob very day
     public const IntervalMonthly = 8;  //! Execute cronjob at certain days in a month
 
     // cronjob states
@@ -177,6 +178,10 @@ abstract class Cronjob {
     public function intervalStr() {
         $intervals = array();
 
+        if ($this->ExecutionInterval == Cronjob::IntervalAlways) {
+            $intervals[] = _("Always");
+        }
+
         if ($this->ExecutionInterval & Cronjob::IntervalLap) {
             $intervals[] = _("After each Lap");
         }
@@ -299,9 +304,9 @@ abstract class Cronjob {
         if ($this->Status === NULL) {
 
             // always ready
-//             if ($this->ExecutionInterval == 0) {
-//                 $this->Status = Cronjob::StatusReady;
-//             }
+            if ($this->ExecutionInterval == CronJob::IntervalAlways) {
+                $this->Status = Cronjob::StatusReady;
+            }
 
             // ready once a day
             if ($this->ExecutionInterval & Cronjob::IntervalDaily) {
@@ -368,13 +373,17 @@ abstract class Cronjob {
 
 
             // force run
-            if (array_key_exists("FORCE", $_GET) && $_GET['FORCE'] == $this->name()) {
-                if (\Core\UserManager::permitted("Cronjobs_Force")) {
-                    $this->Status = Cronjob::StatusReady;
+            if (array_key_exists("FORCE", $_GET)) {
+                if ($_GET['FORCE'] == $this->name()) {
+                    if (\Core\UserManager::permitted("Cronjobs_Force")) {
+                        $this->Status = Cronjob::StatusReady;
+                    } else {
+                        $uid = \Core\UserManager::currentUser()->id();
+                        $cname = $this->name();
+                        \Core\Log::warning("Denied user $uid to force-run cronjob '$cname'.");
+                    }
                 } else {
-                    $uid = \Core\UserManager::currentUser()->id();
-                    $cname = $this->name();
-                    \Core\Log::warning("Denied user $uid to force-run cronjob '$cname'.");
+                    $this->Status = Cronjob::StatusWaiting;
                 }
             }
 

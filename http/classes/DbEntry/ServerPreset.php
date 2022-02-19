@@ -27,7 +27,7 @@ class ServerPreset extends DbEntry {
             }
         } else {
             $weather = \DbEntry\Weather::fromId(0);
-            if ($weather->csp()) return TRUE;
+            if ($weather->parameterCollection()->child("Graphic")->csp()) return TRUE;
         }
         return FALSE;
     }

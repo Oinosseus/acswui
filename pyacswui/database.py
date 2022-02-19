@@ -428,3 +428,18 @@ class Database(object):
         cursor.execute(query)
         cursor.close()
         self.__db_handle.commit()
+
+
+    def tables(self):
+        ret = []
+
+        query = "SHOW TABLES;"
+
+        # execute query
+        cursor = self.__db_handle.cursor()
+        cursor.execute(query)
+        for res in cursor.fetchall():
+            ret.append(res[0])
+        cursor.close()
+
+        return ret;

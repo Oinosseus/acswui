@@ -25,6 +25,8 @@ class UserProfile extends \core\HtmlContent {
 
             $html .= "<strong>" . _("User Groups") . "</strong>:";
             for ($i=0; $i < count($user->groups()); ++$i) {
+                $group = $user->groups()[$i];
+                if ($group === NULL) continue;
                 $html .= ($i == 0) ? " " : ", ";
                 $html .= $user->groups()[$i]->name();
             }

@@ -23,10 +23,10 @@ class DriverRanking extends \core\HtmlContent {
             $html .= "<tr>";
             $html .= "<th>" . _("Pos.") . "</th>";
             $html .= "<th colspan=\"2\">" . _("Driver") . "</th>";
-            $html .= "<th>XP</th>";
-            $html .= "<th>SX</th>";
-            $html .= "<th>SF</th>";
-            $html .= "<th>&#x2211;</th>";
+            $html .= "<th><span title=\"" . _("Experience") . "\">XP</span></th>";
+            $html .= "<th><span title=\"" . _("Success") . "\">SX</span></th>";
+            $html .= "<th><span title=\"" . _("Safety") . "\">SF</span></th>";
+            $html .= "<th><span title=\"" . _("Sum") . "\">&#x2211;</span></th>";
             $html .= "</tr>";
 
             $pos = 0;

@@ -52,8 +52,13 @@ class CommandInstall(Command):
         self._verbosity.print("copy data")
         self.__work_copy_files()
 
+        # temporarily needed to rename SessionQueue to SessionLoops
+        if "SessionQueue" in self.__db.tables():
+             query = "RENAME TABLE SessionQueue TO SessionLoops; "
+             self.__db.rawQuery(query)
+
         # database
-        self._verbosity.print("install datatasbe tables")
+        self._verbosity.print("install datatabase tables")
         installer = InstallerDatabase(self.__db, self._verbosity)
         installer.process()
 
@@ -598,6 +603,8 @@ class CommandInstall(Command):
         permissions.append("Settings_Weather_Edit")
         permissions.append("Sessions_View")
         permissions.append("Sessions_Control")
+        permissions.append("Sessions_Loops_View")
+        permissions.append("Sessions_Loops_Edit")
         permissions.append("Json")
         permissions.append("Cronjobs_View")
         permissions.append("Cronjobs_Force")
