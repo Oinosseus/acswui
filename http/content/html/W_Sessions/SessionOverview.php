@@ -309,6 +309,7 @@ class SessionOverview extends \core\HtmlContent {
         foreach (\DbEntry\Session::listSessions($this->FilterShowRace, $this->FilterShowQualifying, $this->FilterShowPractice) as $s) {
 
             // force insert current session if filtered out
+            if ($this->CurrentSession !== NULL && $s->id() == $this->CurrentSession->id()) $current_session_listed = TRUE;
             if ($this->CurrentSession !== NULL && !$current_session_listed && $s->id() < $this->CurrentSession->id()) {
                 $html .= $this->sessionSlectorOption($this->CurrentSession);
                 $current_session_listed = TRUE;
