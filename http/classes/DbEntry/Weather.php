@@ -187,14 +187,6 @@ class Weather extends DbEntry {
     }
 
 
-    private function parameterCollectionAllAccessible($collection) {
-        $collection->derivedAccessability(2);
-        foreach ($collection->children() as $child) {
-            $this->parameterCollectionAllAccessible($child);
-        }
-    }
-
-
     //! @return The parenting Weather object (can be NULL)
     public function parent() {
         if ($this->id() === NULL) return NULL;

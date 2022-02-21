@@ -77,3 +77,32 @@ div.HtmlContentCheckbox label {
 div.HtmlContentCheckbox input[type="checkbox"]:checked ~ label {
     background-color: var(--color-red-accent);
 }
+
+
+
+/* -----------------------------------------------------------------------------
+ *                            Html Content Radio
+ * -----------------------------------------------------------------------------
+ *
+ * See \Core\HtmlContent::newHtmlContentCheckbox()
+ */
+
+div.HtmlContentRadio {
+    display: inline-block;
+    background-color: var(--color-bg-elements);
+    margin-right: 1em;
+    margin-bottom: 1em;
+}
+
+div.HtmlContentRadio input[type="radio"] {
+    display: none;
+}
+
+div.HtmlContentRadio label {
+    display: block;
+    padding: 0.1em 0.5em;
+}
+
+div.HtmlContentRadio input[type="radio"]:checked ~ label {
+    background-color: var(--color-red-accent);
+}

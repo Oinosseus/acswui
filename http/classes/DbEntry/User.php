@@ -44,6 +44,18 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    /**
+     * Nat-Compares to User objects by name()
+     * This is intended for usort() of arrays
+     * @param $obj1 User object
+     * @param $obj2 User object
+     * @return -1, +1 or 0 on equal
+     */
+    public static function compareName(User $obj1, User $obj2) {
+        return strnatcasecmp($obj1->name(), $obj2->name());
+    }
+
+
     //! @return The amount of days since the last driven lap (999999 if the user never drove a lap)
     public function daysSinceLastLap() {
         if ($this->DaysSinceLastLap === NULL) {
@@ -421,7 +433,7 @@ class User extends DbEntry { #implements JsonSerializable {
 
 
     /**
-     * @warning For HTML output use html() instead (which respects privacy settings)
+     * @warning For HTML output use html() instead
      * @return The username
      */
     public function name() {
@@ -437,9 +449,15 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    //! @return The national flag of the selected country
+    public function nationalFlag() {
+        return $this->parameterCollection()->child("UserCountry")->valueLabel();
+    }
+
+
     public function parameterCollection() {
         if ($this->ParameterCollection === NULL) {
-            $base = (new \Core\ACswui)->parameterCollection()->child("User");
+            $base = \Core\ACswui::parameterCollection()->child("User");
             $this->ParameterCollection = new \Parameter\Collection($base, NULL);
             $data_json = $this->loadColumn('ParameterData');
             $data_array = json_decode($data_json, TRUE);

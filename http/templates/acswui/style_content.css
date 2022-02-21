@@ -351,3 +351,72 @@ main.DriverRanking span.TrendRising {
 main.DriverRanking span.TrendFalling {
     color: var(--color-functional-fail);
 }
+
+/*****************************************************************************
+                         SessionSchedules
+ ******************************************************************************/
+
+main.SessionSchedules div#SessionScheduleOverview {
+    display: inline-grid;
+    grid-template-columns: repeat(5, auto);
+}
+
+main.SessionSchedules div#SessionScheduleOverview div {
+    border-radius: 1em;
+    background-color: var(--color-bg-elements);
+/*     display: inline-block; */
+    padding: 0.5em 1em;
+/*     margin-top: 1em; */
+    margin-bottom: 1.2em;
+/*     margin-left: 0; */
+    margin-right: 0.5em;
+}
+
+main.SessionSchedules div#SessionScheduleOverview div.track {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+main.SessionSchedules div#SessionScheduleOverview div div {
+    border-radius: 0;
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+main.SessionSchedules div#SessionScheduleOverview div div img {
+    max-height: 5em;
+}
+
+main.SessionSchedules form {
+    display: inline-block;
+}
+
+main.SessionSchedules .NotRegistered {
+    color: var(--color-functional-fail);
+}
+
+main.SessionSchedules .Registered {
+    color: var(--color-functional-success);
+}
+
+main.SessionSchedules form#DriverRegistrationForm > div div {
+    background-color: transparent;
+}
+
+main.SessionSchedules form#RegistrationRoster td.NationalFlag {
+    background-color: transparent;
+}
+
+main.SessionSchedules form#RegistrationRoster td.CarSkin {
+    background-color: transparent;
+    padding: 0;
+}
+
+main.SessionSchedules form#RegistrationRoster td div.DbEntryHtml {
+    margin: 0;
+}
+
+main.SessionSchedules form#RegistrationRoster td div.DbEntryHtml img {
+    max-height: 3em;
+}

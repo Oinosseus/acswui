@@ -60,7 +60,9 @@ class CarSkin extends DbEntry {
      */
     public function html(bool $include_link = TRUE, bool $show_label = TRUE, bool $show_img = TRUE) {
 
-        $skin_name = $this->name();
+        $skin_name = trim($this->name());
+        if ($skin_name == "") $skin_name = "&nbsp;";
+
         $skin_id = $this->id();
         $preview_path = \Core\Config::RelPathHtdata . "/htmlimg/car_skins/$skin_id.png";
         $hover_path = \Core\Config::RelPathHtdata . "/htmlimg/car_skins/$skin_id.hover.png";

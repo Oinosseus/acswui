@@ -62,6 +62,8 @@ class TrackRecords extends \Core\JsonContent {
                         // check if next shall be skipped
                         $skip_next = (($i+1) == count($best_laps)) ? TRUE : !$best_laps[$i+1]->user()->privacyFulfilled();
                         $skip_this = !$lap->user()->privacyFulfilled();
+
+                        if (($i+1) == count($best_laps)) $skip_this = FALSE;
                     }
 
                     if (!$skip_this || $i==0 || !$skip_last || !$skip_next) {

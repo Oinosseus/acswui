@@ -17,6 +17,13 @@ class ServerPreset extends DbEntry {
     }
 
 
+    //! @return TRUE if the preset is allowed to be used by the current user
+    public function allowed() {
+        $user = \Core\UserManager::currentUser();
+        return  ($this->parameterCollection()->child("ACswuiPresetUsers")->containsUser($user)) ? TRUE : FALSE;
+    }
+
+
     //! @return TRUE if any of the weathers in the preset is using custom shader patch weather
     public function anyWeatherUsesCsp() {
         $ppc = $this->parameterCollection();
@@ -123,22 +130,12 @@ class ServerPreset extends DbEntry {
     public static function listPresets(bool $allowed_only=TRUE) {
         $presets = array();
 
-        // check current user
-        $user = \Core\UserManager::loggedUser();
-        if ($user !== NULL || $allowed_only === FALSE) {
+        foreach (\Core\Database::fetch("ServerPresets", ['Id'], [], 'Name') as $row) {
+            $p = ServerPreset::fromId($row['Id']);
 
-            foreach (\Core\Database::fetch("ServerPresets", ['Id'], [], 'Name') as $row) {
-                $p = ServerPreset::fromId($row['Id']);
-
-                if ($allowed_only) {
-                    if ($p->parameterCollection()->child("ACswuiPresetUsers")->containsUser($user)) {
-                        $presets[] = $p;
-                    }
-                } else {
-                    $presets[] = $p;
-                }
+            if (!$allowed_only || $p->allowed()) {
+                $presets[] = $p;
             }
-
         }
 
         return $presets;

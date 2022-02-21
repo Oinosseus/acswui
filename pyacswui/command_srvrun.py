@@ -106,6 +106,8 @@ class CommandSrvrun(Command):
                 self._verbosity.print("AC server has finished with returncode", ret)
                 break
 
+            time.sleep(0.1)  # wait to save CPU time
+
 
         # friendly ask to finish processing
         if self.getArg("real-penalty"):

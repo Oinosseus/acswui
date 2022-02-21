@@ -47,7 +47,7 @@ class UserProfile extends \core\HtmlContent {
             else $html .= _("inactive");
             $html .= "<br>";
 
-            $html .= "<strong>" . _("Country") . "</strong>: " . $user->parameterCollection()->child("UserCountry")->valueLabel() . "<br>";
+            $html .= "<strong>" . _("Country") . "</strong>: " . $user->nationalFlag() . "<br>";
             $html .= "<strong>" . _("Driven Laps") . "</strong>: " . $user->countLaps() . "<br>";
 
             $html .= "<h1>" . _("Teams") . "</h1>";

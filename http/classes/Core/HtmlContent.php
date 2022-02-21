@@ -36,6 +36,9 @@ abstract class HtmlContent {
     //! Defines if the current content can be shown
     private $IsPermitted = TRUE;
 
+    //! Defines that this derived class is the default content
+    private $IsHomePage = FALSE;
+
     // HtmlID for newHtmlContentCheckbox()
     private $HtmlContentCheckbox = 0;
 
@@ -52,7 +55,14 @@ abstract class HtmlContent {
         $this->MenuName = $menu_name;
         $this->PageTitle = $page_title;
 
-        if (array_key_exists("HtmlContent", $_REQUEST) && $_REQUEST["HtmlContent"] == $this->id()) {
+        if (array_key_exists("HtmlContent", $_REQUEST)) {
+            if ($_REQUEST["HtmlContent"] == $this->id()) {
+                $this->IsNavigated = TRUE;
+                HtmlContent::$NavigatedContent = $this;
+            } else {
+                $this->IsNavigated = FALSE;
+            }
+        } else if ($this->IsHomePage) {
             $this->IsNavigated = TRUE;
             HtmlContent::$NavigatedContent = $this;
         } else {
@@ -230,14 +240,40 @@ abstract class HtmlContent {
      */
     public function newHtmlContentCheckbox(string $var_name, string $content, bool $checked=FALSE, bool $disabled=FALSE) {
         $html = "";
-        $checked = ($checked) ? "checked" : "";
-        $disabled = ($disabled) ? "disabled" : "";
+        $checked = ($checked) ? "checked=\"yes\"" : "";
+        $disabled = ($disabled) ? "disabled=\"yes\"" : "";
 
         ++$this->HtmlContentCheckbox;
         $id = "HtmlContentCheckbox" . $this->HtmlContentCheckbox;
 
         $html .= "<div class=\"HtmlContentCheckbox\">";
         $html .= "<input type=\"checkbox\" name=\"$var_name\" id=\"$id\" $checked $disabled>";
+        $html .= "<label for=\"$id\">$content</label>";
+        $html .= "</div>";
+
+        return $html;
+    }
+
+
+
+    /**
+     * Generate a new radio input with a custom content
+     * @param $var_name The name for the radio ($_REQUEST variable)
+     * @param $var_value The value for this raio input
+     * @param $content The HTML content for the radio element
+     * @param $checked Default checkbox state
+     * @param $disabled Disable the checkbox
+     */
+    public function newHtmlContentRadio(string $var_name, string $var_value, string $content, bool $checked=FALSE, bool $disabled=FALSE) {
+        $html = "";
+        $checked = ($checked) ? "checked=\"yes\"" : "";
+        $disabled = ($disabled) ? "disabled=\"yes\"" : "";
+
+        ++$this->HtmlContentCheckbox;
+        $id = "HtmlContentCheckbox" . $this->HtmlContentCheckbox;
+
+        $html .= "<div class=\"HtmlContentRadio\">";
+        $html .= "<input type=\"radio\" name=\"$var_name\" value=\"$var_value\" id=\"$id\" $checked $disabled>";
         $html .= "<label for=\"$id\">$content</label>";
         $html .= "</div>";
 
@@ -359,6 +395,25 @@ abstract class HtmlContent {
      */
     protected function requirePermission(string $permission) {
         $this->IsPermitted &= \Core\UserManager::permitted($permission);
+    }
+
+
+    /**
+     * Set this content as defualt homepage.
+     * Should only be called in only one derived class.
+     * Must be called before parent constructor.
+     *
+     * Example:
+     * class MyHomePage extends \core\HtmlContent {
+     *     public function __construct() {
+     *         $this->setThisAsHomePage();
+     *         parent::__construct(_("Home Page"),  _("This is the default lanmding page"));
+     *     }
+     * }
+     *
+     */
+    protected function setThisAsHomePage() {
+        $this->IsHomePage = TRUE;
     }
 
 

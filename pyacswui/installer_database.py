@@ -241,14 +241,6 @@ class InstallerDatabase(object):
         self.__db.appendColumnSmallInt("CarClassesMap", 'Ballast')
         self.__db.appendColumnSmallInt("CarClassesMap", 'Restrictor')
 
-        # check table CarClassOccupationMap
-        Verbosity(verb).print("check database table `CarClassOccupationMap`")
-        self.__db.appendTable("CarClassOccupationMap")
-        self.__db.appendColumnUInt("CarClassOccupationMap", 'CarClass')
-        self.__db.appendColumnUInt("CarClassOccupationMap", 'User')
-        self.__db.appendColumnUInt("CarClassOccupationMap", 'CarSkin')
-
-
 
     def _tables_brown(self):
         verb = Verbosity(self._verbosity)
@@ -328,20 +320,6 @@ class InstallerDatabase(object):
         verb = Verbosity(self._verbosity)
         verb.print("green tables")
 
-        ## check table Championships
-        #Verbosity(verb).print("check database table `Championships`")
-        #self.__db.appendTable("Championships")
-        #self.__db.appendColumnUInt("Championships", 'ServerPreset')
-        #self.__db.appendColumnString("Championships", "Name", 100)
-        #self.__db.appendColumnString("Championships", "CarClasses", 100)
-        #self.__db.appendColumnString("Championships", "QualifyPositionPoints", 100)
-        #self.__db.appendColumnString("Championships", "RacePositionPoints", 100)
-        #self.__db.appendColumnString("Championships", "RaceTimePoints", 100)
-        #self.__db.appendColumnString("Championships", "RaceLeadLapPoints", 100)
-        #self.__db.appendColumnString("Championships", "BallanceBallast", 100)
-        #self.__db.appendColumnString("Championships", "BallanceRestrictor", 100)
-        #self.__db.appendColumnString("Championships", "Tracks", 100)
-
         # check table SessionLoops
         Verbosity(verb).print("check database table `SessionLoops`")
         self.__db.appendTable("SessionLoops")
@@ -356,14 +334,23 @@ class InstallerDatabase(object):
         # check table SessionSchedule
         Verbosity(verb).print("check database table `SessionSchedule`")
         self.__db.appendTable("SessionSchedule")
-        self.__db.appendColumnString("SessionSchedule", "Name", 100)
         self.__db.appendColumnTimestamp("SessionSchedule", 'Start')
-        self.__db.appendColumnInt("SessionSchedule", 'SeatOccupations')
-        self.__db.appendColumnUInt("SessionSchedule", 'Preset')
         self.__db.appendColumnUInt("SessionSchedule", 'CarClass')
         self.__db.appendColumnUInt("SessionSchedule", 'Track')
-        self.__db.appendColumnInt("SessionSchedule", 'Slot')
-        self.__db.appendColumnInt("SessionSchedule", 'Executed')
+        self.__db.appendColumnUInt("SessionSchedule", 'ServerPreset')
+        self.__db.appendColumnText("SessionSchedule", "ParameterData")
+        self.__db.appendColumnTimestamp("SessionSchedule", 'Executed')
+
+        # check table SessionScheduleRegistrations
+        Verbosity(verb).print("check database table `SessionScheduleRegistrations`")
+        self.__db.appendTable("SessionScheduleRegistrations")
+        self.__db.appendColumnUInt("SessionScheduleRegistrations", 'SessionSchedule')
+        self.__db.appendColumnUInt("SessionScheduleRegistrations", 'User')
+        self.__db.appendColumnUInt("SessionScheduleRegistrations", 'CarSkin')
+        self.__db.appendColumnSmallInt("SessionScheduleRegistrations", "Ballast")
+        self.__db.appendColumnTinyInt("SessionScheduleRegistrations", "Restrictor")
+        self.__db.appendColumnTinyInt("SessionScheduleRegistrations", 'Active')
+        self.__db.appendColumnCurrentTimestamp("SessionScheduleRegistrations", "Activated")
 
 
 
@@ -387,44 +374,3 @@ class InstallerDatabase(object):
         self.__db.appendColumnFloat("DriverRanking", 'SF_CE')
         self.__db.appendColumnFloat("DriverRanking", 'SF_CC')
         self.__db.appendColumnUInt("DriverRanking", 'RankingGroup')
-
-        # check table StatsGeneral
-        Verbosity(verb).print("check database table `StatsGeneral`")
-        self.__db.appendTable("StatsGeneral")
-        self.__db.appendColumnCurrentTimestamp("StatsGeneral", "Timestamp")
-        self.__db.appendColumnUInt("StatsGeneral", "LastScannedLap")
-        self.__db.appendColumnUInt("StatsGeneral", "LastScannedColCar")
-        self.__db.appendColumnUInt("StatsGeneral", "LastScannedColEnv")
-        self.__db.appendColumnUInt("StatsGeneral", "LapsValid")
-        self.__db.appendColumnUInt("StatsGeneral", "LapsInvalid")
-        self.__db.appendColumnUInt("StatsGeneral", "MetersValid")
-        self.__db.appendColumnUInt("StatsGeneral", "MetersInvalid")
-        self.__db.appendColumnUInt("StatsGeneral", "SecondsValid")
-        self.__db.appendColumnUInt("StatsGeneral", "SecondsInvalid")
-        self.__db.appendColumnUInt("StatsGeneral", "Cuts")
-        self.__db.appendColumnUInt("StatsGeneral", "CollisionsCar")
-        self.__db.appendColumnUInt("StatsGeneral", "CollisionsEnvironment")
-
-        # check table StatsTrackPopularity
-        Verbosity(verb).print("check database table `StatsTrackPopularity`")
-        self.__db.appendTable("StatsTrackPopularity")
-        self.__db.appendColumnCurrentTimestamp("StatsTrackPopularity", "Timestamp")
-        self.__db.appendColumnUInt("StatsTrackPopularity", "LastScannedLap")
-        self.__db.appendColumnUInt("StatsTrackPopularity", "Track")
-        self.__db.appendColumnUInt("StatsTrackPopularity", "LapCount")
-        self.__db.appendColumnFloat("StatsTrackPopularity", "Popularity")
-        self.__db.appendColumnFloat("StatsTrackPopularity", "LaptimeCumulative")
-
-        # check table StatsCarClassPopularity
-        Verbosity(verb).print("check database table `StatsCarClassPopularity`")
-        self.__db.appendTable("StatsCarClassPopularity")
-        self.__db.appendColumnCurrentTimestamp("StatsCarClassPopularity", "Timestamp")
-        self.__db.appendColumnUInt("StatsCarClassPopularity", "CarClass")
-        self.__db.appendColumnUInt("StatsCarClassPopularity", "LastScannedLap")
-        self.__db.appendColumnUInt("StatsCarClassPopularity", "LapCount")
-        self.__db.appendColumnFloat("StatsCarClassPopularity", "TimeCount")
-        self.__db.appendColumnFloat("StatsCarClassPopularity", "MeterCount")
-        self.__db.appendColumnFloat("StatsCarClassPopularity", "Popularity")
-
-
-

@@ -43,7 +43,6 @@ abstract class Cronjob {
     private $LastExecutedSession = 0;
     private $LastExecutedLap = 0;
     private $LastExecutionDuration = 0;
-//     private $LockFilePath = NULL;
     private $StatusFilePath = NULL;
     private $StatusFileHandle = NULL;
     private $StatusFileExculsive = FALSE;

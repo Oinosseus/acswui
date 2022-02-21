@@ -25,7 +25,6 @@ class CronDriverRankingLatest extends \Core\Cronjob {
 
         // get timestamp where this ranking starts
         $days = \Core\ACswui::getParam("DriverRankingDays");
-//         $past_interval = ;
         $now = new \Datetime("now");
         $now->sub(new \DateInterval("P$days" . "D"));
         $then = $now->format("c");
