@@ -165,14 +165,13 @@ class SessionOverview extends \core\HtmlContent {
 
         // laptime diagram
         $positions = count(\DbEntry\SessionResult::listSessionResults($this->CurrentSession));
-        $max_height = (1.2 * $positions + 6) . "em";
         $html .= "<div id=\"SessionPositionDiagram\">";
         $title = _("Session Position Diagram");
         $axis_x_title = ($this->CurrentSession->type() == \DbEntry\Session::TypeRace) ? _("Laps") : _("Minutes");
         $axis_y_title = _("Position");
         $sid = $this->CurrentSession->id();
-        $height = $positions*5;
-        $html .= "<canvas axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" sessionId=\"$sid\" positions=\"$positions\" width=\"100\" height=\"$height\" style=\"max-height: $max_height;\"></canvas>";
+        $height = ceil($positions * 1.5);
+        $html .= "<canvas axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" sessionId=\"$sid\" positions=\"$positions\" width=\"100\" height=\"$height\"></canvas>";
         $html .= "</div>";
 
         $html .= "<table>";

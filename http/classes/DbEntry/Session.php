@@ -407,7 +407,7 @@ class Session extends DbEntry {
                 // get position of race laps
                 $lap_positions = array();
                 $driver_laps_amount = array(); // stores the amount of driven laps for a certain user
-                foreach (array_reverse($this->laps()) as $lap) {
+                foreach ($this->laps() as $lap) {
                     $uid = $lap->user()->id();
 
                     // find current lap number of user
@@ -425,7 +425,7 @@ class Session extends DbEntry {
                     $lap_positions[$user_lap_nr][] = $uid;
                 }
 
-                // extrace race positions
+                // extract race positions
                 foreach ($lap_positions as $lap_nr=>$pos_array) {
                     foreach (array_keys($this->DynamicPositions) as $uid) {
                         $pos = array_search($uid, $pos_array);
@@ -445,7 +445,7 @@ class Session extends DbEntry {
                 $driver_besttimes = array(); // stores current best laptime for each driver
                 $current_positions_uid = array(); // stores the current user-id ordered by their best time
 
-                foreach (array_reverse($this->laps()) as $lap) {
+                foreach ($this->laps() as $lap) {
                     if ($lap->cuts() > 0) continue;
                     $uid = $lap->user()->id();
 
@@ -493,23 +493,19 @@ class Session extends DbEntry {
                     }
                 }
 
-            }
-
-
-            ///////////////////////
-            // Add Session Result
-
-            $results = $this->results();
-            usort($results, "\DbEntry\SessionResult::comparePosition");
-            foreach (array_keys($this->DynamicPositions) as $uid) {
-                $pos = 0;
-                foreach ($results as $rslt) {
-                    if ($rslt->user()->id() == $uid) {
-                        $pos = $rslt->position();
-                        break;
+                // add session result
+                $results = $this->results();
+                usort($results, "\DbEntry\SessionResult::comparePosition");
+                foreach (array_keys($this->DynamicPositions) as $uid) {
+                    $pos = 0;
+                    foreach ($results as $rslt) {
+                        if ($rslt->user()->id() == $uid) {
+                            $pos = $rslt->position();
+                            break;
+                        }
                     }
+                    $this->DynamicPositions[$uid][] = $pos;
                 }
-                $this->DynamicPositions[$uid][] = $pos;
             }
         }
 

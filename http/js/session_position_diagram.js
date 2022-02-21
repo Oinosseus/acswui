@@ -14,6 +14,8 @@ function SessionPositionDiagramFillData(response) {
                         backgroundColor: info.User.Color,
                         borderColor: info.User.Color,
                         data: info.Positions,
+                        radius: 1,
+                        borderWidth: 5,
                     };
         SessionPositionDiagramChart.data.datasets.push(dataset);
         SessionPositionDiagramChart.update();
