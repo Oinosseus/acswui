@@ -49,10 +49,6 @@ document.addEventListener('DOMContentLoaded', function () {
         y_axis_categories.push(i);
     }
 
-    // y-scaling
-//     canvas_div.height = "" + positions + "0";
-//     canvas_div.width = "100";
-
     // create chart
     SessionPositionDiagramChart = new Chart(canvas, {
         data: {
@@ -87,9 +83,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     display: true,
                     text: diagram_title
                 }
-            }
+            },
+            maintainAspectRatio: false // This will fix the height
         }
     });
+
+    // y-scaling
+    canvas_div.style.height = "" + (positions * 40) + "px";
 
     // request general session info
     var request_url = "index.php?JsonContent=SessionData&SessionId=" + SessionPositionDiagramSessionId + "&Request=DriverPositions";

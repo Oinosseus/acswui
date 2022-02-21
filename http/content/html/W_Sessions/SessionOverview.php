@@ -170,8 +170,7 @@ class SessionOverview extends \core\HtmlContent {
         $axis_x_title = ($this->CurrentSession->type() == \DbEntry\Session::TypeRace) ? _("Laps") : _("Minutes");
         $axis_y_title = _("Position");
         $sid = $this->CurrentSession->id();
-        $height = ceil($positions * 1.5);
-        $html .= "<canvas axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" sessionId=\"$sid\" positions=\"$positions\" width=\"100\" height=\"$height\"></canvas>";
+        $html .= "<canvas axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" sessionId=\"$sid\" positions=\"$positions\"></canvas>";
         $html .= "</div>";
 
         $html .= "<table>";
