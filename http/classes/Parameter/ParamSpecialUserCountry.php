@@ -7,7 +7,7 @@ class ParamSpecialUserCountry extends ParamEnum {
     public function __construct(?Deriveable $base, ?Collection $parent, string $key = "", string $label = "", string $description = "") {
         parent::__construct($base, $parent, $key, $label, $description, "", "");
 
-        new EnumItem($this, "_", _(""));
+        new EnumItem($this, "_", "");
         foreach (\Core\Config::Countries as $key=>$name) {
             new EnumItem($this, $key, $name);
         }

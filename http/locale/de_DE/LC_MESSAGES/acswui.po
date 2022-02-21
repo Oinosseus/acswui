@@ -2893,7 +2893,7 @@ msgstr "Wind Einstellungen"
 
 #: http/classes/DbEntry/Weather.php:168
 msgid "Min speed of the session possible"
-msgstr ""
+msgstr "Minimal mögliche Geschwindigkeit in einer Session"
 
 #: http/classes/DbEntry/Weather.php:171
 msgid "Maximum Speed"
@@ -3047,7 +3047,7 @@ msgstr "Test"
 
 #: http/content/html/Z_Test.php:8
 msgid "Tests for Development"
-msgstr ""
+msgstr "Tests für die Entwicklung"
 
 #: http/content/html/Z_About.php:8
 msgid "About"
@@ -3661,7 +3661,7 @@ msgstr "Editieren"
 #: http/content/html/W_Sessions/SessionSchedules.php:170
 #, fuzzy
 msgid "Registration Roster"
-msgstr "Reservierung"
+msgstr "Anmeldeliste"
 
 #: http/content/html/W_Sessions/SessionSchedules.php:180
 #, fuzzy

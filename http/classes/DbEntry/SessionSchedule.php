@@ -64,6 +64,19 @@ class SessionSchedule extends DbEntry {
     }
 
 
+
+    /**
+     * @return A html string with the event name and a link
+     */
+    public function htmlName() {
+        $html = "";
+        $html .= "<a href=\"index.php?HtmlContent=SessionSchedules&SessionSchedule={$this->id()}&Action=ShowRoster\">";
+        $html .= $this->name();
+        $html .= "</a>";
+        return $html;
+    }
+
+
     /**
      * Lists all SessionSchedule objects
      * @param $skip_executed If TRUE (default), then already executed sessions are skipped
@@ -71,8 +84,7 @@ class SessionSchedule extends DbEntry {
      */
     public static function listSchedules(bool $skip_executed=TRUE) {
         $ret = array();
-        $now = (new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone)))->format("Y:m:d H:i:s");
-        $query = "SELECT Id, Start FROM SessionSchedule WHERE Executed < '$now' ORDER BY Start ASC";
+        $query = "SELECT Id, Start FROM SessionSchedule WHERE Executed <= '0001-00-00' ORDER BY Start ASC";
         foreach (\Core\Database::fetchRaw($query) as $row) {
             $ret[] = SessionSchedule::fromId($row['Id']);
         }
@@ -127,6 +139,18 @@ class SessionSchedule extends DbEntry {
         $column_data['ParameterData'] = $data_json;
 
         $this->storeColumns($column_data);
+    }
+
+
+    //! @return The ServerSlot object
+    public function serverSlot() {
+        return \Core\ServerSlot::fromId($this->getParamValue("ServerSlot"));
+    }
+
+
+    //! @return The used ServerPreset object
+    public function serverPreset() {
+        return ServerPreset::fromId($this->getParamValue("ServerPreset"));
     }
 
 

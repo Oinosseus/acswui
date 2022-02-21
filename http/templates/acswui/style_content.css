@@ -364,11 +364,8 @@ main.SessionSchedules div#SessionScheduleOverview {
 main.SessionSchedules div#SessionScheduleOverview div {
     border-radius: 1em;
     background-color: var(--color-bg-elements);
-/*     display: inline-block; */
     padding: 0.5em 1em;
-/*     margin-top: 1em; */
     margin-bottom: 1.2em;
-/*     margin-left: 0; */
     margin-right: 0.5em;
 }
 
@@ -419,4 +416,24 @@ main.SessionSchedules form#RegistrationRoster td div.DbEntryHtml {
 
 main.SessionSchedules form#RegistrationRoster td div.DbEntryHtml img {
     max-height: 3em;
+}
+
+main.SessionSchedules div#SessionDetailsOverview {
+    display: inline-grid;
+    grid-template-columns: repeat(3, auto);
+    margin-bottom: 4em;
+}
+
+main.SessionSchedules div#SessionDetailsOverview div {
+    border-radius: 1em;
+    background-color: var(--color-bg-elements);
+    padding: 0.5em 1em;
+    margin-right: 0.5em;
+}
+
+main.SessionSchedules div#SessionDetailsOverview div div {
+    border-radius: 0;
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
 }

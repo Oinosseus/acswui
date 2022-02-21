@@ -176,17 +176,23 @@ class Track extends DbEntry {
      */
     public function estimeLaptime(CarClass $cc=NULL) {
         $l = $this->length();
+
         if ($cc !== NULL) {
-            //! @todo Guess lap times by car class
-            \Core\Log::warning("Not Implemented yet, just guessing :-(");
-            return array(1000 * $l * 3.6 / 200,
-                         1000 * $l * 3.6 / 150,
-                         1000 * $l * 3.6 / 75);
-        } else {
-            return array(1000 * $l * 3.6 / 225,  // according to Porsche 919 on Nordschleife
-                         1000 * $l * 3.6 / 150,
-                         1000 * $l * 3.6 / 75);
+            $best_laps = $this->bestLaps($cc);
+            if (count($best_laps) > 0) {
+                $laptime_min = $best_laps[0]->laptime();
+                $laptime_max = $best_laps[count($best_laps) - 1]->laptime();
+                $laptime_typ = 0;
+                foreach ($best_laps as $l) $laptime_typ += $l->laptime();
+                $laptime_typ /= count($best_laps);
+                return [$laptime_min, $laptime_typ, $laptime_max];
+            }
         }
+
+        // return estimates, if no best laps are available
+        return array(1000 * $l * 3.6 / 225,  // according to Porsche 919 on Nordschleife
+                     1000 * $l * 3.6 / 150,
+                     1000 * $l * 3.6 / 75);
     }
 
 

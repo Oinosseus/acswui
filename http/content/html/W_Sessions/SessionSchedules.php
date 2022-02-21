@@ -27,7 +27,7 @@ class SessionSchedules extends \core\HtmlContent {
                     $car_skin = \DbEntry\CarSkin::fromId($_POST["RegistrationCarSkin"]);
                     \DbEntry\SessionScheduleRegistration::register($ss, $user, $car_skin);
                 }
-                $html .= $this->showOverview();
+                $html .= $this->showRoster();
 
             }
 
@@ -157,7 +157,8 @@ class SessionSchedules extends \core\HtmlContent {
 
             $html .= "<div>";
             $html .= \Core\UserManager::currentUser()->formatDateTimeNoSeconds($ss->start()) . "<br>";
-            $html .= "<strong>" . $ss->name() . "</strong>";
+            $html .= "<strong>" . $ss->name() . "</strong><br>";
+            $html .= "<small>{$ss->serverSlot()->name()}</small>";;
             $html .= "</div>";
 
             $html .= "<div class=\"track\">";
@@ -166,7 +167,7 @@ class SessionSchedules extends \core\HtmlContent {
 
             $html .= "<div>";
             $html .= $ss->track()->html(TRUE, TRUE, FALSE) . "<br>";
-            $html .= $ss->carClass()->htmlName();
+            $html .= $ss->carClass()->htmlName() . "<br>";
             $html .= "</div>";
 
             $html .= "<div>";
@@ -251,6 +252,60 @@ class SessionSchedules extends \core\HtmlContent {
         $ss = \DbEntry\SessionSchedule::fromId($_REQUEST['SessionSchedule']);
         if (!$ss) return "";
 
+        /////////////////////
+        // Event Information
+        $html .= "<div id=\"SessionDetailsOverview\">";
+
+        // general
+        $html .= "<div>";
+        $html .= \Core\UserManager::currentUser()->formatDateTimeNoSeconds($ss->start()) . "<br>";
+        $html .= "<strong>{$ss->name()}</strong><br><br>";
+        $html .= $ss->carClass()->htmlName() . "<br>";
+        $html .= "</div>";
+
+        // track
+        $html .= "<div>";
+        $html .= $ss->track()->html() . "<br>";
+        $html .= "</div>";
+
+        // time schedule
+        $html .= "<div>";
+        $html .= "<table>";
+        $time = $ss->start();
+        $schedules = $ss->serverPreset()->schedule($ss->track(), $ss->carClass());
+        for ($i = 0; $i < count($schedules); ++$i) {
+            [$interval, $uncertainty, $type, $name] = $schedules[$i];
+            if ($type == \DbEntry\Session::TypeInvalid && ($i+1) < count($schedules)) continue; // do not care for intermediate break
+            $html .= "<tr>";
+            $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeNoSeconds($time) . "</td>";
+            $html .= "<td>" . \DbEntry\Session::type2Char($type) . "</td>";
+            $html .= "<td>$name</td>";
+            $html .= "</tr>";
+            $time->add($interval->toDateInterval());
+        }
+        $html .= "</table>";
+        $html .= "</div>";
+
+        $html .= "</div><br>";
+
+
+        /////////////////////
+        // User Registration
+        $sr = \DbEntry\SessionScheduleRegistration::getRegistration($ss, \Core\UserManager::currentUser());
+        if ($sr !== NULL && $sr->active()) {
+            $html .= "<span class=\"Registered\">" . _("Registered") . "</span> ";
+            $html .= $this->newHtmlForm("POST");
+            $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$ss->id()}\">";
+            $html .= "<button type=\"submit\" name=\"Action\" value=\"UnRegister\">" . _("Unregister") . "</button>";
+            $html .= "</form>";
+        } else {
+            $html .= "<span class=\"NotRegistered\">" . _("Not Registered") . "</span> ";
+            $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"Register"]) . "\">". _("Register") . "</a>";
+        }
+        $html .= "<br><br>";
+
+        ///////////////////////
+        // Registration Roster
         $html .= $this->newHtmlForm("POST", "RegistrationRoster");
         $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$ss->id()}\">";
 
@@ -292,19 +347,23 @@ class SessionSchedules extends \core\HtmlContent {
         $html .= "</table>";
 
         // add inactive registration
-        $html .= _("Add Driver") . ": ";
-        $html .= "<select name=\"AddDriverId\">";
-        $html .= "<option value=\"\"> </option>";
-        $drivers = \DbEntry\User::listDrivers();
-        usort($drivers, "\DbEntry\User::compareName");
-        foreach ($drivers as $d) {
-            $html .= "<option value=\"{$d->id()}\">{$d->name()}</option>";
+        if ($this->CanEdit) {
+            $html .= _("Add Driver") . ": ";
+            $html .= "<select name=\"AddDriverId\">";
+            $html .= "<option value=\"\"> </option>";
+            $drivers = \DbEntry\User::listDrivers();
+            usort($drivers, "\DbEntry\User::compareName");
+            foreach ($drivers as $d) {
+                $html .= "<option value=\"{$d->id()}\">{$d->name()}</option>";
+            }
+            $html .= "</select>";
         }
-        $html .= "</select>";
 
 
-        $html .= "<br>";
-        $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveRoster\">" . _("Save Registration Roster") . "</button>";
+        if ($this->CanEdit) {
+            $html .= "<br>";
+            $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveRoster\">" . _("Save Registration Roster") . "</button>";
+        }
         $html .= "</form>";
 
         return $html;

@@ -196,7 +196,7 @@ class User extends DbEntry { #implements JsonSerializable {
      * @param $interval An arbitrary \Core\TimeInterval object
      * @return A string with formated interval
      */
-    public function formatSessionSchedule(\Core\TimeInterval $interval) {
+    public function formatTimeInterval(\Core\TimeInterval $interval) {
         $seconds = $interval->seconds();
 
         if ($seconds < 60) {
@@ -216,6 +216,23 @@ class User extends DbEntry { #implements JsonSerializable {
             $seconds = $remaining_secs % 60;
             return sprintf("%d:%02d:%02d h", $hours, $minutes, $seconds);
         }
+    }
+
+
+    //! @return A time value formatted for the user (date is ignored)
+    public function formatTime(\DateTime $dt) {
+        $tz = new \DateTimezone($this->getParam("UserTimezone"));
+        $dt->setTimezone($tz);
+        return $dt->format("H:i:s");
+    }
+
+
+
+    //! @return A time value formatted for the user (date is ignored)
+    public function formatTimeNoSeconds(\DateTime $dt) {
+        $tz = new \DateTimezone($this->getParam("UserTimezone"));
+        $dt->setTimezone($tz);
+        return $dt->format("H:i");
     }
 
 
@@ -253,7 +270,12 @@ class User extends DbEntry { #implements JsonSerializable {
             $this->Groups = array();
             $res = \Core\Database::fetch("UserGroupMap", ['Group'], ['User'=>$this->id()]);
             foreach ($res as $row) {
-                $this->Groups[] = \DbEntry\Group::fromId($row['Group']);
+                $g = \DbEntry\Group::fromId($row['Group']);
+                if ($g === NULL) {
+                    \Core\Log::warning("Received NULL for group Id {$row['Group']}");
+                } else {
+                    $this->Groups[] = $g;
+                }
             }
 
             // check for automatic group assignments

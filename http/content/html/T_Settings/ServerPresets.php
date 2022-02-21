@@ -120,9 +120,9 @@ class ServerPresets extends \core\HtmlContent {
             $html .= "<tr>";
 
             $html .= "<td>";
-            $html .= \Core\UserManager::currentUser()->formatSessionSchedule($preset_offset);
+            $html .= \Core\UserManager::currentUser()->formatTimeInterval($preset_offset);
             $html .= "</td><td>";
-            $html .= "(+" . \Core\UserManager::currentUser()->formatSessionSchedule($preset_offset_delay) . ")";
+            $html .= "(+" . \Core\UserManager::currentUser()->formatTimeInterval($preset_offset_delay) . ")";
             $html .= "</td>";
             $preset_offset->add($interval);
             $preset_offset_delay->add($uncertainty);
@@ -133,9 +133,9 @@ class ServerPresets extends \core\HtmlContent {
             $html .= "<td>" . $name . "</td>";
 
             $html .= "<td>";
-            $html .= \Core\UserManager::currentUser()->formatSessionSchedule($interval);
+            $html .= \Core\UserManager::currentUser()->formatTimeInterval($interval);
             $html .= "</td><td>";
-            $html .= "(+" . \Core\UserManager::currentUser()->formatSessionSchedule($uncertainty) . ")";
+            $html .= "(+" . \Core\UserManager::currentUser()->formatTimeInterval($uncertainty) . ")";
             $html .= "</td>";
 
             $html .= "</tr>";
@@ -157,9 +157,9 @@ class ServerPresets extends \core\HtmlContent {
 
             if ($type != \DbEntry\Session::TypeInvalid) {
                 $html .= "<tr>";
-                $html .= "<td>" . \Core\UserManager::currentUser()->formatSessionSchedule($preset_offset) . "</td>";
+                $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeInterval($preset_offset) . "</td>";
                 $html .= "<td>$name</td>";
-                $html .= "<td>" . \Core\UserManager::currentUser()->formatSessionSchedule($interval) . "</td>";
+                $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeInterval($interval) . "</td>";
                 $html .= "</tr>";
             }
 
