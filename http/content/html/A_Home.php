@@ -48,6 +48,8 @@ class A_Home extends \core\HtmlContent {
         }
         $html .= "</ul>";
 
+        $html .= "<a href=\"" . $this->url([], "SessionSchedules") . "\">" . _("All Events") . "</a>";
+
         return $html;
     }
 }

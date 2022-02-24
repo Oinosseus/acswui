@@ -437,3 +437,40 @@ main.SessionSchedules div#SessionDetailsOverview div div {
     margin: 0;
     padding: 0;
 }
+
+
+/*****************************************************************************
+                                 CarClass
+ *****************************************************************************/
+
+main.CarClass td.CarImage {
+    padding: 0;
+    background-color: transparent;
+}
+
+main.CarClass td.CarImage div {
+    margin: 0;
+}
+
+main.CarClass td.CarImage img {
+    height: 3em;
+}
+
+
+
+/*****************************************************************************
+                                 Track
+ *****************************************************************************/
+
+main.Track td.CarImage {
+    padding: 0;
+    background-color: transparent;
+}
+
+main.Track td.CarImage div {
+    margin: 0;
+}
+
+main.Track td.CarImage img {
+    height: 3em;
+}

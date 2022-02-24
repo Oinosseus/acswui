@@ -193,6 +193,55 @@ class User extends DbEntry { #implements JsonSerializable {
 
 
     /**
+     * @param $power The power in [W]
+     * @return The power formatted for the User
+     */
+    public function formatPower(float $power) {
+        $unit = \Core\UserManager::currentUser()->getParam("UserUnitPower");
+        switch ($unit) {
+            case "OLD":
+                return \Core\SiPrefix::threeDigits($power * 0.00136) . " PS";
+
+            case "SI":
+                $si = new \Core\SiPrefix($power);
+                return $si->humanValue("W");
+
+            default:
+                \Core\Log::error("Unkown Unit '$unit'!");
+                return "?";
+        }
+    }
+
+
+    /**
+     * @param $power The power in [g/W]
+     * @return The power formatted for the User
+     */
+    public function formatPowerSpecific(float $power) {
+        $unit = \Core\UserManager::currentUser()->getParam("UserUnitPowerSpecific");
+        switch ($unit) {
+            case "SI1":
+                $si = new \Core\SiPrefix($power);
+                return $si->humanValue("g/W");
+
+            case "SI2":
+                $si = new \Core\SiPrefix(1e3/$power);
+                return $si->humanValue("W/kg");
+
+            case "OLD1":
+                return \Core\SiPrefix::threeDigits($power /  1.36) . " kg/PS";
+
+            case "OLD2":
+                return \Core\SiPrefix::threeDigits(1360 / $power) . " PS/t";
+
+            default:
+                \Core\Log::error("Unkown Unit '$unit'!");
+                return "?";
+        }
+    }
+
+
+    /**
      * @param $interval An arbitrary \Core\TimeInterval object
      * @return A string with formated interval
      */
@@ -235,6 +284,33 @@ class User extends DbEntry { #implements JsonSerializable {
         return $dt->format("H:i");
     }
 
+
+
+    /**
+     * @param $weight The weight in [kg]
+     * @return The weight formatted for the User
+     */
+    public function formatWeight(float $weight) {
+        $unit = \Core\UserManager::currentUser()->getParam("UserUnitWeight");
+        switch ($unit) {
+            case "OLD":
+                if ($weight > 1e3) {
+                    $weight = \Core\SiPrefix::threeDigits($weight/1e3);
+                    return "$weight t";
+                } else {
+                    $si = new \Core\SiPrefix($weight*1e3);
+                    return $si->humanValue("g");
+                }
+
+            case "SI":
+                $si = new \Core\SiPrefix($weight*1e3);
+                return $si->humanValue("g");
+
+            default:
+                \Core\Log::error("Unkown Unit '$unit'!");
+                return "?";
+        }
+    }
 
 
     /**

@@ -36,11 +36,11 @@ class CarModel extends \core\HtmlContent {
             $html .= "<caption>" . _("General Info") . "</caption>";
             $html .= "<tr><th>" . _("Brand") . "</th><td><a href=\"?HtmlContent=CarBrand&Id=" . $car->brand()->id() . "\">" . $car->brand()->name() . "</a></td></tr>";
             $html .= "<tr><th>" . _("Name") . "</th><td>" . $car->name() . "</td></tr>";
-            $html .= "<tr><th>" . _("Weight") . "</th><td>" . \Core\HumanValue::format($car->weight(), "kg") . "</td></tr>";
-            $html .= "<tr><th>" . _("Torque") . "</th><td>" . \Core\HumanValue::format($car->torque(), "Nm") . "</td></tr>";
-            $html .= "<tr><th>" . _("Power") . "</th><td>" . \Core\HumanValue::format($car->power(), "W") . "</td></tr>";
-            $html .= "<tr><th>" . _("Specific Power") . "</th><td>" . \Core\HumanValue::format(1e3 * $car->weight() / $car->power(), "g/W") . "</td></tr>";
-            $html .= "<tr><th>" . _("Harmonized Power") . "</th><td>" . \Core\HumanValue::format(1e3 * $car->weight() / $car->harmonizedPower(), "g/W") . "</td></tr>";
+            $html .= "<tr><th>" . _("Weight") . "</th><td>" . \Core\UserManager::currentUser()->formatWeight($car->weight()) . "</td></tr>";
+            $html .= "<tr><th>" . _("Torque") . "</th><td>" . (new \Core\SiPrefix($car->torque()))->humanValue("N m") . "</td></tr>";
+            $html .= "<tr><th>" . _("Power") . "</th><td>" . \Core\UserManager::currentUser()->formatPower($car->power()) . "</td></tr>";
+            $html .= "<tr><th>" . _("Specific Power") . "</th><td>" . \Core\UserManager::currentUser()->formatPowerSpecific(1e3 * $car->weight() / $car->power()) . "</td></tr>";
+            $html .= "<tr><th>" . _("Harmonized Power") . "</th><td>" . \Core\UserManager::currentUser()->formatPowerSpecific(1e3 * $car->weight() / $car->harmonizedPower()) . "</td></tr>";
             $html .= "</table>";
 
             $html .= "<table id=\"CarModelRevision\">";

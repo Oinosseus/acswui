@@ -72,7 +72,7 @@ class TrackRecords extends \Core\JsonContent {
                         $html .= "<td>" . $cu->formatLaptime($lap->laptime()) . "</td>";
                         $html .= "<td>" . $cu->formatLaptimeDelta($lap->laptime() - $best_laps[0]->laptime()) . "</td>";
                         $html .= "<td>" . $lap->user()->html() . "</td>";
-                        $html .= "<td>" . _("Car") . "</td>";
+                        $html .= "<td class=\"CarImage\">" . $lap->carSkin()->car()->html($cc, TRUE, FALSE, TRUE) . "</td>";
                         $html .= "<td>" . $lap->ballast() . " kg</td>";
                         $html .= "<td>" . $lap->restrictor() . " &percnt;</td>";
                         $html .= "<td>" . sprintf("%0.1f", $lap->grip() * 100) . " &percnt;</td>";

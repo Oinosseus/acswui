@@ -150,6 +150,7 @@ class CarClass extends \core\HtmlContent {
         $html .= "<th>" . _("Weight") . "</th>";
         $html .= "<th>" . _("Ballast") . "</th>";
         $html .= "<th>" . _("Restrictor") . "</th>";
+        $html .= "<th>" . _("Specific Power") . "</th>";
         $html .= "<th>" . _("Harmonized Power") . "</th>";
         $html .= "</tr>";
 
@@ -157,9 +158,9 @@ class CarClass extends \core\HtmlContent {
             $html .= "<tr>";
 
             $html .= "<td><a href=\"" . $car->htmlUrl($this->CarClass) . "\">" . $car->name() . "</a></td>";
-            $html .= "<td>" . \Core\HumanValue::format($car->torque(), "Nm") . "</td>";
-            $html .= "<td>" . \Core\HumanValue::format($car->power(), "W") . "</td>";
-            $html .= "<td>" . \Core\HumanValue::format($car->weight(), "kg") . "</td>";
+            $html .= "<td>" . (new \Core\SiPrefix($car->torque()))->humanValue("N m") . "</td>";
+            $html .= "<td>" . \Core\UserManager::currentUser()->formatPower($car->power()) . "</td>";
+            $html .= "<td>" . \Core\UserManager::currentUser()->formatWeight($car->weight()) . "</td>";
 
             if ($this->CanEdit) {
                 $html .= "<td><input type=\"number\" name=\"Car" . $car->id() . "Ballast\" value=\"" . $this->CarClass->ballast($car) . "\" min=\"0\" max=\"1000\"></td>";
@@ -169,7 +170,8 @@ class CarClass extends \core\HtmlContent {
                 $html .= "<td>" . \Core\HumanValue::format($this->CarClass->restrictor($car), "%") . "</td>";
             }
 
-            $html .= "<td>" . \Core\HumanValue::format($this->CarClass->harmonizedPowerRatio($car), "g/W") . "</td>";
+            $html .= "<td>" . \Core\UserManager::currentUser()->formatPowerSpecific(1e3 * $car->weight() / $car->power()) . "</td>";
+            $html .= "<td>" . \Core\UserManager::currentUser()->formatPowerSpecific($this->CarClass->harmonizedPowerRatio($car)) . "</td>";
 
             if ($this->CanEdit) {
                 $html .= "<td>" . $this->newHtmlTableRowDeleteCheckbox("Car" . $car->id() . "Delete") . "</td>";
