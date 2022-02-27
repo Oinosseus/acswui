@@ -385,6 +385,20 @@ main.SessionSchedules div#SessionScheduleOverview div div img {
     max-height: 5em;
 }
 
+main.SessionSchedules div#SessionScheduleOverview div.Obsolete {
+    background-color: var(--color-functional-bg-fail);
+    color: var(--color-disabled);
+    font-style: italic;
+}
+
+main.SessionSchedules div#SessionScheduleOverview span.RegistrationsFull {
+    color: var(--color-functional-fail);
+}
+
+main.SessionSchedules div#SessionScheduleOverview span.RegistrationsAvailable {
+    color: var(--color-functional-success);
+}
+
 main.SessionSchedules form {
     display: inline-block;
 }
@@ -416,6 +430,10 @@ main.SessionSchedules form#RegistrationRoster td div.DbEntryHtml {
 
 main.SessionSchedules form#RegistrationRoster td div.DbEntryHtml img {
     max-height: 3em;
+}
+
+main.SessionSchedules form#RegistrationRoster table tr.Overbooked td {
+    background-color: var(--color-functional-bg-fail);
 }
 
 main.SessionSchedules div#SessionDetailsOverview {

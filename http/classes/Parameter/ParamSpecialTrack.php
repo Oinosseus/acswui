@@ -24,4 +24,10 @@ final class ParamSpecialTrack extends ParamEnum {
     protected function cloneXtraAttributes($base) {
         // overload to prevent copying enum itmes
     }
+
+
+    //! @return The according Track object
+    public function track() {
+        return \DbEntry\Track::fromId($this->value());
+    }
 }

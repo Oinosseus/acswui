@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * Thios script needs to be executed multiple times a minute (eg. every ten seconds)
+ * It is recommended to call this from commandline.
+ * In any case it is mandatory to run this as http-user.
+ *
+ * following example can be used for cron:
+ * * * * * *           cd /path/to/htdocs/; sudo -u wwwuser /usr/bin/php cron.php &>/dev/null
+ * * * * * * sleep 10; cd /path/to/htdocs/; sudo -u wwwuser /usr/bin/php cron.php &>/dev/null
+ * * * * * * sleep 20; cd /path/to/htdocs/; sudo -u wwwuser /usr/bin/php cron.php &>/dev/null
+ * * * * * * sleep 30; cd /path/to/htdocs/; sudo -u wwwuser /usr/bin/php cron.php &>/dev/null
+ * * * * * * sleep 40; cd /path/to/htdocs/; sudo -u wwwuser /usr/bin/php cron.php &>/dev/null
+ * * * * * * sleep 50; cd /path/to/htdocs/; sudo -u wwwuser /usr/bin/php cron.php &>/dev/null
+ */
+
 $duration_start = microtime(TRUE);
 
 // error reporting
@@ -35,7 +49,15 @@ session_start();
 \Core\UserManager::initialize();
 
 // execute cronjobs
-\Core\Cronjob::checkExecute();
+// check if cronjobs are executed from commandline
+// or if user is permitted to execute Cronjobs
+if (\Core\Core::cli() || \Core\UserManager::currentUser()->permitted("Cronjobs_View")) {
+    \Core\Cronjob::checkExecute();
+} else {
+    $id = \Core\UserManager::currentUser()->id();
+    $interface = (\Core\Core::cli()) ? "CLI" : "HTTP";
+    \Core\Log::warning("User '$id' is not permitted to execute cronjobs from $interface!");
+}
 
 // deinitialization of global singletons
 \Core\Database::shutdown();

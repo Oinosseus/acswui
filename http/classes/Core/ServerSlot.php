@@ -302,10 +302,21 @@ class ServerSlot {
     }
 
 
-    //! start the server within this slot
+    /**
+     * start the server within this slot
+     * @param $track TheTrack to use
+     * @param $car_class The CarClass of the server run
+     * @param $preset The ServerPreset for the server run
+     * @param $el The EntryList which shall be used
+     * @param $map_ballasts An associative array with Steam64GUID->Ballast and one key with 'OTHER'->Ballst
+     * @param $map_restrictors An associative array with Steam64GUID->Restrictor and one key with 'OTHER'->Restrictor
+     */
     public function start(\DbEntry\Track $track,
                           \DbEntry\CarClass $car_class,
-                          \DbEntry\ServerPreset $preset) {
+                          \DbEntry\ServerPreset $preset,
+                          \Core\EntryList $el = NULL,
+                          array $map_ballast = [],
+                          array $map_restrictor = []) {
 
         $id = $this->id();
 
@@ -315,11 +326,15 @@ class ServerSlot {
         $this->writeRpSettings();
 
         // configure ACswui plugin
-        $this->writeACswuiUdpPluginIni($car_class, $preset);
+        $this->writeACswuiUdpPluginIni($car_class, $preset, $map_ballast, $map_restrictor);
 
         // configure ac server
-        $this->writeAcServerEntryList($track, $car_class);
-        $this->writeAcServerCfg($track, $car_class, $preset);
+        if ($el === NULL) {
+            $el = new \Core\EntryList();
+            $el->fillSkins($car_class, $track);
+        }
+        $el->writeToFile(\Core\Config::AbsPathData . "/acserver/cfg/entry_list_" . $this->id() . ".ini");
+        $this->writeAcServerCfg($track, $car_class, $preset, $map_ballast);
 
         // lunch server with plugins
         $ac_server = \Core\Config::AbsPathData . "/acserver/acServer$id";
@@ -327,7 +342,6 @@ class ServerSlot {
         $entry_list = \Core\Config::AbsPathData . "/acserver/cfg/entry_list_$id.ini";
         $log_output = \Core\Config::AbsPathData . "/logs_acserver/acServer$id.log";
         $ac_server_command = "$ac_server -c $server_cfg -e $entry_list > $log_output 2>&1";
-
 
         // start server
         $cmd_ret = 0;
@@ -344,7 +358,7 @@ class ServerSlot {
 //         echo "Server started: $cmd_ret<br>";
 //         echo htmlentities($cmd) ."<br>";
 
-        sleep(1);
+        sleep(0.1);
 
         if ($cmd_ret !== 0) {
             $msg = "Could not start server!\n";
@@ -352,6 +366,7 @@ class ServerSlot {
             \Core\Log::error($msg);
         }
     }
+
 
 
     /**
@@ -385,12 +400,21 @@ class ServerSlot {
 
 
         exec("kill $pid");
-        sleep(1);
+        sleep(0.1);
     }
 
 
-    //! create acswui_udp_plugin.ini
-    private function writeACswuiUdpPluginIni(\DbEntry\CarClass $car_class, \DbEntry\ServerPreset $preset) {
+    /**
+     * create acswui_udp_plugin.ini
+     * @param $car_class The CarClass of the server run
+     * @param $preset The ServerPreset for the server run
+     * @param $map_ballasts An associative array with Steam64GUID->Ballast and one key with 'OTHER'->Ballst
+     * @param $map_restrictors An associative array with Steam64GUID->Restrictor and one key with 'OTHER'->Restrictor
+     */
+    private function writeACswuiUdpPluginIni(\DbEntry\CarClass $car_class,
+                                             \DbEntry\ServerPreset $preset,
+                                             array $map_ballasts = [],
+                                             array $map_restrictors = []) {
         $pc = $this->parameterCollection();
         $file_path = \Core\Config::AbsPathData . "/acswui_udp_plugin/acswui_udp_plugin_" . $this->id() . ".ini";
         $f = fopen($file_path, 'w');
@@ -420,15 +444,38 @@ class ServerSlot {
         }
         fwrite($f, "preserved_kick = " . $preset->getParam("ACswuiPreservedKick") . "\n");
 
+        fwrite($f, "\n[BALLAST]\n");
+        foreach ($map_ballasts as $guid=>$ballast) {
+            fwrite($f, "$guid = $ballast\n");
+        }
+
+        fwrite($f, "\n[RESTRICTOR]\n");
+        foreach ($map_restrictors as $guid=>$restrictor) {
+            fwrite($f, "$guid = $restrictor\n");
+        }
 
         fclose($f);
     }
 
 
-    //! create server_cfg.ini for real penalty
+    /**
+     * create server_cfg.ini for acServer
+     * @param $track The Track object for the server run
+     * @param $car_class The CarClass of the server run
+     * @param $preset The ServerPreset for the server run
+     * @param $map_ballasts An associative array with Steam64GUID->Ballast and one key with 'OTHER'->Ballst
+     */
     private function writeAcServerCfg(\DbEntry\Track $track,
                                       \DbEntry\CarClass $car_class,
-                                      \DbEntry\ServerPreset $preset) {
+                                      \DbEntry\ServerPreset $preset,
+                                      array $map_ballasts = []) {
+
+
+        // determine maximum ballast
+        $max_ballast = $car_class->ballastMax();
+        foreach ($map_ballasts as $guid=>$ballast) {
+            if ($ballast > $max_ballast) $max_ballast = $ballast;
+        }
 
         $pc = $this->parameterCollection();
         $ppc = $preset->parameterCollection();
@@ -504,7 +551,7 @@ class ServerSlot {
         $cars = array();
         foreach ($car_class->cars() as $car) $cars[] = $car->model();
         fwrite($f, "CARS=" . implode(";", $cars) . "\n");
-        fwrite($f, "MAX_BALLAST_KG=" . $car_class->ballastMax() . "\n");
+        fwrite($f, "MAX_BALLAST_KG=$max_ballast\n");
         fwrite($f, "TRACK=" . $track->location()->track() . "\n");
         fwrite($f, "CONFIG_TRACK=" . $track->config() . "\n");
 
@@ -574,40 +621,6 @@ class ServerSlot {
             fwrite($f, "WIND_VARIATION_DIRECTION=" . $wpc->child("WindDirectionVar")->value() . "\n");
         }
 
-
-        fclose($f);
-    }
-
-
-    //! create entry_list.ini for real penalty
-    private function writeAcServerEntryList(\DbEntry\Track $track, \DbEntry\CarClass $car_class) {
-        $pc = $this->parameterCollection();
-        $file_path = \Core\Config::AbsPathData . "/acserver/cfg/entry_list_" . $this->id() . ".ini";
-        $f = fopen($file_path, 'w');
-        if ($f === FALSE) {
-            \Core\Log::error("Cannot write to file '$file_path'!");
-            return;
-        }
-
-        $entry_id = 0;
-        foreach ($car_class->cars() as $c) {
-            foreach ($c->skins() as $s) {
-                if ($entry_id >= ($track->pitboxes() - 5)) break;
-
-                fwrite($f, "\n[CAR_$entry_id]\n");
-                fwrite($f, "MODEL=" . $s->car()->model() . "\n");
-                fwrite($f, "SKIN=" . $s->skin() . "\n");
-                fwrite($f, "SPECTATOR_MODE=0\n");
-                fwrite($f, "DRIVERNAME=\n");
-                fwrite($f, "TEAM=\n");
-                fwrite($f, "GUID=\n");
-                fwrite($f, "BALLAST=" . $car_class->ballast($s->car()) . "\n");
-                fwrite($f, "RESTRICTOR=" . $car_class->restrictor($s->car()) . "\n");
-
-                ++$entry_id;
-            }
-            if ($entry_id >= $track->pitboxes()) break;
-        }
 
         fclose($f);
     }

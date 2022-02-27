@@ -89,6 +89,23 @@ class ServerPreset extends DbEntry {
     }
 
 
+    //! @return TRUE if a server run, when now started with this preset, will finish before $t
+    public function finishedBefore(\DateTime $t) {
+
+        // determine finishing time of the preset
+        $finish = \Core\Core::now();
+        foreach ($this->schedule() as [$interval, $uncertainty, $type, $name]) {
+            $finish->add($interval->toDateInterval());
+            $finish->add($uncertainty->toDateInterval());
+        }
+
+        // add maring
+        $finish->add(new \DateInterval("PT10M"));
+
+        return $finish < $t;
+    }
+
+
     //! @return A ServerPreset object, retreived from database by ID ($id=0 will return a non editable default preset)
     public static function fromId(int $id) {
 

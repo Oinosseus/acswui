@@ -98,9 +98,11 @@ class Session extends DbEntry {
     /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.
+     * When $id is NULL or 0, NULL is returned
      * @return An object by its database Id
      */
     public static function fromId(int $id) {
+        if ($id === NULL or $id == 0) return NULL;
         return parent::getCachedObject("Sessions", "Session", $id);
     }
 

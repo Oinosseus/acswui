@@ -97,12 +97,6 @@ class DriverRanking extends DbEntry {
     }
 
 
-    public static function listFromDriverRankingJson() {
-        $rnk = new \DbEntry\DriverRanking(NULL);
-        $rnk->setUser(\DbEntry\User::fromId($user_id));
-    }
-
-
     /**
      * List the latest DriverRanking objects (not from DB)
      * @param $ranking_group Defines which ranking group shall be listed

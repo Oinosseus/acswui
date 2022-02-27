@@ -60,7 +60,8 @@ class ParamDateTime extends Parameter {
         if ($hour <= 0 || $hour > 23) $hour = 0;
 
         $minute = substr($value, 14, 2);
-        if ($minute <= 0 || $minute > 59) $hour = 0;
+        if ($minute <= 0 || $minute > 59) $minute = 0;
+
 
         return sprintf("%04d-%02d-%02d %02d:%02d", $year, $month, $day, $hour, $minute);
     }

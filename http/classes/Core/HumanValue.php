@@ -4,6 +4,7 @@ namespace Core;
 
 /**
  * Formating numbers to friednly human readable format
+ * @todo This class is obsolete and shall be replaced soon
  */
 class HumanValue {
 
@@ -17,7 +18,7 @@ class HumanValue {
             $this->formatLaptime($value);
 
         } else if ($unit === "s") {
-            $this->formatSeconds($value);
+//             $this->formatSeconds($value);
 
         } else if ($unit === "ms") {
             $this->formatSeconds($value / 1000, "s");
@@ -41,20 +42,26 @@ class HumanValue {
         return $hv->string();
     }
 
+
+    public static function formatSi(float $value, string $unit) {
+        $sip = new \Core\SiPrefix($value);
+        return "{$sip->value()} {$sip->Prefix()}$unit";
+    }
+
     //! @return A string well formatted from the given value and unit
     public function string() {
         return $this->Value . " " . $this->UnitPrefix . $this->Unit;
     }
 
-    private function formatLaptime($laptime_ms) {
-        $milliseconds = $laptime_ms % 1000;
-        $laptime_ms /= 1000;
-        $seconds = $laptime_ms % 60;
-        $minutes = $laptime_ms / 60;
-        $this->Value = sprintf("%0d:%02s.%03d" , $minutes, $seconds, $milliseconds);
-        $this->Unit = "";
-        $this->UnitPrefix = "";
-    }
+//     private function formatLaptime($laptime_ms) {
+//         $milliseconds = $laptime_ms % 1000;
+//         $laptime_ms /= 1000;
+//         $seconds = $laptime_ms % 60;
+//         $minutes = $laptime_ms / 60;
+//         $this->Value = sprintf("%0d:%02s.%03d" , $minutes, $seconds, $milliseconds);
+//         $this->Unit = "";
+//         $this->UnitPrefix = "";
+//     }
 
     private function formatSeconds(float $value) {
         if ($value >= 3153600e2) {

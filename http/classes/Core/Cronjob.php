@@ -27,7 +27,7 @@ abstract class Cronjob {
     // cronjob states
     public const StatusReady = 1;
     public const StatusWaiting = 2;
-    public const StatusRunning = 4;
+    public const StatusBlocked = 4;
 
     // static caches
     private static $LastCompletedSession = NULL;
@@ -44,20 +44,22 @@ abstract class Cronjob {
     private $LastExecutedLap = 0;
     private $LastExecutionDuration = 0;
     private $StatusFilePath = NULL;
-    private $StatusFileHandle = NULL;
-    private $StatusFileExculsive = FALSE;
     private $CustomData = array();
+    private $LockedSemaphore = NULL;
 
 
     /**
      * This constructor must be called by derived classed.
      * @param $execution_interval Use bitwise OR combination of Cronjob::Interval** constants
      * @param $monthly_cycle If IntervalMonthly is set, this must be given to define the cycle
+     * @param $read_only_access If this is TRUE (default), then the Cronjob cannot be executed (reading status only).
      */
-    public function __construct(int $execution_interval, \Parameter\ParamEnumMonthly $monthly_cycle = NULL) {
+    public function __construct(int $execution_interval,
+                                \Parameter\ParamEnumMonthly $monthly_cycle = NULL,
+                                bool $read_only_access = TRUE) {
         $this->ExecutionInterval = $execution_interval;
-
         $this->LastExecutionTimestamp = new \DateTime("0000-00-00 00:00", new \DateTimeZone(\Core\Config::LocalTimeZone));
+        $this->StatusFilePath = \Core\Config::AbsPathData . "/htcache/cronjobs/" . $this->name() . ".json";
 
         // retrieve monthly interval
         if ($execution_interval & Cronjob::IntervalMonthly) {
@@ -69,11 +71,17 @@ abstract class Cronjob {
             }
         }
 
-        // lock status file
-        $this->StatusFilePath = \Core\Config::AbsPathData . "/htcache/cronjobs/" . $this->name() . ".json";
-        $this->StatusFileHandle = fopen($this->StatusFilePath, "a+");
-        $this->StatusFileExculsive = flock($this->StatusFileHandle, LOCK_EX);
-        if (!$this->StatusFileExculsive) $this->Status = Cronjob::StatusRunning;
+        // check for unique access
+        $sem_key = ftok($this->StatusFilePath, "X");
+        $this->LockedSemaphore = sem_get($sem_key);
+        if ($this->LockedSemaphore === FALSE) {
+            \Core\Log::error("Could not retrieve sempahore for $this");
+            $this->LockedSemaphore = NULL;
+        } else {
+            if (sem_acquire($this->LockedSemaphore, TRUE) !== TRUE) {
+                $this->LockedSemaphore = NULL;
+            }
+        }
 
         // load status file data
         $data = json_decode(file_get_contents($this->StatusFilePath), TRUE);
@@ -98,29 +106,37 @@ abstract class Cronjob {
         if ($this->HasBeenProcessed) {
 
             // check for programming failures
-            if (!$this->StatusFileExculsive) {
+            if ($this->LockedSemaphore === NULL) {
                 \Core\Log::error("Cronjob '" . $this->name() . "' has been processsed without Lock!");
+            } else {
+
+                // prepare data
+                $data = array();
+                $data['Status'] = array();
+                $data['Status']['LastExecutedLap'] = Cronjob::lastCompletedLap();
+                $data['Status']['LastExecutedSession'] = Cronjob::lastCompletedSession();
+                $data['Status']['LastExecutedTimestamp'] = $this->LastExecutionTimestamp->format("c");
+                $data['Statistics'] = array();
+                $data['Statistics']['LastExecutionDuration'] = round($this->LastExecutionDuration, 3);
+                $data['CustomData'] = $this->CustomData;
+
+                // save satus file
+                $f = fopen($this->StatusFilePath, "w");
+                fwrite($f, json_encode($data, JSON_PRETTY_PRINT));
+                fclose($f);
             }
-
-            // prepare data
-            $data = array();
-            $data['Status'] = array();
-            $data['Status']['LastExecutedLap'] = Cronjob::lastCompletedLap();
-            $data['Status']['LastExecutedSession'] = Cronjob::lastCompletedSession();
-            $data['Status']['LastExecutedTimestamp'] = $this->LastExecutionTimestamp->format("c");
-            $data['Statistics'] = array();
-            $data['Statistics']['LastExecutionDuration'] = round($this->LastExecutionDuration, 3);
-            $data['CustomData'] = $this->CustomData;
-
-            // save satus file
-            ftruncate($this->StatusFileHandle, 0);
-            fwrite($this->StatusFileHandle, json_encode($data, JSON_PRETTY_PRINT));
-            fflush($this->StatusFileHandle);
-            flock($this->StatusFileHandle, LOCK_UN);
-            fclose($this->StatusFileHandle);
-            $this->StatusFileHandle = NULL;
-            $this->StatusFileExculsive = NULL;
         }
+
+        if ($this->LockedSemaphore) {
+            sem_release($this->LockedSemaphore);
+            $this->LockedSemaphore = NULL;
+        }
+    }
+
+
+    //! @return The string representation
+    public function __toString() {
+        return "CronJob[{$this->name()}]";
     }
 
 
@@ -165,8 +181,6 @@ abstract class Cronjob {
 
     //! @return A cronjob object (or NULL)
     public static function fromName(string $cronjob_name) {
-        $cronjob_include = "classes/Cronjobs/$cronjob_name.php";
-        include_once $cronjob_include;
         $cronjob_class = "\\Cronjobs\\$cronjob_name";
         $cronjob = new $cronjob_class();
         return $cronjob;
@@ -388,7 +402,11 @@ abstract class Cronjob {
 
 
             // status is 'waiting' when no previous activation was found
-            if ($this->Status === NULL) $this->Status = Cronjob::StatusWaiting;
+            if ($this->Status == CronJob::StatusReady && $this->LockedSemaphore === NULL) {
+                $this->Status = Cronjob::StatusBlocked;
+            } else if ($this->Status === NULL) {
+                $this->Status = Cronjob::StatusWaiting;
+            }
         }
 
         return $this->Status;
@@ -402,8 +420,8 @@ abstract class Cronjob {
                 return "Ready";
                 break;
 
-            case Cronjob::StatusRunning:
-                return "Running";
+            case Cronjob::StatusBlocked:
+                return "Blocked";
                 break;
 
             case Cronjob::StatusWaiting:
@@ -426,5 +444,3 @@ abstract class Cronjob {
         }
     }
 }
-
-?>

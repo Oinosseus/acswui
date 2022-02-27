@@ -339,10 +339,13 @@ class User extends DbEntry { #implements JsonSerializable {
 
     //! @return A list of Group objects where the user is member in
     public function groups() {
-        if ($this->isRoot()) {
+        if ($this->isRoot()) { // root user
             return Group::listGroups();
 
-        } else if ($this->Groups === NULL) {
+        } else if ($this->id() === NULL || $this->id() == 0) {  // guest user
+            return array(Group::fromName(\Core\Config::GuestGroup));
+
+        } else if ($this->Groups === NULL) { // regular user
             $this->Groups = array();
             $res = \Core\Database::fetch("UserGroupMap", ['Group'], ['User'=>$this->id()]);
             foreach ($res as $row) {

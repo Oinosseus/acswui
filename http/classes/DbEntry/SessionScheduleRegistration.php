@@ -43,13 +43,19 @@ class SessionScheduleRegistration extends DbEntry {
     public static function register(SessionSchedule $schedule, User $user, CarSkin $car_skin=NULL) {
         $ret = NULL;
 
+        // check if schedule is obsolete
+        if ($schedule->obsolete() && $car_skin !== NULL) {
+            \Core\Log::warning("Deny register User {$user->id()} for obsolete schedule $schedule");
+            return NULL;
+        }
+
         // check if CarSkin is occupied
         if ($car_skin !== NULL) {
             $query = "SELECT Id FROM SessionScheduleRegistrations WHERE SessionSchedule = {$schedule->id()} AND User != {$user->id()} AND Active != 0 AND CarSkin = {$car_skin->id()}";
             $res = \Core\Database::fetchRaw($query);
             if (count($res) > 0) {
                 \Core\Log::error("Deny registration for User {$user->id()} because duplicated CarSkin {$car_skin->id()} at SessionSchedule {$schedule->id()}!");
-                return;
+                return NULL;
             }
         }
 
@@ -121,11 +127,13 @@ class SessionScheduleRegistration extends DbEntry {
      */
     public static function listRegistrations(SessionSchedule $schedule, bool $only_active=TRUE) {
         $ret = array();
-        $query = "SELECT Id FROM SessionScheduleRegistrations WHERE SessionSchedule = {$schedule->id()}";
-        if ($only_active) $query .= " AND Active != 0";
-        $query .= " ORDER BY Activated ASC, Id ASC";
-        foreach (\Core\Database::fetchRaw($query) as $row) {
-            $ret[] = SessionScheduleRegistration::fromId($row['Id']);
+        if ($schedule->id()) {
+            $query = "SELECT Id FROM SessionScheduleRegistrations WHERE SessionSchedule = {$schedule->id()}";
+            if ($only_active) $query .= " AND Active != 0";
+            $query .= " ORDER BY Activated ASC, Id ASC";
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $ret[] = SessionScheduleRegistration::fromId($row['Id']);
+            }
         }
         return $ret;
     }

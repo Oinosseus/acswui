@@ -22,7 +22,7 @@ class SessionSchedules extends \core\HtmlContent {
 
             if (array_key_exists("Action", $_POST) && $_POST['Action'] == "SaveRgistration") {
                 $ss = \DbEntry\SessionSchedule::fromId($_POST['SessionSchedule']);
-                if ($ss) {
+                if ($ss && !$ss->obsolete()) {
                     $user = \Core\UserManager::currentUser();
                     $car_skin = \DbEntry\CarSkin::fromId($_POST["RegistrationCarSkin"]);
                     \DbEntry\SessionScheduleRegistration::register($ss, $user, $car_skin);
@@ -37,7 +37,7 @@ class SessionSchedules extends \core\HtmlContent {
 
             if ($_REQUEST['Action'] == "UnRegister") {
                 $ss = \DbEntry\SessionSchedule::fromId($_POST['SessionSchedule']);
-                if ($ss) {
+                if ($ss && !$ss->obsolete()) {
                     $user = \Core\UserManager::currentUser();
                     \DbEntry\SessionScheduleRegistration::register($ss, $user);
                 }
@@ -75,7 +75,7 @@ class SessionSchedules extends \core\HtmlContent {
 
             if ($_REQUEST['Action'] == "SaveRoster" && $this->CanEdit) {
                 $ss = \DbEntry\SessionSchedule::fromId($_REQUEST['SessionSchedule']);
-                if ($ss) {
+                if ($ss && !$ss->obsolete()) {
                     foreach (\DbEntry\SessionScheduleRegistration::listRegistrations($ss, FALSE) as $sr) {
                         $sr->setBallast($_POST["Ballast{$sr->id()}"]);
                         $sr->setRestrictor($_POST["Restrictor{$sr->id()}"]);
@@ -153,39 +153,48 @@ class SessionSchedules extends \core\HtmlContent {
         $html = "";
 
         $html .= "<div id=\"SessionScheduleOverview\">";
-        foreach (\DbEntry\SessionSchedule::listSchedules() as $ss) {
+        $a_week_ago = \Core\Core::now()->sub(new \DateInterval("P7D"));
+        foreach (\DbEntry\SessionSchedule::listSchedules($a_week_ago) as $ss) {
 
-            $html .= "<div>";
+            $class_obsolete = ($ss->obsolete()) ? "Obsolete" : "";
+
+            $html .= "<div class=\"$class_obsolete\">";
             $html .= \Core\UserManager::currentUser()->formatDateTimeNoSeconds($ss->start()) . "<br>";
             $html .= "<strong>" . $ss->name() . "</strong><br>";
             $html .= "<small>{$ss->serverSlot()->name()}</small>";;
             $html .= "</div>";
 
-            $html .= "<div class=\"track\">";
+            $html .= "<div class=\"track $class_obsolete\">";
             $html .= $ss->track()->html(TRUE, FALSE, TRUE);
             $html .= "</div>";
 
-            $html .= "<div>";
+            $html .= "<div class=\"$class_obsolete\">";
             $html .= $ss->track()->html(TRUE, TRUE, FALSE) . "<br>";
             $html .= $ss->carClass()->htmlName() . "<br>";
+            $count_registrations = count($ss->registrations());
+            $count_pits = $ss->track()->pitboxes();
+            $css_class = ($count_registrations > $count_pits) ? "RegistrationsFull" : "RegistrationsAvailable";
+            $html .= _("Registrations") . ": <span class=\"$css_class\">$count_registrations / $count_pits</span>";
             $html .= "</div>";
 
-            $html .= "<div>";
-            $sr = \DbEntry\SessionScheduleRegistration::getRegistration($ss, \Core\UserManager::currentUser());
-            if ($sr !== NULL && $sr->active()) {
-                $html .= "<span class=\"Registered\">" . _("Registered") . "</span><br><br>";
-                $html .= $this->newHtmlForm("POST");
-                $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$ss->id()}\">";
-                $html .= "<button type=\"submit\" name=\"Action\" value=\"UnRegister\">" . _("Unregister") . "</button>";
-                $html .= "</form>";
-            } else {
-                $html .= "<span class=\"NotRegistered\">" . _("Not Registered") . "</span><br><br>";
-                $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"Register"]) . "\">". _("Register") . "</a>";
+            $html .= "<div class=\"$class_obsolete\">";
+            if (!$ss->obsolete()) {
+                $sr = \DbEntry\SessionScheduleRegistration::getRegistration($ss, \Core\UserManager::currentUser());
+                if ($sr !== NULL && $sr->active()) {
+                    $html .= "<span class=\"Registered\">" . _("Registered") . "</span><br><br>";
+                    $html .= $this->newHtmlForm("POST");
+                    $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$ss->id()}\">";
+                    $html .= "<button type=\"submit\" name=\"Action\" value=\"UnRegister\">" . _("Unregister") . "</button>";
+                    $html .= "</form>";
+                } else {
+                    $html .= "<span class=\"NotRegistered\">" . _("Not Registered") . "</span><br><br>";
+                    $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"Register"]) . "\">". _("Register") . "</a>";
+                }
             }
             $html .= "</div>";
 
 
-            $html .= "<div>";
+            $html .= "<div class=\"$class_obsolete\">";
             if ($this->CanEdit) {
                 $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"EditItem"]) . "\">" . _("Edit") . "</a><br>";
                 $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"AskDeleteItem"]) . "\">" . _("Delete") . "</a><br>";
@@ -212,6 +221,7 @@ class SessionSchedules extends \core\HtmlContent {
         $html = "";
         $ss = \DbEntry\SessionSchedule::fromId($_REQUEST['SessionSchedule']);
         if (!$ss) return "";
+        if ($ss->obsolete()) return "";
 
         $html .= \Core\UserManager::currentUser()->formatDateTimeNoSeconds($ss->start()) . " ";
         $html .= "<strong>{$ss->name()}</strong>";
@@ -291,18 +301,21 @@ class SessionSchedules extends \core\HtmlContent {
 
         /////////////////////
         // User Registration
-        $sr = \DbEntry\SessionScheduleRegistration::getRegistration($ss, \Core\UserManager::currentUser());
-        if ($sr !== NULL && $sr->active()) {
-            $html .= "<span class=\"Registered\">" . _("Registered") . "</span> ";
-            $html .= $this->newHtmlForm("POST");
-            $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$ss->id()}\">";
-            $html .= "<button type=\"submit\" name=\"Action\" value=\"UnRegister\">" . _("Unregister") . "</button>";
-            $html .= "</form>";
-        } else {
-            $html .= "<span class=\"NotRegistered\">" . _("Not Registered") . "</span> ";
-            $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"Register"]) . "\">". _("Register") . "</a>";
+
+        if (!$ss->obsolete()) {
+            $sr = \DbEntry\SessionScheduleRegistration::getRegistration($ss, \Core\UserManager::currentUser());
+            if ($sr !== NULL && $sr->active()) {
+                $html .= "<span class=\"Registered\">" . _("Registered") . "</span> ";
+                $html .= $this->newHtmlForm("POST");
+                $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$ss->id()}\">";
+                $html .= "<button type=\"submit\" name=\"Action\" value=\"UnRegister\">" . _("Unregister") . "</button>";
+                $html .= "</form>";
+            } else {
+                $html .= "<span class=\"NotRegistered\">" . _("Not Registered") . "</span> ";
+                $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"Register"]) . "\">". _("Register") . "</a>";
+            }
+            $html .= "<br><br>";
         }
-        $html .= "<br><br>";
 
         ///////////////////////
         // Registration Roster
@@ -318,9 +331,13 @@ class SessionSchedules extends \core\HtmlContent {
         $html .= "<th>" . _("Registration") . "</th>";
         $html .= "</tr>";
 
-        foreach (\DbEntry\SessionScheduleRegistration::listRegistrations($ss, FALSE) as $sr) {
+        $count_active_registrations = 0;
+        foreach ($ss->registrations(FALSE) as $sr) {
+            $count_active_registrations += ($sr->active()) ? 1 : 0;
             $u = $sr->user();
-            $html .= "<tr>";
+
+            $css_class = ($count_active_registrations > $ss->track()->pitboxes()) ? "Overbooked" : "";
+            $html .= "<tr class=\"$css_class\">";
             $html .= "<td class=\"NationalFlag\">{$sr->user()->nationalFlag()}</td>";
             $html .= "<td>{$sr->user()->html()}</td>";
 
@@ -328,7 +345,7 @@ class SessionSchedules extends \core\HtmlContent {
             if ($sr->carSkin()) $html .= $sr->carSkin()->html(TRUE, FALSE, TRUE);
             $html .= "</td>";
 
-            if ($this->CanEdit) {
+            if ($this->CanEdit && !$ss->obsolete()) {
                 $html .= "<td><input type=\"number\" min=\"0\" max=\"999\" name=\"Ballast{$sr->id()}\" value=\"{$sr->ballast()}\"> kg</td>";
                 $html .= "<td><input type=\"number\" min=\"0\" max=\"999\" name=\"Restrictor{$sr->id()}\" value=\"{$sr->restrictor()}\"> &percnt;</td>";
             } else {
@@ -347,7 +364,7 @@ class SessionSchedules extends \core\HtmlContent {
         $html .= "</table>";
 
         // add inactive registration
-        if ($this->CanEdit) {
+        if ($this->CanEdit && !$ss->obsolete()) {
             $html .= _("Add Driver") . ": ";
             $html .= "<select name=\"AddDriverId\">";
             $html .= "<option value=\"\"> </option>";
@@ -360,7 +377,7 @@ class SessionSchedules extends \core\HtmlContent {
         }
 
 
-        if ($this->CanEdit) {
+        if ($this->CanEdit && !$ss->obsolete()) {
             $html .= "<br>";
             $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveRoster\">" . _("Save Registration Roster") . "</button>";
         }

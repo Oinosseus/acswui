@@ -24,6 +24,8 @@ class UdpPluginServer(object):
                  ac_server_path,
                  realtime_json_path = None,
                  kick_illegal_occupations = False,
+                 map_ballasts = {},
+                 map_restrictors = {},
                  verbosity=0):
 
         # This is the typical duration for the process() method
@@ -42,6 +44,11 @@ class UdpPluginServer(object):
         self.__realtime_json_path = realtime_json_path
         self.__last_kick_illegal_occupations = None
         self.__kick_illegal_occupations = kick_illegal_occupations
+
+        # force ballast and restrictor
+        self.__last_checked_balancing = None
+        self.__ballasts = map_ballasts
+        self.__restrictors = map_restrictors
 
         self.__port_plugin = int(port_plugin)
         self.__port_server = int(port_server)
@@ -82,7 +89,6 @@ class UdpPluginServer(object):
 
 
 
-
     def process(self):
         """ This must be called periodically
         """
@@ -107,6 +113,23 @@ class UdpPluginServer(object):
                         self.__verbosity.print("Illegal Occupation of driver " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id) + "!")
                         self.send_chat_broadcast("ACswui: kick " + entry.DriverName + " because using preserved car!")
                         self.kick(entry)
+
+        ## check for balalst and restrictor
+        #if self.__last_checked_balancing is None or (time.time() - self.__last_checked_balancing) > 30:
+            #self.__last_kick_illegal_occupations = time.time()
+            #for entry in self.__entries:
+
+                ## check ballast
+                #if entry.DriverGuid in self.__ballasts:
+                    #self.send_admin_command("ballast %i %i" % (entry.Id, self.__ballasts[entry.DriverGuid]))
+                #elif 'OTHER' in self.__ballasts:
+                    #self.send_admin_command("ballast %i %i" % (entry.Id, self.__ballasts['OTHER']))
+
+                ## check restrictor
+                #if entry.DriverGuid in self.__restrictors:
+                    #self.send_admin_command("restrictor %i %i" % (entry.Id, self.__restrictors[entry.DriverGuid]))
+                #elif 'OTHER' in self.__restrictors:
+                    #self.send_admin_command("restrictor %i %i" % (entry.Id, self.__restrictors['OTHER']))
 
 
 
@@ -381,3 +404,18 @@ class UdpPluginServer(object):
 
 
 
+    def send_admin_command(self, command):
+        """ command is without leading '/'
+        """
+        command = "/" + command
+
+        data = bytearray(10 + 4*len(command))
+        data[0] = 209
+        data[1] = len(message)
+
+        index = 2
+        for byte in message.encode("utf-32"):
+            data[index] = byte
+            index += 1
+
+        self.__sock.sendto(data, ("127.0.0.1", self.__port_server))

@@ -16,6 +16,7 @@
     /* Functional Colors */
     --color-functional-success: #348840;
     --color-functional-fail: #883440;
+    --color-functional-bg-fail: rgba(200, 0, 0, 0.2);
 }
 
 

@@ -17,8 +17,9 @@ final class ParamSpecialServerPreset extends ParamEnum {
         }
 
         // set to first allowed preset
-        $id = \DbEntry\ServerPreset::listPresets(TRUE)[0]->id();
-        $this->setValue($id);
+        $allowed_presets = \DbEntry\ServerPreset::listPresets(TRUE);
+        if (count($allowed_presets) > 0) $this->setValue($allowed_presets[0]->id());
+        else $this->setValue($this->EnumItemList[0]->value());
     }
 
 
@@ -41,6 +42,12 @@ final class ParamSpecialServerPreset extends ParamEnum {
         $html .= "</select>";
 
         return $html;
+    }
+
+
+    //! @return The according ServerPreset object
+    public function serverPreset() {
+        return \DbEntry\ServerPreset::fromId($this->value());
     }
 
 

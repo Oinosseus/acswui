@@ -143,8 +143,9 @@ class UserManager {
 
 
     private static function steamOpenIDReturnTo() {
-        $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "") ? "https://" : "http://";
-        $url .= $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
+        $url  = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] != "") ? "https://" : "http://";
+        $url .= (array_key_exists('HTTP_HOST', $_SERVER)) ? $_SERVER['HTTP_HOST'] : "";
+        $url .= (array_key_exists('SCRIPT_NAME', $_SERVER)) ? $_SERVER['SCRIPT_NAME'] : "";
         return $url;
     }
 }
