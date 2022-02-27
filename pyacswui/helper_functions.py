@@ -148,3 +148,15 @@ def generateHtmlImg(src_img_path, src_img_hover, dst_dir, db_id):
         shutil.copyfile(src_img_path, path_htmlimg)
     if img_outline is None and os.path.isfile(src_img_hover):
         shutil.copyfile(src_img_hover, path_htmlimg_hover)
+
+
+def version(detailed=False):
+    """
+        @return The version information, extracted from git tag
+    """
+    cmd = ["git", "describe"]
+    if detailed:
+        cmd.append("--long")
+    cp = subprocess.run(cmd, capture_output=True, check=True)
+    version = cp.stdout
+    return version.decode("utf-8").strip()

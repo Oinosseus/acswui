@@ -1,6 +1,7 @@
 
 from .verbosity import Verbosity
 
+
 class InstallerDatabase(object):
 
 
@@ -34,10 +35,6 @@ class InstallerDatabase(object):
         self.__db.appendColumnCurrentTimestamp("installer", "timestamp")
         self.__db.appendColumnString("installer", "version", 10)
         self.__db.appendColumnText("installer", "info")
-
-        # insert installer info
-        self.__db.insertRow("installer", {"version": "0.0", "info": ""})
-
 
         # check table CronJobs
         Verbosity(verb).print("check database table `CronJobs`")

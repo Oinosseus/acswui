@@ -48,6 +48,7 @@ class ACswui  {
             $p = new \Parameter\ParamInt(NULL, $pc, "CommunityLastLoginDays", _("Non-Active Community Login Days"), _("When a user has not logged in into the system for this amount of days he or she is not considered to be a community member\nAdditionally an user must be an active driver to be considered as community member"), "", 90);
             $p->setMin(1);
             $p->setMax(3650);
+            $p = new \Parameter\ParamBool(NULL, $pc, "SessionAutomatic", _("Active Session Automatic"), _("The Session Automatic can be disabled to allow updates"), "", TRUE);
 
 
             // ----------------------------------------------------------------

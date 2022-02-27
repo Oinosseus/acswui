@@ -10,6 +10,9 @@ class CronSessionAutomatic extends \Core\Cronjob {
 
     protected function process() {
 
+        // check if session automatic is disabled
+        if (!\Core\ACswui::getParam("SessionAutomatic")) return;
+
         // find session loop items per server slot ID
         $session_loop_ids_per_slot_id = array();
         foreach (\DbEntry\SessionLoop::listLoops() as $sl) {

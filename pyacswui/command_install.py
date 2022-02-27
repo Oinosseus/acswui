@@ -8,6 +8,7 @@ import shutil
 import subprocess
 from .command import Command, ArgumentException
 from .database import Database
+from .helper_functions import version
 from .installer_cars import InstallerCars
 from .installer_database import InstallerDatabase
 from .installer_tracks import InstallerTracks
@@ -61,6 +62,9 @@ class CommandInstall(Command):
         self._verbosity.print("install datatabase tables")
         installer = InstallerDatabase(self.__db, self._verbosity)
         installer.process()
+
+        # document begin of installation
+        self.__installer_info_id = self.__db.insertRow("installer", {"version": version(), "info": "database installed"})
 
         # temporarily needed to fix track location table
         # this can be deleted later
@@ -124,6 +128,11 @@ class CommandInstall(Command):
         # chmod
         self._verbosity.print("chgrp for http server user-group")
         self.__set_chmod()
+
+        # document begin of installation
+        self.__db.updateRow("installer",
+                            self.__installer_info_id,
+                            {"info": "installation finished of version " + version(True)})
 
 
 
@@ -423,6 +432,8 @@ class CommandInstall(Command):
             f.write("\n")
             f.write("    // misc\n")
             f.write("    const DriverRankingGroups = %s;\n" % drvrnkgrps)
+            f.write("    const ACswuiVersion = \"%s\";\n" % version())
+            f.write("    const ACswuiVersionLong = \"%s\";\n" % version(True))
             f.write("}\n")
 
 
