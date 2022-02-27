@@ -157,6 +157,8 @@ def version(detailed=False):
     cmd = ["git", "describe"]
     if detailed:
         cmd.append("--long")
+    else:
+        cmd.append("--abbrev=0")
     cp = subprocess.run(cmd, capture_output=True, check=True)
     version = cp.stdout
     return version.decode("utf-8").strip()
