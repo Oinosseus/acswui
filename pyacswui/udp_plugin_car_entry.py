@@ -66,13 +66,13 @@ class UdpPluginCarEntry(object):
         else:
             raise ValueError("Database table 'CarSkins' is ambigous")
 
-        self.__verbosity.print("Car entry: Id =", self.__id, ", model =", self.__car_model)
-
         # read preserved GUIDs
         self.__preserved_drivers_guids = []  #Steam64GUIDs that are defined in the entry list
         for guid in entry_dict['GUID'].split(";"):
             if guid != "":
                 self.__preserved_drivers_guids.append(guid.strip())
+
+        self.__verbosity.print("Car entry: Id =", self.__id, ", model =", self.__car_model, ", GUIDs =", ",".join(self.__preserved_drivers_guids))
 
 
 

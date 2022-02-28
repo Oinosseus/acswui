@@ -345,7 +345,7 @@ class ServerSlot {
 
         // start server
         $cmd_ret = 0;
-        $cmd = "nohup ". \Core\Config::AbsPathAcswui . "/acswui.py srvrun -vvvvv";
+        $cmd = "nohup ". \Core\Config::AbsPathAcswui . "/acswui.py srvrun -vvvvvvvvvv";
         $cmd .= " \"" . \Core\Config::AbsPathData . "/acswui_udp_plugin/acswui_udp_plugin_$id.ini\" ";
         $cmd .= " --slot $id";
         if ($this->parameterCollection()->child("RPGeneralEnable")->value()) {
@@ -753,13 +753,13 @@ class ServerSlot {
 
         // section Speeding
         fwrite($f, "\n[Speeding]\n");
-        fwrite($f, "PIT_LANE_SPEED = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
-        fwrite($f, "PENALTY_TYPE_0 = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
-        fwrite($f, "SPEED_LIMIT_PENALTY_0 = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
-        fwrite($f, "PENALTY_TYPE_1 = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
-        fwrite($f, "SPEED_LIMIT_PENALTY_1 = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
-        fwrite($f, "PENALTY_TYPE_2 = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
-        fwrite($f, "SPEED_LIMIT_PENALTY_2 = " . $ppc->child("RpPsCuttingPenType")->value() . "\n");
+        fwrite($f, "PIT_LANE_SPEED = " . $ppc->child("RpPsSpeedingPitLaneSpeed")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_0 = " . $ppc->child("RpPsSpeedingPenType0")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_0 = " . $ppc->child("RpPsSpeedingSpeedLimit0")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_1 = " . $ppc->child("RpPsSpeedingPenType1")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_1 = " . $ppc->child("RpPsSpeedingSpeedLimit1")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_2 = " . $ppc->child("RpPsSpeedingPenType2")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_2 = " . $ppc->child("RpPsSpeedingSpeedLimit2")->value() . "\n");
 
         // section Crossing
         fwrite($f, "\n[Crossing]\n");

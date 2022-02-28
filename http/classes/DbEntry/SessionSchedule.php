@@ -159,7 +159,8 @@ class SessionSchedule extends DbEntry {
         foreach (\DbEntry\DriverRanking::listLatest() as $drvrnk) {
             $group = $drvrnk->rankingGroup();
             $ballast = $this->getParamValue("BopDrvRnkGrpBallast$group");
-            $map[$drvrnk->user()->steam64GUID()] = $ballast;
+            if (array_key_exists($drvrnk->user()->steam64GUID(), $map))
+                $map[$drvrnk->user()->steam64GUID()] = $ballast;
         }
 
         // retrieve from explicit definition
@@ -168,8 +169,12 @@ class SessionSchedule extends DbEntry {
                 $map[$reg->user()->steam64GUID()] = $reg->ballast();
 
             // ensure to have maximum penalty if not registered
-            if (!$reg->active() and $map['OTHER'] > $map[$reg->user()->steam64GUID()])
+            if (!$reg->active() &&
+                array_key_exists($reg->user()->steam64GUID(), $map) &&
+                $map['OTHER'] > $map[$reg->user()->steam64GUID()]) {
+
                 $map[$reg->user()->steam64GUID()] = $map['OTHER'];
+            }
 
         }
 
@@ -192,7 +197,8 @@ class SessionSchedule extends DbEntry {
         foreach (\DbEntry\DriverRanking::listLatest() as $drvrnk) {
             $group = $drvrnk->rankingGroup();
             $restrictor = $this->getParamValue("BopDrvRnkGrpRestrictor$group");
-            $map[$drvrnk->user()->steam64GUID()] = $restrictor;
+            if (array_key_exists($drvrnk->user()->steam64GUID(), $map))
+                $map[$drvrnk->user()->steam64GUID()] = $restrictor;
         }
 
         // retrieve from explicit definition
@@ -201,8 +207,12 @@ class SessionSchedule extends DbEntry {
                 $map[$reg->user()->steam64GUID()] = $reg->restrictor();
 
             // ensure to have maximum penalty if not registered
-            if (!$reg->active() and $map['OTHER'] > $map[$reg->user()->steam64GUID()])
+            if (!$reg->active() &&
+                array_key_exists($reg->user()->steam64GUID(), $map) &&
+                $map['OTHER'] > $map[$reg->user()->steam64GUID()]) {
+
                 $map[$reg->user()->steam64GUID()] = $map['OTHER'];
+            }
         }
 
         return $map;

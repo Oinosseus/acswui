@@ -50,7 +50,7 @@ class EntryListItem {
             fwrite($f, "DRIVERNAME=\n");
             fwrite($f, "GUID=\n");
         } else {
-            fwrite($f, "DRIVERNAME={$this->User->name()}\n");
+            fwrite($f, "DRIVERNAME={$this->getUserNameFromDb()}\n");
             fwrite($f, "GUID={$this->User->steam64GUID()}\n");
         }
 
@@ -62,5 +62,13 @@ class EntryListItem {
 
         fwrite($f, "BALLAST={$this->Ballast}\n");
         fwrite($f, "RESTRICTOR={$this->Restrictor}\n");
+    }
+
+
+    private function getUserNameFromDb() {
+        if (!$this->User) return "";
+        $res = \Core\Database::fetch("Users", ['Name'], ['Id'=>$this->User->id()]);
+        if (count($res)) return $res[0]['Name'];
+        return "";
     }
 }
