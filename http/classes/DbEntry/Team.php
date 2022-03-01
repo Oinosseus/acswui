@@ -20,6 +20,12 @@ class Team {
     }
 
 
+    //! @return The string representation
+    public function __toString() {
+        return "Team[Id=" . $this->Id . "]";
+    }
+
+
     //! @return A list of CarSkin objects, that are used by this team
     public function carSkins() {
         if ($this->CarSkins === NULL) {
