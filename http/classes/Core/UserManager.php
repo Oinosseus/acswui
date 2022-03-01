@@ -74,7 +74,17 @@ class UserManager {
 
     //! initialize
     public static function initialize() {
+
+        // response from SteamOpenID
         $client = new \SteamOpenID\SteamOpenID(UserManager::steamOpenIDReturnTo());
+        $steam64guid = NULL;
+        if ($client->hasResponse()) {
+            try {
+                $steam64guid = $client->validate();
+            } catch (\Exception $e) {
+                \Core\Log::warning($e->getMessage());
+            }
+        }
 
         // logout
         if (array_key_exists("UserManager", $_GET) && $_GET['UserManager'] == "Logout") {
@@ -90,21 +100,12 @@ class UserManager {
             }
 
         // response from Steam OpenID
-        } else if ($client->hasResponse()) {
-            $steam64guid = NULL;
-            try {
-                $steam64guid = $client->validate();
-            } catch (Exception $e) {
-                \Core\Log::warning($e->getMessage());
-            }
-
-            if ($steam64guid) {
-                $res = \Core\Database::fetch("Users", ["Id"], ["Steam64GUID"=>$steam64guid]);
-                if (count($res) > 1) {
-                    \Core\Log::error("Multiple users with Steam64GUI '$steam64guid'!");
-                } else if (count($res) == 1) {
-                    UserManager::login($res[0]['Id']);
-                }
+        } else if ($steam64guid !== NULL) {
+            $res = \Core\Database::fetch("Users", ["Id"], ["Steam64GUID"=>$steam64guid]);
+            if (count($res) > 1) {
+                \Core\Log::error("Multiple users with Steam64GUI '$steam64guid'!");
+            } else if (count($res) == 1) {
+                UserManager::login($res[0]['Id']);
             }
 
         // try login from session
