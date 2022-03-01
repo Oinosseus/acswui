@@ -229,6 +229,8 @@ class SessionSchedules extends \core\HtmlContent {
 
         $html .= $this->newHtmlForm("POST", "DriverRegistrationForm");
         $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$ss->id()}\">";
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveRgistration\">" . _("Save Registration") . "</button>";
+        $html .= "<br>";
 
         foreach ($ss->carClass()->cars() as $car) {
 
