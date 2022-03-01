@@ -61,6 +61,9 @@ abstract class Cronjob {
         $this->LastExecutionTimestamp = new \DateTime("0000-00-00 00:00", new \DateTimeZone(\Core\Config::LocalTimeZone));
         $this->StatusFilePath = \Core\Config::AbsPathData . "/htcache/cronjobs/" . $this->name() . ".json";
 
+        // ensure status file existence
+        if (!file_exists($this->StatusFilePath)) touch($this->StatusFilePath);
+
         // retrieve monthly interval
         if ($execution_interval & Cronjob::IntervalMonthly) {
             if ($monthly_cycle === NULL) {

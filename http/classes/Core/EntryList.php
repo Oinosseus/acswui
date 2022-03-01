@@ -19,6 +19,13 @@ class EntryList {
     }
 
 
+
+    //! @return The string representation of the class
+    public function __toString() {
+        return "EntryList[]";
+    }
+
+
     /**
      * Add an EntryListItem
      * @param $eli An EntryListItem object

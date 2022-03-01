@@ -6,12 +6,12 @@
  * In any case it is mandatory to run this as http-user.
  *
  * following example can be used for cron:
- * * * * * *           cd /path/to/htdocs/; sudo -u wwwuser /usr/bin/php cron.php &>/dev/null
- * * * * * * sleep 10; cd /path/to/htdocs/; sudo -u wwwuser /usr/bin/php cron.php &>/dev/null
- * * * * * * sleep 20; cd /path/to/htdocs/; sudo -u wwwuser /usr/bin/php cron.php &>/dev/null
- * * * * * * sleep 30; cd /path/to/htdocs/; sudo -u wwwuser /usr/bin/php cron.php &>/dev/null
- * * * * * * sleep 40; cd /path/to/htdocs/; sudo -u wwwuser /usr/bin/php cron.php &>/dev/null
- * * * * * * sleep 50; cd /path/to/htdocs/; sudo -u wwwuser /usr/bin/php cron.php &>/dev/null
+ * * * * * *           cd /path/to/htdocs/; sudo -u wwwuser nice -n 19 /usr/bin/php cron.php &>/dev/null
+ * * * * * * sleep 10; cd /path/to/htdocs/; sudo -u wwwuser nice -n 19 /usr/bin/php cron.php &>/dev/null
+ * * * * * * sleep 20; cd /path/to/htdocs/; sudo -u wwwuser nice -n 19 /usr/bin/php cron.php &>/dev/null
+ * * * * * * sleep 30; cd /path/to/htdocs/; sudo -u wwwuser nice -n 19 /usr/bin/php cron.php &>/dev/null
+ * * * * * * sleep 40; cd /path/to/htdocs/; sudo -u wwwuser nice -n 19 /usr/bin/php cron.php &>/dev/null
+ * * * * * * sleep 50; cd /path/to/htdocs/; sudo -u wwwuser nice -n 19 /usr/bin/php cron.php &>/dev/null
  */
 
 $duration_start = microtime(TRUE);
