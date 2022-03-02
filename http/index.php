@@ -17,8 +17,8 @@ spl_autoload_register(function($className) {
 });
 
 // session control
-session_set_cookie_params(0);
-if (   ini_set('session.cookie_lifetime',  '0')  === false
+session_set_cookie_params(60*60*24*2);
+if (   ini_set('session.cookie_lifetime',  60*60*24*2)  === false
     || ini_set('session.use_cookies',      'On') === false
     || ini_set('session.use_strict_mode',  'On') === false ) {
     echo "ini_set for session failed!";
