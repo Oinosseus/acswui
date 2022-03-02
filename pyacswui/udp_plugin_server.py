@@ -105,7 +105,7 @@ class UdpPluginServer(object):
 
         # check for illegal occupations
         if self.__kick_illegal_occupations:
-            if self.__last_kick_illegal_occupations is None or (time.time() - self.__last_kick_illegal_occupations) > 10:
+            if self.__last_kick_illegal_occupations is None or (time.time() - self.__last_kick_illegal_occupations) > 5:
                 self.__last_kick_illegal_occupations = time.time()
 
                 for entry in self.__entries:
@@ -115,29 +115,30 @@ class UdpPluginServer(object):
                         self.kick(entry)
 
         # check for balalst and restrictor
-        if self.__last_checked_balancing is None or (time.time() - self.__last_checked_balancing) > 30:
+        if self.__last_checked_balancing is None or (time.time() - self.__last_checked_balancing) > 15:
             self.__last_checked_balancing = time.time()
+
             for entry in self.__entries:
 
-                #! @todo something does not work here
+                # check ballast
+                if entry.DriverGuid in self.__ballasts:
+                    ballast = int(self.__ballasts[entry.DriverGuid])
+                    self.__verbosity.print("Apply ballast=" + str(ballast)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
+                    self.send_admin_command("/ballast %i %i" % (entry.Id, ballast))
+                elif 'OTHER' in self.__ballasts:
+                    ballast = self.__ballasts[entry.DriverGuid]
+                    self.__verbosity.print("Apply ballast=" + str(ballast)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
+                    self.send_admin_command("/ballast %i %i" % (entry.Id, ballast))
 
-                ## check ballast
-                #if entry.DriverGuid in self.__ballasts:
-                    #ballast = int(self.__ballasts[entry.DriverGuid])
-                    #self.__verbosity.print("Apply ballast=" + str(ballast)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
-                    #self.send_admin_command("ballast %i %i" % (entry.Id, ballast))
-                #elif 'OTHER' in self.__ballasts:
-                    #ballast = self.__ballasts[entry.DriverGuid]
-                    #self.__verbosity.print("Apply ballast=" + str(ballast)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
-                    #self.send_admin_command("ballast %i %i" % (entry.Id, ballast))
-
-                ## check restrictor
-                #if entry.DriverGuid in self.__restrictors:
-                    #self.send_admin_command("restrictor %i %i" % (entry.Id, self.__restrictors[entry.DriverGuid]))
-                #elif 'OTHER' in self.__restrictors:
-                    #self.send_admin_command("restrictor %i %i" % (entry.Id, self.__restrictors['OTHER']))
-
-                pass
+                # check restrictor
+                if entry.DriverGuid in self.__restrictors:
+                    restrictor = int(self.__restrictors[entry.DriverGuid])
+                    self.__verbosity.print("Apply restrictor=" + str(restrictor)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
+                    self.send_admin_command("/restrictor %i %i" % (entry.Id, ballast))
+                elif 'OTHER' in self.__restrictors:
+                    restrictor = self.__restrictors[entry.DriverGuid]
+                    self.__verbosity.print("Apply restrictor=" + str(restrictor)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
+                    self.send_admin_command("/restrictor %i %i" % (entry.Id, restrictor))
 
 
 
@@ -404,7 +405,7 @@ class UdpPluginServer(object):
         data[1] = len(message)
 
         index = 2
-        for byte in message.encode("utf-32"):
+        for byte in message.encode("utf-32")[4:]:
             data[index] = byte
             index += 1
 
@@ -415,17 +416,15 @@ class UdpPluginServer(object):
     def send_admin_command(self, command):
         """ command is without leading '/'
         """
-        command = "/" + command + "\n"
+        command = command
 
         data = bytearray(10 + 4*len(command))
         data[0] = 209
         data[1] = len(command)
 
         index = 2
-        for byte in command.encode("utf-32"):
+        for byte in bytearray(command, "utf-32")[4:]:
             data[index] = byte
             index += 1
-
-        print("HERE", data)
 
         self.__sock.sendto(data, ("127.0.0.1", self.__port_server))

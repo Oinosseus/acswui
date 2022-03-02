@@ -165,11 +165,12 @@ class SessionSchedule extends DbEntry {
 
         // retrieve from explicit definition
         foreach (SessionScheduleRegistration::listRegistrations($this, FALSE) as $reg) {
-            if ($reg->ballast() > 0 || $reg->restrictor() > 0)
+            // ensure to have assigned penalty (if any assigned)
+            if ($reg->ballast() > 0 || $reg->restrictor() > 0) {
                 $map[$reg->user()->steam64GUID()] = $reg->ballast();
 
             // ensure to have maximum penalty if not registered
-            if (!$reg->active() &&
+            } else if (!$reg->active() &&
                 array_key_exists($reg->user()->steam64GUID(), $map) &&
                 $map['OTHER'] > $map[$reg->user()->steam64GUID()]) {
 
@@ -203,11 +204,12 @@ class SessionSchedule extends DbEntry {
 
         // retrieve from explicit definition
         foreach (SessionScheduleRegistration::listRegistrations($this, FALSE) as $reg) {
-            if ($reg->ballast() > 0 || $reg->restrictor() > 0)
+            // ensure to have assigned penalty (if any assigned)
+            if ($reg->ballast() > 0 || $reg->restrictor() > 0) {
                 $map[$reg->user()->steam64GUID()] = $reg->restrictor();
 
             // ensure to have maximum penalty if not registered
-            if (!$reg->active() &&
+            } else if (!$reg->active() &&
                 array_key_exists($reg->user()->steam64GUID(), $map) &&
                 $map['OTHER'] > $map[$reg->user()->steam64GUID()]) {
 

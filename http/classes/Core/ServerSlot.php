@@ -142,6 +142,7 @@ class ServerSlot {
                 // genral
                 $coll = new \Parameter\Collection(NULL, $pc, "AcServerGeneral", _("General Settings"), _("General settings for Real Penalty"));
                 $p = new \Parameter\ParamString(NULL, $coll, "AcServerGeneralName", _("Name"), _("An arbitrary name for the server (shown in lobby)"), "", "");
+                $p = new \Parameter\ParamString(NULL, $coll, "AcServerGeneralAdminPwd", _("Admin Passwort"), _("acServer admin passwort"), "", "");
 
                 // ports
                 $coll = new \Parameter\Collection(NULL, $pc, "AcServerPortsInet", _("Internet Ports"), _("Internet protocol port numbers for the AC server"));
@@ -489,7 +490,7 @@ class ServerSlot {
         fwrite($f, "[SERVER]\n");
         fwrite($f, "NAME=" . $pc->child("AcServerGeneralName")->value() . "\n");
         fwrite($f, "PASSWORD=\n");
-        fwrite($f, "ADMIN_PASSWORD=\n");
+        fwrite($f, "ADMIN_PASSWORD=" . $pc->child("AcServerGeneralAdminPwd")->value() . "\n");
         fwrite($f, "UDP_PORT=" . $pc->child("AcServerPortsInetUdp")->value() . "\n");
         fwrite($f, "TCP_PORT=" . $pc->child("AcServerPortsInetTcp")->value() . "\n");
         fwrite($f, "HTTP_PORT=" . $pc->child("AcServerPortsInetHttp")->value() . "\n");
