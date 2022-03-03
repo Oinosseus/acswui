@@ -290,8 +290,8 @@ class SessionSchedules extends \core\HtmlContent {
             if ($type == \DbEntry\Session::TypeInvalid && ($i+1) < count($schedules)) continue; // do not care for intermediate break
             $html .= "<tr>";
             $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeNoSeconds($time) . "</td>";
-            $html .= "<td>" . \DbEntry\Session::type2Char($type) . "</td>";
             $html .= "<td>$name</td>";
+            $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeInterval($interval) . "</td>";
             $html .= "</tr>";
             $time->add($interval->toDateInterval());
         }
