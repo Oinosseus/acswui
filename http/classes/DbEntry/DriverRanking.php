@@ -8,6 +8,7 @@ class DriverRanking extends DbEntry {
     private $RankingPoints = NULL;
     private $RankingGroup = NULL;
     private $User = NULL;
+    private $PointsIncrease = NULL;
     private static $LastRankings = NULL;
     private static $MinGroupPoints = NULL;
 
@@ -247,6 +248,21 @@ class DriverRanking extends DbEntry {
         }
 
         return $ret;
+    }
+
+    //! @return The increase of points since the last group assignment
+    public function pointsIncrease() {
+        if ($this->PointsIncrease === NULL) {
+            if ($this->id() !== NULL) {
+                $this->PointsIncrease = $this->points() - ((float) $this->loadColumn("RankingLast"));
+            } else {
+                $query = "SELECT RankingLast FROM DriverRanking WHERE User = {$this->user()->id()} ORDER BY Id DESC LIMIT 1;";
+                $res = \Core\Database::fetchRaw($query);
+                if (count($res) == 0) $this->PointsIncrease = $this->points();
+                else $this->PointsIncrease = $this->points() - ((float) $res[0]['RankingLast']);
+            }
+        }
+        return $this->PointsIncrease;
     }
 
 

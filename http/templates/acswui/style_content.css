@@ -344,11 +344,11 @@ main.SessionOverview div#SessionInformationDatalets div strong {
                           DriverRanking
  *****************************************************************************/
 
-main.DriverRanking span.TrendRising {
+main.DriverRanking .TrendRising {
     color: var(--color-functional-success);
 }
 
-main.DriverRanking span.TrendFalling {
+main.DriverRanking .TrendFalling {
     color: var(--color-functional-fail);
 }
 

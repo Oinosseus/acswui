@@ -41,14 +41,7 @@ class DriverRanking extends \core\HtmlContent {
                 $html .= "<tr>";
 
                 // position
-                $html .= "<td>";
-                $grp_calc = $rnk->rankingGroupCalculated();
-                if ($grp_calc < $rnk->rankingGroup()) {
-                    $html .= " <span title=\"" . _("Driver will rise to next group") . "\" class=\"TrendRising\">&#x2b06;</span>";
-                } else if ($grp_calc > $rnk->rankingGroup()) {
-                    $html .= " <span title=\"" . _("Driver will fall to previous group") . "\" class=\"TrendFalling\">&#x2b07;</span>";
-                }
-                $html .= " $pos</td>";
+                $html .= "<td>$pos</td>";
 
                 // driver
                 $html .= "<td class=\"DriverFlagCell\">" . $rnk->user()->parameterCollection()->child("UserCountry")->valueLabel() . "</td>";
@@ -80,6 +73,16 @@ class DriverRanking extends \core\HtmlContent {
                 $html .= "<td>";
                 $title = sprintf("%0.1f", $rnk->points());
                 $html .= "<span title=\"$title\">" . round($rnk->points()) . "</span>";
+                if ($rnk->pointsIncrease() >= 0.1) {
+                    $css_class = ($rnk->pointsIncrease() > 0) ? "TrendRising" : "TrendFalling";
+                    $html .= " <small class=\"$css_class\">(" . sprintf("%+0.1f", $rnk->pointsIncrease()) . ")</small>";
+                }
+                $grp_calc = $rnk->rankingGroupCalculated();
+                if ($grp_calc < $rnk->rankingGroup()) {
+                    $html .= " <span title=\"" . _("Driver will rise to next group") . "\" class=\"TrendRising\">&#x2b06;</span>";
+                } else if ($grp_calc > $rnk->rankingGroup()) {
+                    $html .= " <span title=\"" . _("Driver will fall to previous group") . "\" class=\"TrendFalling\">&#x2b07;</span>";
+                }
                 $html .= "</td>";
                 $html .= "</tr>";
 
