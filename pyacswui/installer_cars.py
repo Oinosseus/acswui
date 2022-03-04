@@ -51,7 +51,10 @@ class InstallerCars(object) :
         verb.print("scanning car", car)
 
         car_path   = os.path.join(path_cars, car)
+        if not os.path.isfile(car_path + "/ui/ui_car.json"):
+            return
         ui_car_json = parse_json(car_path + "/ui/ui_car.json", ['name', 'brand', 'description', 'powerCurve', 'torqueCurve'])
+
         car_name   = ui_car_json["name"]
         if car_name == "":
             car_name = car
