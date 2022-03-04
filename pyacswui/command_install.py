@@ -615,7 +615,8 @@ class CommandInstall(Command):
         permissions.append("Settings_Weather_View")
         permissions.append("Settings_Weather_Edit")
         permissions.append("Sessions_View")
-        permissions.append("Sessions_Control")
+        for i in range(1, int(self.getGeneralArg('server-slot-amount')) + 1):
+            permissions.append("Sessions_Control_Slot%i" % i)
         permissions.append("Sessions_Loops_View")
         permissions.append("Sessions_Loops_Edit")
         permissions.append("Sessions_Schedule_View")

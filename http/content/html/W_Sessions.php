@@ -4,7 +4,7 @@ namespace Content\Html;
 
 class W_Sessions extends \core\HtmlContent {
 
-    private $CanControl = FALSE;
+    private $CanControl = array(); // key=SlotId, value=True/False
 
     public function __construct() {
         parent::__construct(_("Sessions"),  "");
@@ -13,29 +13,27 @@ class W_Sessions extends \core\HtmlContent {
 
 
     public function getHtml() {
-        $this->CanControl = \Core\UserManager::loggedUser()->permitted("Sessions_Control");
+        for ($i=1; $i <= \Core\Config::ServerSlotAmount; ++$i)
+            $this->CanControl[$i] = \Core\UserManager::loggedUser()->permitted("Sessions_Control_Slot$i");
+
         $html = "";
 
-        if ($this->CanControl && array_key_exists("Action", $_POST)) {
+        if (array_key_exists("Action", $_POST)) {
             $slot = \Core\ServerSlot::fromId($_POST["SlotId"]);
+            if ($this->CanControl[$slot->id()]) {
 
-            if ($_POST['Action'] == "StopSlot") {
-                $slot->stop();
-                sleep(2);
+                if ($_POST['Action'] == "StopSlot") {
+                    $slot->stop();
+                    sleep(2);
 
-            } else if ($_POST['Action'] == "StartSlot") {
-                $trasck = \DbEntry\Track::fromId($_POST['Track']);
-                $preset = \DbEntry\ServerPreset::fromId($_POST['ServerPreset']);
-                $car_class = \DbEntry\CarClass::fromId($_POST['CarClass']);
-                $slot->start($trasck, $car_class, $preset);
-                sleep(2);
+                } else if ($_POST['Action'] == "StartSlot") {
+                    $trasck = \DbEntry\Track::fromId($_POST['Track']);
+                    $preset = \DbEntry\ServerPreset::fromId($_POST['ServerPreset']);
+                    $car_class = \DbEntry\CarClass::fromId($_POST['CarClass']);
+                    $slot->start($trasck, $car_class, $preset);
+                    sleep(2);
+                }
             }
-
-
-
-        }
-        if ($this->CanControl && array_key_exists("StartSlot", $_POST)) {
-            $slot = \Core\ServerSlot::fromId($_POST["StartSlot"]);
         }
 
 
@@ -55,9 +53,10 @@ class W_Sessions extends \core\HtmlContent {
                     if ($session->carClass()) $html .= _("Car Class") . ": " . $session->carClass()->htmlName() . "<br>";
                     $html .= $session->track()->html();
                 }
-                $html .= "<br><button type=\"submit\" name=\"Action\" value=\"StopSlot\">" . _("Stop") . "</button>";
+                if ($this->CanControl[$slot->id()])
+                    $html .= "<br><button type=\"submit\" name=\"Action\" value=\"StopSlot\">" . _("Stop") . "</button>";
 
-            } else {
+            } else if ($this->CanControl[$slot->id()]) {
 
                 // car class
                 $html .= "<select name=\"CarClass\">";
