@@ -124,7 +124,7 @@ class CommandSrvrun(Command):
         while True:
             if (time.time() - time_start) > 5:
                 break;
-            if rp_proc.poll() is None and acswui_udpp_proc.poll() is None:
+            if (not self.getArg("real-penalty") or rp_proc.poll() is None) and acswui_udpp_proc.poll() is None:
                 if self.getArg("real-penalty"):
                     if acserver_proc.poll() is None:
                         break
@@ -141,3 +141,4 @@ class CommandSrvrun(Command):
         if acserver_proc.poll() is None:
             acserver_proc.kill()
 
+        self._verbosity.print("finish server run")
