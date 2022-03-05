@@ -90,6 +90,12 @@ class UserManager {
         if (array_key_exists("UserManager", $_GET) && $_GET['UserManager'] == "Logout") {
             UserManager::logout();
 
+            // delete login token
+            $login_token = \DbEntry\LoginToken::fromCurrentUser();
+            if ($login_token !== NULL && $login_token->valid()) {
+                $login_token->delete();
+            }
+
         // root login
         } else if (array_key_exists("UserManager", $_GET) && $_GET['UserManager'] == "RootLogin" && array_key_exists("RootPassword", $_POST)) {
             if (password_verify($_POST['RootPassword'], \Core\Config::RootPassword)) {
@@ -108,10 +114,20 @@ class UserManager {
                 UserManager::login($res[0]['Id']);
             }
 
+            // save login token
+            \DbEntry\LoginToken::createNew();
+
         // try login from session
-        } else if (array_key_exists('CurrentLoggedUserId', $_SESSION)) {
-            if ($_SESSION['CurrentLoggedUserId'] !== NULL) {
+        } else if (array_key_exists('CurrentLoggedUserId', $_SESSION) && $_SESSION['CurrentLoggedUserId'] !== NULL) {
                 UserManager::login($_SESSION['CurrentLoggedUserId']);
+
+        } else {
+
+            // try from login token
+            $login_token = \DbEntry\LoginToken::fromCurrentUser();
+            if ($login_token !== NULL && $login_token->valid()) {
+                UserManager::login($login_token->user()->id());
+                \Core\Log::debug("Login by LoginToken {$login_token->user()->id()}");
             }
         }
 

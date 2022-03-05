@@ -33,10 +33,18 @@ class Log {
                 $class = "";
 
             // get function call
-            if (isset($bktrc[$i]['function']))
-                $funct = $bktrc[$i]['function'] . "(" . implode(", ", $bktrc[$i]['args']) . ")";
-            else
+            if (isset($bktrc[$i]['function'])) {
+                $backtrace_function = $bktrc[$i]['function'];
+                $backtrace_args = "";
+                foreach ($bktrc[$i]['args'] as $arg) {
+                    if ($backtrace_args != "") $backtrace_args .= ", ";
+                    if (is_array($arg)) $backtrace_args .= "ARRAY";
+                    else $backtrace_args .= $arg;
+                }
+                $funct = "$backtrace_function($backtrace_args)";
+            } else {
                 $funct = "";
+            }
 
             // backtrace information
             $ret .= "[Backtrace $i]";

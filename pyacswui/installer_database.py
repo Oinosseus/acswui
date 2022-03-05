@@ -218,6 +218,14 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt("UserGroupMap", "User")
         self.__db.appendColumnUInt("UserGroupMap", "Group")
 
+        # check table LoginTokens
+        Verbosity(verb).print("check database table `LoginTokens`")
+        self.__db.appendTable("LoginTokens")
+        self.__db.appendColumnUInt("LoginTokens", "User")
+        self.__db.appendColumnString("LoginTokens", "Token", 50)
+        self.__db.appendColumnString("LoginTokens", "Identification", 100)
+        self.__db.appendColumnDateTime("LoginTokens", 'Timestamp')
+
 
 
     def _tables_purple(self):
