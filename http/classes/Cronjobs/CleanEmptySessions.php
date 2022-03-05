@@ -13,10 +13,11 @@ class CleanEmptySessions extends \Core\Cronjob {
         // determine sessions to be checked
         $max_session_id = \Core\Cronjob::lastCompletedSession();
         $last_session_id = $this->loadData("LastCleanedSession", 0);
+        $ten_minutes_ago = \Core\Database::dateTime2timestamp(\Core\Core::now()->sub(new \DateInterval("PT10M")));
 
         // find all empty sessions
         $empty_session_ids = array();
-        $query = "SELECT Id FROM Sessions WHERE Id > $last_session_id and Id <= $max_session_id";
+        $query = "SELECT Id FROM Sessions WHERE Id > $last_session_id AND Id <= $max_session_id AND Timestamp <= '$ten_minutes_ago'";
         $res = \Core\Database::fetchRaw($query);
         foreach ($res as $row) {
             $session_id = (int) $row['Id'];
