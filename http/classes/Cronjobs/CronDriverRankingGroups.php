@@ -27,10 +27,10 @@ class CronDriverRankingGroups extends \Core\Cronjob {
 
                 // only allow jumping one group at a time
                 if ($group_new < $group_old) {
-                    \Core\Database::update("DriverRanking", $rnk_old->id(), ["RankingGroup"=>($group_old-1), "RankingLast"=>$current_ranking_points]);
+                    \Core\Database::update("DriverRanking", $rnk_old->id(), ["RankingGroup"=>($group_old-1)]);
                     $count_rising += 1;
                 } else if ($group_new > $group_old) {
-                    \Core\Database::update("DriverRanking", $rnk_old->id(), ["RankingGroup"=>($group_old+1), "RankingLast"=>$current_ranking_points]);
+                    \Core\Database::update("DriverRanking", $rnk_old->id(), ["RankingGroup"=>($group_old+1)]);
                     $count_falling += 1;
                 }
 
