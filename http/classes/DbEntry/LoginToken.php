@@ -36,7 +36,7 @@ class LoginToken extends DbEntry {
         $db_columns = array();
         $db_columns['User'] = $user->id();
         $db_columns['Token'] = $token;
-        $db_columns['Identification'] = password_hash($_SERVER['REMOTE_ADDR'],  PASSWORD_DEFAULT);
+        $db_columns['Identification'] = password_hash($_SERVER['HTTP_USER_AGENT'],  PASSWORD_DEFAULT);
         $db_columns['Timestamp'] = $timestamp;
 
         $id = \Core\Database::insert("LoginTokens", $db_columns);
@@ -133,7 +133,7 @@ class LoginToken extends DbEntry {
 
     //! @return verifies if current remote client is allowed to use the token
     public function valid() {
-        $client_ip = $_SERVER['REMOTE_ADDR'];
+        $client_ip = $_SERVER['HTTP_USER_AGENT'];
         $token_hash = $this->loadColumn("Identification");
         if (!password_verify($client_ip, $token_hash)) return FALSE;
         if ($this->expired()) return FALSE;
