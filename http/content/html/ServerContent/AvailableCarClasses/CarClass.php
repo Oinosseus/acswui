@@ -170,7 +170,10 @@ class CarClass extends \core\HtmlContent {
                 $html .= "<td>" . \Core\HumanValue::format($this->CarClass->restrictor($car), "%") . "</td>";
             }
 
-            $html .= "<td>" . \Core\UserManager::currentUser()->formatPowerSpecific(1e3 * $car->weight() / $car->power()) . "</td>";
+            $html .= "<td>";
+            if ($car->power() > 0) $html .= \Core\UserManager::currentUser()->formatPowerSpecific(1e3 * $car->weight() / $car->power());
+            $html .= "</td>";
+
             $html .= "<td>" . \Core\UserManager::currentUser()->formatPowerSpecific($this->CarClass->harmonizedPowerRatio($car)) . "</td>";
 
             if ($this->CanEdit) {

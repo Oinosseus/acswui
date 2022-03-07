@@ -224,7 +224,10 @@ class CarClass extends DbEntry {
      * @return The harmonized Power/Weight respecting Ballast and Restrictor [g/W]
      */
     public function harmonizedPowerRatio($car) {
-        return 1e3 * $this->weight($car) / $car->harmonizedPower($this->restrictor($car));
+        $power = $car->harmonizedPower($this->restrictor($car));
+        $pr = 0;
+        if ($power > 0) $pr = 1e3 * $this->weight($car) / $power;
+        return $pr;
     }
 
 

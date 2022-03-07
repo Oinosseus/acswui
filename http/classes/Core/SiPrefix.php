@@ -49,7 +49,8 @@ class SiPrefix {
 
     //! @return The value in a human readable format (including prefix and an optional unit)
     public function humanValue(string $unit = "") {
-        $s = SiPrefix::threeDigits($this->Value);
+        if ($this->Value === NULL) $s = "0";
+        else $s = SiPrefix::threeDigits($this->Value);
         return "$s {$this->Prefix}$unit";
     }
 

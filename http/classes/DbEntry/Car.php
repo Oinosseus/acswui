@@ -133,7 +133,8 @@ class Car extends DbEntry {
                 $last_pwr = $pwr;
                 if ($rpm > $rpm_peak_power) break;
             }
-            $this->PowerHarmonized[$restrictor] /= $last_rpm - $first_rpm;
+            if ($first_rpm !== NULL) $this->PowerHarmonized[$restrictor] /= $last_rpm - $first_rpm;
+            else $this->PowerHarmonized[$restrictor] = 0;
 
 //             echo "Peak Torque = $peak_torque @$rpm_peak_torque<br>";
 //             echo "Peak Power = $peak_power @$rpm_peak_power<br>";
