@@ -7,6 +7,7 @@ class DriverRanking extends DbEntry {
 
     private $RankingPoints = NULL;
     private $RankingGroup = NULL;
+    private $RankingLast = NULL;
     private $User = NULL;
     private $PointsIncrease = NULL;
     private static $LastRankings = NULL;
@@ -139,7 +140,8 @@ class DriverRanking extends DbEntry {
 
                     // update ranking group
                     if ($rnk_old !== NULL) {
-                        $rnk->setRankingGroup($rnk_old->rankingGroup());
+                        $rnk->RankingGroup = $rnk_old->rankingGroup();
+                        $rnk->RankingLast = $rnk_old->rankingLast();
                     }
 
                     DriverRanking::$LastRankings[] = $rnk;
@@ -287,6 +289,18 @@ class DriverRanking extends DbEntry {
     }
 
 
+    //! @return The sum of driver ranking points at the last group assignment
+    public function rankingLast() {
+        if ($this->RankingLast === NULL) {
+            if ($this->id() === NULL)
+                $this->RankingLast = 0.0;
+            else
+                $this->RankingLast = $this->loadColumn("RankingLast");
+        }
+        return $this->RankingLast;
+    }
+
+
     /**
      * Calculating which ranking group should be assigned according to the ranking points
      */
@@ -353,22 +367,8 @@ class DriverRanking extends DbEntry {
                 }
             }
             $columns['RankingGroup'] = $this->rankingGroup();
+            $columns['RankingLast'] = $this->rankingLast();
             $this->storeColumns($columns);
-        }
-    }
-
-
-    /**
-     * Set a new ranking group for this entry
-     * @param $g The new ranking group
-     */
-    public function setRankingGroup(int $g) {
-        if ($this->id() !== NULL) {
-            \Core\Log::error("Cannot change existing ranking '" . $this->id() . "'!");
-        } else if ($g <= 0 || $g > \Core\Config::DriverRankingGroups) {
-            \Core\Log::error("Invalid value '$g'!");
-        } else {
-            $this->RankingGroup = $g;
         }
     }
 
