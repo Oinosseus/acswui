@@ -30,18 +30,25 @@ class LoginToken extends DbEntry {
 
         // create unique token
         for ($token = bin2hex(random_bytes(25)); LoginToken::fromToken($token) !== NULL; );
-
         $timestamp = \Core\Database::dateTime2timestamp(\Core\Core::now());
+        $password = bin2hex(random_bytes(25));
 
         $db_columns = array();
         $db_columns['User'] = $user->id();
         $db_columns['Token'] = $token;
-        $db_columns['Identification'] = password_hash($_SERVER['HTTP_USER_AGENT'],  PASSWORD_DEFAULT);
+        $db_columns['Password'] = password_hash($password,  PASSWORD_DEFAULT);
         $db_columns['Timestamp'] = $timestamp;
 
         $id = \Core\Database::insert("LoginTokens", $db_columns);
         setcookie("ACswuiLoginToken",
                   $token,
+                  time() + 3600 * \Core\ACswui::getPAram("UserLoginTokenExpire"),
+                  "/",
+                  $_SERVER['HTTP_HOST'],
+                  TRUE,
+                  TRUE);
+        setcookie("ACswuiLoginPassword",
+                  $password,
                   time() + 3600 * \Core\ACswui::getPAram("UserLoginTokenExpire"),
                   "/",
                   $_SERVER['HTTP_HOST'],
@@ -133,9 +140,8 @@ class LoginToken extends DbEntry {
 
     //! @return verifies if current remote client is allowed to use the token
     public function valid() {
-        $client_ip = $_SERVER['HTTP_USER_AGENT'];
-        $token_hash = $this->loadColumn("Identification");
-        if (!password_verify($client_ip, $token_hash)) return FALSE;
+        $password = $_COOKIE["ACswuiLoginPassword"];
+        if (!password_verify($password, $this->loadColumn("Password"))) return FALSE;
         if ($this->expired()) return FALSE;
         return TRUE;
     }
