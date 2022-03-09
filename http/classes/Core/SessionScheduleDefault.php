@@ -44,14 +44,6 @@ class SessionScheduleDefault {
             $p = new \Parameter\ParamBool(NULL, $pc2, "PracticeEna", _("Enable"), _("Enable practice session loop"), "", FALSE);
             $p = new \Parameter\ParamSpecialServerPreset(NULL, $pc2, "PracticePreset", _("Server Preset"), _("Select the server preset for the practice"));
 
-            $pc2 = new \Parameter\Collection(NULL, $pc1, "Registration", _("Driver Registration"), _("Settings for Driver Registrations"));
-            $p = new \Parameter\ParamInt(NULL, $pc2, "RegistrationPenaltyBallast", _("Penalty Ballast"), _("Drivers which are not registered will get this additional ballast"), "kg", 0);
-            $p->setMin(0);
-            $p->setMax(999);
-            $p = new \Parameter\ParamInt(NULL, $pc2, "RegistrationPenaltyRestrictor", _("Penalty Restrictor"), _("Drivers which are not registered will get this additional restrictor"), "&percnt;", 0);
-            $p->setMin(0);
-            $p->setMax(100);
-
 
             // ----------------------------------------------------------------
             //                           BOP
@@ -72,6 +64,14 @@ class SessionScheduleDefault {
                     $p->setMin(0);
                     $p->setMax(100);
                 }
+
+                $pc2 = new \Parameter\Collection(NULL, $pc1, "BopNonRnk", "Not Ranked", _("Add ballast or restrictors to drivers which are not in the driver ranking"));
+                $p = new \Parameter\ParamInt(NULL, $pc2, "BopNonRnkBallast", _("Ballast"), _("Additional ballast for drivers who are not in the driver ranking"), "kg", 0);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamInt(NULL, $pc2, "BopNonRnkRestrictor", _("Restrictor"), _("Additional restrictor for drivers who are not in the driver ranking"), "&percnt;", 0);
+                $p->setMin(0);
+                $p->setMax(100);
             }
 
 

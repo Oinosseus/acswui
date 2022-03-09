@@ -148,19 +148,13 @@ class SessionSchedule extends DbEntry {
     //! @return An accociative array with Steam64GUI->Ballast and one item 'OTHER'->Ballast
     public function mapBallasts() {
         $map = array();
-        $map['OTHER'] = $this->getParamValue("RegistrationPenaltyBallast");
-
-        // ensure to have all registered drivers in list
-        foreach (SessionScheduleRegistration::listRegistrations($this) as $reg) {
-            $map[$reg->user()->steam64GUID()] = 0;
-        }
+        $map['OTHER'] = $this->getParamValue("BopNonRnkBallast");
 
         // retrieve from user ranking
         foreach (\DbEntry\DriverRanking::listLatest() as $drvrnk) {
             $group = $drvrnk->rankingGroup();
             $ballast = $this->getParamValue("BopDrvRnkGrpBallast$group");
-            if (array_key_exists($drvrnk->user()->steam64GUID(), $map))
-                $map[$drvrnk->user()->steam64GUID()] = $ballast;
+            $map[$drvrnk->user()->steam64GUID()] = $ballast;
         }
 
         // retrieve from explicit definition
@@ -168,15 +162,7 @@ class SessionSchedule extends DbEntry {
             // ensure to have assigned penalty (if any assigned)
             if ($reg->ballast() > 0 || $reg->restrictor() > 0) {
                 $map[$reg->user()->steam64GUID()] = $reg->ballast();
-
-            // ensure to have maximum penalty if not registered
-            } else if (!$reg->active() &&
-                array_key_exists($reg->user()->steam64GUID(), $map) &&
-                $map['OTHER'] > $map[$reg->user()->steam64GUID()]) {
-
-                $map[$reg->user()->steam64GUID()] = $map['OTHER'];
             }
-
         }
 
 
@@ -187,19 +173,13 @@ class SessionSchedule extends DbEntry {
     //! @return An accociative array with Steam64GUI->Restrictor and one item 'OTHER'->Restrictor
     public function mapRestrictors() {
         $map = array();
-        $map['OTHER'] = $this->getParamValue("RegistrationPenaltyRestrictor");
-
-        // ensure to have all registered drivers in list
-        foreach (SessionScheduleRegistration::listRegistrations($this) as $reg) {
-            $map[$reg->user()->steam64GUID()] = 0;
-        }
+        $map['OTHER'] = $this->getParamValue("BopNonRnkRestrictor");
 
         // retrieve from user ranking
         foreach (\DbEntry\DriverRanking::listLatest() as $drvrnk) {
             $group = $drvrnk->rankingGroup();
             $restrictor = $this->getParamValue("BopDrvRnkGrpRestrictor$group");
-            if (array_key_exists($drvrnk->user()->steam64GUID(), $map))
-                $map[$drvrnk->user()->steam64GUID()] = $restrictor;
+            $map[$drvrnk->user()->steam64GUID()] = $restrictor;
         }
 
         // retrieve from explicit definition
@@ -207,13 +187,6 @@ class SessionSchedule extends DbEntry {
             // ensure to have assigned penalty (if any assigned)
             if ($reg->ballast() > 0 || $reg->restrictor() > 0) {
                 $map[$reg->user()->steam64GUID()] = $reg->restrictor();
-
-            // ensure to have maximum penalty if not registered
-            } else if (!$reg->active() &&
-                array_key_exists($reg->user()->steam64GUID(), $map) &&
-                $map['OTHER'] > $map[$reg->user()->steam64GUID()]) {
-
-                $map[$reg->user()->steam64GUID()] = $map['OTHER'];
             }
         }
 
