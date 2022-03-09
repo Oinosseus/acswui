@@ -140,6 +140,7 @@ class LoginToken extends DbEntry {
 
     //! @return verifies if current remote client is allowed to use the token
     public function valid() {
+        if (!array_key_exists("ACswuiLoginPassword", $_COOKIE)) return FALSE;
         $password = $_COOKIE["ACswuiLoginPassword"];
         if (!password_verify($password, $this->loadColumn("Password"))) return FALSE;
         if ($this->expired()) return FALSE;
