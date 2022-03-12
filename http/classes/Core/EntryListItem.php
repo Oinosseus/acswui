@@ -71,4 +71,14 @@ class EntryListItem {
         if (count($res)) return $res[0]['Name'];
         return "";
     }
+
+
+    public function setBallast(int $ballast) {
+        $this->Ballast = $ballast;
+    }
+
+
+    public function setRestrictor(int $restrictor) {
+        $this->Restrictor = $restrictor;
+    }
 }

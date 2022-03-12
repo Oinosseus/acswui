@@ -37,6 +37,21 @@ class EntryList {
     }
 
 
+    /**
+     * Apply ballast and restrictor from Car class to all current entries
+     * @param $cc \DbEntry\CarClass to retrieve ballast/restrictor from
+     */
+    public function  applyCarClass(\DbEntry\CarClass $cc) {
+        foreach ($this->ListItems as $eli) {
+            $car = $eli->carSkin()->car();
+            $ballast = $cc->ballast($car);
+            $eli->setBallast($ballast);
+            $restrictor = $cc->restrictor($car);
+            $eli->setRestrictor($restrictor);
+        }
+    }
+
+
     //! @return TRUE if the requested CarSkin is in the EntryList
     public function containsCarSkin(\DbEntry\CarSkin $car_skin) {
         return array_key_exists($car_skin->id(), $this->CacheCarSkins);

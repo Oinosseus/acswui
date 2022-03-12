@@ -69,9 +69,7 @@ class SessionSchedule extends DbEntry {
 
                 if (array_key_exists($rslt->user()->id(), $registered_user_ids)) {
                     $reg = $registered_user_ids[$rslt->user()->id()];
-                    $ballast = (array_key_exists($reg->user()->steam64GUID(), $map_ballast)) ? $map_ballast[$reg->user()->steam64GUID()] : $map_ballast["OTHER"];
-                    $restrictor = (array_key_exists($reg->user()->steam64GUID(), $map_restrictors)) ? $map_restrictors[$reg->user()->steam64GUID()] : $map_restrictors["OTHER"];
-                    $eli = new \Core\EntryListItem($reg->carSkin(), $reg->user(), $ballast, $restrictor);
+                    $eli = new \Core\EntryListItem($reg->carSkin(), $reg->user());//, $ballast, $restrictor);
                     $el->add($eli);
                 }
 
@@ -93,6 +91,9 @@ class SessionSchedule extends DbEntry {
 
         // fill random entries
         $el->fillSkins($this->carClass(), $this->track(), $map_ballast["OTHER"], $map_restrictors["OTHER"]);
+
+        // applay ballast/restrictor accodring to CarClass
+        $el->applyCarClass($this->carClass());
 
         return $el;
     }

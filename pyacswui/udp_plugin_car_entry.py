@@ -35,14 +35,16 @@ class UdpPluginCarEntry(object):
         self.__last_lap_grip = 0
 
         # determine ballast
-        self.__ballast = 0
+        self.__ballast_original = 0
         if 'BALLAST' in entry_dict and entry_dict['BALLAST'] != "":
-            self.__ballast = int(entry_dict['BALLAST'])
+            self.__ballast_original = int(entry_dict['BALLAST'])
+        self.__ballast_current = self.__ballast_original
 
         # determine restrictor
-        self.__restrictor = 0
+        self.__restrictor_original = 0
         if 'RESTRICTOR' in entry_dict and entry_dict['RESTRICTOR'] != "":
-            self.__restrictor = int(entry_dict['RESTRICTOR'])
+            self.__restrictor_original = int(entry_dict['RESTRICTOR'])
+        self.__restrictor_current = self.__restrictor_original
 
         # identify car
         self.__car_model = entry_dict['MODEL']
@@ -84,8 +86,38 @@ class UdpPluginCarEntry(object):
 
 
     @property
+    def BallastCurrent(self):
+        return self.__ballast_current
+
+
+    @BallastCurrent.setter
+    def BallastCurrent(self, value):
+        self.__ballast_current = int(value)
+
+
+    @property
+    def BallastOriginal(self):
+        return self.__ballast_original
+
+
+    @property
     def Model(self):
         return self.__car_model
+
+
+    @property
+    def RestrictorCurrent(self):
+        return self.__restrictor_current
+
+
+    @property
+    def RestrictorCurrent(self, value):
+        self.__restrictor_current = int(value)
+
+
+    @property
+    def RestrictorOriginal(self):
+        return self.__restrictor_original
 
 
     @property
@@ -190,10 +222,11 @@ class UdpPluginCarEntry(object):
         # inform that driver is not online anymore
         self.__db.updateRow("Users", self.__driver_id, {"CurrentSession": 0})
 
-
         self.__driver_guid = None
         self.__driver_name = None
         self.__driver_id = None
+        self.__restrictor_current = self.__restrictor_original
+        self.__ballast_current = self.__ballast_original
 
 
     def complete_lap(self, session, laptime, cuts, grip):
@@ -213,8 +246,8 @@ class UdpPluginCarEntry(object):
         fields['LapTime'] = laptime
         fields['Cuts'] = cuts
         fields['Grip'] = grip
-        fields['Ballast'] = self.__ballast
-        fields['Restrictor'] = self.__restrictor
+        fields['Ballast'] = self.__ballast_current
+        fields['Restrictor'] = self.__restrictor_current
         self.__db.insertRow("Laps", fields)
 
         self.__last_lap_time = laptime

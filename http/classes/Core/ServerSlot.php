@@ -473,9 +473,10 @@ class ServerSlot {
 
 
         // determine maximum ballast
-        $max_ballast = $car_class->ballastMax();
+        $car_class_max_ballast = $car_class->ballastMax();
+        $max_ballast = $car_class_max_ballast;
         foreach ($map_ballasts as $guid=>$ballast) {
-            if ($ballast > $max_ballast) $max_ballast = $ballast;
+            if ($ballast > $max_ballast) $max_ballast = $car_class_max_ballast + $ballast;
         }
 
         $pc = $this->parameterCollection();

@@ -115,30 +115,32 @@ class UdpPluginServer(object):
                         self.kick(entry)
 
         # check for balalst and restrictor
-        if self.__last_checked_balancing is None or (time.time() - self.__last_checked_balancing) > 15:
+        if self.__last_checked_balancing is None or (time.time() - self.__last_checked_balancing) > 5:
             self.__last_checked_balancing = time.time()
 
             for entry in self.__entries:
 
                 # check ballast
+                ballast_requested = entry.BallastOriginal
                 if entry.DriverGuid in self.__ballasts:
-                    ballast = int(self.__ballasts[entry.DriverGuid])
-                    self.__verbosity.print("Apply ballast=" + str(ballast)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
-                    self.send_admin_command("/ballast %i %i" % (entry.Id, ballast))
+                    ballast_requested = entry.BallastOriginal + int(self.__ballasts[entry.DriverGuid])
                 elif 'OTHER' in self.__ballasts:
-                    ballast = self.__ballasts[entry.DriverGuid]
-                    self.__verbosity.print("Apply ballast=" + str(ballast)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
-                    self.send_admin_command("/ballast %i %i" % (entry.Id, ballast))
+                    ballast_requested = entry.BallastOriginal + self.__ballasts[entry.DriverGuid]
+                if entry.BallastCurrent != ballast_requested:
+                    self.__verbosity.print("Apply OTHER ballast=" + str(ballast_requested)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
+                    self.send_admin_command("/ballast %i %i" % (entry.Id, ballast_requested))
+                    entry.BallastCurrent = ballast_requested
 
                 # check restrictor
+                restrictor_requested = entry.RestrictorOriginal
                 if entry.DriverGuid in self.__restrictors:
-                    restrictor = int(self.__restrictors[entry.DriverGuid])
-                    self.__verbosity.print("Apply restrictor=" + str(restrictor)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
-                    self.send_admin_command("/restrictor %i %i" % (entry.Id, ballast))
+                    restrictor_requested = entry.RestrictorOriginal + int(self.__restrictors[entry.DriverGuid])
                 elif 'OTHER' in self.__restrictors:
-                    restrictor = self.__restrictors[entry.DriverGuid]
-                    self.__verbosity.print("Apply restrictor=" + str(restrictor)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
-                    self.send_admin_command("/restrictor %i %i" % (entry.Id, restrictor))
+                    restrictor_requested = entry.RestrictorOriginal + self.__restrictors[entry.DriverGuid]
+                if entry.RestrictorCurrent != restrictor_requested:
+                    self.__verbosity.print("Apply restrictor=" + str(restrictor_requested)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
+                    self.send_admin_command("/restrictor %i %i" % (entry.Id, restrictor_requested))
+                    entry.RestrictorCurrent = restrictor_requested
 
 
 
