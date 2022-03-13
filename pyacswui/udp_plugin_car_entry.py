@@ -110,7 +110,7 @@ class UdpPluginCarEntry(object):
         return self.__restrictor_current
 
 
-    @property
+    @RestrictorCurrent.setter
     def RestrictorCurrent(self, value):
         self.__restrictor_current = int(value)
 

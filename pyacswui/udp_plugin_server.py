@@ -103,6 +103,7 @@ class UdpPluginServer(object):
         if self.__session is not None and self.__session.IsActive:
             self.dump_realtime_json()
 
+
         # check for illegal occupations
         if self.__kick_illegal_occupations:
             if self.__last_kick_illegal_occupations is None or (time.time() - self.__last_kick_illegal_occupations) > 5:
@@ -114,11 +115,16 @@ class UdpPluginServer(object):
                         self.send_chat_broadcast("ACswui: kick " + entry.DriverName + " because using preserved car!")
                         self.kick(entry)
 
+
         # check for balalst and restrictor
         if self.__last_checked_balancing is None or (time.time() - self.__last_checked_balancing) > 5:
             self.__last_checked_balancing = time.time()
 
             for entry in self.__entries:
+
+                # ignored not occupied cars
+                if entry.DriverGuid is None:
+                    continue
 
                 # check ballast
                 ballast_requested = entry.BallastOriginal
