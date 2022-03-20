@@ -48,7 +48,7 @@ class ACswui  {
             $p = new \Parameter\ParamInt(NULL, $pc, "CommunityLastLoginDays", _("Non-Active Community Login Days"), _("When a user has not logged in into the system for this amount of days he or she is not considered to be a community member\nAdditionally an user must be an active driver to be considered as community member"), "", 90);
             $p->setMin(1);
             $p->setMax(3650);
-            $p = new \Parameter\ParamBool(NULL, $pc, "SessionAutomatic", _("Active Session Automatic"), _("The Session Automatic can be disabled to allow updates"), "", TRUE);
+            $p = new \Parameter\ParamBool(NULL, $pc, "SessionAutomatic", _("Activate Session Automatic"), _("The Session Automatic can be disabled to allow updates"), "", TRUE);
 
 
             // ----------------------------------------------------------------
@@ -148,7 +148,7 @@ class ACswui  {
 
             $coll = new \Parameter\Collection(NULL, $pc, "UserContentView", _("Content View"), _("View options for special content"));
             $p = new \Parameter\ParamBool(NULL, $coll, "UserRecordsSkipPrivate",_("Skip Private Records"), _("Skip users which do not allow to show private information in car/track records tables"), "", TRUE);
-            $p = new \Parameter\ParamEnum(NULL, $coll, "UserTracksOrder", _("Trasck Order"), _("In which order shall tracks be shown"));
+            $p = new \Parameter\ParamEnum(NULL, $coll, "UserTracksOrder", _("Track Order"), _("In which order shall tracks be shown"));
             new \Parameter\EnumItem($p, 'country',  _("By Country"));
             new \Parameter\EnumItem($p, 'alphabet',  _("Alphabetically"));
             $p->setValue("country");
