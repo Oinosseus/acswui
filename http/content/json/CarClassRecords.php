@@ -41,8 +41,7 @@ class CarClassRecords extends \Core\JsonContent {
                 $html .= "<th>" . _("Delta") . "</th>";
                 $html .= "<th>" . _("Driver") . "</th>";
                 $html .= "<th colspan=\"2\">" . _("Car") . "</th>";
-                $html .= "<th>" . _("Ballast") . "</th>";
-                $html .= "<th>" . _("Restrictor") . "</th>";
+                $html .= "<th>" . _("BOP") . "</th>";
                 $html .= "<th>" . _("Grip") . "</th>";
                 $html .= "<th>" . _("Date") . "</th>";
                 $html .= "<th>" . _("Session") . "</th>";
@@ -74,8 +73,7 @@ class CarClassRecords extends \Core\JsonContent {
                         $html .= "<td>" . $lap->user()->html() . "</td>";
                         $html .= "<td class=\"CarImage\">" . $lap->carSkin()->html(TRUE, FALSE, TRUE) . "</td>";
                         $html .= "<td class=\"CarName\">" . $lap->carSkin()->car()->html($car_class, TRUE, TRUE, FALSE) . "</td>";
-                        $html .= "<td>" . $lap->ballast() . " kg</td>";
-                        $html .= "<td>" . $lap->restrictor() . " &percnt;</td>";
+                        $html .= "<td>" . sprintf("%+dkg, %+d&percnt;", $lap->ballast(), $lap->restrictor()) . "</td>";
                         $html .= "<td>" . sprintf("%0.1f", $lap->grip() * 100) . " &percnt;</td>";
                         $html .= "<td>" . $cu->formatDateTimeNoSeconds($lap->timestamp()) . "</td>";
                         $html .= "<td>" . $lap->session()->htmlName() . "</td>";
