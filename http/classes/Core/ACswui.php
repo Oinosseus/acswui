@@ -147,9 +147,9 @@ class ACswui  {
             $p = new \Parameter\ParamSpecialUserTimezone(NULL, $pc, "UserTimezone", _("Timezone"), _("Define your preferred timezone"));
             $p = new \Parameter\ParamColor(NULL, $pc, "UserColor", _("Color"), _("Your preferred color to better identify you in diagrams"));
             $p = new \Parameter\ParamBool(NULL, $pc, "UserRecordsSkipPrivate",_("Skip Private Records"), _("Skip users which do not allow to show private information in car/track records tables"), "", TRUE);
-            $p = new \Parameter\ParamInt(NULL, $pc, "UserLoginTokenExpire", _("Login Expire"), _("The user login is saved via a token inside a client cookie. This defines the time in hours when this token expires"), "h", 24);
+            $p = new \Parameter\ParamInt(NULL, $pc, "UserLoginTokenExpire", _("Login Expire"), _("The user login is saved via a token inside a client cookie. This defines the amount of days when this token expires"), "d", 30);
             $p->setMin(1);
-            $p->setMax(24*7);
+            $p->setMax(365);
 
             $coll = new \Parameter\Collection(NULL, $pc, "UserUnits", _("Units"), _("Setup preferred units for values"));
             $p = new \Parameter\ParamSpecialUserPower(NULL, $coll, "UserUnitPower", _("Power"), "");

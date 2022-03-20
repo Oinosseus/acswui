@@ -42,7 +42,7 @@ class LoginToken extends DbEntry {
         $id = \Core\Database::insert("LoginTokens", $db_columns);
         setcookie("ACswuiLoginToken",
                   $token,
-                  time() + 3600 * \Core\ACswui::getPAram("UserLoginTokenExpire"),
+                  time() + 3600 * 24 * \Core\ACswui::getPAram("UserLoginTokenExpire"),
                   "/",
                   $_SERVER['HTTP_HOST'],
                   TRUE,
