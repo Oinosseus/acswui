@@ -104,12 +104,16 @@ class SessionData extends \Core\JsonContent {
             $data_row[] = $user->formatDateTime($c->timestamp());
             $data_row[] = $c->user()->html();
             $data_row[] = (($c instanceof \DbEntry\CollisionCar) ? $c->otheruser()->html() : "" );
-            $data_row[] = sprintf("%0.1f", $c->speed()) . " km/h";
+            $data_row[] = round($c->speed()) . " km/h";
 
             $distance = $session->drivenDistance($c->user());
-            $sf_coll = \Core\ACswui::getParam(($c instanceof \DbEntry\CollisionEnv) ? "DriverRankingSfCe" : "DriverRankingSfCc");
-            $sf_coll *= $c->speed() / \Core\ACswui::getParam("DriverRankingCollNormSpeed");
-            $data_row[] = sprintf("%0.4f", $sf_coll);
+            if ($session->type() != \DbEntry\Session::TypePractice || \Core\ACswui::getPAram('DriverRankingSfAP') == FALSE) {
+                $sf_coll = \Core\ACswui::getParam(($c instanceof \DbEntry\CollisionEnv) ? "DriverRankingSfCe" : "DriverRankingSfCc");
+                $sf_coll *= $c->speed() / \Core\ACswui::getParam("DriverRankingCollNormSpeed");
+            } else {
+                $sf_coll = 0;
+            }
+            $data_row[] = sprintf("%0.1f", round($sf_coll, 1));
 
             $data_row[] = $c->id();
 

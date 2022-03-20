@@ -338,6 +338,14 @@ main.SessionOverview div#SessionInformationDatalets div strong {
     display: block;
 }
 
+main.SessionOverview span.PositiveRankingPoints {
+    color: var(--color-functional-success);
+}
+
+main.SessionOverview span.NagativeRankingPoints {
+    color: var(--color-functional-fail);
+}
+
 
 
 /*****************************************************************************

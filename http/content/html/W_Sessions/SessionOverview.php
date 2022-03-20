@@ -223,7 +223,9 @@ class SessionOverview extends \core\HtmlContent {
             $title =  "XP:" . $rp['XP']['Sum'] . "\n";
             $title .= "SX:" . $rp['SX']['Sum'] . "\n";
             $title .= "SF:" . $rp['SF']['Sum'];
-            $html .= "<span title=\"$title\">" . ($rp['XP']['Sum'] + $rp['SX']['Sum'] + $rp['SF']['Sum']) . "</span>";
+            $sum = $rp['XP']['Sum'] + $rp['SX']['Sum'] + $rp['SF']['Sum'];
+            $css_class = ($sum > 0.0) ? "PositiveRankingPoints" : "NagativeRankingPoints";
+            $html .= "<span title=\"$title\" class=\"$css_class\">" . sprintf("%+0.1f", round($sum, 1)) . "</span>";
             $html .= "</td>";
 
             $html .= "<tr>";
