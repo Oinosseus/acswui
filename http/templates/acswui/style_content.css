@@ -230,6 +230,27 @@ main.AvailableTrackLocations div#TableOfContents a {
 
 
 /*****************************************************************************
+                          W_Sessions
+ *****************************************************************************/
+
+main.W_Sessions div.Infolet {
+    border-radius: 1em;
+    background-color: var(--color-bg-elements);
+    display: inline-block;
+    padding: 0.5em 1em;
+    margin-top: 1em;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 1em;
+    vertical-align: top;
+}
+
+main.W_Sessions div.Infolet div {
+    background-color: transparent;
+}
+
+
+/*****************************************************************************
                           SessionOverview
  *****************************************************************************/
 

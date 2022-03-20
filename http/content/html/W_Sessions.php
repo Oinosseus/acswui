@@ -47,11 +47,28 @@ class W_Sessions extends \core\HtmlContent {
             if ($slot->online()) {
                 $session = $slot->currentSession();
                 if ($session) {
+
+                    $html .= "<div class=\"Infolet\">";
                     $html .= _("Session") . ": " . $session->htmlName() . "<br>";
                     $html .= _("Start") . ": " . \Core\UserManager::currentUser()->formatDateTime($session->timestamp()) . "<br>";
                     if ($session->serverPreset()) $html .= _("Server Preset") . ": " . $session->serverPreset()->name() . "<br>";
                     if ($session->carClass()) $html .= _("Car Class") . ": " . $session->carClass()->htmlName() . "<br>";
                     $html .= $session->track()->html();
+                    $html .= "</div>";
+
+                    // list online drivers
+                    foreach ($slot->driversOnline() as $user) {
+                        $html .= "<div class=\"Infolet\">";
+                        $html .= "<label>" . $user->html() . "</label>";
+                        $laps = $session->laps($user);
+                        if (count($laps) > 0) {
+                            $carskin = $laps[count($laps) - 1]->carSkin();
+                            $html .= $carskin->html(TRUE, FALSE, TRUE);
+                        }
+                        $html .= "</div>";
+                    }
+
+
                 }
                 if ($this->CanControl[$slot->id()])
                     $html .= "<br><button type=\"submit\" name=\"Action\" value=\"StopSlot\">" . _("Stop") . "</button>";

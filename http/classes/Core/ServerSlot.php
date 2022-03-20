@@ -58,22 +58,19 @@ class ServerSlot {
 
     //! @return An array of User objects that are currently online
     public function driversOnline() {
-        return array();
 
-        //! @todo Implement me when Session class is available
+        $drivers = array();
 
-//         $drivers = array();
-//
-//         // get current session of this slot
-//         $session = $this->currentSession();
-//         if ($session === NULL) return $drivers;
-//
-//         $res = $acswuiDatabase->fetch_2d_array("Users", ['Id'], ['CurrentSession'=>$session->id()]);
-//         foreach ($res as $row) {
-//             $drivers[] = new User($row['Id']);
-//         }
-//
-//         return $drivers;
+        // get current session of this slot
+        $session = $this->currentSession();
+        if ($session === NULL) return $drivers;
+
+        $res = \Core\Database::fetch("Users", ['Id'], ['CurrentSession'=>$session->id()]);
+        foreach ($res as $row) {
+            $drivers[] = \DbEntry\User::fromId($row['Id']);
+        }
+
+        return $drivers;
     }
 
 
