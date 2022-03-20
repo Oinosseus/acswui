@@ -136,8 +136,7 @@ class SessionData extends \Core\JsonContent {
         $header[] = _("Cuts");
         $header[] = _("Driver");
         $header[] = _("Car");
-        $header[] = _("Ballast");
-        $header[] = _("Restrictor");
+        $header[] = _("BOP");
         $header[] = _("Traction");
         $header[] = _("Lap ID");
         $data['Header'] = $header;
@@ -162,8 +161,7 @@ class SessionData extends \Core\JsonContent {
             $html .= "<td>" . $lap->cuts() . "</td>";
             $html .= "<td>" . $lap->user()->html() . "</td>";
             $html .= "<td>" . $lap->carSkin()->car()->name() . "</td>";
-            $html .= "<td>" . $lap->ballast() . " kg</td>";
-            $html .= "<td>" . $lap->restrictor() . " &percnt;</td>";
+            $html .= "<td>" . sprintf("%+dkg, %+d&percnt;", $lap->ballast(), $lap->restrictor()) . "</td>";
             $html .= "<td>" . sprintf("%0.1f", 100 * $lap->grip()) . " &percnt;</td>";
             $html .= "<td>" . $lap->id() . "</td>";
 

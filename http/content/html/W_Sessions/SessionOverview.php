@@ -83,8 +83,7 @@ class SessionOverview extends \core\HtmlContent {
         $html .= "<th>" . _("Delta") . "</th>";
         $html .= "<th>" . _("Cuts") . "</th>";
         $html .= "<th>" . _("Car") . "</th>";
-        $html .= "<th>" . _("Ballast") . "</th>";
-        $html .= "<th>" . _("Restrictor") . "</th>";
+        $html .= "<th>" . _("BOP") . "</th>";
         $html .= "<th>" . _("Grip") . "</th>";
         $html .= "<th>" . _("Lap") . "</th>";
         $html .= "<tr>";
@@ -116,8 +115,7 @@ class SessionOverview extends \core\HtmlContent {
             $html .= "<td>" . $user->formatLaptimeDelta(($lap->laptime() - $best_laptime)) . "</td>";
             $html .= "<td>" . $lap->cuts() . "</td>";
             $html .= "<td class=\"CarSkin\">" . $lap->carSkin()->html(TRUE, FALSE, TRUE) . "</td>";
-            $html .= "<td>" . $lap->ballast() . " kg</td>";
-            $html .= "<td>" . $lap->restrictor() . " &percnt;</td>";
+            $html .= "<td>" . sprintf("%+dkg, %+d&percnt;", $lap->ballast(), $lap->restrictor()) . "</td>";
             $html .= "<td>" . sprintf("%0.1f", 100*$lap->grip()) . " &percnt;</td>";
             $html .= "<td>" . $lap->id() . "</td>";
 
@@ -180,8 +178,7 @@ class SessionOverview extends \core\HtmlContent {
         $html .= "<th rowspan=\"2\">"  . _("Car") . "</th>";
         $html .= "<th rowspan=\"2\">"  . _("Best Lap") . "</th>";
         $html .= "<th rowspan=\"2\">"  . _("Total Time") . "</th>";
-        $html .= "<th rowspan=\"2\">"  . _("Ballast") . "</th>";
-        $html .= "<th rowspan=\"2\">"  . _("Restrictor") . "</th>";
+        $html .= "<th rowspan=\"2\">"  . _("BOP") . "</th>";
         $html .= "<th colspan=\"2\">"  . _("Driven") . "</th>";
         $html .= "<th rowspan=\"2\">"  . _("Cuts") . "</th>";
         $html .= "<th colspan=\"2\">"  . _("Collisions") . "</th>";
@@ -209,8 +206,7 @@ class SessionOverview extends \core\HtmlContent {
             $html .= "<td class=\"SessionResultsCarSkinCell\">" . $r->carSkin()->html(TRUE, FALSE) ."</td>";
             $html .= "<td>" . $user->formatLaptime($r->bestLaptime()) . "</td>";
             $html .= "<td>" . $user->formatLaptime($r->totalTime()) . "</td>";
-            $html .= "<td>" . $r->ballast() . " kg</td>";
-            $html .= "<td>" . $r->restrictor() . " &percnt;</td>";
+            $html .= "<td>" . sprintf("%+dkg, %+d&percnt;", $r->ballast(), $r->restrictor()) . "</td>";
             $html .= "<td>" . $r->amountLaps() . "</td>";
             $html .= "<td>" . $user->formatDistance($r->amountLaps() * $r->session()->track()->length()) . "</td>";
             $html .= "<td>" . $r->amountCuts() . "</td>";
