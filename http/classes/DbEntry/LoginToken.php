@@ -49,7 +49,7 @@ class LoginToken extends DbEntry {
                   TRUE);
         setcookie("ACswuiLoginPassword",
                   $password,
-                  time() + 3600 * \Core\ACswui::getPAram("UserLoginTokenExpire"),
+                  time() + 3600 * 24 * \Core\ACswui::getPAram("UserLoginTokenExpire"),
                   "/",
                   $_SERVER['HTTP_HOST'],
                   TRUE,
@@ -70,8 +70,8 @@ class LoginToken extends DbEntry {
 
     //! @return TRUE if the LoginToken is expired
     public function expired() {
-        $expire_hours = $this->user()->getParam("UserLoginTokenExpire");
-        $expire_dt = \Core\Core::now()->sub(new \DateInterval("PT{$expire_hours}H"));
+        $expire_days = $this->user()->getParam("UserLoginTokenExpire");
+        $expire_dt = \Core\Core::now()->sub(new \DateInterval("P{$expire_days}D"));
         return $this->timestamp() < $expire_dt;
     }
 
