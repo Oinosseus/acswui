@@ -475,6 +475,14 @@ main.CarClass td.CarImage img {
 }
 
 
+main.CarClass td.CarName div {
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+    font-size: 0.8em;
+}
+
+
 
 /*****************************************************************************
                                  Track
@@ -491,4 +499,11 @@ main.Track td.CarImage div {
 
 main.Track td.CarImage img {
     height: 3em;
+}
+
+main.Track td.CarName div {
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+    font-size: 0.8em;
 }

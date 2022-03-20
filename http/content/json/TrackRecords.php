@@ -40,7 +40,7 @@ class TrackRecords extends \Core\JsonContent {
                 $html .= "<th>" . _("Laptime") . "</th>";
                 $html .= "<th>" . _("Delta") . "</th>";
                 $html .= "<th>" . _("Driver") . "</th>";
-                $html .= "<th>" . _("Car") . "</th>";
+                $html .= "<th colspan=\"2\">" . _("Car") . "</th>";
                 $html .= "<th>" . _("Ballast") . "</th>";
                 $html .= "<th>" . _("Restrictor") . "</th>";
                 $html .= "<th>" . _("Grip") . "</th>";
@@ -73,6 +73,7 @@ class TrackRecords extends \Core\JsonContent {
                         $html .= "<td>" . $cu->formatLaptimeDelta($lap->laptime() - $best_laps[0]->laptime()) . "</td>";
                         $html .= "<td>" . $lap->user()->html() . "</td>";
                         $html .= "<td class=\"CarImage\">" . $lap->carSkin()->html(TRUE, FALSE, TRUE) . "</td>";
+                        $html .= "<td class=\"CarName\">" . $lap->carSkin()->car()->html($cc, TRUE, TRUE, FALSE) . "</td>";
                         $html .= "<td>" . $lap->ballast() . " kg</td>";
                         $html .= "<td>" . $lap->restrictor() . " &percnt;</td>";
                         $html .= "<td>" . sprintf("%0.1f", $lap->grip() * 100) . " &percnt;</td>";

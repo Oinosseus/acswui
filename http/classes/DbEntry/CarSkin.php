@@ -71,7 +71,7 @@ class CarSkin extends DbEntry {
 
         if ($show_label) $html .= "<label for=\"CarSkin$skin_id\">$skin_name</label>";
 
-        if ($show_img) $html .= "<img class=\"HoverPreviewImage\" src=\"$preview_path\" id=\"CarSkin$skin_id\" alt=\"$skin_name\" title=\"Skin: $skin_name\">";
+        if ($show_img) $html .= "<img class=\"HoverPreviewImage\" src=\"$preview_path\" id=\"CarSkin$skin_id\" alt=\"$skin_name\" title=\"{$this->car()->name()}\n$skin_name\">";
 
         if ($include_link) {
             $html = "<a href=\"index.php?HtmlContent=CarSkin&Id=$skin_id\">$html</a>";
