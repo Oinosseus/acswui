@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-20 16:28+0100\n"
-"PO-Revision-Date: 2022-03-20 16:33+0100\n"
+"POT-Creation-Date: 2022-03-20 19:01+0100\n"
+"PO-Revision-Date: 2022-03-20 19:00+0100\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -90,6 +90,7 @@ msgid "Settings for driver ranking"
 msgstr "Einstellungen für die Fahrerwertung"
 
 #: http/classes/Core/ACswui.php:59
+#: http/content/html/B_User/DriverRanking.php:25
 msgid "Days"
 msgstr "Tage"
 
@@ -101,6 +102,7 @@ msgstr ""
 "werden."
 
 #: http/classes/Core/ACswui.php:65
+#: http/content/html/B_User/DriverRanking.php:26
 #: http/content/html/W_Sessions/SessionOverview.php:185
 msgid "Ranking Points"
 msgstr "Wertungspunkte"
@@ -110,7 +112,7 @@ msgid "Adjusting ranking points"
 msgstr "Wertungspunkte anpassen"
 
 #: http/classes/Core/ACswui.php:68
-#: http/content/html/B_User/DriverRanking.php:26
+#: http/content/html/B_User/DriverRanking.php:43
 msgid "Experience"
 msgstr "Erfahrung"
 
@@ -150,7 +152,7 @@ msgid "Earned experience points by driven distance in races"
 msgstr "Gewonne Erfahrung durch Rennrunden"
 
 #: http/classes/Core/ACswui.php:80
-#: http/content/html/B_User/DriverRanking.php:27
+#: http/content/html/B_User/DriverRanking.php:44
 msgid "Success"
 msgstr "Erfolg"
 
@@ -194,7 +196,7 @@ msgstr ""
 "Punkte für Führungspositionen im Rennen (führend vor anderen Fahrer:innen)."
 
 #: http/classes/Core/ACswui.php:95
-#: http/content/html/B_User/DriverRanking.php:28
+#: http/content/html/B_User/DriverRanking.php:45
 msgid "Safety"
 msgstr "Sicherheit"
 
@@ -586,7 +588,7 @@ msgstr "Ein beliebiger name für das Zeitplanelement"
 #: http/classes/Core/SessionScheduleDefault.php:33
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:14
 #: http/content/html/W_Sessions/SessionLoops.php:157
-#: http/content/html/W_Sessions.php:55
+#: http/content/html/W_Sessions.php:57
 msgid "Car Class"
 msgstr "Fahrzeugklasse"
 
@@ -631,13 +633,13 @@ msgid ""
 "Use the result of this session as entry list, if zero, the order of "
 "registration will be used"
 msgstr ""
-"Das Ergebnis dieser Session als Entry-List verwenden. Wenn Null, wird die"
-" Reihenfolge der Anmeldungen verwendet."
+"Das Ergebnis dieser Session als Entry-List verwenden. Wenn Null, wird die "
+"Reihenfolge der Anmeldungen verwendet."
 
 #: http/classes/Core/SessionScheduleDefault.php:40
 #: http/classes/Core/SessionScheduleDefault.php:45
 #: http/content/html/T_Settings/ServerPresets.php:187
-#: http/content/html/W_Sessions.php:54
+#: http/content/html/W_Sessions.php:56
 msgid "Server Preset"
 msgstr "Server Preset"
 
@@ -2979,7 +2981,7 @@ msgstr "Differenz"
 
 #: http/content/json/SessionData.php:137 http/content/json/TrackRecords.php:42
 #: http/content/json/CarClassRecords.php:42
-#: http/content/html/B_User/DriverRanking.php:25
+#: http/content/html/B_User/DriverRanking.php:42
 #: http/content/html/W_Sessions/SessionSchedules.php:329
 #: http/content/html/W_Sessions/SessionOverview.php:81
 #: http/content/html/W_Sessions/SessionOverview.php:177
@@ -3025,7 +3027,7 @@ msgid "Grip"
 msgstr "Traktion"
 
 #: http/content/json/TrackRecords.php:47
-#: http/content/json/CarClassRecords.php:47 http/content/html/W_Sessions.php:52
+#: http/content/json/CarClassRecords.php:47 http/content/html/W_Sessions.php:54
 msgid "Session"
 msgstr "Session"
 
@@ -3381,26 +3383,34 @@ msgstr ""
 "Informationen."
 
 #: http/content/html/B_User/DriverRanking.php:24
+msgid "Driver Ranking Diagram"
+msgstr "Fahrerwertungsdiagramm"
+
+#: http/content/html/B_User/DriverRanking.php:41
 msgid "Pos."
 msgstr "Pos."
 
-#: http/content/html/B_User/DriverRanking.php:29
+#: http/content/html/B_User/DriverRanking.php:46
 msgid "Sum"
 msgstr "Summe"
 
-#: http/content/html/B_User/DriverRanking.php:82
+#: http/content/html/B_User/DriverRanking.php:99
 msgid "Driver will rise to next group"
 msgstr "Fahrer wird eine Gruppe aufsteigen"
 
-#: http/content/html/B_User/DriverRanking.php:84
+#: http/content/html/B_User/DriverRanking.php:101
 msgid "Driver will fall to previous group"
 msgstr "Fahrer wird eine Gruppe absteigen"
 
-#: http/content/html/B_User/DriverRanking.php:112
+#: http/content/html/B_User/DriverRanking.php:106
+msgid "Load Diagram Data"
+msgstr "Lade Diagrammdaten"
+
+#: http/content/html/B_User/DriverRanking.php:136
 msgid "Mean Value"
 msgstr "Mittelwert"
 
-#: http/content/html/B_User/DriverRanking.php:144
+#: http/content/html/B_User/DriverRanking.php:168
 msgid "Minimum points required for this Group"
 msgstr "Erforderliche Mindespunkte für diese Gruppe"
 
@@ -3461,7 +3471,7 @@ msgstr "Preset speichern um den Zeitplan zu aktualisieren."
 
 #: http/content/html/T_Settings/ServerPresets.php:113
 #: http/content/html/T_Settings/ServerPresets.php:150
-#: http/content/html/W_Sessions.php:53 http/content/html/W_Sessions.php:103
+#: http/content/html/W_Sessions.php:55 http/content/html/W_Sessions.php:105
 msgid "Start"
 msgstr "Start"
 
@@ -3775,7 +3785,7 @@ msgstr "Ausstehende Anmeldungen"
 msgid "All Events"
 msgstr "Alle Veranstaltungen"
 
-#: http/content/html/W_Sessions.php:74
+#: http/content/html/W_Sessions.php:76
 msgid "Stop"
 msgstr "Stop"
 

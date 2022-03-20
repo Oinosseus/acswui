@@ -13,8 +13,10 @@ class W_Sessions extends \core\HtmlContent {
 
 
     public function getHtml() {
+        $current_user = \Core\UserManager::currentUser();
         for ($i=1; $i <= \Core\Config::ServerSlotAmount; ++$i)
-            $this->CanControl[$i] = \Core\UserManager::loggedUser()->permitted("Sessions_Control_Slot$i");
+            $this->CanControl[$i] = $current_user->permitted("Sessions_Control_Slot$i");
+
 
         $html = "";
 

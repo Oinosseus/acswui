@@ -13,10 +13,10 @@ class TimeInterval {
     //! @param seconds can contain milliseconds
     public function __construct(float $seconds=0) {
         $this->Secs = (int) $seconds;
-        $this->Mils = (int) (($seconds - $this->Secs) * 1000000);
-        while ($this->Mils > 1000000) {
+        $this->Mils = (int) (($seconds - $this->Secs) * 1000);
+        while ($this->Mils > 1000) {
             $this->Secs += 1;
-            $this->Mils -= 1000000;
+            $this->Mils -= 1000;
         }
     }
 
@@ -35,10 +35,33 @@ class TimeInterval {
 
         $this->Secs += $other->Secs;
         $this->Mils += $other->Mils;
-        while ($this->Mils > 1000000) {
+        while ($this->Mils > 1000) {
             $this->Secs += 1;
-            $this->Mils -= 1000000;
+            $this->Mils -= 1000;
         }
+    }
+
+
+    //! @return The amount of days in this interval (float)
+    public function days() {
+        return $this->Secs / 60 / 60 / 24;
+    }
+
+
+    //! @return A TimeInterval object
+    public static function fromDateInterval(\DateInterval $i) {
+        $factor = ($i->invert == 0) ? 1 : -1;
+
+        $ti = new TimeInterval();
+        $ti->Secs += $factor * $i->y * 365 * 24 * 60 * 60;
+        $ti->Secs += $factor * $i->m * 30.5 * 24 * 60 * 60;
+        $ti->Secs += $factor * $i->d * 24 * 60 * 60;
+        $ti->Secs += $factor * $i->h * 60 * 60;
+        $ti->Secs += $factor * $i->i * 60;
+        $ti->Secs += $factor * $i->s;
+        $ti->add($factor * $i->f / 1e6);
+
+        return $ti;
     }
 
 

@@ -7,12 +7,29 @@ class DriverRanking extends \core\HtmlContent {
     public function __construct() {
         parent::__construct(_("Driver Ranking"),  _("Driver Ranking"));
         $this->requirePermission("User_DriverRanking_View");
+        $this->addScript("driver_ranking.js");
     }
 
     public function getHtml() {
+        $current_user = \Core\UserManager::currentUser();
         $html = "";
 
+        // determine maximum points
+        $max_ranking_points = 0;
+        foreach (\DbEntry\DriverRanking::listLatest() as $rnk)
+            if ($rnk->points() > $max_ranking_points) $max_ranking_points = $rnk->points();
 
+        // laptime diagram
+        $html .= "<div id=\"DriverRankingDiagram\">";
+        $title = _("Driver Ranking Diagram");
+        $axis_y_title = _("Days");
+        $axis_x_title = _("Ranking Points");
+        $current_user_id = ($current_user !== NULL) ? $current_user->id() : 0;
+        $max = round($max_ranking_points);
+        $html .= "<canvas axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" currentUser=\"$current_user_id\" maxRankingPoints=\"$max\"></canvas>";
+        $html .= "</div>";
+
+        // show ranking per group
         for ($rnk_grp = 1; $rnk_grp <= \Core\Config::DriverRankingGroups; ++$rnk_grp) {
 
             if (\Core\Config::DriverRankingGroups > 1) {
@@ -84,6 +101,15 @@ class DriverRanking extends \core\HtmlContent {
                     $html .= " <span title=\"" . _("Driver will fall to previous group") . "\" class=\"TrendFalling\">&#x2b07;</span>";
                 }
                 $html .= "</td>";
+
+                if ($current_user->id() != $rnk->user()->id()) {
+                    $html .= "<td>";
+                    $html .= "<button type=\"button\" onclick=\"loadDriverRankingData({$rnk->user()->id()}, this)\" title=\"" . _("Load Diagram Data") . "\">";
+                    $html .= "&#x1f4c8;</button> ";
+                    $html .= "</td>";
+                }
+
+
                 $html .= "</tr>";
 
                 // summ for mean values
