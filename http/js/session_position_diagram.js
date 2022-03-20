@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // y-scaling
-    canvas_div.style.height = "" + (positions * 40) + "px";
+    canvas_div.style.height = "" + (positions * 30 + 100) + "px";
 
     // request general session info
     var request_url = "index.php?JsonContent=SessionData&SessionId=" + SessionPositionDiagramSessionId + "&Request=DriverPositions";

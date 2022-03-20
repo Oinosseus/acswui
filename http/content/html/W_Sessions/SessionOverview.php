@@ -11,7 +11,7 @@ class SessionOverview extends \core\HtmlContent {
     private $FilterShowRace = TRUE;
 
     public function __construct() {
-        parent::__construct(_("Overview"),  "Session OVerview");
+        parent::__construct(_("Overview"),  "Session Overview");
         $this->requirePermission("Sessions_View");
         $this->addScript("laptime_ditribution_diagram.js");
         $this->addScript("session_position_diagram.js");
