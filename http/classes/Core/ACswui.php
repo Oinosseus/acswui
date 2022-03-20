@@ -140,21 +140,29 @@ class ACswui  {
             // ----------------------------------------------------------------
 
             $pc = new \Parameter\Collection(NULL, $root_collection, "User", _("User Settings"), _("Settings for users"));
-            $p = new \Parameter\ParamSpecialLocale(NULL, $pc, "UserLocale", _("Locale"), _("Localization settings"));
             $p = new \Parameter\ParamSpecialUserPrivacy(NULL, $pc, "UserPrivacy", _("Privacy"), _("Privacy settings\n'Private' means nobody can identify me\n'Community' means that all active drivers, which actively use the ACswui system, can identify me - as long as I use the ACswui system as well\n'Active Drivers' means that all other active drivers can identify me - as long as I am an active driver as well\n'Public' means everyone can identify me"));
-            $p = new \Parameter\ParamSpecialUserCountry(NULL, $pc, "UserCountry", _("Country"), _("Select which country you want to represent"));
-            $p = new \Parameter\ParamSpecialUserFormatDate(NULL, $pc, "UserFormatDate", _("Date/Time Format"), _("How shal date-times be presented"));
-            $p = new \Parameter\ParamSpecialUserTimezone(NULL, $pc, "UserTimezone", _("Timezone"), _("Define your preferred timezone"));
             $p = new \Parameter\ParamColor(NULL, $pc, "UserColor", _("Color"), _("Your preferred color to better identify you in diagrams"));
-            $p = new \Parameter\ParamBool(NULL, $pc, "UserRecordsSkipPrivate",_("Skip Private Records"), _("Skip users which do not allow to show private information in car/track records tables"), "", TRUE);
             $p = new \Parameter\ParamInt(NULL, $pc, "UserLoginTokenExpire", _("Login Expire"), _("The user login is saved via a token inside a client cookie. This defines the amount of days when this token expires"), "d", 30);
             $p->setMin(1);
             $p->setMax(365);
+
+            $coll = new \Parameter\Collection(NULL, $pc, "UserContentView", _("Content View"), _("View options for special content"));
+            $p = new \Parameter\ParamBool(NULL, $coll, "UserRecordsSkipPrivate",_("Skip Private Records"), _("Skip users which do not allow to show private information in car/track records tables"), "", TRUE);
+            $p = new \Parameter\ParamEnum(NULL, $coll, "UserTracksOrder", _("Trasck Order"), _("In which order shall tracks be shown"));
+            new \Parameter\EnumItem($p, 'country',  _("By Country"));
+            new \Parameter\EnumItem($p, 'alphabet',  _("Alphabetically"));
+            $p->setValue("country");
+
+            $coll = new \Parameter\Collection(NULL, $pc, "UserI18nL10n", _("Loc-/Internationalization"), _("Options for localization and internationalization"));
+            $p = new \Parameter\ParamSpecialUserCountry(NULL, $coll, "UserCountry", _("Country"), _("Select which country you want to represent"));
+            $p = new \Parameter\ParamSpecialLocale(NULL, $coll, "UserLocale", _("Locale"), _("Localization settings"));
+            $p = new \Parameter\ParamSpecialUserTimezone(NULL, $coll, "UserTimezone", _("Timezone"), _("Define your preferred timezone"));
 
             $coll = new \Parameter\Collection(NULL, $pc, "UserUnits", _("Units"), _("Setup preferred units for values"));
             $p = new \Parameter\ParamSpecialUserPower(NULL, $coll, "UserUnitPower", _("Power"), "");
             $p = new \Parameter\ParamSpecialUserPowerSpecific(NULL, $coll, "UserUnitPowerSpecific", _("Specific Power"), "");
             $p = new \Parameter\ParamSpecialUserWeight(NULL, $coll, "UserUnitWeight", _("Weight"), "");
+            $p = new \Parameter\ParamSpecialUserFormatDate(NULL, $coll, "UserFormatDate", _("Date/Time Format"), _("How shal date-times be presented"));
 
             $coll = new \Parameter\Collection(NULL, $pc, "UserLaptimeDistriDia", _("Laptime Distribution Diagrams"), _("Options to adjust the laptime distribution diagrams"));
             $p = new \Parameter\ParamInt(NULL, $coll, "UserLaptimeDistriDiaMaxDelta", _("Max Delta"), _("Defines the maximum of the x-axis (how much seconds to show)"), "s", 10);

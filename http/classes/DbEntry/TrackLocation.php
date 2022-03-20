@@ -97,7 +97,7 @@ class TrackLocation extends DbEntry {
     /**
      * @param $inculde_deprecated When TRUE (default FALSE) also deprected locations are listed
      * @param $country If not NULL (default) then only locations of this country are returned
-     * @return A list of available TrackLocation objects
+     * @return A list of available TrackLocation objects, ordered by Name
      */
     public static function listLocations($inculde_deprecated=FALSE, $country=NULL) {
         $ret = array();

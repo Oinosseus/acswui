@@ -220,7 +220,7 @@ main.GroupManagement table tr:hover {
                           AvailableTrackLocations
  *****************************************************************************/
 
-main.AvailableTrackLocations div#ListOfCountries a {
+main.AvailableTrackLocations div#TableOfContents a {
     margin: 0.3em;
     padding: 0.5em 1.0em;
     background-color: var(--color-bg-elements);
