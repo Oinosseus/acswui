@@ -90,7 +90,7 @@ class DriverRanking extends \core\HtmlContent {
                 $html .= "<td>";
                 $title = sprintf("%0.1f", $rnk->points());
                 $html .= "<span title=\"$title\">" . round($rnk->points()) . "</span>";
-                if ($rnk->pointsIncrease() >= 0.1) {
+                if (abs($rnk->pointsIncrease()) >= 0.1) {
                     $css_class = ($rnk->pointsIncrease() > 0) ? "TrendRising" : "TrendFalling";
                     $html .= " <small class=\"$css_class\">(" . sprintf("%+0.1f", $rnk->pointsIncrease()) . ")</small>";
                 }
