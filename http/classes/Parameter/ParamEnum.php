@@ -40,7 +40,7 @@ class ParamEnum extends Parameter {
         if ($value === NULL || $value === "") {
             return "";
         } else if (!array_key_exists($value, $this->EnumItemHash)) {
-            \Core\Log::error("Undefined enum value '$value'!");
+            \Core\Log::error("Undefined enum value '$value' at parameter '{$this->key()}'!");
             return "???";
         }
         return $this->EnumItemHash[$value]->label();
