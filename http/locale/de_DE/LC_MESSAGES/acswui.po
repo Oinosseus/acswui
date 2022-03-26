@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-20 19:01+0100\n"
-"PO-Revision-Date: 2022-03-20 19:00+0100\n"
+"PO-Revision-Date: 2022-03-26 15:56+0100\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -964,7 +964,7 @@ msgstr "(CSP) Leichtes Gewitter"
 
 #: http/classes/Parameter/ParamSpecialWeatherGraphic.php:32
 msgid "(CSP) Thunderstorm"
-msgstr "(CS) Gewitter"
+msgstr "(CSP) Gewitter"
 
 #: http/classes/Parameter/ParamSpecialWeatherGraphic.php:33
 msgid "(CSP) Heavy Thunderstorm"
@@ -992,7 +992,7 @@ msgstr "(CSP) Regen"
 
 #: http/classes/Parameter/ParamSpecialWeatherGraphic.php:39
 msgid "(CSP) Heavy Rain"
-msgstr "(CS) Starker Regen"
+msgstr "(CSP) Starker Regen"
 
 #: http/classes/Parameter/ParamSpecialWeatherGraphic.php:40
 msgid "(CSP) Light Snow"
