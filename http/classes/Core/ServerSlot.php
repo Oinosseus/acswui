@@ -308,13 +308,15 @@ class ServerSlot {
      * @param $el The EntryList which shall be used
      * @param $map_ballasts An associative array with Steam64GUID->Ballast and one key with 'OTHER'->Ballst
      * @param $map_restrictors An associative array with Steam64GUID->Restrictor and one key with 'OTHER'->Restrictor
+     * @param $referenced_session_schedule_id The ID of the SessionSchedule object, that shall be linked to the session
      */
     public function start(\DbEntry\Track $track,
                           \DbEntry\CarClass $car_class,
                           \DbEntry\ServerPreset $preset,
                           \Core\EntryList $el = NULL,
                           array $map_ballast = [],
-                          array $map_restrictor = []) {
+                          array $map_restrictor = [],
+                          int $referenced_session_schedule_id = NULL) {
 
         $id = $this->id();
 
@@ -324,7 +326,11 @@ class ServerSlot {
         $this->writeRpSettings();
 
         // configure ACswui plugin
-        $this->writeACswuiUdpPluginIni($car_class, $preset, $map_ballast, $map_restrictor);
+        $this->writeACswuiUdpPluginIni($car_class,
+                                       $preset,
+                                       $map_ballast,
+                                       $map_restrictor,
+                                       $referenced_session_schedule_id);
 
         // configure ac server
         if ($el === NULL) {
@@ -408,11 +414,13 @@ class ServerSlot {
      * @param $preset The ServerPreset for the server run
      * @param $map_ballasts An associative array with Steam64GUID->Ballast and one key with 'OTHER'->Ballst
      * @param $map_restrictors An associative array with Steam64GUID->Restrictor and one key with 'OTHER'->Restrictor
+     * @param $referenced_session_schedule_id The ID of the SessionSchedule object, that shall be linked to the session
      */
     private function writeACswuiUdpPluginIni(\DbEntry\CarClass $car_class,
                                              \DbEntry\ServerPreset $preset,
                                              array $map_ballasts = [],
-                                             array $map_restrictors = []) {
+                                             array $map_restrictors = [],
+                                             int $referenced_session_schedule_id = NULL) {
         $pc = $this->parameterCollection();
         $file_path = \Core\Config::AbsPathData . "/acswui_udp_plugin/acswui_udp_plugin_" . $this->id() . ".ini";
         $f = fopen($file_path, 'w');
@@ -441,6 +449,7 @@ class ServerSlot {
             fwrite($f, "udp_acserver = " . $pc->child("AcServerPortsPluginUdpR")->value() . "\n");
         }
         fwrite($f, "preserved_kick = " . $preset->getParam("ACswuiPreservedKick") . "\n");
+        fwrite($f, "referenced_session_schedule_id = $referenced_session_schedule_id\n");
 
         fwrite($f, "\n[BALLAST]\n");
         foreach ($map_ballasts as $guid=>$ballast) {

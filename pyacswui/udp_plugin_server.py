@@ -26,6 +26,7 @@ class UdpPluginServer(object):
                  kick_illegal_occupations = False,
                  map_ballasts = {},
                  map_restrictors = {},
+                 referenced_session_schedule_id = None,
                  verbosity=0):
 
         # This is the typical duration for the process() method
@@ -44,6 +45,12 @@ class UdpPluginServer(object):
         self.__realtime_json_path = realtime_json_path
         self.__last_kick_illegal_occupations = None
         self.__kick_illegal_occupations = kick_illegal_occupations
+
+        # referenced_session_schedule_id
+        try:
+            self.__referenced_session_schedule_id = int(referenced_session_schedule_id)
+        except:
+            self.__referenced_session_schedule_id = None
 
         # force ballast and restrictor
         self.__last_checked_balancing = None
@@ -159,7 +166,14 @@ class UdpPluginServer(object):
         if prot == 50:
 
             # set new session object
-            self.__session = UdpPluginSession(self.__server_slot, self.__server_preset, self.__car_class, self.__database, pkt, self.__session, self.__verbosity)
+            self.__session = UdpPluginSession(self.__server_slot,
+                                              self.__server_preset,
+                                              self.__car_class,
+                                              self.__database,
+                                              pkt,
+                                              self.__session,
+                                              self.__referenced_session_schedule_id,
+                                              self.__verbosity)
 
             # enable realtime update
             self.enable_realtime_report()

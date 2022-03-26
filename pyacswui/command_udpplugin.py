@@ -62,6 +62,7 @@ class CommandUdpPlugin(Command):
                                self.getIniSection('PLUGIN')['preserved_kick'].lower() in ["true", "1", "yes"],
                                map_ballast,
                                map_restrictor,
+                               self.getIniSection('PLUGIN')['referenced_session_schedule_id'],
                                verbosity=self._verbosity)
         udpp.process() # run once just to ensure that it does not crash immediately
 

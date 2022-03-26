@@ -9,6 +9,7 @@ class SessionSchedule extends DbEntry {
 
     private $ParameterCollection = NULL;
     private $ActiveRegisteredCarSkinIds = NULL;
+    private $SessionLast = NULL;
 
 
     /**
@@ -271,6 +272,20 @@ class SessionSchedule extends DbEntry {
     //! @return The used ServerPreset object
     public function serverPreset() {
         return ServerPreset::fromId($this->getParamValue("ServerPreset"));
+    }
+
+
+    //! @return The last Session object that refers to the event (can be NULL)
+    public function sessionLast() {
+        if ($this->SessionLast === NULL) {
+            $query = "SELECT Id FROM Sessions WHERE SessionSchedule = {$this->id()} ORDER BY Id DESC LIMIT 1;";
+            $res = \Core\Database::fetchRaw($query);
+            if (count($res) > 0) {
+                $this->SessionLast = \DbEntry\Session::fromId($res[0]['Id']);
+            }
+        }
+
+        return $this->SessionLast;
     }
 
 

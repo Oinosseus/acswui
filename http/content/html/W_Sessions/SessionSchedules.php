@@ -178,7 +178,13 @@ class SessionSchedules extends \core\HtmlContent {
             $html .= "</div>";
 
             $html .= "<div class=\"$class_obsolete\">";
-            if (!$ss->obsolete()) {
+            if ($ss->obsolete()) {
+                if ($ss->sessionLast() !== NULL) {
+                    $url = "index.php?HtmlContent=SessionOverview&SessionId=";
+                    $url .= $ss->sessionLast()->id();
+                    $html .= "<a href=\"$url\">" . _("Results") . "</a>";
+                }
+            } else {
                 $sr = \DbEntry\SessionScheduleRegistration::getRegistration($ss, \Core\UserManager::currentUser());
                 if ($sr !== NULL && $sr->active()) {
                     $html .= "<span class=\"Registered\">" . _("Registered") . "</span><br><br>";

@@ -7,6 +7,7 @@ class UdpPluginSession(object):
 
     def __init__(self, server_slot, server_preset, car_class,
                  database, packet, predecessor=None,
+                 referenced_session_schedule_id = None,
                  verbosity=0):
 
         # sanity check
@@ -24,6 +25,7 @@ class UdpPluginSession(object):
         self.__db_id_predecessor = 0
         if predecessor is not None and predecessor._db_id is not None:
             self.__db_id_predecessor = predecessor._db_id
+        self.__referenced_session_schedule_id = referenced_session_schedule_id
         self.__verbosity = Verbosity(verbosity, self.__class__.__name__)
 
         # calling this update creates a new session
@@ -115,6 +117,7 @@ class UdpPluginSession(object):
         self.__db_field_cache['ServerSlot'] = self.__server_slot
         self.__db_field_cache['ServerPreset'] = self.__server_preset
         self.__db_field_cache['CarClass'] = self.__car_class
+        self.__db_field_cache['SessionSchedule'] = self.__referenced_session_schedule_id
 
         # save to db
         if is_new_session:

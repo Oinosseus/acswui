@@ -46,7 +46,8 @@ class CronSessionAutomatic extends \Core\Cronjob {
                                $schd->serverPreset(),
                                $schd->entryList(),
                                $schd->mapBallasts(),
-                               $schd->mapRestrictors());
+                               $schd->mapRestrictors(),
+                               $schd->id());
                     $schd->setExecuted(\Core\Core::now());
                     continue;
                 }

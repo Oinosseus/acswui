@@ -88,6 +88,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt("Sessions", "ServerSlot")
         self.__db.appendColumnUInt("Sessions", "ServerPreset")
         self.__db.appendColumnUInt("Sessions", 'CarClass')
+        self.__db.appendColumnUInt("Sessions", 'SessionSchedule')
 
         # check table SessionResults
         Verbosity(verb).print("check database table `SessionResults`")
