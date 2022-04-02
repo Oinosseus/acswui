@@ -209,7 +209,7 @@ class ServerPreset extends DbEntry {
                 //! @todo Welcome Message
                 $p = new \Parameter\ParamBool(NULL, $coll_group, "AcServerPickupMode", _("Pickup Mode"), _("If 0 the server start in booking mode (do not use it). Warning: in pickup mode you have to list only a circuit under TRACK and you need to list a least one car in the entry_list"), "", TRUE);
                 $p = new \Parameter\ParamBool(NULL, $coll_group, "AcServerLockedEntryList", _("Locked Entries"), _("same as in booking mode, only players already included in the entry list can join the server (password not needed)."), "", FALSE);
-                $p = new \Parameter\ParamSpecialTyres(NULL, $coll_group, "AcServerLegalTyres", _("Legal Tyres"), _("List of the tyre's that will be allowed in the server (unselect all to allow all)."), "", "");
+                $p = new \Parameter\ParamString(NULL, $coll_group, "AcServerLegalTyres", _("Legal Tyres"), _("List of the tyre's that will be allowed in the server (separated by semicolon, eg. 'S;M;H')."), "", "");
                 $p = new \Parameter\ParamInt(NULL, $coll_group, "AcServerResultScreenTime", _("Result Screen Time"), _("seconds of result screen between racing sessions."), "s", 60);
                 $p->setMin(0);
                 $p->setMax(999);
