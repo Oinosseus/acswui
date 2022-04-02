@@ -179,8 +179,9 @@ class User extends DbEntry { #implements JsonSerializable {
         if ($laptime_delta < 1000) {
             return sprintf("%d ms", $laptime_delta);
         } else if ($laptime_delta < 60000) {
+            $laptime_delta /= 10;
             $centi_seconds = $laptime_delta % 100;
-            $laptime_delta /= 1000;
+            $laptime_delta /= 100;
             $seconds = $laptime_delta % 60;
             return sprintf("%d.%02d s", $seconds, $centi_seconds);
         } else {
