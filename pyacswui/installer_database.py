@@ -36,14 +36,14 @@ class InstallerDatabase(object):
         self.__db.appendColumnString("installer", "version", 10)
         self.__db.appendColumnText("installer", "info")
 
-        # check table CronJobs
-        Verbosity(verb).print("check database table `CronJobs`")
-        self.__db.appendTable("CronJobs")
-        self.__db.appendColumnString("CronJobs", "Name", 60)
-        self.__db.appendColumnCurrentTimestamp("CronJobs", "LastStart")
-        self.__db.appendColumnUInt("CronJobs", "LastDuration")
-        self.__db.appendColumnString("CronJobs", "Status", 50)
-        self.__db.appendColumnUInt("CronJobs", "LastSession")
+        ## check table CronJobs
+        #Verbosity(verb).print("check database table `CronJobs`")
+        #self.__db.appendTable("CronJobs")
+        #self.__db.appendColumnString("CronJobs", "Name", 60)
+        #self.__db.appendColumnCurrentTimestamp("CronJobs", "LastStart")
+        #self.__db.appendColumnUInt("CronJobs", "LastDuration")
+        #self.__db.appendColumnString("CronJobs", "Status", 50)
+        #self.__db.appendColumnUInt("CronJobs", "LastSession")
 
         # check table ServerPresets
         Verbosity(verb).print("check database table `ServerPresets`")
@@ -251,40 +251,6 @@ class InstallerDatabase(object):
     def _tables_brown(self):
         verb = Verbosity(self._verbosity)
         verb.print("brown tables")
-
-        # check table RacePollDates
-        Verbosity(verb).print("check database table `RacePollDates`")
-        self.__db.appendTable("RacePollDates")
-        self.__db.appendColumnDateTime("RacePollDates", 'Date')
-        self.__db.appendColumnUInt("RacePollDates", 'User')
-
-        # check table RacePollDateMap
-        Verbosity(verb).print("check database table `RacePollDateMap`")
-        self.__db.appendTable("RacePollDateMap")
-        self.__db.appendColumnUInt("RacePollDateMap", 'User')
-        self.__db.appendColumnUInt("RacePollDateMap", 'Date')
-        self.__db.appendColumnInt("RacePollDateMap", 'Availability')
-
-        # check table RacePollCarClasses
-        Verbosity(verb).print("check database table `RacePollCarClasses`")
-        self.__db.appendTable("RacePollCarClasses")
-        self.__db.appendColumnUInt("RacePollCarClasses", 'User')
-        self.__db.appendColumnUInt("RacePollCarClasses", 'CarClass')
-        self.__db.appendColumnUInt("RacePollCarClasses", 'Score')
-
-        # check table RacePollTracks
-        Verbosity(verb).print("check database table `RacePollTracks`")
-        self.__db.appendTable("RacePollTracks")
-        self.__db.appendColumnUInt("RacePollTracks", 'Track')
-        self.__db.appendColumnUInt("RacePollTracks", 'CarClass')
-
-        # check table RacePollTrackMap
-        Verbosity(verb).print("check database table `RacePollTrackMap`")
-        self.__db.appendTable("RacePollTrackMap")
-        self.__db.appendColumnUInt("RacePollTrackMap", 'User')
-        self.__db.appendColumnUInt("RacePollTrackMap", 'Track')
-        self.__db.appendColumnUInt("RacePollTrackMap", 'Score')
-
 
         # check table Polls
         Verbosity(verb).print("check database table `Polls`")

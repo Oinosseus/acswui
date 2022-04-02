@@ -536,3 +536,39 @@ main.Track td.CarName div {
     padding: 0;
     font-size: 0.8em;
 }
+
+
+
+/*****************************************************************************
+                                 Polls
+ *****************************************************************************/
+
+main.Polls tr.ClosedPoll a,
+main.Polls tr.ClosedPoll {
+    color: var(--color-disabled);
+}
+
+
+main.Polls div.PollItem {
+    display: inline-block;
+    background-color: var(--color-bg-elements);
+    border-radius: 1em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    padding-top: 0.2em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 0.5em;
+}
+
+main.Polls div.PollItem > * {
+    display: block;
+}
+
+main.Polls div.PollItem > input {
+    width: 100%;
+}
+
+main.Polls div.PollItem > div {
+    background-color: transparent;
+}
