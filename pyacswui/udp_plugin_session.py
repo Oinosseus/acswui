@@ -117,7 +117,10 @@ class UdpPluginSession(object):
         self.__db_field_cache['ServerSlot'] = self.__server_slot
         self.__db_field_cache['ServerPreset'] = self.__server_preset
         self.__db_field_cache['CarClass'] = self.__car_class
-        self.__db_field_cache['SessionSchedule'] = self.__referenced_session_schedule_id
+        if self.__referenced_session_schedule_id is None:
+            self.__db_field_cache['SessionSchedule'] = 0
+        else:
+            self.__db_field_cache['SessionSchedule'] = self.__referenced_session_schedule_id
 
         # save to db
         if is_new_session:
