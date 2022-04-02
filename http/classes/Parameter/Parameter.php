@@ -5,6 +5,7 @@ namespace Parameter;
 abstract class Parameter extends Deriveable {
 
     private $Value = NULL;
+    private $ValueForce = FALSE;
     private $Unit = "";
     private $InheritValue = TRUE;
 
@@ -73,9 +74,14 @@ abstract class Parameter extends Deriveable {
     }
 
 
-    public function setValue($new_value) {
+    public function setValue($new_value, bool $force = FALSE) {
         if ($this->accessability() == 2) {
             $this->Value = $this->formatValue($new_value);
+        }
+
+        if ($force) {
+            $this->Value = $this->formatValue($new_value);
+            $this->ValueForce = TRUE;
         }
     }
 
@@ -98,7 +104,9 @@ abstract class Parameter extends Deriveable {
 
 
     public function value() {
-        if ($this->inheritValue() || ($this->accessability() !== 2)) {
+        if ($this->ValueForce) {
+            return $this->Value;
+        } else if ($this->inheritValue() || ($this->accessability() !== 2)) {
             return $this->base()->value();
         } else {
             return $this->Value;

@@ -59,9 +59,9 @@ class CronSessionAutomatic extends \Core\Cronjob {
                         $this->verboseOutput("Starting SessioSchedule Practice-Loop $schd on $ss<br>");
 
                         // reset qualifying and reace
-                        $preset->parameterCollection()->child("AcServerQualifyingTime")->setValue(0);
-                        $preset->parameterCollection()->child("AcServerRaceLaps")->setValue(0);
-                        $preset->parameterCollection()->child("AcServerRaceTime")->setValue(0);
+                        $preset->parameterCollection()->child("AcServerQualifyingTime")->setValue(0, TRUE);
+                        $preset->parameterCollection()->child("AcServerRaceLaps")->setValue(0, TRUE);
+                        $preset->parameterCollection()->child("AcServerRaceTime")->setValue(0, TRUE);
 
                         // start session
                         $ss->start($schd->track(),
