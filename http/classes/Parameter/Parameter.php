@@ -104,14 +104,19 @@ abstract class Parameter extends Deriveable {
 
 
     public function value() {
+        $value = NULL;
+
         if ($this->ValueForce) {
-            return $this->Value;
+            $value = $this->Value;
         } else if ($this->inheritValue() || ($this->accessability() !== 2)) {
-            return $this->base()->value();
+            $value = $this->base()->value();
         } else {
-            return $this->Value;
+            $value = $this->Value;
         }
+
+        return $this->formatValue($value);
     }
+
 
     public function valueLabel() {
         return $this->value2Label($this->value());

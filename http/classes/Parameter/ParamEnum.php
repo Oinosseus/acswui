@@ -31,8 +31,15 @@ class ParamEnum extends Parameter {
 
 
     public function formatValue($value) {
-        if (!array_key_exists($value, $this->EnumItemHash)) return NULL;
-        else return $this->EnumItemHash[$value]->value();
+        if (!array_key_exists($value, $this->EnumItemHash)) {
+            if (count($this->EnumItemList) > 0) {
+                return $this->EnumItemList[0]->value();
+            } else {
+                return NULL;
+            }
+        } else {
+            return $this->EnumItemHash[$value]->value();
+        }
     }
 
 
