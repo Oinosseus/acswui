@@ -89,6 +89,8 @@ class SessionSchedule extends DbEntry {
             }
         }
 
+        // shuffle order of registered drivers
+        if (!$other_session) $el->shuffle();
 
         // fill random entries
         $el->fillSkins($this->carClass(), $this->track(), $map_ballast["OTHER"], $map_restrictors["OTHER"]);

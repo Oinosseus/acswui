@@ -123,6 +123,12 @@ class EntryList {
     }
 
 
+    //! Shuffle the current entries
+    public function shuffle() {
+        shuffle($this->ListItems);
+    }
+
+
     /**
      * Write the EntryList to a entry_list.ini file
      * @param $entry_list_ini_path The target file path
