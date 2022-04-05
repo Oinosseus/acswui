@@ -356,6 +356,11 @@ form label {
     display: block;
 }
 
+textarea {
+  background-color: var(--color-bg-elements);
+  color: var(--color-text);
+}
+
 
 
 /* -----------------------------------------------------------------------------

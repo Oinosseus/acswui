@@ -477,7 +477,6 @@ class ServerSlot {
                                       \DbEntry\ServerPreset $preset,
                                       array $map_ballasts = []) {
 
-
         // determine maximum ballast
         $car_class_max_ballast = $car_class->ballastMax();
         $max_ballast = $car_class_max_ballast;
@@ -508,7 +507,6 @@ class ServerSlot {
         fwrite($f, "SLEEP_TIME=1\n");
         fwrite($f, "REGISTER_TO_LOBBY=1\n");
         fwrite($f, "MAX_CLIENTS=" . $pc->child("AcServerPerformanceMaxClients")->value() . "\n");
-        fwrite($f, "WELCOME_MESSAGE=\n");  //! @todo needs to be implemented as parameter
         fwrite($f, "PICKUP_MODE_ENABLED=" . (($ppc->child("AcServerPickupMode")->value()) ? 1:0) . "\n");
         fwrite($f, "LOOP_MODE=0\n");  // ACswui system does require LOOP_MODE=0
 
@@ -563,12 +561,27 @@ class ServerSlot {
         fwrite($f, "TRACK=" . $track->location()->track() . "\n");
         fwrite($f, "CONFIG_TRACK=" . $track->config() . "\n");
 
+        // create welcome message
+        $welcome_message = $ppc->child("AcServerWelcomeMessage")->value().trim();
+        if (strlen($welcome_message) > 0) {
+            $file_path_wm = \Core\Config::AbsPathData . "/acserver/cfg/welcome_" . $this->id() . ".txt";
+            $f_wm = fopen($file_path_wm, 'w');
+            if ($f_wm === FALSE) {
+                \Core\Log::error("Cannot write to file '$file_path_wm'!");
+            } else {
+                fwrite($f_wm, $welcome_message);
+                fclose($f_wm);
+            }
+            fwrite($f, "WELCOME_MESSAGE=$file_path_wm\n");
+        }
+
 //         fwrite($f, "\n[FTP]\n");
 //         fwrite($f, "HOST=\n");
 //         fwrite($f, "LOGIN=\n");
 //         fwrite($f, "PASSWORD=\n");
 //         fwrite($f, "FOLDER=\n");
 //         fwrite($f, "LINUX=1\n");
+
 
         if ($ppc->child("AcServerBookingTime")->value() > 0) {
             fwrite($f, "\n[BOOKING]\n");

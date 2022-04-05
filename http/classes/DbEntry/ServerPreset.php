@@ -213,6 +213,7 @@ class ServerPreset extends DbEntry {
                 $p = new \Parameter\ParamInt(NULL, $coll_group, "AcServerResultScreenTime", _("Result Screen Time"), _("seconds of result screen between racing sessions."), "s", 60);
                 $p->setMin(0);
                 $p->setMax(999);
+                $p = new \Parameter\ParamText(NULL, $coll_group, "AcServerWelcomeMessage", _("Welcome Message"), _("A textual message that is displayed to drivers when joining the server"), "", "");
 
                 // Environment
                 $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerEnvironment", _("Environment"), "");
