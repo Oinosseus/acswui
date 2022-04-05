@@ -181,7 +181,14 @@ class UdpPluginServer(object):
         # ACSP_SESSION_INFO
         elif prot == 59:
             if self.__session is None:
-                self.__session = UdpPluginSession(self.__server_slot, self.__server_preset, self.__car_class, self.__database, pkt, self.__session, self.__verbosity)
+                self.__session = UdpPluginSession(self.__server_slot,
+                                                  self.__server_preset,
+                                                  self.__car_class,
+                                                  self.__database,
+                                                  pkt,
+                                                  self.__session,
+                                                  self.__referenced_session_schedule_id,
+                                                  self.__verbosity)
             else:
                 self.__session.update(pkt)
 

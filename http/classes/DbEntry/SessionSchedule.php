@@ -93,8 +93,11 @@ class SessionSchedule extends DbEntry {
         // fill random entries
         $el->fillSkins($this->carClass(), $this->track(), $map_ballast["OTHER"], $map_restrictors["OTHER"]);
 
-        // applay ballast/restrictor accodring to CarClass
+        // apply ballast/restrictor accodring to CarClass
         $el->applyCarClass($this->carClass());
+
+        // reverse to have unoccupied cars on top
+        if (!$other_session) $el->reverse();
 
         return $el;
     }

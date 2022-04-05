@@ -117,6 +117,12 @@ class EntryList {
     }
 
 
+    //! reverse entrly list
+    public function reverse() {
+        $this->ListItems = array_reverse($this->ListItems);
+    }
+
+
     /**
      * Write the EntryList to a entry_list.ini file
      * @param $entry_list_ini_path The target file path
