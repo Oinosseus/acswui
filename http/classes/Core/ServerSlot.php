@@ -562,7 +562,7 @@ class ServerSlot {
         fwrite($f, "CONFIG_TRACK=" . $track->config() . "\n");
 
         // create welcome message
-        $welcome_message = $ppc->child("AcServerWelcomeMessage")->value().trim();
+        $welcome_message = trim($ppc->child("AcServerWelcomeMessage")->value());
         if (strlen($welcome_message) > 0) {
             $file_path_wm = \Core\Config::AbsPathData . "/acserver/cfg/welcome_" . $this->id() . ".txt";
             $f_wm = fopen($file_path_wm, 'w');
