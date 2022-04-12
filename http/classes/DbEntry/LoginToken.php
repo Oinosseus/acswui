@@ -33,27 +33,24 @@ class LoginToken extends DbEntry {
         $timestamp = \Core\Database::timestamp(new \DateTime("now"));
         $password = bin2hex(random_bytes(25));
 
+        // add to DB
         $db_columns = array();
         $db_columns['User'] = $user->id();
         $db_columns['Token'] = $token;
         $db_columns['Password'] = password_hash($password,  PASSWORD_DEFAULT);
         $db_columns['Timestamp'] = $timestamp;
-
         $id = \Core\Database::insert("LoginTokens", $db_columns);
-        setcookie("ACswuiLoginToken",
-                  $token,
-                  time() + 3600 * 24 * \Core\ACswui::getPAram("UserLoginTokenExpire"),
-                  "/",
-                  $_SERVER['HTTP_HOST'],
-                  TRUE,
-                  TRUE);
-        setcookie("ACswuiLoginPassword",
-                  $password,
-                  time() + 3600 * 24 * \Core\ACswui::getPAram("UserLoginTokenExpire"),
-                  "/",
-                  $_SERVER['HTTP_HOST'],
-                  TRUE,
-                  TRUE);
+
+        // set coopie
+        $copts = array();
+        $copts['expires'] = time() + 3600 * 24 * \Core\ACswui::getPAram("UserLoginTokenExpire");
+        $copts['path'] = "/";
+        $copts['domain'] = $_SERVER['HTTP_HOST'];
+        $copts['secure'] = TRUE;
+        $copts['httponly'] = TRUE;
+        $copts['samesite'] = "Lax";
+        setcookie("ACswuiLoginToken", $token, $copts);
+        setcookie("ACswuiLoginPassword", $password, $copts);
 
         return LoginToken::fromId($id);
     }
