@@ -280,7 +280,7 @@ class Session extends DbEntry {
     //! @return A DateTime object in server Timezone
     public function timestamp() {
         $t = $this->loadColumn("Timestamp");
-        return \Core\Database::timestamp2DateTime($t);
+        return new \DateTime($t);
     }
 
 

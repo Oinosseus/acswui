@@ -127,7 +127,7 @@ class Poll extends DbEntry {
     public function closing() {
         if ($this->Closing === NULL) {
             $timestamp = $this->loadColumn("Closing");
-            $this->Closing = \Core\Database::timestamp2DateTime($timestamp);
+            $this->Closing = new \DateTime($timestamp);
         }
 
         return $this->Closing;
@@ -151,7 +151,7 @@ class Poll extends DbEntry {
         $fields = array();
         $fields['Creator'] = \Core\UserManager::currentUser()->id();
         $fields['Name'] = "New Poll";
-        $fields['Closing'] = \Core\Database::dateTime2timestamp($closing);
+        $fields['Closing'] = \Core\Database::timestamp($closing);
         $fields['PointsTrack'] = 10;
         $fields['PointsCarClass'] = 10;
 
@@ -508,7 +508,7 @@ class Poll extends DbEntry {
 
     //! @param $new_closing Define when the poll shall be closed
     public function setClosing(DateTime $new_closing) {
-        $timestamp = \Core\Database::dateTime2timestamp($new_closing);
+        $timestamp = \Core\Database::timestamp($new_closing);
         $this->storeColumns(["Closing"=>$timestamp]);
         $this->Closing = $new_closing;
     }

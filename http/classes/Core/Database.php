@@ -52,11 +52,10 @@ class Database {
 
     /**
      * Converts a DateTime object to the representation format of the database with correct timezone
-     * This is the reverse operation of timestamp2DateTime()
      * @param $dt A DateTime object with any timezone
      * @return A string that can be used in database requests
      */
-    public static function dateTime2timestamp(\DateTime $dt) {
+    public static function timestamp(\DateTime $dt) {
         $tz = (new \DateTime("now"))->getTimeZone();
         $dt->setTimezone($tz);
         return $dt->format("Y-m-d H:i:s");
@@ -247,18 +246,6 @@ class Database {
             Database::$DbHandle = NULL;
         }
 
-    }
-
-
-    /**
-     * Converts a timestamp value from the database into a php DateTime object with correct timezone
-     * This is the reverse operation of timestamp2DateTime()
-     * @param $timestamp A timestamp from the database (eg '2021-01-12 09:23:17')
-     * @return A DateTime object
-     * @todo This method is obsolete
-     */
-    public static function timestamp2DateTime(string $timestamp) {
-        return new \DateTime($timestamp);
     }
 
 

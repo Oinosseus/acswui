@@ -44,7 +44,7 @@ class UserManager {
 
         // update last login time
         $t_now = new \DateTime("now");
-        $login_time = Database::dateTime2timestamp($t_now);
+        $login_time = Database::timestamp($t_now);
         Database::update("Users", $user_id, ['LastLogin'=>$login_time]);
     }
 

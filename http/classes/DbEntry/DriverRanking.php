@@ -360,7 +360,7 @@ class DriverRanking extends DbEntry {
         } else {
             $columns = array();
             $columns['User'] = $this->user()->id();
-            $columns['Timestamp'] = \Core\Database::dateTime2timestamp(new \DateTime("now"));
+            $columns['Timestamp'] = \Core\Database::timestamp(new \DateTime("now"));
             foreach (array_keys($this->RankingPoints) as $grp) {
                 foreach (array_keys($this->RankingPoints[$grp]) as $key) {
                     $columns["$grp" . "_" . $key] = $this->RankingPoints[$grp][$key];
@@ -385,7 +385,7 @@ class DriverRanking extends DbEntry {
     //! @return A DateTime object in server Timezone
     public function timestamp() {
         $t = $this->loadColumn("Timestamp");
-        return \Core\Database::timestamp2DateTime($t);
+        return new \DateTime($t);
     }
 
 

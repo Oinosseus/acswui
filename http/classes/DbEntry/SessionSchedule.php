@@ -141,7 +141,7 @@ class SessionSchedule extends DbEntry {
      */
     public static function listSchedules(\DateTime $start_after=NULL) {
         if ($start_after === NULL) $start_after = new \DateTime("now");
-        $start_str = \Core\Database::dateTime2timestamp($start_after);
+        $start_str = \Core\Database::timestamp($start_after);
 
         $ret = array();
         $query = "SELECT Id, Start FROM SessionSchedule WHERE Start >= '$start_str' ORDER BY Start ASC";
@@ -299,7 +299,7 @@ class SessionSchedule extends DbEntry {
      * @param $t DateTime object of when the item has been executed
      */
     public function setExecuted(\DateTime $t) {
-        $t_str = \Core\Database::dateTime2timestamp($t);
+        $t_str = \Core\Database::timestamp($t);
         $this->storeColumns(["Executed"=>$t_str]);
     }
 

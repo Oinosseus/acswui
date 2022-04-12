@@ -38,7 +38,7 @@ class DriverRankingData extends \Core\JsonContent {
         $now = new \DateTime("now");
         $past_days = \Core\ACswui::getParam("DriverRankingDays");
         $then = $now->sub(new \DateInterval("P{$past_days}D"));
-        $then = \Core\Database::dateTime2timestamp($then);
+        $then = \Core\Database::timestamp($then);
         $query = "SELECT Id FROM DriverRanking WHERE User = {$user->id()} AND Timestamp > '$then' ORDER BY Id DESC;";
 
         // request database

@@ -134,7 +134,7 @@ class CronSessionAutomatic extends \Core\Cronjob {
         // create query
         $now = new \DateTime("now");
         $now->sub(new \DateInterval("PT1M")); // ad one minute uncertainty
-        $now_str = \Core\Database::dateTime2timestamp($now);
+        $now_str = \Core\Database::timestamp($now);
         $query = "SELECT Id FROM SessionSchedule WHERE Executed < Start AND Start >= '$now_str'";
         if ($server_slot) {
             $query .= " AND Slot = {$server_slot->id()}";

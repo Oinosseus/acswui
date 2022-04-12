@@ -106,7 +106,7 @@ class Lap extends DbEntry {
     //! @return A DateTime object
     public function timestamp() {
         $dt = $this->loadColumn("Timestamp");
-        return \Core\Database::timestamp2DateTime($dt);
+        return new \DateTime($dt);
     }
 
 

@@ -62,7 +62,7 @@ class User extends DbEntry { #implements JsonSerializable {
             $query = "SELECT Timestamp FROM Laps WHERE User=" . $this->id() . " ORDER BY Id DESC LIMIT 1;";
             $res = \Core\Database::fetchRaw($query);
             if (count($res) == 1) {
-                $t_last_lap = \Core\Database::timestamp2DateTime($res[0]['Timestamp']);
+                $t_last_lap = new \DateTime($res[0]['Timestamp']);
                 $_now = new \DateTime("now");
                 $t_diff = $_now->diff($t_last_lap);
                 $this->DaysSinceLastLap = $t_diff->days;
@@ -413,7 +413,7 @@ class User extends DbEntry { #implements JsonSerializable {
 
     //! @return A DateTime object
     public function lastLogin() {
-        return \Core\Database::timestamp2DateTime($this->loadColumn("LastLogin"));
+        return new \DateTime($this->loadColumn("LastLogin"));
     }
 
 
@@ -429,7 +429,7 @@ class User extends DbEntry { #implements JsonSerializable {
             $delta_t = new \DateInterval("P" . $days . "D");
             $t_thld = $t_thld->sub($delta_t);
 
-            $query = "SELECT DISTINCT User FROM Laps WHERE Timestamp >= \"" . \Core\Database::dateTime2timestamp($t_thld)  . "\" ORDER BY User ASC";
+            $query = "SELECT DISTINCT User FROM Laps WHERE Timestamp >= \"" . \Core\Database::timestamp($t_thld)  . "\" ORDER BY User ASC";
             $res = \Core\Database::fetchRaw($query);
             foreach ($res as $row) {
                 $u = User::fromId($row['User']);
@@ -466,7 +466,7 @@ class User extends DbEntry { #implements JsonSerializable {
             $delta_t = new \DateInterval("P" . $days . "D");
             $t_thld = $t_thld->sub($delta_t);
 
-            $query = "SELECT DISTINCT User FROM Laps WHERE Timestamp >= \"" . \Core\Database::dateTime2timestamp($t_thld)  . "\" ORDER BY User ASC";
+            $query = "SELECT DISTINCT User FROM Laps WHERE Timestamp >= \"" . \Core\Database::timestamp($t_thld)  . "\" ORDER BY User ASC";
             $res = \Core\Database::fetchRaw($query);
             foreach ($res as $row) {
                 User::$DriverList[] = User::fromId($row['User']);

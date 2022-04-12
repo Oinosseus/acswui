@@ -30,7 +30,7 @@ class LoginToken extends DbEntry {
 
         // create unique token
         for ($token = bin2hex(random_bytes(25)); LoginToken::fromToken($token) !== NULL; );
-        $timestamp = \Core\Database::dateTime2timestamp(new \DateTime("now"));
+        $timestamp = \Core\Database::timestamp(new \DateTime("now"));
         $password = bin2hex(random_bytes(25));
 
         $db_columns = array();
@@ -122,7 +122,7 @@ class LoginToken extends DbEntry {
 
     //! @return A DateTime object of the Timestamp
     public function timestamp() {
-        return \Core\Database::timestamp2DateTime($this->timestampStr());
+        return new \DateTime($this->timestampStr());
     }
 
 

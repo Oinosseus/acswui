@@ -26,7 +26,7 @@ class SessionScheduleRegistration extends DbEntry {
     //! @return DateTime of when the registration was activated -> only valid if active()
     public function activated() {
         $t = $this->loadColumn("Activated");
-        return \Core\Database::timestamp2DateTime($t);
+        return new \DateTime($t);
     }
 
 

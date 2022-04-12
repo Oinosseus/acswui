@@ -63,7 +63,7 @@ class SessionLoop extends DbEntry {
     //! @return DateTime from last start of this item
     public function lastStart() {
         $t = $this->loadColumn("LastStart");
-        return \Core\Database::timestamp2DateTime($t);
+        return new \DateTime($t);
     }
 
 
@@ -112,7 +112,7 @@ class SessionLoop extends DbEntry {
 
 
     public function setLastStart(\DateTime $lasst_start) {
-        $t = \Core\Database::dateTime2timestamp($lasst_start);
+        $t = \Core\Database::timestamp($lasst_start);
         $this->storeColumns(["LastStart"=>$t]);
     }
 
