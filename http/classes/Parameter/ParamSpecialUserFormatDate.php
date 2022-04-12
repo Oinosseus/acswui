@@ -7,7 +7,7 @@ class ParamSpecialUserFormatDate extends ParamEnum {
     public function __construct(?Deriveable $base, ?Collection $parent, string $key = "", string $label = "", string $description = "") {
         parent::__construct($base, $parent, $key, $label, $description, "", "");
 
-        $now = new \DateTime("now", new \DateTimezone(\Core\Config::LocalTimeZone));
+        $now = new \DateTime("now");
 
         $formats = array("Y-m-d H:i:s", "D, d M y H:i:s");
         foreach ($formats as $f)

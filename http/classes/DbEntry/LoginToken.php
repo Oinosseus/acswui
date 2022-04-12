@@ -30,7 +30,7 @@ class LoginToken extends DbEntry {
 
         // create unique token
         for ($token = bin2hex(random_bytes(25)); LoginToken::fromToken($token) !== NULL; );
-        $timestamp = \Core\Database::dateTime2timestamp(\Core\Core::now());
+        $timestamp = \Core\Database::dateTime2timestamp(new \DateTime("now"));
         $password = bin2hex(random_bytes(25));
 
         $db_columns = array();
@@ -71,7 +71,7 @@ class LoginToken extends DbEntry {
     //! @return TRUE if the LoginToken is expired
     public function expired() {
         $expire_days = $this->user()->getParam("UserLoginTokenExpire");
-        $expire_dt = \Core\Core::now()->sub(new \DateInterval("P{$expire_days}D"));
+        $expire_dt = (new \DateTime("now"))->sub(new \DateInterval("P{$expire_days}D"));
         return $this->timestamp() < $expire_dt;
     }
 

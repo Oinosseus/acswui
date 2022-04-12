@@ -58,7 +58,7 @@ abstract class Cronjob {
                                 \Parameter\ParamEnumMonthly $monthly_cycle = NULL,
                                 bool $read_only_access = TRUE) {
         $this->ExecutionInterval = $execution_interval;
-        $this->LastExecutionTimestamp = new \DateTime("0000-00-00 00:00", new \DateTimeZone(\Core\Config::LocalTimeZone));
+        $this->LastExecutionTimestamp = new \DateTime("0000-00-00 00:00");
         $this->StatusFilePath = \Core\Config::AbsPathData . "/htcache/cronjobs/" . $this->name() . ".json";
 
         // ensure status file existence
@@ -164,7 +164,7 @@ abstract class Cronjob {
 
             if ($cj->status() == Cronjob::StatusReady) {
 
-                $cj->LastExecutionTimestamp = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+                $cj->LastExecutionTimestamp = new \DateTime("now");
                 $duration_start = microtime(TRUE);
                 Cronjob::verboseOutput("<div style=\"margin-left:2em; font-size:0.9em;\">");
                 $cj->process();
@@ -328,7 +328,7 @@ abstract class Cronjob {
             if ($this->ExecutionInterval & Cronjob::IntervalDaily) {
 
                 // determine ideal start time for daily cronjobs
-                $ideal_time = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+                $ideal_time = new \DateTime("now");
                 $ideal_time->setTime(0, 0);
                 $t = explode(":", \Core\ACswui::getPAram("CronjobDailyExecutionTime"));
                 $ideal_time->add(new \DateInterval(sprintf("PT%sH%sM", $t[0], $t[1])));
@@ -337,7 +337,7 @@ abstract class Cronjob {
                 $last_time = $this->LastExecutionTimestamp;
 
                 // get current time
-                $now_time = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+                $now_time = new \DateTime("now");
 
                 // check if ready
                 if ($now_time > $ideal_time) {
@@ -349,7 +349,7 @@ abstract class Cronjob {
             // ready once a month
             if ($this->ExecutionInterval & Cronjob::IntervalMonthly) {
                 $month_keys = $this->ExecutionIntervalMonthly->valueList();
-                $now = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+                $now = new \DateTime("now");
                 $day_in_month = $now->format("j");
                 $count_weekdays_in_month = ceil($day_in_month / 7);  // how many often is this day present in month
                 $day_name3 = $now->format("D");

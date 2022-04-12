@@ -38,7 +38,7 @@ class CronSessionAutomatic extends \Core\Cronjob {
             if ($schd) {
 
                 // start scheduled execution
-                $now = \Core\Core::now();
+                $now = new \DateTime("now");
                 if ($schd->start() <= $now) {
                     $this->verboseOutput("Starting SessioSchedule $schd on $ss<br>");
                     $ss->start($schd->track(),
@@ -48,7 +48,7 @@ class CronSessionAutomatic extends \Core\Cronjob {
                                $schd->mapBallasts(),
                                $schd->mapRestrictors(),
                                $schd->id());
-                    $schd->setExecuted(\Core\Core::now());
+                    $schd->setExecuted(new \DateTime("now"));
                     continue;
                 }
 
@@ -132,7 +132,7 @@ class CronSessionAutomatic extends \Core\Cronjob {
     private function nextScheduleItem(\Core\ServerSlot $server_slot) {
 
         // create query
-        $now = \Core\Core::now();
+        $now = new \DateTime("now");
         $now->sub(new \DateInterval("PT1M")); // ad one minute uncertainty
         $now_str = \Core\Database::dateTime2timestamp($now);
         $query = "SELECT Id FROM SessionSchedule WHERE Executed < Start AND Start >= '$now_str'";

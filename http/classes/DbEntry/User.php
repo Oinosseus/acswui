@@ -63,7 +63,7 @@ class User extends DbEntry { #implements JsonSerializable {
             $res = \Core\Database::fetchRaw($query);
             if (count($res) == 1) {
                 $t_last_lap = \Core\Database::timestamp2DateTime($res[0]['Timestamp']);
-                $_now = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+                $_now = new \DateTime("now");
                 $t_diff = $_now->diff($t_last_lap);
                 $this->DaysSinceLastLap = $t_diff->days;
             } else {
@@ -78,7 +78,7 @@ class User extends DbEntry { #implements JsonSerializable {
     public function daysSinceLastLogin() {
         if ($this->DaysSinceLastLogin === NULL) {
             $t_last_login = $this->lastLogin();
-            $_now = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+            $_now = new \DateTime("now");
             $t_diff = $_now->diff($t_last_login);
             $this->DaysSinceLastLogin = $t_diff->days;
         }
@@ -424,7 +424,7 @@ class User extends DbEntry { #implements JsonSerializable {
         if (User::$CommunityList === NULL) {
             User::$CommunityList = array();
 
-            $t_thld = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+            $t_thld = new \DateTime("now");
             $days = \Core\ACswui::getParam("NonActiveDrivingDays");
             $delta_t = new \DateInterval("P" . $days . "D");
             $t_thld = $t_thld->sub($delta_t);
@@ -461,7 +461,7 @@ class User extends DbEntry { #implements JsonSerializable {
         if (User::$DriverList === NULL) {
             User::$DriverList = array();
 
-            $t_thld = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+            $t_thld = new \DateTime("now");
             $days = \Core\ACswui::getParam("NonActiveDrivingDays");
             $delta_t = new \DateInterval("P" . $days . "D");
             $t_thld = $t_thld->sub($delta_t);

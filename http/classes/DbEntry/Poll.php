@@ -145,7 +145,7 @@ class Poll extends DbEntry {
     //! @return A new created Poll object
     public static function createNew() {
 
-        $closing = \Core\Core::now();
+        $closing = new \DateTime("now");
         $closing->add(new \DateInterval('P7D'));
 
         $fields = array();
@@ -182,7 +182,7 @@ class Poll extends DbEntry {
     //! @return TRUE when the closing time of the poll is passed
     public function isClosed() {
         $closing = $this->closing();
-        $now = \Core\Core::now();
+        $now = new \DateTime("now");
         return $now > $closing;
     }
 

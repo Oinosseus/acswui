@@ -48,14 +48,17 @@ session_start();
                            \Core\Config::DbDatabase);
 \Core\UserManager::initialize();
 
+// check if executed from command line
+$CLI = stripos(php_sapi_name(), "cli") !== FALSE;
+
 // execute cronjobs
 // check if cronjobs are executed from commandline
 // or if user is permitted to execute Cronjobs
-if (\Core\Core::cli() || \Core\UserManager::currentUser()->permitted("Cronjobs_View")) {
+if ($CLI || \Core\UserManager::currentUser()->permitted("Cronjobs_View")) {
     \Core\Cronjob::checkExecute();
 } else {
     $id = \Core\UserManager::currentUser()->id();
-    $interface = (\Core\Core::cli()) ? "CLI" : "HTTP";
+    $interface = ($CLI) ? "CLI" : "HTTP";
     \Core\Log::warning("User '$id' is not permitted to execute cronjobs from $interface!");
 }
 

@@ -153,7 +153,7 @@ class SessionSchedules extends \core\HtmlContent {
         $html = "";
 
         $html .= "<div id=\"SessionScheduleOverview\">";
-        $a_week_ago = \Core\Core::now()->sub(new \DateInterval("P7D"));
+        $a_week_ago = (new \DateTime("now"))->sub(new \DateInterval("P7D"));
         foreach (\DbEntry\SessionSchedule::listSchedules($a_week_ago) as $ss) {
 
             $class_obsolete = ($ss->obsolete()) ? "Obsolete" : "";

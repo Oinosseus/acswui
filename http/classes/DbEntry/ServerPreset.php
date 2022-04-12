@@ -93,7 +93,7 @@ class ServerPreset extends DbEntry {
     public function finishedBefore(\DateTime $t) {
 
         // determine finishing time of the preset
-        $finish = \Core\Core::now();
+        $finish = new \DateTime("now");
         foreach ($this->schedule() as [$interval, $uncertainty, $type, $name]) {
             $finish->add($interval->toDateInterval());
             $finish->add($uncertainty->toDateInterval());

@@ -16,6 +16,13 @@ class Database {
         } else {
             Database::$DbHandle = $mysqli;
         }
+
+        // set timezone
+        $now = new \DateTime("now");
+        $res = Database::query("SET time_zone = '{$now->format('P')}';");
+        if ($res === FALSE) {
+            \Core\Log::error("Could not set time_zone to '{$now->format('P')}'");
+        }
     }
 
 
@@ -50,7 +57,8 @@ class Database {
      * @return A string that can be used in database requests
      */
     public static function dateTime2timestamp(\DateTime $dt) {
-        $dt->setTimezone(new \DateTimeZone(\Core\Config::LocalTimeZone));
+        $tz = (new \DateTime("now"))->getTimeZone();
+        $dt->setTimezone($tz);
         return $dt->format("Y-m-d H:i:s");
     }
 
@@ -247,9 +255,10 @@ class Database {
      * This is the reverse operation of timestamp2DateTime()
      * @param $timestamp A timestamp from the database (eg '2021-01-12 09:23:17')
      * @return A DateTime object
+     * @todo This method is obsolete
      */
     public static function timestamp2DateTime(string $timestamp) {
-        return new \DateTime($timestamp, new \DateTimeZone(\Core\Config::LocalTimeZone));
+        return new \DateTime($timestamp);
     }
 
 

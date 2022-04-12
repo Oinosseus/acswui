@@ -8,6 +8,8 @@ namespace Parameter;
  * but the input elements are in user-timezone.
  *
  * If no default is given, the current time is used as default
+ *
+ * The DateTime value is internally stored in UTC time-zone
  */
 class ParamDateTime extends Parameter {
 
@@ -15,7 +17,7 @@ class ParamDateTime extends Parameter {
         parent::__construct($base, $parent, $key, $label, $description, $unit, $default);
 
         if ($default === NULL) {
-            $dt = new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone));
+            $dt = new \DateTime("now");
             $this->setValue($dt->format("Y-m-d H:i"));
         }
     }
@@ -32,7 +34,7 @@ class ParamDateTime extends Parameter {
         $value = $this->value();
 
         // transform to user-time
-        $dt = new \DateTime($value, new \DateTimeZone(\Core\Config::LocalTimeZone));
+        $dt = new \DateTime($value, new \DateTimeZone("UTC"));
         $dt->setTimezone(new \DateTimeZone(\Core\UserManager::currentUser()->getParam("UserTimezone")));
 
         $html .= "<input type=\"date\" name=\"ParameterValue_{$key}Date\" value=\"{$dt->format('Y-m-d')}\"> ";
@@ -68,8 +70,8 @@ class ParamDateTime extends Parameter {
 
 
     final public function value2Label($value) {
-        $t = new \DateTime($value, new \DateTimeZone(\Core\Config::LocalTimeZone));
-        return \Core\UserManager::currentUser()->formatDateTimeNoSeconds($t);
+        $t = new \DateTime($value, new \DateTimeZone(\Core\UserManager::currentUser()->getParam("UserTimezone")));
+        return \Core\UserManager::currentUser()->formatDateTimeNoSeconds($t)/* . " {$t->format('c')} {$t->getTimezone()->getName()}"*/;
     }
 
 
@@ -91,7 +93,7 @@ class ParamDateTime extends Parameter {
         // convert to server time
         $value = $this->formatValue("$date $time");
         $dt = new \DateTime($value, new \DateTimeZone(\Core\UserManager::currentUser()->getParam("UserTimezone")));
-        $dt->setTimezone(new \DateTimeZone(\Core\Config::LocalTimeZone));
+        $dt->setTimezone(new \DateTimeZone("UTC"));
 
         $this->setValue($dt->format("Y-m-d H:i"));
 

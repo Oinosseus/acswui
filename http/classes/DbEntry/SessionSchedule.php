@@ -140,7 +140,7 @@ class SessionSchedule extends DbEntry {
      * @return An array of SessionSchedule objects, ordered by event start
      */
     public static function listSchedules(\DateTime $start_after=NULL) {
-        if ($start_after === NULL) $start_after = \Core\Core::now();
+        if ($start_after === NULL) $start_after = new \DateTime("now");
         $start_str = \Core\Database::dateTime2timestamp($start_after);
 
         $ret = array();
@@ -209,7 +209,7 @@ class SessionSchedule extends DbEntry {
 
     //! @return TRUE when SessionSchedule->start() is before current time
     public function obsolete() {
-        return $this->start() < \Core\Core::now();
+        return $this->start() < new \DateTime("now");
     }
 
 
@@ -307,7 +307,7 @@ class SessionSchedule extends DbEntry {
     //! @return The DateTime of the event start (server timezone)
     public function start() {
         $val = $this->getParamValue("EventStart");
-        $dt = new \DateTime($val, new \DateTimeZone(\Core\Config::LocalTimeZone));
+        $dt = new \DateTime($val);
         return $dt;
     }
 

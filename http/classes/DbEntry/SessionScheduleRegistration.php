@@ -64,7 +64,7 @@ class SessionScheduleRegistration extends DbEntry {
         $columns['SessionSchedule'] = $schedule->id();
         $columns['CarSkin'] = ($car_skin === NULL) ? 0 : $car_skin->id();
         $columns['Active'] = ($car_skin === NULL) ? 0 : 1;
-        if ($car_skin !== NULL) $columns['Activated'] = (new \DateTime("now", new \DateTimeZone(\Core\Config::LocalTimeZone)))->format("Y-m-d H:i:s");
+        if ($car_skin !== NULL) $columns['Activated'] = (new \DateTime("now"))->format("Y-m-d H:i:s");
 
         // check if combination exists
         $query = "SELECT Id FROM SessionScheduleRegistrations WHERE SessionSchedule = {$schedule->id()} AND User = {$user->id()}";

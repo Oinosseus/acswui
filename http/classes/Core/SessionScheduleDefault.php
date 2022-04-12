@@ -35,7 +35,7 @@ class SessionScheduleDefault {
 
             $pc2 = new \Parameter\Collection(NULL, $pc1, "Event", _("Event"), _("Settings for the main event"));
             $p = new \Parameter\ParamDateTime(NULL, $pc2, "EventStart", _("Date"), _("Date when the session shall start"));
-            $p->setValue(\Core\Core::now()->add(new \DateInterval("P7D"))->format("Y-m-d H:i")); //set to next week to prevent accidental start of new items
+            $p->setValue((new \DateTime("now"))->add(new \DateInterval("P7D"))->format("Y-m-d H:i")); //set to next week to prevent accidental start of new items
             $p = new \Parameter\ParamInt(NULL, $pc2, "SessionEntryList", _("EntryList Session"), _("Use the result of this session as entry list, if zero, the order of registration will be used"), "Session-Id", 0);
             $p = new \Parameter\ParamSpecialServerPreset(NULL, $pc2, "ServerPreset", _("Server Preset"), _("Select the server preset for the event"));
             $p = new \Parameter\ParamSpecialServerSlot(NULL, $pc2, "ServerSlot", _("Server Slot"), _("Select on which server slot the session shall be driven"));

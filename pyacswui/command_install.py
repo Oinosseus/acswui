@@ -375,9 +375,6 @@ class CommandInstall(Command):
         if self.getGeneralArg('log-debug').lower() == "true":
             log_debug = "TRUE"
 
-        # identify local time zone
-        time_zone = subprocess.check_output(["date", "+%Z"]).decode("utf-8").strip()
-
         # country codes
         country_codes_json_string = subprocess.check_output(["curl", "https://flagcdn.com/en/codes.json"]).decode("utf-8")
         country_codes_json = json.loads(country_codes_json_string)
@@ -411,7 +408,6 @@ class CommandInstall(Command):
             f.write("    const GuestGroup = '%s';\n" % self.getGeneralArg('user-group-guest'))
             f.write("    const DriverGroup = '%s';\n" % self.getGeneralArg('user-group-driver'))
             f.write("    const Locales = [%s];\n" % ", ".join(locales))
-            f.write("    const LocalTimeZone = '%s';\n" % time_zone)
             f.write("    const Countries = %s;\n" % self.dict2php(country_codes_json))
             f.write("\n")
             f.write("    // database constants\n")
