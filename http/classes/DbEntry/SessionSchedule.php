@@ -246,7 +246,8 @@ class SessionSchedule extends DbEntry {
         $column_data = array();
 
         // basic values
-        $column_data['Start'] = $this->getParamValue("EventStart");
+        $t_start = new \DateTime($this->getParamValue("EventStart"), new \DateTimeZone("UTC"));
+        $column_data['Start'] = \Core\Database::timestamp($t_start);
         $column_data['CarClass'] = $this->getParamValue("CarClass");
         $column_data['Track'] = $this->getParamValue("Track");
         $column_data['ServerPreset'] = $this->getParamValue("ServerPreset");
@@ -307,7 +308,7 @@ class SessionSchedule extends DbEntry {
     //! @return The DateTime of the event start (server timezone)
     public function start() {
         $val = $this->getParamValue("EventStart");
-        $dt = new \DateTime($val);
+        $dt = new \DateTime($val, new \DateTimeZone("UTC"));
         return $dt;
     }
 
