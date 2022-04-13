@@ -527,7 +527,7 @@ class ServerSlot {
         fwrite($f, "REVERSED_GRID_RACE_POSITIONS=" . $ppc->child("AcServerReversedGrid")->value() . "\n");
         fwrite($f, "LOCKED_ENTRY_LIST=" . (($ppc->child("AcServerLockedEntryList")->value()) ? 1:0) . "\n");
         fwrite($f, "START_RULE=" . $ppc->child("AcServerStartRule")->value() . "\n");
-        fwrite($f, "RACE_GAS_PENALTY_DISABLED=" . (($ppc->child("AcServerRaceGasPenalty")->value()) ? 1:0) . "\n");
+        fwrite($f, "RACE_GAS_PENALTY_DISABLED=" . (($ppc->child("AcServerRaceGasPenalty")->value()) ? 0:1) . "\n");
         fwrite($f, "RESULT_SCREEN_TIME=" . $ppc->child("AcServerResultScreenTime")->value() . "\n");
         fwrite($f, "MAX_CONTACTS_PER_KM=" . $ppc->child("AcServerMaxContactsPerKm")->value() . "\n");
         fwrite($f, "RACE_EXTRA_LAP=" . (($ppc->child("AcServerExtraLap")->value()) ? 1:0) . "\n");
