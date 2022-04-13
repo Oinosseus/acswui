@@ -234,16 +234,30 @@ abstract class Cronjob {
     //! @return the Id of the last completed Session
     public static function lastCompletedSession() {
         if (Cronjob::$LastCompletedSession === NULL) {
-            $slot_count = 2 * \Core\Config::ServerSlotAmount;
-            $query = "SELECT Id FROM Sessions ORDER BY Id DESC LIMIT $slot_count;";
-            $res = \Core\Database::fetchRaw($query);
-            foreach ($res as $row) {
-                $session = \DbEntry\Session::fromId($row['Id']);
-                $slot = $session->serverSlot();
-                if ($slot === NULL || !$slot->online()) {
-                    Cronjob::$LastCompletedSession = $session->id();
-                    break;
+            Cronjob::$LastCompletedSession = 0;
+
+            // find lowest Session-Id of any current running slot
+            $lowest_online_session_id = NULL;
+            for ($id = 1; $id <= \Core\Config::ServerSlotAmount; ++$id) {
+                $slot = \Core\ServerSlot::fromId($id);
+                if ($slot->online()) {
+                    $session = $slot->currentSession();
+                    if ($session) {
+                        if ($lowest_online_session_id === NULL || $session->id() < $lowest_online_session_id)
+                            $lowest_online_session_id = $session->id();
+                    }
                 }
+            }
+
+            // find Session-Id that is lower than current running session
+            $query = "SELECT Id FROM Sessions";
+            if ($lowest_online_session_id !== NULL)
+                $query .= " WHERE Id < $lowest_online_session_id";
+            $query .= "  ORDER BY Id DESC LIMIT 1;";
+            $res = \Core\Database::fetchRaw($query);
+            if (count($res) > 0) {
+                $session = \DbEntry\Session::fromId($res[0]['Id']);
+                Cronjob::$LastCompletedSession = $session->id();
             }
         }
 
