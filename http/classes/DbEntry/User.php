@@ -194,8 +194,26 @@ class User extends DbEntry { #implements JsonSerializable {
 
 
     public function formatLength(int $length) {
-        $si = new \Core\SiPrefix($length);
-        return $si->humanValue("m");
+        $unit = \Core\UserManager::currentUser()->getParam("UserUnitLength");
+        switch ($unit) {
+
+            case "SI":
+                $si = new \Core\SiPrefix($length);
+                return $si->humanValue("m");
+
+            case "OLD":
+                if ($length < 1e6) {
+                    $si = new \Core\SiPrefix($length);
+                    return $si->humanValue("m");
+                } else {
+                    $length = (int) round($length / 1000);
+                    return "$length km";
+                }
+
+            default:
+                \Core\Log::error("Unkown Unit '$unit'!");
+                return "?";
+        }
     }
 
 

@@ -163,6 +163,7 @@ class ACswui  {
             $p = new \Parameter\ParamSpecialUserPowerSpecific(NULL, $coll, "UserUnitPowerSpecific", _("Specific Power"), "");
             $p = new \Parameter\ParamSpecialUserWeight(NULL, $coll, "UserUnitWeight", _("Weight"), "");
             $p = new \Parameter\ParamSpecialUserFormatDate(NULL, $coll, "UserFormatDate", _("Date/Time Format"), _("How shal date-times be presented"));
+            $p = new \Parameter\ParamSpecialUserFormatLength(NULL, $coll, "UserUnitLength", _("Length"), "");
 
             $coll = new \Parameter\Collection(NULL, $pc, "UserLaptimeDistriDia", _("Laptime Distribution Diagrams"), _("Options to adjust the laptime distribution diagrams"));
             $p = new \Parameter\ParamInt(NULL, $coll, "UserLaptimeDistriDiaMaxDelta", _("Max Delta"), _("Defines the maximum of the x-axis (how much seconds to show)"), "s", 10);
