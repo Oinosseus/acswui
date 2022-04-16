@@ -18,6 +18,9 @@ class CarClass extends DbEntry {
     private $Teams = NULL;
 //     private $OccupationMap = NULL;
 
+    private $DrivenLength = NULL;
+    private $DrivenLaps = NULL;
+
     /**
      * Construct a new object
      * @param $id Database table id
@@ -146,6 +149,19 @@ class CarClass extends DbEntry {
     }
 
 
+    /**
+     * Compares two CarClass objects against their driven length
+     * This is intended for usort() of arrays with Lap objects
+     * @param $o1 CarClass object
+     * @param $o2 CarClass object
+     */
+    public static function compareDrivenLength(CarClass $o1, CarClass $o2) {
+        if ($o1->drivenLength() < $o2->drivenLength()) return 1;
+        if ($o1->drivenLength() > $o2->drivenLength()) return -1;
+        return 0;
+    }
+
+
     //! Delete this car class from the database
     public function delete() {
         // delete maps
@@ -162,6 +178,31 @@ class CarClass extends DbEntry {
     //! @return Description of the CarClass
     public function description() {
         return $this->loadColumn("Description");
+    }
+
+
+    //!n @return Amount of meters driven on this track
+    public function drivenLength() {
+        if ($this->DrivenLength === NULL) {
+            $this->DrivenLength = 0;
+            $query = "SELECT Sessions.Track FROM Laps JOIN Sessions ON Laps.Session = Sessions.Id WHERE Sessions.CarClass = {$this->id()};";
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $track = \DbEntry\Track::fromId($row['Track']);
+                $this->DrivenLength += $track->length();
+            }
+        }
+        return $this->DrivenLength;
+    }
+
+
+    //! @return Amount of laps turned with this CarClass
+    public function drivenLaps() {
+        if ($this->DrivenLaps === NULL) {
+            $id = $this->id();
+            $res = \Core\Database::fetchRaw("SELECT COUNT(Laps.Id) as DrivenLaps FROM Laps JOIN Sessions ON Laps.Session = Sessions.Id WHERE Sessions.CarClass = $id");
+            $this->DrivenLaps = $res[0]['DrivenLaps'];
+        }
+        return $this->DrivenLaps;
     }
 
 

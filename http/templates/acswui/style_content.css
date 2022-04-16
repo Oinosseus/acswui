@@ -572,3 +572,28 @@ main.Polls div.PollItem > input {
 main.Polls div.PollItem > div {
     background-color: transparent;
 }
+
+
+
+/*****************************************************************************
+                                 ServerContent
+ *****************************************************************************/
+
+main.ServerContent table td > div.DbEntryHtml {
+    background-color: transparent;
+}
+
+main.ServerContent table td.TrackImage,
+main.ServerContent table td.CarClassImage {
+    padding: 0;
+}
+
+main.ServerContent table td.TrackImage div,
+main.ServerContent table td.CarClassImage div {
+    margin: 0;
+}
+
+main.ServerContent table td.TrackImage div img,
+main.ServerContent table td.CarClassImage div img {
+    max-height: 3em;
+}

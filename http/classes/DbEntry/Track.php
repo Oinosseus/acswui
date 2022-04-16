@@ -86,7 +86,7 @@ class Track extends DbEntry {
 
 
     /**
-     * Compares to Track objects by their name (case insensitive)
+     * Compares two Track objects by their name (case insensitive)
      * This is intended for usort() of arrays with Track objects
      * @param $t1 Track object
      * @param $t2 Track object
@@ -94,6 +94,19 @@ class Track extends DbEntry {
      */
     public static function compareName(Track $t1, Track $t2) {
         return strcasecmp($t1->name(), $t2->name());
+    }
+
+
+    /**
+     * Compares two Lap Track objects against their driven length
+     * This is intended for usort() of arrays with Lap objects
+     * @param $o1 Track object
+     * @param $o2 Track object
+     */
+    public static function compareDrivenLength(Track $o1, Track $o2) {
+        if ($o1->drivenLength() < $o2->drivenLength()) return 1;
+        if ($o1->drivenLength() > $o2->drivenLength()) return -1;
+        return 0;
     }
 
 
@@ -115,6 +128,12 @@ class Track extends DbEntry {
     //! @return Description of the track
     public function description() {
         return $this->loadColumn("Description");
+    }
+
+
+    //!n @return Amount of meters driven on this track
+    public function drivenLength() {
+        return $this->length() * $this->drivenLaps();
     }
 
 

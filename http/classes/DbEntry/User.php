@@ -193,6 +193,12 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    public function formatLength(int $length) {
+        $si = new \Core\SiPrefix($length);
+        return $si->humanValue("m");
+    }
+
+
     /**
      * @param $power The power in [W]
      * @return The power formatted for the User

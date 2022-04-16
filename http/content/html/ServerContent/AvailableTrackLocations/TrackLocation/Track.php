@@ -28,6 +28,7 @@ class Track extends \core\HtmlContent {
             $html .= "<tr><th>" . _("Length") . "</th><td>" . \Core\HumanValue::format($track->length(), "m") . "</td></tr>";
             $html .= "<tr><th>" . _("Pits") . "</th><td>" . $track->pitboxes() . "</td></tr>";
             $html .= "<tr><th>" . _("Driven Laps") . "</th><td>" . $track->drivenLaps() . "</td></tr>";
+            $html .= "<tr><th>" . _("Driven Length") . "</th><td>" . \Core\UserManager::currentUser()->formatLength($track->drivenLength()) . "</td></tr>";
             $html .= "</table>";
 
             $html .= "<table id=\"TrackInfoRevision\">";
