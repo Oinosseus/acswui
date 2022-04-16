@@ -250,9 +250,10 @@ abstract class Cronjob {
             }
 
             // find Session-Id that is lower than current running session
-            $query = "SELECT Id FROM Sessions";
+            $minutes_ago = \Core\Database::timestamp((new \DateTime("now"))->sub(new \DateInterval("PT5M")));
+            $query = "SELECT Id FROM Sessions WHERE Timestamp <= '$minutes_ago'";
             if ($lowest_online_session_id !== NULL)
-                $query .= " WHERE Id < $lowest_online_session_id";
+                $query .= " AND Id < $lowest_online_session_id";
             $query .= "  ORDER BY Id DESC LIMIT 1;";
             $res = \Core\Database::fetchRaw($query);
             if (count($res) > 0) {
