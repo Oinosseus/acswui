@@ -34,6 +34,8 @@ class W_Sessions extends \core\HtmlContent {
                     $car_class = \DbEntry\CarClass::fromId($_POST['CarClass']);
                     $slot->start($trasck, $car_class, $preset);
                     sleep(2);
+
+                    \Core\Discord::messageManualStart($slot, $trasck, $car_class, $preset);
                 }
             }
         }

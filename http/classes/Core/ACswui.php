@@ -41,14 +41,38 @@ class ACswui  {
 
             $pc = new \Parameter\Collection(NULL, $root_collection, "System", _("System"), _("General system settings"));
 
-            $p = new \Parameter\ParamTime(NULL, $pc, "CronjobDailyExecutionTime", _("Cronjob Execution Time"), _("Time when daily cronjobs shall be executed (typically during night time)\nBe aware that this is server-time-zone"), "Server-Time", "03:30");
-            $p = new \Parameter\ParamInt(NULL, $pc, "NonActiveDrivingDays", _("Non-Active Driving Days"), _("When the last lap of a user is longer days ago than this value, he or she is considered to be an inactive driver"), "", 30);
+            /////////
+            // Core
+            $pc2 = new \Parameter\Collection(NULL, $pc, "Core", _("Core"), _("Core Settings"));
+
+            // Cronjobs
+            $pc3 = new \Parameter\Collection(NULL, $pc2, "Cronjobs", _("Cronjobs"), _("Settings for Cronjobs"));
+            $p = new \Parameter\ParamTime(NULL, $pc3, "CronjobDailyExecutionTime", _("Cronjob Execution Time"), _("Time when daily cronjobs shall be executed (typically during night time)\nBe aware that this is server-time-zone"), "Server-Time", "03:30");
+            $p = new \Parameter\ParamBool(NULL, $pc3, "SessionAutomatic", _("Activate Session Automatic"), _("The Session Automatic can be disabled to allow updates"), "", TRUE);
+
+            // Community
+            $pc3 = new \Parameter\Collection(NULL, $pc2, "Community", _("Community"), _("Community Settings"));
+            $p = new \Parameter\ParamInt(NULL, $pc3, "NonActiveDrivingDays", _("Non-Active Driving Days"), _("When the last lap of a user is longer days ago than this value, he or she is considered to be an inactive driver"), "", 30);
             $p->setMin(1);
             $p->setMax(3650);
-            $p = new \Parameter\ParamInt(NULL, $pc, "CommunityLastLoginDays", _("Non-Active Community Login Days"), _("When a user has not logged in into the system for this amount of days he or she is not considered to be a community member\nAdditionally an user must be an active driver to be considered as community member"), "", 90);
+            $p = new \Parameter\ParamInt(NULL, $pc3, "CommunityLastLoginDays", _("Non-Active Community Login Days"), _("When a user has not logged in into the system for this amount of days he or she is not considered to be a community member\nAdditionally an user must be an active driver to be considered as community member"), "", 90);
             $p->setMin(1);
             $p->setMax(3650);
-            $p = new \Parameter\ParamBool(NULL, $pc, "SessionAutomatic", _("Activate Session Automatic"), _("The Session Automatic can be disabled to allow updates"), "", TRUE);
+
+
+            ////////////
+            // Discord
+            $pc2 = new \Parameter\Collection(NULL, $pc, "Discord", _("Discord"), _("Discord Integration"));
+
+            // Manual Start
+            $pc3 = new \Parameter\Collection(NULL, $pc2, "DiscordManual", _("Manual Start"), _("Announce when manually starting a session"));
+            $p = new \Parameter\ParamString(NULL, $pc3, "DiscordManualWebhookUrl", _("Webhook URL"), _("The Webhook URL to write a message to. Leave Empty to not send messages."), "", "");
+            $p = new \Parameter\ParamString(NULL, $pc3, "DiscordManualWebhookMention", _("Mention Role-Id"), _("The ID of the Role that shall be mentioned (leave empty to not mention roles"), "", "");
+
+            // Schedule
+            $pc3 = new \Parameter\Collection(NULL, $pc2, "DiscordSchedule", _("Schedule Start"), _("Announce start of a scheduled session"));
+            $p = new \Parameter\ParamString(NULL, $pc3, "DiscordScheduleWebhookUrl", _("Webhook URL"), _("The Webhook URL to write a message to. Leave Empty to not send messages."), "", "");
+            $p = new \Parameter\ParamString(NULL, $pc3, "DiscordScheduleWebhookMention", _("Mention Role-Id"), _("The ID of the Role that shall be mentioned (leave empty to not mention roles"), "", "");
 
 
             // ----------------------------------------------------------------

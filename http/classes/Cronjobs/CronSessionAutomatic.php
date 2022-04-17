@@ -49,6 +49,7 @@ class CronSessionAutomatic extends \Core\Cronjob {
                                $schd->mapRestrictors(),
                                $schd->id());
                     $schd->setExecuted(new \DateTime("now"));
+                    \Core\Discord::messageScheduleStart($ss, $schd);
                     continue;
                 }
 
