@@ -751,10 +751,10 @@ class ServerSlot {
         fwrite($f, "ENABLE_SPEEDING_PENALTIES = " . (($ppc->child("RpPsGeneralSpeeding")->value()) ? 1:0) . "\n");
         fwrite($f, "ENABLE_CROSSING_PENALTIES = " . (($ppc->child("RpPsGeneralCrossing")->value()) ? 1:0) . "\n");
         fwrite($f, "ENABLE_DRS_PENALTIES = " . (($ppc->child("RpPsGeneralDrs")->value()) ? 1:0) . "\n");
-        fwrite($f, "LAPS_TO_TAKE_PENALTY = " . (($ppc->child("RpPsGeneralLapsToTake")->value()) ? 1:0) . "\n");
-        fwrite($f, "PENALTY_SECONDS = " . (($ppc->child("RpPsGeneralPenSecs")->value()) ? 1:0) . "\n");
-        fwrite($f, "LAST_TIME_WITHOUT_PENALTY = " . (($ppc->child("RpPsGenerallastTimeNPen")->value()) ? 1:0) . "\n");
-        fwrite($f, "LAST_LAPS_WITHOUT_PENALTY = " . (($ppc->child("RpPsGenerallastLapsNPen")->value()) ? 1:0) . "\n");
+        fwrite($f, "LAPS_TO_TAKE_PENALTY = " . $ppc->child("RpPsGeneralLapsToTake")->value() . "\n");
+        fwrite($f, "PENALTY_SECONDS = " . $ppc->child("RpPsGeneralPenSecs")->value() . "\n");
+        fwrite($f, "LAST_TIME_WITHOUT_PENALTY = " . $ppc->child("RpPsGenerallastTimeNPen")->value() . "\n");
+        fwrite($f, "LAST_LAPS_WITHOUT_PENALTY = " . $ppc->child("RpPsGenerallastLapsNPen")->value() . "\n");
 
         // section Cutting
         fwrite($f, "\n[Cutting]\n");
