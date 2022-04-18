@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-20 19:01+0100\n"
-"PO-Revision-Date: 2022-03-26 15:56+0100\n"
+"PO-Revision-Date: 2022-04-18 23:50+0200\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -2689,27 +2689,27 @@ msgstr "Strafe für Überschnell"
 #: http/classes/DbEntry/ServerPreset.php:554
 #: http/classes/DbEntry/ServerPreset.php:576
 msgid "Speed Limit 0"
-msgstr "Geschwindigkeitsbegrenzung 0"
+msgstr "Geschwindigkeit 0"
 
 #: http/classes/DbEntry/ServerPreset.php:557
 #: http/classes/DbEntry/ServerPreset.php:579
 msgid "Penalty Type 1"
-msgstr "Straftyp 0"
+msgstr "Strafe 1"
 
 #: http/classes/DbEntry/ServerPreset.php:559
 #: http/classes/DbEntry/ServerPreset.php:581
 msgid "Speed Limit 1"
-msgstr "Geschwindigkeitsbegrenzung 0"
+msgstr "Geschwindigkeit 1"
 
 #: http/classes/DbEntry/ServerPreset.php:562
 #: http/classes/DbEntry/ServerPreset.php:584
 msgid "Penalty Type 2"
-msgstr "Straftyp 0"
+msgstr "Strafe 2"
 
 #: http/classes/DbEntry/ServerPreset.php:564
 #: http/classes/DbEntry/ServerPreset.php:586
 msgid "Speed Limit 2"
-msgstr "Geschwindigkeitsbegrenzung 0"
+msgstr "Geschwindigkeit 2"
 
 #: http/classes/DbEntry/ServerPreset.php:569
 #: http/classes/DbEntry/ServerPreset.php:570
