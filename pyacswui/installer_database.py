@@ -153,7 +153,6 @@ class InstallerDatabase(object):
         Verbosity(verb).print("check database table `Tracks`")
         self.__db.appendTable("Tracks")
         self.__db.appendColumnUInt("Tracks", "Location")
-        #self.__db.appendColumnString("Tracks", "Track", 80)
         self.__db.appendColumnString("Tracks", "Config", 80)
         self.__db.appendColumnString("Tracks", "Name", 80)
         self.__db.appendColumnUInt("Tracks", "Length")
@@ -162,6 +161,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnString("Tracks", "Version", 30)
         self.__db.appendColumnString("Tracks", "Author", 50)
         self.__db.appendColumnText("Tracks", "Description")
+        self.__db.appendColumnBool("Tracks", "RpTrackfile")
 
         # check table CarBrands
         Verbosity(verb).print("check database table `CarBrands`")

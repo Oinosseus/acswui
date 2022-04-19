@@ -206,6 +206,9 @@ class Database(object):
 
 
 
+    def appendColumnBool(self, tblname, colname):
+        self.__appendColumn(tblname, colname, "bool", "'0'")
+
     def appendColumnTinyInt(self, tblname, colname):
         self.__appendColumn(tblname, colname, "tinyint", "'0'")
 

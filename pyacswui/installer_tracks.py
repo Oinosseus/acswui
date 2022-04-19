@@ -61,6 +61,18 @@ class InstallerTracks(object):
         for id, track, config in res:
             self._generateHtmlImgs(id, track, config)
 
+        # check for real penalty trackfiles
+        self._verbosity.print("scan real penalty track files")
+        query = "SELECT Tracks.Id, TrackLocations.Track, Tracks.Config FROM `Tracks` JOIN TrackLocations ON Tracks.Location = TrackLocations.Id"
+        res = self.__db.rawQuery(query, return_result=True)
+        for id, track, config in res:
+            Verbosity(self._verbosity).print(track + "/" + config)
+
+            rp_trackfile_path = os.path.join(self.__path_srvpkg, "RealPenalty_ServerPlugin", "tracks", "%s(%s).ini" % (track, config))
+            rp_trackfile_exists = 1 if os.path.isfile(rp_trackfile_path) else 0
+
+            self.__db.updateRow("Tracks", id, {"RpTrackfile": rp_trackfile_exists})
+
 
 
     def _scan_track(self, path_tracks, track):

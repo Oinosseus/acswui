@@ -38,6 +38,7 @@ class Track extends \core\HtmlContent {
             $html .= "<tr><th>" . _("Database Id") . "</th><td>$track_id</td></tr>";
             $html .= "<tr><th>AC-Directory</th><td>content/tracks/" . $track->location()->track() .(($track->config() != "") ? "/" . $track->config() : "") . "</td></tr>";
             $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($track->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
+            $html .= "<tr><th>" . _("Real-Penalty Trackfile") . "</th><td>". (($track->rpTrackfile()) ? _("yes") : "-") . "</td></tr>";
             $html .= "</table>";
 
             $html .= "<div id=\"TrackDescription\">";

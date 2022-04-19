@@ -8,10 +8,8 @@ namespace DbEntry;
 class Track extends DbEntry {
 
     // cache that stores objects of all tracks used by listTracks() method
-    private static $ListTracksDeprConf = NULL;    // including deprecated, including configs
-    private static $ListTracksDeprNConf = NULL;   // including depracated, excluding configs
-    private static $ListTracksNDeprConf = NULL;   // excluding depracated, including configs
-    private static $ListTracksNDeprNConf = NULL;  // excluding deprecated, excluding configs
+    private static $ListTracksDepr = NULL;    // including deprecated
+    private static $ListTracksNDepr = NULL;   // excluding depracated
 
     private $BestTimes = array();
     private $TrackLocation = NULL;
@@ -273,43 +271,31 @@ class Track extends DbEntry {
      */
     public static function listTracks($inculde_deprecated=FALSE) {
 
-        // update cache
-        if (TracK::$ListTracksDeprConf === NULL) {
+        // update cache with depricated
+        if ($inculde_deprecated && TracK::$ListTracksDepr === NULL) {
 
-            Track::$ListTracksDeprConf   = array();
-            Track::$ListTracksDeprNConf  = array();
-            Track::$ListTracksNDeprConf  = array();
-            Track::$ListTracksNDeprNConf = array();
+            Track::$ListTracksDepr = array();
 
-            $columns = array();
-            $columns[] = "Id";
-            $columns[] = "Track";
-            $columns[] = "Deprecated";
-
-            $where = array();
-            if ($inculde_deprecated !== TRUE) {
-                $where['Deprecated'] = 0;
-            }
-
-            $res = \Core\Database::fetch("Tracks", $columns, $where, 'Name');
+            $res = \Core\Database::fetch("Tracks", ['Id'], [], 'Name');
             foreach ($res as $row) {
-
-                $id = $row['Id'];
                 $track_obj = new Track($row['Id']);
-                $track_name = $row['Track'];
-                $deprecated = ($row['Deprecated'] == 0) ? FALSE : TRUE;
-
-                if ($deprecated) {
-                    Track::$ListTracksDeprConf[] = $track_obj;
-                } else {
-                    Track::$ListTracksNDeprConf[] = $track_obj;
-                }
-
-
+                Track::$ListTracksDepr[] = $track_obj;
             }
         }
 
-        return ($inculde_deprecated) ? Track::$ListTracksDeprConf : Track::$ListTracksNDeprConf;
+        // update cache without depricated
+        if (!$inculde_deprecated && TracK::$ListTracksNDepr === NULL) {
+
+            Track::$ListTracksNDepr = array();
+
+            $res = \Core\Database::fetch("Tracks", ['Id'], ['Deprecated'=>0], 'Name');
+            foreach ($res as $row) {
+                $track_obj = new Track($row['Id']);
+                Track::$ListTracksNDepr[] = $track_obj;
+            }
+        }
+
+        return ($inculde_deprecated) ? Track::$ListTracksDepr : Track::$ListTracksNDepr;
     }
 
 //     //! @return The longest track
@@ -391,6 +377,12 @@ class Track extends DbEntry {
         }
 
         return $path;
+    }
+
+
+    //! @return TRUE if a track-INI-file for real penalty is present (else FALSE)
+    public function rpTrackfile() {
+        return ($this->loadColumn("RpTrackfile") == 0) ? FALSE : TRUE;
     }
 
 
