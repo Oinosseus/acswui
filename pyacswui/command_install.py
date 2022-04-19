@@ -53,6 +53,10 @@ class CommandInstall(Command):
         self._verbosity.print("copy data")
         self.__work_copy_files()
 
+        # country flags
+        self._verbosity.print("ddownload flags from flagpedia")
+        self.__work_flagpedia()
+
         # temporarily needed to rename SessionQueue to SessionLoops
         if "SessionQueue" in self.__db.tables():
              query = "RENAME TABLE SessionQueue TO SessionLoops; "
@@ -344,6 +348,12 @@ class CommandInstall(Command):
             Verbosity(Verbosity(verb)).print("mkdirs " + path_realtime)
             self.mkdirs(path_realtime)
 
+        # flagpedia
+        path_flagpedia = os.path.join(path_htdata, "flagpedia")
+        if not os.path.isdir(path_flagpedia):
+            Verbosity(Verbosity(verb)).print("mkdirs " + path_flagpedia)
+            self.mkdirs(path_flagpedia)
+
         verb = None
 
 
@@ -376,7 +386,7 @@ class CommandInstall(Command):
             log_debug = "TRUE"
 
         # country codes
-        country_codes_json_string = subprocess.check_output(["curl", "https://flagcdn.com/en/codes.json"]).decode("utf-8")
+        country_codes_json_string = subprocess.check_output(["curl", "--silent", "https://flagcdn.com/en/codes.json"]).decode("utf-8")
         country_codes_json = json.loads(country_codes_json_string)
 
         # driver ranking groups
@@ -504,6 +514,22 @@ class CommandInstall(Command):
                 mo_path = os.path.join(path_lc_messages, po_file[:-3] + ".mo")
                 cmd = ["msgfmt", "-o", mo_path, po_path]
                 subprocess.run(cmd)
+
+
+
+    def __work_flagpedia(self):
+        verb = Verbosity(self._verbosity)
+        verb.print("downloads flags from flagpedia")
+
+        path_flagpedia = os.path.join(os.path.abspath(self.getGeneralArg("path-htdata")), "flagpedia")
+        country_codes_json_string = subprocess.check_output(["curl", "--silent", "https://flagcdn.com/en/codes.json"]).decode("utf-8")
+        country_codes_json = json.loads(country_codes_json_string)
+
+        for country_key in country_codes_json.keys():
+            Verbosity(verb).print(country_key + ".svg " + country_codes_json[country_key])
+            svg_content = subprocess.check_output(["curl", "--silent", "https://flagcdn.com/%s.svg" % country_key]).decode("utf-8")
+            with open(os.path.join(path_flagpedia, country_key + ".svg"), "w") as svg_file:
+                svg_file.write(svg_content)
 
 
 

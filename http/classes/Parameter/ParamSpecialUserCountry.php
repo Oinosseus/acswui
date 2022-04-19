@@ -26,7 +26,8 @@ class ParamSpecialUserCountry extends ParamEnum {
         $value = $this->value();
 
 //         if ($value !== "_") {
-        $html .= "<img src=\"https://flagcdn.com/$value.svg\" class=\"ParameterUserCountry\">";
+        $url = \Core\Config::RelPathHtdata;
+        $html .= "<img src=\"$url/flagpedia/$value.svg\" class=\"ParameterUserCountry\">";
 //         }
 
         $html .= "<select name=\"ParameterValue_$key\" onchange=\"toggleParamUserCountry('$key')\" id=\"ParameterUserCountry$key\">";
@@ -45,7 +46,8 @@ class ParamSpecialUserCountry extends ParamEnum {
 
         if ($value !== "_") {
             $country_name = \Core\Config::Countries[$value];
-            $html .= "<img src=\"https://flagcdn.com/$value.svg\" class=\"ParameterUserCountry\" title=\"$country_name\">";
+            $url = \Core\Config::RelPathHtdata;
+            $html .= "<img src=\"$url/flagpedia/$value.svg\" class=\"ParameterUserCountry\" title=\"$country_name\">";
         }
 
         return $html;;
