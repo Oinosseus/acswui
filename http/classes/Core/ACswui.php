@@ -148,7 +148,7 @@ class ACswui  {
 
                 $i = 1;
                 for (; $i < Config::DriverRankingGroups; ++$i) {
-                    $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingGroup$i", _("Group") . " $i", _("Settings for a driver ranking group"));
+                    $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingGroup$i", _("Ranking Group") . " $i", _("Settings for a driver ranking group"));
                     $p = new \Parameter\ParamString(NULL, $coll, "DriverRankingGroup$i". "Name", _("Name"), _("An arbitrary name for this group"), "", "Group $i");
                     $p = new \Parameter\ParamInt(NULL, $coll, "DriverRankingGroup$i" . "Thld", _("Threshold"), _("The ranking threshold a driver needs to pass to enter this group"), "", 120 - 20 * $i);
                 }
@@ -157,13 +157,70 @@ class ACswui  {
             }
 
 
+            // ----------------------------------------------------------------
+            //                    Default Session Schedule
+            // ----------------------------------------------------------------
+
+
+            $pc = new \Parameter\Collection(NULL, $root_collection, "SessionSchedule", _("Default Session Schedule"), _("Default settings for session schedules"));
+
+            ///////////
+            // Basics
+
+            $pc1 = new \Parameter\Collection(NULL, $pc, "Basics", _("Basics"), _("Basic settings"));
+
+            $p = new \Parameter\ParamString(NULL, $pc1, "Name", _("Name"), _("An arbitrary name for this schedule item"), "", "New Schedule Item");
+            $p = new \Parameter\ParamSpecialCarClass(NULL, $pc1, "CarClass", _("Car Class"), _("The car class to race with"));
+            $p = new \Parameter\ParamSpecialTrack(NULL, $pc1, "Track", _("Track"), _("The track to be raced"));
+
+            $pc2 = new \Parameter\Collection(NULL, $pc1, "Event", _("Event"), _("Settings for the main event"));
+            $p = new \Parameter\ParamDateTime(NULL, $pc2, "EventStart", _("Date"), _("Date when the session shall start"));
+            $p->setValue((new \DateTime("now"))->add(new \DateInterval("P7D"))->format("Y-m-d H:i")); //set to next week to prevent accidental start of new items
+            $p = new \Parameter\ParamInt(NULL, $pc2, "SessionEntryList", _("EntryList Session"), _("Use the result of this session as entry list, if zero, the order of registration will be used"), "Session-Id", 0);
+            $p = new \Parameter\ParamSpecialServerPreset(NULL, $pc2, "ServerPreset", _("Server Preset"), _("Select the server preset for the event"));
+            $p = new \Parameter\ParamSpecialServerSlot(NULL, $pc2, "ServerSlot", _("Server Slot"), _("Select on which server slot the session shall be driven"));
+
+            $pc2 = new \Parameter\Collection(NULL, $pc1, "Practice", _("Practice Loop"), _("Setup a session loop for practice"));
+            $p = new \Parameter\ParamBool(NULL, $pc2, "PracticeEna", _("Enable"), _("Enable practice session loop"), "", FALSE);
+            $p = new \Parameter\ParamSpecialServerPreset(NULL, $pc2, "PracticePreset", _("Server Preset"), _("Select the server preset for the practice"));
+
+
+            ///////
+            // BOP
+
+            if (\Core\Config::DriverRankingGroups > 1) {
+                $pc1 = new \Parameter\Collection(NULL, $pc, "BopDrvRnk", _("Ballance Driver Ranking"), _("Ballance of performacne based on driver ranking"));
+
+                for ($i = 1; $i <= \Core\Config::DriverRankingGroups; ++$i) {
+                    $grp_label = _("Ranking Group") . " $i";//\Core\ACswui::parameterCollection()->child("DriverRankingGroup$i". "Name")->valueLabel();
+                    $pc2 = new \Parameter\Collection(NULL, $pc1, "BopDrvRnkGrp$i", $grp_label, _("Add ballast or restrictors to driver in this ranking group"));
+
+                    $p = new \Parameter\ParamInt(NULL, $pc2, "BopDrvRnkGrpBallast$i", _("Ballast"), _("Additional ballast for this group"), "kg", 0);
+                    $p->setMin(0);
+                    $p->setMax(999);
+
+                    $p = new \Parameter\ParamInt(NULL, $pc2, "BopDrvRnkGrpRestrictor$i", _("Restrictor"), _("Additional restrictor for this group"), "&percnt;", 0);
+                    $p->setMin(0);
+                    $p->setMax(100);
+                }
+
+                $pc2 = new \Parameter\Collection(NULL, $pc1, "BopNonRnk", "Not Ranked", _("Add ballast or restrictors to drivers which are not in the driver ranking"));
+                $p = new \Parameter\ParamInt(NULL, $pc2, "BopNonRnkBallast", _("Ballast"), _("Additional ballast for drivers who are not in the driver ranking"), "kg", 0);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamInt(NULL, $pc2, "BopNonRnkRestrictor", _("Restrictor"), _("Additional restrictor for drivers who are not in the driver ranking"), "&percnt;", 0);
+                $p->setMin(0);
+                $p->setMax(100);
+            }
+
+
 
 
             // ----------------------------------------------------------------
-            //                        User Settings
+            //                        Default User Settings
             // ----------------------------------------------------------------
 
-            $pc = new \Parameter\Collection(NULL, $root_collection, "User", _("User Settings"), _("Settings for users"));
+            $pc = new \Parameter\Collection(NULL, $root_collection, "User", _("Default User Settings"), _("Settings for users"));
             $p = new \Parameter\ParamSpecialUserPrivacy(NULL, $pc, "UserPrivacy", _("Privacy"), _("Privacy settings\n'Private' means nobody can identify me\n'Community' means that all active drivers, which actively use the ACswui system, can identify me - as long as I use the ACswui system as well\n'Active Drivers' means that all other active drivers can identify me - as long as I am an active driver as well\n'Public' means everyone can identify me"));
             $p = new \Parameter\ParamColor(NULL, $pc, "UserColor", _("Color"), _("Your preferred color to better identify you in diagrams"));
             $p = new \Parameter\ParamInt(NULL, $pc, "UserLoginTokenExpire", _("Login Expire"), _("The user login is saved via a token inside a client cookie. This defines the amount of days when this token expires"), "d", 30);

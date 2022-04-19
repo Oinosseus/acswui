@@ -218,7 +218,7 @@ class SessionSchedule extends DbEntry {
 
         // derive own parameter collection
         if ($this->ParameterCollection === NULL) {
-            $this->ParameterCollection = new \Parameter\Collection(\Core\SessionScheduleDefault::parameterCollection(), NULL);
+            $this->ParameterCollection = new \Parameter\Collection(\Core\ACswui::parameterCollection()->child("SessionSchedule"), NULL);
             $data_json = $this->loadColumn('ParameterData');
             $data_array = json_decode($data_json, TRUE);
             if ($data_array !== NULL) $this->ParameterCollection->dataArrayImport($data_array);
