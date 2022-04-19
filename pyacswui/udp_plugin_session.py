@@ -71,9 +71,10 @@ class UdpPluginSession(object):
         elapsed_ms = packet.readInt32()
 
         # identify track
-        res = self.__db.fetch("Tracks", ["Id"], {'Track':track_name, 'Config':track_config})
+        query = "SELECT Tracks.Id FROM `Tracks` INNER JOIN TrackLocations ON Tracks.Location = TrackLocations.Id WHERE Tracks.Config = '%s' AND TrackLocations.Track = '%s';" % (track_config, track_name)
+        res = self.__db.rawQuery(query, True)
         if len(res) > 0:
-            track_id = res[0]['Id']
+            track_id = res[0][0]
         else:
             fields = {}
             fields['Track'] = track_name
