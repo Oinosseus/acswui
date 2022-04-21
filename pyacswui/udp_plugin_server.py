@@ -240,6 +240,9 @@ class UdpPluginServer(object):
             json_file_relpath = pkt.readStringW()
             json_file_abspath = os.path.join(self.__ac_server_path, json_file_relpath)
 
+            # remember result file
+            self.__database.updateRow("Sessions", self.__session.Id, {"ResultFile":json_file_relpath})
+
             # read result json
             with open(json_file_abspath, "r") as f:
                 json_string = f.read()
