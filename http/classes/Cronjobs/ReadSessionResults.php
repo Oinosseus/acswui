@@ -12,8 +12,8 @@ class ReadSessionResults extends \Core\Cronjob {
 
         // determine sessions to be checked
         $max_session_id = \Core\Cronjob::lastCompletedSession();
-        $last_session_id = 0;//(int) $this->loadData("LastScannedSession", 0);
-        $this->verboseOutput("Cleaning $last_session_id < Session-Id <= $max_session_id<br>");
+        $last_session_id = (int) $this->loadData("LastScannedSession", 0);
+        $this->verboseOutput("Scanning $last_session_id < Session-Id <= $max_session_id<br>");
 
         // find all empty sessions
         $empty_session_ids = array();
@@ -68,6 +68,7 @@ class ReadSessionResults extends \Core\Cronjob {
 
             // find user
             $steam64guid = $rslt['DriverGuid'];
+            if (strpos($steam64guid, "kicked") !== FALSE) continue;
             $user = \DbEntry\User::fromSteam64GUID($steam64guid);
             if ($user === NULL) continue;
 
