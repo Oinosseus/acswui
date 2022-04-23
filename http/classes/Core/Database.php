@@ -103,7 +103,7 @@ class Database {
 
         // all columns
         if (is_null($columns)) {
-            $columns = $this->fetch_column_names($table);
+            $columns = Database::columns($table);
         }
 
         // break if no connection available
