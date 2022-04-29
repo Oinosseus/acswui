@@ -45,7 +45,7 @@ class ReadSessionResults extends \Core\Cronjob {
         }
 
         // read result file
-        echo "HERE: $result_file_path<br>";
+        $this->verboseOutput("&nbsp;&nbsp;&nbsp;&nbsp; $result_file_path<br>");
         $ret = file_get_contents($result_file_path);
         if ($ret === FALSE) {
             \Core\Log::error("Cannot read from file '$result_file_path'!");
@@ -63,6 +63,7 @@ class ReadSessionResults extends \Core\Cronjob {
             return;
         }
         $position = 0;
+        $already_listed_user_ids = array();
         foreach ($file_data['Result'] as $rslt) {
             $position += 1;
 
@@ -71,6 +72,7 @@ class ReadSessionResults extends \Core\Cronjob {
             if (strpos($steam64guid, "kicked") !== FALSE) continue;
             $user = \DbEntry\User::fromSteam64GUID($steam64guid);
             if ($user === NULL) continue;
+            if (in_array($user->id(), $already_listed_user_ids)) continue;
 
             // find CarSkin
             $rslt_car_id = $rslt['CarId'];
@@ -98,6 +100,7 @@ class ReadSessionResults extends \Core\Cronjob {
             $fields['Ballast'] = $rslt['BallastKG'];
             $fields['Restrictor'] = $rslt['Restrictor'];
             \Core\Database::insert("SessionResults", $fields);
+            $already_listed_user_ids[] = $user->id();
         }
     }
 
