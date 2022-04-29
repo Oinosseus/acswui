@@ -80,6 +80,28 @@ class Car extends DbEntry {
 
 
     /**
+     * Retrieve an existing object from database.
+     * This function is cached and returns for same IDs the same object.
+     * @param $model The name of the content/cars/$model directory
+     * @return A Car object (or NULL)
+     */
+    public static function fromModel(string $model) {
+        $model = \Core\Database::escape($model);
+        $query = "SELECT Id FROM Cars WHERE Car = '$model';";
+        $res = \Core\Database::fetchRaw($query);
+        if (count($res) == 0) {
+            return NULL;
+        } else if (count($res) == 1) {
+            return parent::getCachedObject("Cars", "Car", $res[0]['Id']);
+        } else {
+            \Core\Log::error("Ambigous cars with model '$model'!");
+            return NULL;
+        }
+    }
+
+
+
+    /**
      * @param $restrictor An optional applied restrictor
      * @return calculating power [W], averaged from peak torque revolutions to peap power revolutions
      */

@@ -53,6 +53,29 @@ class CarSkin extends DbEntry {
 
 
     /**
+     * Retrieve an existing object from database.
+     * This function is cached and returns for same IDs the same object.
+     * @param $car The destinated Car object
+     * @param $skin The name of the content/cars/.../skin/$skin directory
+     * @return A CarSkin object (or NULL)
+     */
+    public static function fromSkin(Car $car, string $skin) {
+        $skin = \Core\Database::escape($skin);
+        $query = "SELECT Id FROM CarSkins WHERE Car = '{$car->id()}' AND Skin = '$skin';";
+        $res = \Core\Database::fetchRaw($query);
+        if (count($res) == 0) {
+            return NULL;
+        } else if (count($res) == 1) {
+            return parent::getCachedObject("CarSkins", "CarSkin", $res[0]['Id']);
+        } else {
+            \Core\Log::error("Ambigous CarSkin for Car.Id={$car->id()} and skin='$skin'!");
+            return NULL;
+        }
+    }
+
+
+
+    /**
      * @param $include_link Include a link
      * @param $show_label Include a label
      * @param $show_img Include a preview image

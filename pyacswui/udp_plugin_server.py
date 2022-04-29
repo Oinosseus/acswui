@@ -243,41 +243,6 @@ class UdpPluginServer(object):
             # remember result file
             self.__database.updateRow("Sessions", self.__session.Id, {"ResultFile":json_file_relpath})
 
-            # read result json
-            with open(json_file_abspath, "r") as f:
-                json_string = f.read()
-            json_dict = json.loads(json_string)
-
-            # store all results
-            if "Result" in json_dict:
-                position = 0
-                for rslt in json_dict['Result']:
-                    position += 1
-
-                    # only care for ordinariy drivers
-                    if rslt['DriverGuid'] == "":
-                        continue
-
-                    # get car entry object and occupy it
-                    entrylist_section = "CAR_%i" % rslt['CarId']
-                    car_entry = UdpPluginCarEntry(self.__database,
-                                                  entrylist_section,
-                                                  self.__entry_list[entrylist_section],
-                                                  verbosity=self.__verbosity)
-                    car_entry.occupy(rslt['DriverName'], rslt['DriverGuid'], self.__session)
-
-                    # save result to DB
-                    field_values = {}
-                    field_values['Position'] = position
-                    field_values['Session'] = self.__session.Id
-                    field_values['User'] = car_entry.DriverId
-                    field_values['CarSkin'] = car_entry.SkinId
-                    field_values['BestLap'] = rslt['BestLap']
-                    field_values['TotalTime'] = rslt['TotalTime']
-                    field_values['Ballast'] = rslt['BallastKG']
-                    field_values['Restrictor'] = rslt['Restrictor']
-                    self.__database.insertRow("SessionResults", field_values)
-
 
         # ACSP_LAP_COMPLETED
         elif prot == 73:

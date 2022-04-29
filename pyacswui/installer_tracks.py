@@ -68,7 +68,10 @@ class InstallerTracks(object):
         for id, track, config in res:
             Verbosity(self._verbosity).print(track + "/" + config)
 
-            rp_trackfile_path = os.path.join(self.__path_srvpkg, "RealPenalty_ServerPlugin", "tracks", "%s(%s).ini" % (track, config))
+            if len(config):
+                rp_trackfile_path = os.path.join(self.__path_srvpkg, "RealPenalty_ServerPlugin", "tracks", "%s(%s).ini" % (track, config))
+            else:
+                rp_trackfile_path = os.path.join(self.__path_srvpkg, "RealPenalty_ServerPlugin", "tracks", "%s.ini" % track)
             rp_trackfile_exists = 1 if os.path.isfile(rp_trackfile_path) else 0
 
             self.__db.updateRow("Tracks", id, {"RpTrackfile": rp_trackfile_exists})
