@@ -4,16 +4,43 @@ namespace Content\Html;
 
 class B_User extends \core\HtmlContent {
 
+    private $CurrentUser = NULL;
+    private $ProfileUser = NULL;
+
     public function __construct() {
-        parent::__construct(_("User"),  _("User Options"));
+        parent::__construct(_("User"),  _("User Overview"));
     }
 
     public function getHtml() {
         $html = "";
 
-        $current_user = \Core\UserManager::loggedUser();
+        // remember current logged user
+        $this->CurrentUser = \Core\UserManager::loggedUser();
 
-        if ($current_user === NULL) {
+        // check if a certain user profile is requested
+        if (array_key_exists("UserId", $_GET)) {
+            $this->ProfileUser = \DbEntry\User::fromId($_GET['UserId']);
+        } else {
+            $this->ProfileUser = $this->CurrentUser;
+        }
+
+
+        if ($this->CurrentUser === NULL || $this->CurrentUser->id() == $this->ProfileUser->id()) {
+            $html .= $this->showLogInOut();
+        }
+
+        if ($this->ProfileUser) {
+            $html .= $this->showProfile();
+        }
+
+        return $html;
+    }
+
+
+    private function showLogInOut() {
+        $html = "";
+
+        if ($this->CurrentUser === NULL) {
 
             // user login
             $html .= "<h1>" . _("User Login") . "</h1>";
@@ -31,9 +58,63 @@ class B_User extends \core\HtmlContent {
             $html .= "</form>";
 
         } else {
+
             // user logout
             $html .= "<h1>" . _("User Logout") . "</h1>";
             $html .= \Core\UserManager::htmlLogInOut();
+        }
+
+        return $html;
+    }
+
+
+    private function showProfile() {
+        $html = "";
+
+
+        $html .= "<h1>" . _("User Profile") . "</h1>";
+        if ($this->ProfileUser->privacyFulfilled()) {
+
+            $html .= "<strong>" . _("ID") . "</strong>: " . $this->ProfileUser->id() . "<br>";
+            $html .= "<strong>" . _("Name") . "</strong>: " . $this->ProfileUser->html() . "<br>";
+            $html .= "<strong>Steam64GUID</strong>: " . $this->ProfileUser->steam64GUID() . "<br>";
+
+            $html .= "<strong>" . _("User Groups") . "</strong>:";
+            for ($i=0; $i < count($this->ProfileUser->groups()); ++$i) {
+                $group = $this->ProfileUser->groups()[$i];
+                if ($group === NULL) continue;
+                $html .= ($i == 0) ? " " : ", ";
+                $html .= $this->ProfileUser->groups()[$i]->name();
+            }
+            $html .= "<br>";
+
+            $html .= "<strong>" . _("Last Login") . "</strong>: " . $this->ProfileUser->formatDateTime($this->ProfileUser->lastLogin()) . " (" . $this->ProfileUser->daysSinceLastLogin() . "d)<br>";
+
+            $html .= "<strong>" . _("Last Lap") . "</strong>: ";
+            $lap = $this->ProfileUser->lastLap();
+            if ($lap !== NULL) {
+                $html .= $this->ProfileUser->formatDateTime($lap->timestamp()) . " (" . $this->ProfileUser->daysSinceLastLap() . "d)";
+            }
+            $html .= "<br>";
+
+            $html .= "<strong>" . _("Status") . "</strong>: ";
+            if ($this->ProfileUser->isDriver() && $this->ProfileUser->isCommunity()) $html .= _("active driver in community");
+            else if ($this->ProfileUser->isDriver()) $html .= _("active driver");
+            else $html .= _("inactive");
+            $html .= "<br>";
+
+            $html .= "<strong>" . _("Country") . "</strong>: " . $this->ProfileUser->nationalFlag() . "<br>";
+            $html .= "<strong>" . _("Driven Laps") . "</strong>: " . $this->ProfileUser->countLaps() . "<br>";
+
+            $html .= "<h1>" . _("Teams") . "</h1>";
+            $html .= "<ul>";
+            foreach ($this->ProfileUser->teams() as $team) {
+                $html .= "<li>" . $team->htmlName() . "</li>";
+            }
+            $html .= "</ul>";
+
+        } else {
+            $html .= _("Privacy settings of the user does not allow to show any information.");
         }
 
         return $html;
