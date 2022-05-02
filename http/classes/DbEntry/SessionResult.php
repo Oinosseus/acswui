@@ -253,7 +253,7 @@ class SessionResult extends DbEntry {
 
             // success
             if ($this->session()->type() == \DbEntry\Session::TypeRace) {
-                if ($this->bestLaptime() == $this->session()->lapBest()->laptime())
+                if ($this->session()->lapBest() !== NULL && $this->bestLaptime() == $this->session()->lapBest()->laptime())
                     $this->RankingPoints['SX']['RT'] = \Core\Acswui::getPAram('DriverRankingSxRt');
                 $this->RankingPoints['SX']['R'] = $this->positionLeading() * \Core\Acswui::getPAram('DriverRankingSxR');
 
