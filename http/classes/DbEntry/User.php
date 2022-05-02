@@ -568,7 +568,9 @@ class User extends DbEntry { #implements JsonSerializable {
         } else if ($this->id() == NULL) {
             return _("Guest");
         } else if ($this->privacyFulfilled()) {
-            return $this->loadColumn("Name");
+            $name = trim($this->loadColumn("Name"));
+            if (strlen($name) == 0) $name = "User-" . $this->id();
+            return $name;
         } else {
             return "User-" . $this->id();
         }
