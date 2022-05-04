@@ -80,7 +80,7 @@ class ACswui  {
             // ----------------------------------------------------------------
 
             $pc = new \Parameter\Collection(NULL, $root_collection, "DriverRanking", _("Driver Ranking"), _("Settings for driver ranking"));
-            $p = new \Parameter\ParamInt(NULL, $pc, "DriverRankingDays", _("Days"), _("Amount of days in the past over which the driver ranking shall be calculated"), "d", 30);
+            $p = new \Parameter\ParamInt(NULL, $pc, "DriverRankingDays", _("Ranking Period"), _("Amount of days in the past over which the driver ranking shall be calculated"), "d", 30);
             $p->setMin(0);
             $p->setMax(999);
 
