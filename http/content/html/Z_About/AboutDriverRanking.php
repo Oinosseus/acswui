@@ -37,7 +37,7 @@ class AboutDriverRanking extends \core\HtmlContent {
 
         $html .= "<h2>" . _("Experience") . "</h2>";
 
-        $t = -("Every driven distance counts as experience.\n
+        $t = _("Every driven distance counts as experience.\n
                 Depending on the session type, there are different points earned per distance.
                 The experience points are granted relative to one million driven meters (Points / Mm).");
         $html .= nl2br(htmlentities($t));
