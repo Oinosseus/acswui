@@ -393,7 +393,7 @@ class User extends DbEntry { #implements JsonSerializable {
     public function html() {
         $html = "";
         if ($this->privacyFulfilled()) {
-            $html .= "<a href=\"index.php?HtmlContent=UserProfile&UserId=" . $this->id() . "\">";
+            $html .= "<a href=\"index.php?HtmlContent=B_User&UserId=" . $this->id() . "\">";
             $html .= $this->name();
             $html .= "</a>";
         } else {
@@ -568,7 +568,9 @@ class User extends DbEntry { #implements JsonSerializable {
         } else if ($this->id() == NULL) {
             return _("Guest");
         } else if ($this->privacyFulfilled()) {
-            return $this->loadColumn("Name");
+            $name = trim($this->loadColumn("Name"));
+            if (strlen($name) == 0) $name = "User-" . $this->id();
+            return $name;
         } else {
             return "User-" . $this->id();
         }
