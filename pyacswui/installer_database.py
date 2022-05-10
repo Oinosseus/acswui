@@ -346,5 +346,4 @@ class InstallerDatabase(object):
         self.__db.appendColumnFloat("DriverRanking", 'SF_CT')
         self.__db.appendColumnFloat("DriverRanking", 'SF_CE')
         self.__db.appendColumnFloat("DriverRanking", 'SF_CC')
-        self.__db.appendColumnFloat("DriverRanking", 'RankingLast')
         self.__db.appendColumnUInt("DriverRanking", 'RankingGroup')

@@ -94,10 +94,9 @@ class DriverRanking extends \core\HtmlContent {
                     $css_class = ($rnk->pointsIncrease() > 0) ? "TrendRising" : "TrendFalling";
                     $html .= " <small class=\"$css_class\">(" . sprintf("%+0.1f", $rnk->pointsIncrease()) . ")</small>";
                 }
-                $grp_calc = $rnk->rankingGroupCalculated();
-                if ($grp_calc < $rnk->rankingGroup()) {
+                if ($rnk->groupNext() < $rnk->group()) {
                     $html .= " <span title=\"" . _("Driver will rise to next group") . "\" class=\"TrendRising\">&#x2b06;</span>";
-                } else if ($grp_calc > $rnk->rankingGroup()) {
+                } else if ($rnk->groupNext() > $rnk->group()) {
                     $html .= " <span title=\"" . _("Driver will fall to previous group") . "\" class=\"TrendFalling\">&#x2b07;</span>";
                 }
                 $html .= "</td>";
