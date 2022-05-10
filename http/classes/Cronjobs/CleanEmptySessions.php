@@ -11,7 +11,7 @@ class CleanEmptySessions extends \Core\Cronjob {
     protected function process() {
 
         // determine sessions to be checked
-        $max_session_id = \Core\Cronjob::lastCompletedSession();
+        $max_session_id = \DbEntry\Session::fromLastCompleted()->id();
         $last_session_id = (int) $this->loadData("LastCleanedSession", 0);
         $this->verboseOutput("Cleaning $last_session_id < Session-Id <= $max_session_id<br>");
 

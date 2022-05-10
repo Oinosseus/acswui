@@ -11,7 +11,7 @@ class ReadSessionResults extends \Core\Cronjob {
     protected function process() {
 
         // determine sessions to be checked
-        $max_session_id = \Core\Cronjob::lastCompletedSession();
+        $max_session_id = \DbEntry\Session::fromLastFinished()->id();
         $last_session_id = (int) $this->loadData("LastScannedSession", 0);
         $this->verboseOutput("Scanning $last_session_id < Session-Id <= $max_session_id<br>");
 
@@ -27,7 +27,7 @@ class ReadSessionResults extends \Core\Cronjob {
         }
 
         // save last checked session
-        $this->saveData("LastScannedSession", $max_session_id);
+        $this->saveData("LastScannedSession", \DbEntry\Session::fromLastCompleted()->id());
     }
 
 

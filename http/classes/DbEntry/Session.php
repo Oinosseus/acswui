@@ -30,6 +30,9 @@ class Session extends DbEntry {
     private $Results = NULL;
     private $DynamicPositions = NULL;
     private $Grip = NULL;
+//     private static $LatestSession = NULL;
+    private static $LastCompletedSession = NULL;
+    private static $LastFinishedSession = NULL;
 
 
     /**
@@ -96,6 +99,32 @@ class Session extends DbEntry {
 
 
     /**
+     * Tries to find A certain Session
+     * @param $max_id When not NULL, the Session with the Id lower or equal than this is returned
+     * @return The requested Session (can be NULL)
+     */
+    public static function find(int $max_id = NULL) {
+        $session = NULL;
+
+        // find by max ID
+        if ($max_id !== NULL) {
+
+            $query = "SELECT Id FROM Sessions WHERE Id <= $max_id ORDER BY Id DESC LIMIT 1;";
+            $res = \Core\Database::fetchRaw($query);
+            if (count($res) > 0) {
+                $session = Session::fromId($res[0]['Id']);
+            }
+
+        // no search specified
+        } else {
+            \Core\Logg::warning("No find criterias specified.");
+        }
+
+        return $session;
+    }
+
+
+    /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.
      * When $id is NULL or 0, NULL is returned
@@ -105,6 +134,110 @@ class Session extends DbEntry {
         if ($id === NULL or $id == 0) return NULL;
         return parent::getCachedObject("Sessions", "Session", $id);
     }
+
+
+    /**
+     * The Session that is safely completed.
+     * Which means there can be a newer Session also being finished,
+     * but then also a newer Session exist which is currently running.
+     *
+     * Completed means no older Session which is active (running) exists.
+     *
+     * To prevent race conditions the last completed session must be older than one minutie.
+     *
+     * @return The Session object of the last completed Session (can be NULL)
+     */
+    public static function fromLastCompleted() {
+        if (Session::$LastCompletedSession === NULL) {
+
+            // find lowest Session-Id of any current running slot
+            $lowest_online_session_id = NULL;
+            for ($id = 1; $id <= \Core\Config::ServerSlotAmount; ++$id) {
+                $slot = \Core\ServerSlot::fromId($id);
+                if ($slot->online()) {
+                    $session = $slot->currentSession();
+                    if ($session) {
+                        if ($lowest_online_session_id === NULL || $session->id() < $lowest_online_session_id)
+                            $lowest_online_session_id = $session->id();
+                    }
+                }
+            }
+
+            // find Session-Id that is lower than current running session
+            $minutes_ago = \Core\Database::timestamp((new \DateTime("now"))->sub(new \DateInterval("PT1M")));
+            $query = "SELECT Id FROM Sessions WHERE Timestamp <= '$minutes_ago'";
+            if ($lowest_online_session_id !== NULL)
+                $query .= " AND Id < $lowest_online_session_id";
+            $query .= "  ORDER BY Id DESC LIMIT 1;";
+            $res = \Core\Database::fetchRaw($query);
+            if (count($res) > 0) {
+                $session = \DbEntry\Session::fromId($res[0]['Id']);
+                Session::$LastCompletedSession = $session;
+            }
+        }
+
+        return Session::$LastCompletedSession;
+    }
+
+
+    /**
+     * The latest Session that is completed (not more online).
+     * To prevent race conditions the last completed session must be older than one minutie.
+     *
+     * @warning There can exist older Sessions which still running.
+     * See fromLastCompleted() alo.
+     *
+     * @return The Session object of the newest offline Session (can be NULL)
+     */
+    public static function fromLastFinished() {
+
+        if (Session::$LastFinishedSession === NULL) {
+
+            // get list of session which are currently online
+            $online_sessions = array();
+            for ($i=1; $i <= \Core\Config::ServerSlotAmount; ++$i) {
+                $slot = \Core\ServerSlot::fromId($i);
+                $session = $slot->currentSession();
+                if ($session !== NULL) {
+                    $online_sessions[] = $session->id();
+                }
+            }
+
+            // get latest Session Id as starting point
+            $minutes_ago = \Core\Database::timestamp((new \DateTime("now"))->sub(new \DateInterval("PT1M")));
+            $query = "SELECT Id FROM Sessions WHERE Timestamp <= '$minutes_ago'";
+            $res = \Core\Database::fetchRaw($query);
+            if (count($res) > 0) {
+
+                // recursivly find the highest session which is offline
+                $session = Session::fromId($res[0]['Id']);
+                while ($session !== NULL && in_array($session->id(), $online_sessions)) {
+                    $session = Session::find($session->id() - 1);
+                }
+                Session::$LastFinishedSession = $session;
+            }
+        }
+
+        return Session::$LastFinishedSession;
+    }
+
+
+
+//     /**
+//      * @return The newest Session (can be NULL)
+//      */
+//     public static function fromLatest() {
+//         if (Session::$LatestSession === NULL) {
+//             $query = "SELECT Id FROM Sessions ORDER BY Id DESC LIMIT 1;";
+//             $res = \Core\Database::fetchRaw($query);
+//             if (count($res) > 0) {
+//                 Session::$LatestSession = Session::fromId($res[0]['Id']);
+//             }
+//         }
+//
+//         return Session::$LatestSession;
+//     }
+
 
 
     //! @return A two-element array with minimum and maximum grip at the session

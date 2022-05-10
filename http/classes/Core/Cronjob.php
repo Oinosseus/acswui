@@ -30,7 +30,6 @@ abstract class Cronjob {
     public const StatusBlocked = 4;
 
     // static caches
-    private static $LastCompletedSession = NULL;
     private static $LastCompletedLap = NULL;
 
 
@@ -40,7 +39,8 @@ abstract class Cronjob {
     private $ExecutionIntervalMonthly = NULL;
     private $Status = NULL;
     private $LastExecutionTimestamp = NULL;
-    private $LastExecutedSession = 0;
+    private $LastExecutedCompletedSession = 0;
+    private $LastExecutedFinishedSession = 0;
     private $LastExecutedLap = 0;
     private $LastExecutionDuration = 0;
     private $StatusFilePath = NULL;
@@ -91,7 +91,8 @@ abstract class Cronjob {
         if ($data && array_key_exists("Status", $data)) {
             $data_status = $data['Status'];
             if (array_key_exists("LastExecutedLap", $data_status)) $this->LastExecutedLap = $data_status['LastExecutedLap'];
-            if (array_key_exists("LastExecutedSession", $data_status)) $this->LastExecutedSession = $data_status['LastExecutedSession'];
+            if (array_key_exists("LastExecutedCompletedSession", $data_status)) $this->LastExecutedCompletedSession = $data_status['LastExecutedCompletedSession'];
+            if (array_key_exists("LastExecutedFinishedSession", $data_status)) $this->LastExecutedFinishedSession = $data_status['LastExecutedFinishedSession'];
             if (array_key_exists("LastExecutedTimestamp", $data_status)) $this->LastExecutionTimestamp = new \DateTime($data_status['LastExecutedTimestamp']);
         }
         if ($data && array_key_exists("Statistics", $data)) {
@@ -117,7 +118,8 @@ abstract class Cronjob {
                 $data = array();
                 $data['Status'] = array();
                 $data['Status']['LastExecutedLap'] = Cronjob::lastCompletedLap();
-                $data['Status']['LastExecutedSession'] = Cronjob::lastCompletedSession();
+                $data['Status']['LastExecutedCompletedSession'] = \DbEntry\Session::fromLastCompleted()->id();
+                $data['Status']['LastExecutedFinishedSession'] = \DbEntry\Session::fromLastFinished()->id();
                 $data['Status']['LastExecutedTimestamp'] = $this->LastExecutionTimestamp->format("c");
                 $data['Statistics'] = array();
                 $data['Statistics']['LastExecutionDuration'] = round($this->LastExecutionDuration, 3);
@@ -228,41 +230,6 @@ abstract class Cronjob {
                 else Cronjob::$LastCompletedLap = 0;
         }
         return Cronjob::$LastCompletedLap;
-    }
-
-
-    //! @return the Id of the last completed Session
-    public static function lastCompletedSession() {
-        if (Cronjob::$LastCompletedSession === NULL) {
-            Cronjob::$LastCompletedSession = 0;
-
-            // find lowest Session-Id of any current running slot
-            $lowest_online_session_id = NULL;
-            for ($id = 1; $id <= \Core\Config::ServerSlotAmount; ++$id) {
-                $slot = \Core\ServerSlot::fromId($id);
-                if ($slot->online()) {
-                    $session = $slot->currentSession();
-                    if ($session) {
-                        if ($lowest_online_session_id === NULL || $session->id() < $lowest_online_session_id)
-                            $lowest_online_session_id = $session->id();
-                    }
-                }
-            }
-
-            // find Session-Id that is lower than current running session
-            $minutes_ago = \Core\Database::timestamp((new \DateTime("now"))->sub(new \DateInterval("PT5M")));
-            $query = "SELECT Id FROM Sessions WHERE Timestamp <= '$minutes_ago'";
-            if ($lowest_online_session_id !== NULL)
-                $query .= " AND Id < $lowest_online_session_id";
-            $query .= "  ORDER BY Id DESC LIMIT 1;";
-            $res = \Core\Database::fetchRaw($query);
-            if (count($res) > 0) {
-                $session = \DbEntry\Session::fromId($res[0]['Id']);
-                Cronjob::$LastCompletedSession = $session->id();
-            }
-        }
-
-        return Cronjob::$LastCompletedSession;
     }
 
 
@@ -397,7 +364,10 @@ abstract class Cronjob {
 
             // ready, when any new session is available
             if ($this->ExecutionInterval & Cronjob::IntervalSession) {
-                if (Cronjob::lastCompletedSession() > $this->LastExecutedSession) {
+                if (\DbEntry\Session::fromLastCompleted()->id() > $this->LastExecutedCompletedSession) {
+                    $this->Status = Cronjob::StatusReady;
+                }
+                if (\DbEntry\Session::fromLastFinished()->id() > $this->LastExecutedFinishedSession) {
                     $this->Status = Cronjob::StatusReady;
                 }
             }
