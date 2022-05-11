@@ -159,7 +159,7 @@ class SessionSchedule extends DbEntry {
 
         // retrieve from user ranking
         foreach (\DbEntry\DriverRanking::listLatest() as $drvrnk) {
-            $group = $drvrnk->rankingGroup();
+            $group = $drvrnk->group();
             $ballast = $this->getParamValue("BopDrvRnkGrpBallast$group");
             $map[$drvrnk->user()->steam64GUID()] = $ballast;
         }
@@ -184,7 +184,7 @@ class SessionSchedule extends DbEntry {
 
         // retrieve from user ranking
         foreach (\DbEntry\DriverRanking::listLatest() as $drvrnk) {
-            $group = $drvrnk->rankingGroup();
+            $group = $drvrnk->group();
             $restrictor = $this->getParamValue("BopDrvRnkGrpRestrictor$group");
             $map[$drvrnk->user()->steam64GUID()] = $restrictor;
         }
