@@ -21,10 +21,11 @@ class CronDriverRankingHistory extends \Core\Cronjob {
 
             // check if to store into db
             $do_store = FALSE;
-            if ($rnk_old === NULL ||                            // no previous ranking exists
-                $rnk_old->points() != $rnk_cur->points() ||     // points are different
-                $rnk_old->group() != $rnk_cur->groupNext() ||   // new group will be assigned
-                $rnk_old->group() != $rnk_cur->group()          // somehow current group is wrong
+            if ($rnk_old === NULL ||                                    // no previous ranking exists
+                ($rnk_old->points() - 0.04) < $rnk_cur->points() ||     // significant point decrease
+                ($rnk_old->points() + 0.04) > $rnk_cur->points() ||     // significant point increase
+                $rnk_old->group() != $rnk_cur->groupNext() ||           // new group will be assigned
+                $rnk_old->group() != $rnk_cur->group()                  // somehow current group is wrong
                 ) {
 
                 // save into db
