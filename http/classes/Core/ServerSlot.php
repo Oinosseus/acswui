@@ -781,6 +781,12 @@ class ServerSlot {
         fwrite($f, "SPEED_LIMIT_PENALTY_1 = " . $ppc->child("RpPsSpeedingSpeedLimit1")->value() . "\n");
         fwrite($f, "PENALTY_TYPE_2 = " . $ppc->child("RpPsSpeedingPenType2")->value() . "\n");
         fwrite($f, "SPEED_LIMIT_PENALTY_2 = " . $ppc->child("RpPsSpeedingSpeedLimit2")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_3 = " . $ppc->child("RpPsSpeedingPenType3")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_3 = " . $ppc->child("RpPsSpeedingSpeedLimit3")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_4 = " . $ppc->child("RpPsSpeedingPenType4")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_4 = " . $ppc->child("RpPsSpeedingSpeedLimit4")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_5 = " . $ppc->child("RpPsSpeedingPenType5")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_5 = 99999\n");
 
         // section Crossing
         fwrite($f, "\n[Crossing]\n");

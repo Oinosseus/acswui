@@ -548,23 +548,36 @@ class ServerPreset extends DbEntry {
                 // Speeding
                 $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsSpeeding", _("Speeding"), "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpPsGeneralSpeeding", _("Speeding"), "Set to true to enable pit lane speeding penalties.", "", TRUE);
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingPitLaneSpeed", _("Pit Lane Speed"), _("The speed, in kph, above which you will be deemed to be speeding in pits. Make this higher to give more leniency on pit lane entry."), "km/h", 82);
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingPitLaneSpeed", _("Speed Limit 1"), _("The speed, in kph, above which you will be deemed to be speeding in pits. Make this higher to give more leniency on pit lane entry."), "km/h", 82);
                 $p->setMin(0);
                 $p->setMax(299);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType0", _("Penalty Type 0"), _("Penalty type for speeding"), TRUE);
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit0", _("Speed Limit 0"), "", "km/h", 100);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType0", _("Penalty Type 1"), _("Penalty type for speeding"), TRUE);
+                $p->setValue("dt");
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit0", _("Speed Limit 2"), "", "km/h", 92);
                 $p->setMin(0);
                 $p->setMax(199);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType1", _("Penalty Type 1"), _("Penalty type for speeding"), TRUE);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType1", _("Penalty Type 2"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("sg10");
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit1", _("Speed Limit 1"), "", "km/h", 200);
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit1", _("Speed Limit 3"), "", "km/h", 102);
                 $p->setMin(0);
                 $p->setMax(599);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType2", _("Penalty Type 2"), _("Penalty type for speeding"), TRUE);
-                $p->setValue("dsq");
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit2", _("Speed Limit 2"), "", "km/h", 999);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType2", _("Penalty Type 3"), _("Penalty type for speeding"), TRUE);
+                $p->setValue("sg20");
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit2", _("Speed Limit 4"), "", "km/h", 112);
+                $p->setMin(0);
+                $p->setMax(599);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType3", _("Penalty Type 4"), _("Penalty type for speeding"), TRUE);
+                $p->setValue("sg30");
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit3", _("Speed Limit 5"), "", "km/h", 152);
                 $p->setMin(0);
                 $p->setMax(999);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType4", _("Penalty Type 5"), _("Penalty type for speeding"), TRUE);
+                $p->setValue("dsq");
 
                 // Crossing
                 $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsCrossing", _("Crossing"), "");
