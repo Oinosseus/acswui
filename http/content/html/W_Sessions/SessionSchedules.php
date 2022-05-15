@@ -152,6 +152,10 @@ class SessionSchedules extends \core\HtmlContent {
     private function showOverview() {
         $html = "";
 
+        // iCalendar link
+        $url = "./ACswuiCalendar.php?UserId=" . \Core\UserManager::currentUser()->id();
+        $html .= "<a href=\"$url\">" . _("iCalendar Link") . "</a><br>";
+
         $html .= "<div id=\"SessionScheduleOverview\">";
         $a_week_ago = (new \DateTime("now"))->sub(new \DateInterval("P7D"));
         foreach (\DbEntry\SessionSchedule::listSchedules($a_week_ago) as $ss) {

@@ -388,6 +388,7 @@ main.DriverRanking .TrendFalling {
 main.SessionSchedules div#SessionScheduleOverview {
     display: inline-grid;
     grid-template-columns: repeat(5, auto);
+    margin-top: 2em;
 }
 
 main.SessionSchedules div#SessionScheduleOverview div {
