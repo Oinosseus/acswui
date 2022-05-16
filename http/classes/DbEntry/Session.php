@@ -205,7 +205,7 @@ class Session extends DbEntry {
 
             // get latest Session Id as starting point
             $minutes_ago = \Core\Database::timestamp((new \DateTime("now"))->sub(new \DateInterval("PT1M")));
-            $query = "SELECT Id FROM Sessions WHERE Timestamp <= '$minutes_ago'";
+            $query = "SELECT Id FROM Sessions WHERE Timestamp <= '$minutes_ago' ORDER BY Id DESC LIMIT 1;";
             $res = \Core\Database::fetchRaw($query);
             if (count($res) > 0) {
 
