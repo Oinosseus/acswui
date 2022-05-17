@@ -106,3 +106,25 @@ div.HtmlContentRadio label {
 div.HtmlContentRadio input[type="radio"]:checked ~ label {
     background-color: var(--color-red-accent);
 }
+
+
+
+/* -----------------------------------------------------------------------------
+ *                            Loading Circle
+ * -----------------------------------------------------------------------------
+ *
+ * Intended to be used when loading content with javascript
+ */
+.LoadingInProgress {
+  border: 1em solid var(--color-red-accent);
+  border-radius: 50%;
+  border-top: 1em solid var(--color-bg-elements);
+  width: 1em;
+  height: 1em;
+  animation: LoadingInProgressSpinner 1s linear infinite;
+}
+
+@keyframes LoadingInProgressSpinner {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

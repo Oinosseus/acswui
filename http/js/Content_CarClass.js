@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // ----------------------------------------------------------------------------
 function CarClassRecordsDraw(response) {
     var e = document.getElementById("CarClassRecordsList");
+    loadingInProgress(e, false);
     for (let html of JSON.parse(response)) {
         e.insertAdjacentHTML("beforeend", html);
     }
@@ -73,6 +74,7 @@ function CarClassRecordsDraw(response) {
 
 function CarClassLoadRecords(button) {
     button.style.visibility = "hidden";
+    loadingInProgress("CarClassRecordsList", true);
     var car_class_id = button.getAttribute("carClassId");
     var request_url = "index.php?JsonContent=CarClassRecords&CarClassId=" + car_class_id;
     console.log(request_url);

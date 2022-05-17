@@ -1,5 +1,6 @@
 function TrackRecordsDraw(response) {
     var e = document.getElementById("TrackRecordsList");
+    loadingInProgress(e, false);
     for (let html of JSON.parse(response)) {
         e.insertAdjacentHTML("beforeend", html);
     }
@@ -8,6 +9,7 @@ function TrackRecordsDraw(response) {
 
 function TrackLoadRecords(button) {
     button.style.visibility = "hidden";
+    loadingInProgress("TrackRecordsList", true);
     var track_id = button.getAttribute("trackId");
     var request_url = "index.php?JsonContent=TrackRecords&TrackId=" + track_id;
     console.log(request_url);

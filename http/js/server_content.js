@@ -1,5 +1,6 @@
 function DrawPopulars(div_id, response) {
     var e = document.getElementById(div_id);
+    loadingInProgress(e, false);
     for (let html of JSON.parse(response)) {
         e.insertAdjacentHTML("beforeend", html);
     }
@@ -8,6 +9,7 @@ function DrawPopulars(div_id, response) {
 
 function LoadPopularTracks(button) {
     button.style.visibility = "hidden";
+    loadingInProgress("PopularTracks", true);
     var request_url = "index.php?JsonContent=ListPopularTracks";
     console.log(request_url);
     var xobj = new XMLHttpRequest();
@@ -25,6 +27,7 @@ function LoadPopularTracks(button) {
 
 function LoadPopularCarClasses(button) {
     button.style.visibility = "hidden";
+    loadingInProgress("PopularCarClasses", true);
     var request_url = "index.php?JsonContent=ListPopularCarClasses";
     console.log(request_url);
     var xobj = new XMLHttpRequest();
