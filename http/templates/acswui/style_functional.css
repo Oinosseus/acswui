@@ -114,6 +114,7 @@ div.HtmlContentRadio input[type="radio"]:checked ~ label {
  * -----------------------------------------------------------------------------
  *
  * Intended to be used when loading content with javascript
+ * Inspired/copied/stolen from https://blog.hubspot.com/website/css-loading-animation
  */
 .LoadingInProgress {
   border: 1em solid var(--color-red-accent);
