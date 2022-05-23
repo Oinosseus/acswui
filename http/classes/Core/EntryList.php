@@ -67,12 +67,20 @@ class EntryList {
      * @param $cc \DbEntry\CarClass to retrieve ballast/restrictor from
      */
     public function  applyCarClass(\DbEntry\CarClass $cc) {
+
+        // list all cars within class
+        $car_ids = array();
+        foreach ($cc->cars() as $car) $car_ids[] = $car->id();
+
+        // apply to all cars within class
         foreach ($this->ListItems as $eli) {
             $car = $eli->carSkin()->car();
-            $ballast = $cc->ballast($car);
-            $eli->setBallast($ballast);
-            $restrictor = $cc->restrictor($car);
-            $eli->setRestrictor($restrictor);
+            if (in_array($car->id(), $car_ids)) {
+                $ballast = $cc->ballast($car);
+                $eli->setBallast($ballast);
+                $restrictor = $cc->restrictor($car);
+                $eli->setRestrictor($restrictor);
+            }
         }
     }
 
