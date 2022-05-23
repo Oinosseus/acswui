@@ -2,7 +2,7 @@
 
 namespace Cronjobs;
 
-class ReadSessionResults extends \Core\Cronjob {
+class Cron1ReadSessionResults extends \Core\Cronjob {
 
     public function __construct() {
         parent::__construct(\Core\Cronjob::IntervalSession);

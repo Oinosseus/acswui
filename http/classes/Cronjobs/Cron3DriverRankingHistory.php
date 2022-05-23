@@ -6,7 +6,7 @@ namespace Cronjobs;
 /**
  * This cronjob stored the latest driver ranking into the database
  */
-class CronDriverRankingHistory extends \Core\Cronjob {
+class Cron3DriverRankingHistory extends \Core\Cronjob {
 
     public function __construct() {
         parent::__construct(\Core\Cronjob::IntervalMonthly,

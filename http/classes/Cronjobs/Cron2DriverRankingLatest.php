@@ -2,7 +2,7 @@
 
 namespace Cronjobs;
 
-class CronDriverRankingLatest extends \Core\Cronjob {
+class Cron2DriverRankingLatest extends \Core\Cronjob {
 
     public function __construct() {
         parent::__construct(\Core\Cronjob::IntervalSession);

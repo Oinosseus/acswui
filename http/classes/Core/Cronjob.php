@@ -337,19 +337,35 @@ abstract class Cronjob {
                 $day_name3 = $now->format("D");
                 $even_odd = (($now->format("W") % 2) == 0) ? "Even" : "Odd";
 
-                // check specific day
-                if (in_array($day_in_month, $month_keys)) {
-                    $this->Status = Cronjob::StatusReady;
+                // check if today is the requested day
+                $is_requested_day = FALSE;
+                if (in_array($day_in_month, $month_keys)) {  // check specific day
+                    $is_requested_day = TRUE;
+                }
+                if (in_array($count_weekdays_in_month . $day_name3, $month_keys)) {  // check x-th day in month (eg 4Mon, 3Tue)
+                    $is_requested_day = TRUE;
+                }
+                if (in_array($day_name3 . $even_odd, $month_keys)) {  // check bi-weekly (eg. FriEven, SunOdd)
+                    $is_requested_day = TRUE;
                 }
 
-                // check x-th day in month (eg 4Mon, 3Tue)
-                if (in_array($count_weekdays_in_month . $day_name3, $month_keys)) {
-                    $this->Status = Cronjob::StatusReady;
-                }
+                // determine ideal start time for daily cronjobs
+                if ($is_requested_day) {
+                    $ideal_time = new \DateTime("now");
+                    $ideal_time->setTime(0, 0);
+                    $t = explode(":", \Core\ACswui::getPAram("CronjobDailyExecutionTime"));
+                    $ideal_time->add(new \DateInterval(sprintf("PT%sH%sM", $t[0], $t[1])));
 
-                // check bi-weekly (eg. FriEven, SunOdd)
-                if (in_array($day_name3 . $even_odd, $month_keys)) {
-                    $this->Status = Cronjob::StatusReady;
+                    // get last execution time
+                    $last_time = $this->LastExecutionTimestamp;
+
+                    // get current time
+                    $now_time = new \DateTime("now");
+
+                    // check if ready
+                    if ($now_time > $ideal_time) {
+                        if ($last_time < $ideal_time) $this->Status = Cronjob::StatusReady;
+                    }
                 }
             }
 

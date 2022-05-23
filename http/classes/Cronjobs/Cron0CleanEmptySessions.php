@@ -2,7 +2,7 @@
 
 namespace Cronjobs;
 
-class CleanEmptySessions extends \Core\Cronjob {
+class Cron0CleanEmptySessions extends \Core\Cronjob {
 
     public function __construct() {
         parent::__construct(\Core\Cronjob::IntervalSession);
