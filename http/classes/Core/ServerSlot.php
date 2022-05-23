@@ -338,7 +338,7 @@ class ServerSlot {
             $el->fillSkins($car_class, $track);
         }
         $el->writeToFile(\Core\Config::AbsPathData . "/acserver/cfg/entry_list_" . $this->id() . ".ini");
-        $this->writeAcServerCfg($track, $car_class, $preset, $map_ballast);
+        $this->writeAcServerCfg($track, $car_class, $preset, $el, $map_ballast);
 
         // lunch server with plugins
         $ac_server = \Core\Config::AbsPathData . "/acserver/acServer$id";
@@ -470,11 +470,13 @@ class ServerSlot {
      * @param $track The Track object for the server run
      * @param $car_class The CarClass of the server run
      * @param $preset The ServerPreset for the server run
+     * @param $el An EntryList object to extract cars from
      * @param $map_ballasts An associative array with Steam64GUID->Ballast and one key with 'OTHER'->Ballst
      */
     private function writeAcServerCfg(\DbEntry\Track $track,
                                       \DbEntry\CarClass $car_class,
                                       \DbEntry\ServerPreset $preset,
+                                      \Core\EntryList $el = NULL,
                                       array $map_ballasts = []) {
 
         // determine maximum ballast
@@ -556,6 +558,10 @@ class ServerSlot {
         //! @todo Extract from CarClass and Track
         $cars = array();
         foreach ($car_class->cars() as $car) $cars[] = $car->model();
+        foreach ($el->entries() as $e) {
+            $model = $e->carSkin()->car()->model();
+            if (!in_array($model, $cars)) $cars[] = $model;
+        }
         fwrite($f, "CARS=" . implode(";", $cars) . "\n");
         fwrite($f, "MAX_BALLAST_KG=$max_ballast\n");
         fwrite($f, "TRACK=" . $track->location()->track() . "\n");
@@ -692,7 +698,8 @@ class ServerSlot {
 
         // section No_Penalty
         fwrite($f, "\n[No_Penalty]\n");
-        fwrite($f, "GUIDs = " . $ppc->child("RpAcsNpGuids")->value() . "\n");
+        $guids = trim($ppc->child("RpAcsNpGuids")->value()) . ";" . \Core\ACswui::getParam('TVCarGuids');
+        fwrite($f, "GUIDs = $guids\n");
         fwrite($f, "Cars = " . $ppc->child("RpAcsNpCars")->value() . "\n");
 
         // section Admin

@@ -16,6 +16,31 @@ class EntryList {
     private $CacheCarSkins = array();
 
     public function __construct() {
+
+        // add TVCar
+        if (\Core\ACswui::getParam('TVCarEna')) {
+
+            // get car
+            $model_name = \Core\ACswui::getParam('TVCarModel');
+            $car = \DbEntry\Car::fromModel($model_name);
+            if ($car === NULL) {
+                \Core\Log::warning("Model '$model_name' for TV Car not found!");
+            } else {
+
+                // get skin
+                $skin_name = \Core\ACswui::getParam('TVCarSkin');
+                $carskin = \DbEntry\CarSkin::fromSkin($car, $skin_name);
+                if ($carskin === NULL) {
+                    \Core\Log::warning("Skin '$skin_name' for TV Car model '$model_name' not found!");
+                } else {
+
+                    // add entry
+                    $eli = new EntryListItem($carskin, NULL, 0, 0);
+                    $eli->forceGUIDs(\Core\ACswui::getParam('TVCarGuids'));
+                    $this->add($eli);
+                }
+            }
+        }
     }
 
 
@@ -67,6 +92,12 @@ class EntryList {
     //! @return The amount of EntryListItems
     public function count() {
         return count($this->ListItems);
+    }
+
+
+    //! @return An array of EntryListItem objects
+    public function entries() {
+        return $this->ListItems;
     }
 
 
