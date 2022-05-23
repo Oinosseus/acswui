@@ -249,7 +249,7 @@ class DriverRanking extends DbEntry implements \JsonSerializable {
     }
 
 
-    //! @return The increase of points since the last group assignment
+    //! @return The increase of points since last pushHistroy()
     public function pointsIncrease() {
         if ($this->PointsIncrease === NULL) {
             $this->PointsIncrease = $this->points();
@@ -280,7 +280,7 @@ class DriverRanking extends DbEntry implements \JsonSerializable {
                     $columns["$grp" . "_" . $key] = $this->RankingPoints[$grp][$key];
                 }
             }
-            $columns['RankingGroup'] = $this->groupNext();
+            $columns['RankingGroup'] = $this->group();
             $this->storeColumns($columns);
         }
     }

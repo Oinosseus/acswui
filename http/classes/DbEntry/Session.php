@@ -182,7 +182,7 @@ class Session extends DbEntry {
 
     /**
      * The latest Session that is completed (not more online).
-     * To prevent race conditions the last completed session must be older than one minutie.
+     * To prevent race conditions the last completed session must be older than one minute.
      *
      * @warning There can exist older Sessions which still running.
      * See fromLastCompleted() alo.
