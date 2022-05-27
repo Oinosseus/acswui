@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-14 22:03+0200\n"
-"PO-Revision-Date: 2022-05-14 22:07+0200\n"
+"POT-Creation-Date: 2022-05-28 01:26+0200\n"
+"PO-Revision-Date: 2022-05-28 01:32+0200\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 22.04.0\n"
+"X-Generator: Lokalize 22.04.1\n"
 
 #: http/classes/Core/ACswui.php:33
 msgid "ACswui Settings"
@@ -107,146 +107,195 @@ msgstr ""
 "Benutzer:innen aktive Fahrer sein um als Community Mitglied zu zählen."
 
 #: http/classes/Core/ACswui.php:65
+msgid "TV Car"
+msgstr "TV Fahrzeug"
+
+#: http/classes/Core/ACswui.php:65
+msgid "TV Car Settings"
+msgstr "TV Fahrzeugeinstellungen"
+
+#: http/classes/Core/ACswui.php:67
+msgid "Reserve Slot"
+msgstr "Slot Reservieren"
+
+#: http/classes/Core/ACswui.php:67
+msgid ""
+"When activated, each session will get one car slot reserved for a TV Car. "
+"Attention: This occupies one available pit of the track."
+msgstr ""
+"Wenn aktiviert wird für jede Session ein Slot für ein TV Fahrzeug reserviert. "
+"Achtung: Dadurch wird auf der Strecke eine zusätzliche Box belegt."
+
+#: http/classes/Core/ACswui.php:68 http/classes/DbEntry/ServerPreset.php:431
+#: http/classes/DbEntry/ServerPreset.php:436
+msgid "GUIDs"
+msgstr "GUIDs"
+
+#: http/classes/Core/ACswui.php:68
+msgid ""
+"List of the Steam GUIDs (seperated by a semicolon) that get presevred for "
+"the TV Car slot"
+msgstr ""
+"Liste von Steam GUIDs (getrennt durch Semikolon), die für den TV Fahrzeug"
+" Slot reserviert werden sollen."
+
+#: http/classes/Core/ACswui.php:69
+msgid "Model"
+msgstr "Fahrzeugmodell"
+
+#: http/classes/Core/ACswui.php:69
+msgid "The name of the subfolder under content/cars/"
+msgstr "Der Name des Unterordners unter content/cars/"
+
+#: http/classes/Core/ACswui.php:70
+msgid "Skin"
+msgstr "Lackierung"
+
+#: http/classes/Core/ACswui.php:70
+msgid "The name of the subfolder under content/cars/*model*/skins/"
+msgstr "Der Name des Unterordners unter content/cars/*model*/skins/"
+
+#: http/classes/Core/ACswui.php:75
 msgid "Discord"
 msgstr "Discord"
 
-#: http/classes/Core/ACswui.php:65
+#: http/classes/Core/ACswui.php:75
 msgid "Discord Integration"
 msgstr "Discord Integration"
 
-#: http/classes/Core/ACswui.php:68
+#: http/classes/Core/ACswui.php:78
 msgid "Manual Start"
 msgstr "Manueller Start"
 
-#: http/classes/Core/ACswui.php:68
+#: http/classes/Core/ACswui.php:78
 msgid "Announce when manually starting a session"
 msgstr "Ankündigung bei manuellen Start einer Session"
 
-#: http/classes/Core/ACswui.php:69 http/classes/Core/ACswui.php:74
+#: http/classes/Core/ACswui.php:79 http/classes/Core/ACswui.php:84
 msgid "Webhook URL"
 msgstr "Webhook URL"
 
-#: http/classes/Core/ACswui.php:69 http/classes/Core/ACswui.php:74
+#: http/classes/Core/ACswui.php:79 http/classes/Core/ACswui.php:84
 msgid ""
 "The Webhook URL to write a message to. Leave Empty to not send messages."
 msgstr ""
 "Die Webhook URL, an die Nachrichten geschrieben werden sollen. Freilassen um "
 "keine Nachrichten zu senden."
 
-#: http/classes/Core/ACswui.php:70 http/classes/Core/ACswui.php:75
+#: http/classes/Core/ACswui.php:80 http/classes/Core/ACswui.php:85
 msgid "Mention Role-Id"
 msgstr "Rollen-Id Erwähnen"
 
-#: http/classes/Core/ACswui.php:70 http/classes/Core/ACswui.php:75
+#: http/classes/Core/ACswui.php:80 http/classes/Core/ACswui.php:85
 msgid ""
 "The ID of the Role that shall be mentioned (leave empty to not mention roles"
 msgstr ""
 "Die ID der Rolle, die bei einer Nachricht erwähnt werden soll (frei lassen "
 "um keine Rollen zu erwähnen)."
 
-#: http/classes/Core/ACswui.php:73
+#: http/classes/Core/ACswui.php:83
 msgid "Schedule Start"
 msgstr "Zeitplan Start"
 
-#: http/classes/Core/ACswui.php:73
+#: http/classes/Core/ACswui.php:83
 msgid "Announce start of a scheduled session"
 msgstr "Start einer terminierten Session Bekanntmachen"
 
-#: http/classes/Core/ACswui.php:82
+#: http/classes/Core/ACswui.php:92
 #: http/content/html/Z_About/AboutDriverRanking.php:8
 #: http/content/html/B_User/DriverRanking.php:8
 msgid "Driver Ranking"
 msgstr "Fahrerwertung"
 
-#: http/classes/Core/ACswui.php:82
+#: http/classes/Core/ACswui.php:92
 msgid "Settings for driver ranking"
 msgstr "Einstellungen für die Fahrerwertung"
 
-#: http/classes/Core/ACswui.php:83
+#: http/classes/Core/ACswui.php:93
 #: http/content/html/Z_About/AboutDriverRanking.php:92
 #: http/content/html/Z_About/AboutDriverRanking.php:101
 msgid "Ranking Period"
 msgstr "Wertungszeitraum"
 
-#: http/classes/Core/ACswui.php:83
+#: http/classes/Core/ACswui.php:93
 msgid ""
 "Amount of days in the past over which the driver ranking shall be calculated"
 msgstr ""
 "Anzahl der vergangen Tage, in denen Sessions in die Berechnung einbezogen "
 "werden."
 
-#: http/classes/Core/ACswui.php:89
+#: http/classes/Core/ACswui.php:99
 #: http/content/html/Z_About/AboutDriverRanking.php:31
 #: http/content/html/B_User/DriverRanking.php:26
-#: http/content/html/W_Sessions/SessionOverview.php:185
+#: http/content/html/W_Sessions/SessionOverview.php:189
 msgid "Ranking Points"
 msgstr "Wertungspunkte"
 
-#: http/classes/Core/ACswui.php:89
+#: http/classes/Core/ACswui.php:99
 msgid "Adjusting ranking points"
 msgstr "Wertungspunkte anpassen"
 
-#: http/classes/Core/ACswui.php:92
+#: http/classes/Core/ACswui.php:102
 #: http/content/html/Z_About/AboutDriverRanking.php:38
 #: http/content/html/B_User/DriverRanking.php:43
 msgid "Experience"
 msgstr "Erfahrung"
 
-#: http/classes/Core/ACswui.php:92
+#: http/classes/Core/ACswui.php:102
 msgid "Drivers earn experience when completing laps"
 msgstr "Fahrer:innen gewinnen an Erfahrung durch Absolvieren von Runden."
 
-#: http/classes/Core/ACswui.php:93 http/classes/DbEntry/ServerPreset.php:261
+#: http/classes/Core/ACswui.php:103 http/classes/DbEntry/ServerPreset.php:261
 #: http/content/html/Z_About/AboutDriverRanking.php:46
-#: http/content/html/W_Sessions/SessionOverview.php:286
+#: http/content/html/W_Sessions/SessionOverview.php:290
 msgid "Practice"
 msgstr "Training"
 
-#: http/classes/Core/ACswui.php:93
+#: http/classes/Core/ACswui.php:103
 msgid "Earned experience points by driven distance in practice"
 msgstr "Erfahrungspunkte durch Trainingsrunden"
 
-#: http/classes/Core/ACswui.php:96 http/classes/Core/ACswui.php:111
+#: http/classes/Core/ACswui.php:106 http/classes/Core/ACswui.php:121
 #: http/classes/DbEntry/ServerPreset.php:272
 #: http/classes/DbEntry/ServerPreset.php:628
 #: http/content/html/Z_About/AboutDriverRanking.php:47
 #: http/content/html/Z_About/AboutDriverRanking.php:67
-#: http/content/html/W_Sessions/SessionOverview.php:290
+#: http/content/html/W_Sessions/SessionOverview.php:294
 msgid "Qualifying"
 msgstr "Qualifikation"
 
-#: http/classes/Core/ACswui.php:96
+#: http/classes/Core/ACswui.php:106
 msgid "Earned experience points by driven distance in qualifying"
 msgstr "Erfahrung von gefahrener Qualifikationsdistanz"
 
-#: http/classes/Core/ACswui.php:99 http/classes/Core/ACswui.php:114
+#: http/classes/Core/ACswui.php:109 http/classes/Core/ACswui.php:124
 #: http/classes/DbEntry/ServerPreset.php:286
 #: http/classes/DbEntry/ServerPreset.php:631
 #: http/content/html/Z_About/AboutDriverRanking.php:48
 #: http/content/html/Z_About/AboutDriverRanking.php:68
-#: http/content/html/W_Sessions/SessionOverview.php:294
+#: http/content/html/W_Sessions/SessionOverview.php:298
 msgid "Race"
 msgstr "Rennen"
 
-#: http/classes/Core/ACswui.php:99
+#: http/classes/Core/ACswui.php:109
 msgid "Earned experience points by driven distance in races"
 msgstr "Gewonne Erfahrung durch Rennrunden"
 
-#: http/classes/Core/ACswui.php:104
+#: http/classes/Core/ACswui.php:114
 #: http/content/html/B_User/DriverRanking.php:44
 msgid "Success"
 msgstr "Erfolg"
 
-#: http/classes/Core/ACswui.php:104
+#: http/classes/Core/ACswui.php:114
 msgid "Settings how drivers earn points for their success"
 msgstr "Einstellungen, wie Fahrer:innen Erfolgspunkte erlangen."
 
-#: http/classes/Core/ACswui.php:105
+#: http/classes/Core/ACswui.php:115
 #: http/content/html/Z_About/AboutDriverRanking.php:65
 msgid "Best Time"
 msgstr "Bestzeit"
 
-#: http/classes/Core/ACswui.php:105
+#: http/classes/Core/ACswui.php:115
 msgid ""
 "Points for best times per track and car class (per leading position prior to "
 "another driver)"
@@ -254,16 +303,16 @@ msgstr ""
 "Erfogspunkte für absolute Bestzeiten pro Strecke, pro Fahrzeugklasse(Führend "
 "vor anderen Fahrer:innen)."
 
-#: http/classes/Core/ACswui.php:108
+#: http/classes/Core/ACswui.php:118
 #: http/content/html/Z_About/AboutDriverRanking.php:66
 msgid "Race Time"
 msgstr "Rennzeit"
 
-#: http/classes/Core/ACswui.php:108
+#: http/classes/Core/ACswui.php:118
 msgid "Points for fastest lap in a race"
 msgstr "Punkte für schnellste Runde im Rennen."
 
-#: http/classes/Core/ACswui.php:111
+#: http/classes/Core/ACswui.php:121
 msgid ""
 "Points for positions in qualifying sessions (per leading position prior to "
 "another driver)"
@@ -271,63 +320,63 @@ msgstr ""
 "Punkte für Führungspositionen in der Qualifikation (führend vor anderen "
 "Fahrer:innen)."
 
-#: http/classes/Core/ACswui.php:114
+#: http/classes/Core/ACswui.php:124
 msgid ""
 "Points for positions in race sessions (per leading position prior to another "
 "driver)"
 msgstr ""
 "Punkte für Führungspositionen im Rennen (führend vor anderen Fahrer:innen)."
 
-#: http/classes/Core/ACswui.php:119
+#: http/classes/Core/ACswui.php:129
 #: http/content/html/Z_About/AboutDriverRanking.php:72
 #: http/content/html/B_User/DriverRanking.php:45
 msgid "Safety"
 msgstr "Sicherheit"
 
-#: http/classes/Core/ACswui.php:119
+#: http/classes/Core/ACswui.php:129
 msgid "Settings for penalty points that drivers get"
 msgstr "Einstellungen für Strafpunkte die Fahrer:innen bekommen"
 
-#: http/classes/Core/ACswui.php:120 http/content/json/SessionData.php:136
+#: http/classes/Core/ACswui.php:130 http/content/json/SessionData.php:127
 #: http/content/html/Z_About/AboutDriverRanking.php:81
 #: http/content/html/W_Sessions/SessionOverview.php:84
-#: http/content/html/W_Sessions/SessionOverview.php:183
+#: http/content/html/W_Sessions/SessionOverview.php:187
 msgid "Cuts"
 msgstr "Schnitte"
 
-#: http/classes/Core/ACswui.php:120
+#: http/classes/Core/ACswui.php:130
 msgid "Points for amount of cuts that were made"
 msgstr "Punkte für überschreiten der Streckenbegrenzung"
 
-#: http/classes/Core/ACswui.php:123
+#: http/classes/Core/ACswui.php:133
 msgid "Collision Environment"
 msgstr "Kollision Umgebung"
 
-#: http/classes/Core/ACswui.php:123
+#: http/classes/Core/ACswui.php:133
 msgid "Points for colliding with the environment"
 msgstr "Punkte für Kollisionen mit der Umgebung"
 
-#: http/classes/Core/ACswui.php:126
+#: http/classes/Core/ACswui.php:136
 msgid "Collision Cars"
 msgstr "Kollision Fahrzeuge"
 
-#: http/classes/Core/ACswui.php:126
+#: http/classes/Core/ACswui.php:136
 msgid "Points for colliding with other cars"
 msgstr "Punkte für Kollisionen mit anderen Fahrzeugen."
 
-#: http/classes/Core/ACswui.php:129
+#: http/classes/Core/ACswui.php:139
 msgid "Nominal Collision-Speed"
 msgstr "Nominale Kollisionsgeschwindigkeit"
 
-#: http/classes/Core/ACswui.php:129
+#: http/classes/Core/ACswui.php:139
 msgid "Nominal speed at which collision a collsion points counts nominal"
 msgstr "Geschwindigkeit, zu der Kollisionen normiert werden."
 
-#: http/classes/Core/ACswui.php:132
+#: http/classes/Core/ACswui.php:142
 msgid "Amnesty in Practice"
 msgstr "Amnestie im Training"
 
-#: http/classes/Core/ACswui.php:132
+#: http/classes/Core/ACswui.php:142
 msgid ""
 "If enabled, safety penalties are not given for practice sessions (only "
 "qualifying/race)"
@@ -335,28 +384,28 @@ msgstr ""
 "When aktiv, werden Strafpunkte nicht für reine Trainings-Sessions vergeben "
 "(Sessions ohne nachfolgende Qualifikation/Rennen)"
 
-#: http/classes/Core/ACswui.php:138
+#: http/classes/Core/ACswui.php:148
 #: http/content/html/Z_About/AboutDriverRanking.php:110
 msgid "Ranking Groups"
 msgstr "Wertungsgruppen"
 
-#: http/classes/Core/ACswui.php:138
+#: http/classes/Core/ACswui.php:148
 msgid "Adjusting groups"
 msgstr "Gruppen Anpassen"
 
-#: http/classes/Core/ACswui.php:140
+#: http/classes/Core/ACswui.php:150
 msgid "Cycle Time"
 msgstr "Rennzeit"
 
-#: http/classes/Core/ACswui.php:140
+#: http/classes/Core/ACswui.php:150
 msgid "Define how often the ranking groups shall be assigned"
 msgstr "Gibt an, wie oft die Fahrergruppen neu zugeweisen werden"
 
-#: http/classes/Core/ACswui.php:143
+#: http/classes/Core/ACswui.php:153
 msgid "Threshold Type"
 msgstr "Typ der Schwelle"
 
-#: http/classes/Core/ACswui.php:143
+#: http/classes/Core/ACswui.php:153
 msgid ""
 "points - A driver needs an amount of points to reach a group\n"
 "drivers - a fix amount of top drivers per group\n"
@@ -368,28 +417,28 @@ msgstr ""
 "Prozent - Ähnlich wie 'Punkte', nur das die Punkte prozentual vom besten "
 "Faherer aus bestimmt werden"
 
-#: http/classes/Core/ACswui.php:144
+#: http/classes/Core/ACswui.php:154
 msgid "points"
 msgstr "Punkte"
 
-#: http/classes/Core/ACswui.php:145
+#: http/classes/Core/ACswui.php:155
 msgid "drivers"
 msgstr "Fahrer"
 
-#: http/classes/Core/ACswui.php:146
+#: http/classes/Core/ACswui.php:156
 msgid "percent"
 msgstr "Prozent"
 
-#: http/classes/Core/ACswui.php:151 http/classes/Core/ACswui.php:195
+#: http/classes/Core/ACswui.php:161 http/classes/Core/ACswui.php:205
 msgid "Ranking Group"
 msgstr "Wertungsgruppe"
 
-#: http/classes/Core/ACswui.php:151 http/classes/Core/ACswui.php:155
+#: http/classes/Core/ACswui.php:161 http/classes/Core/ACswui.php:165
 msgid "Settings for a driver ranking group"
 msgstr "Einstellungen für die Fahrerwertung"
 
-#: http/classes/Core/ACswui.php:152 http/classes/Core/ACswui.php:156
-#: http/classes/Core/ACswui.php:172 http/classes/Core/ServerSlot.php:141
+#: http/classes/Core/ACswui.php:162 http/classes/Core/ACswui.php:166
+#: http/classes/Core/ACswui.php:182 http/classes/Core/ServerSlot.php:141
 #: http/classes/DbEntry/ServerPreset.php:191
 #: http/classes/DbEntry/ServerPreset.php:255
 #: http/classes/DbEntry/ServerPreset.php:262
@@ -406,44 +455,44 @@ msgstr "Einstellungen für die Fahrerwertung"
 msgid "Name"
 msgstr "Name"
 
-#: http/classes/Core/ACswui.php:152 http/classes/Core/ACswui.php:156
+#: http/classes/Core/ACswui.php:162 http/classes/Core/ACswui.php:166
 msgid "An arbitrary name for this group"
 msgstr "beliebiger Name für das Wetter"
 
-#: http/classes/Core/ACswui.php:153
+#: http/classes/Core/ACswui.php:163
 msgid "Threshold"
 msgstr "Schwelle"
 
-#: http/classes/Core/ACswui.php:153
+#: http/classes/Core/ACswui.php:163
 msgid "The ranking threshold a driver needs to pass to enter this group"
 msgstr "Die minimale Punkteschwelle für diese Gruppe"
 
-#: http/classes/Core/ACswui.php:155
+#: http/classes/Core/ACswui.php:165
 #: http/content/html/B_User/GroupManagement.php:67
 msgid "Group"
 msgstr "Gruppe"
 
-#: http/classes/Core/ACswui.php:165
+#: http/classes/Core/ACswui.php:175
 msgid "Default Session Schedule"
 msgstr "Standard Session Zeitplan"
 
-#: http/classes/Core/ACswui.php:165
+#: http/classes/Core/ACswui.php:175
 msgid "Default settings for session schedules"
 msgstr "Standardeinstellungen für den Session Zeitplan"
 
-#: http/classes/Core/ACswui.php:170
+#: http/classes/Core/ACswui.php:180
 msgid "Basics"
 msgstr "Grundlagen"
 
-#: http/classes/Core/ACswui.php:170
+#: http/classes/Core/ACswui.php:180
 msgid "Basic settings"
 msgstr "Basiseinstellungen"
 
-#: http/classes/Core/ACswui.php:172
+#: http/classes/Core/ACswui.php:182
 msgid "An arbitrary name for this schedule item"
 msgstr "Ein beliebiger name für das Zeitplanelement"
 
-#: http/classes/Core/ACswui.php:173 http/classes/Core/Discord.php:55
+#: http/classes/Core/ACswui.php:183 http/classes/Core/Discord.php:55
 #: http/content/json/ListPopularCarClasses.php:21
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:14
 #: http/content/html/B_User/Polls.php:374
@@ -452,11 +501,11 @@ msgstr "Ein beliebiger name für das Zeitplanelement"
 msgid "Car Class"
 msgstr "Fahrzeugklasse"
 
-#: http/classes/Core/ACswui.php:173
+#: http/classes/Core/ACswui.php:183
 msgid "The car class to race with"
 msgstr "Die Fahrzeugklasse mit der gefahren wird"
 
-#: http/classes/Core/ACswui.php:174 http/classes/Core/Discord.php:56
+#: http/classes/Core/ACswui.php:184 http/classes/Core/Discord.php:56
 #: http/content/json/ListPopularTracks.php:21
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:8
 #: http/content/html/B_User/Polls.php:336
@@ -464,32 +513,32 @@ msgstr "Die Fahrzeugklasse mit der gefahren wird"
 msgid "Track"
 msgstr "Strecke"
 
-#: http/classes/Core/ACswui.php:174
+#: http/classes/Core/ACswui.php:184
 msgid "The track to be raced"
 msgstr "Die Strecke auf der gefahren wird"
 
-#: http/classes/Core/ACswui.php:176
+#: http/classes/Core/ACswui.php:186
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: http/classes/Core/ACswui.php:176
+#: http/classes/Core/ACswui.php:186
 msgid "Settings for the main event"
 msgstr "Einstellungen für das Hauptereignis"
 
-#: http/classes/Core/ACswui.php:177 http/content/json/TrackRecords.php:46
+#: http/classes/Core/ACswui.php:187 http/content/json/TrackRecords.php:46
 #: http/content/json/CarClassRecords.php:46
 msgid "Date"
 msgstr "Datum"
 
-#: http/classes/Core/ACswui.php:177
+#: http/classes/Core/ACswui.php:187
 msgid "Date when the session shall start"
 msgstr "Datum, wann die Sessions tarten soll"
 
-#: http/classes/Core/ACswui.php:179
+#: http/classes/Core/ACswui.php:189
 msgid "EntryList Session"
 msgstr "Fahrzeugliste Session"
 
-#: http/classes/Core/ACswui.php:179
+#: http/classes/Core/ACswui.php:189
 msgid ""
 "Use the result of this session as entry list, if zero, the order of "
 "registration will be used"
@@ -497,108 +546,108 @@ msgstr ""
 "Das Ergebnis dieser Session als Entry-List verwenden. Wenn Null, wird die "
 "Reihenfolge der Anmeldungen verwendet."
 
-#: http/classes/Core/ACswui.php:180 http/classes/Core/ACswui.php:185
+#: http/classes/Core/ACswui.php:190 http/classes/Core/ACswui.php:195
 #: http/classes/Core/Discord.php:54
 #: http/content/html/T_Settings/ServerPresets.php:187
 #: http/content/html/W_Sessions.php:58
 msgid "Server Preset"
 msgstr "Server Preset"
 
-#: http/classes/Core/ACswui.php:180
+#: http/classes/Core/ACswui.php:190
 msgid "Select the server preset for the event"
 msgstr "Wähle das Server-Preset für die Veranstaltung"
 
-#: http/classes/Core/ACswui.php:181 http/classes/Core/Discord.php:53
+#: http/classes/Core/ACswui.php:191 http/classes/Core/Discord.php:53
 #: http/classes/Core/ServerSlot.php:131
 #: http/content/html/T_Settings/ServerSlots.php:100
-#: http/content/html/W_Sessions/SessionOverview.php:250
+#: http/content/html/W_Sessions/SessionOverview.php:254
 msgid "Server Slot"
 msgstr "Server Slot"
 
-#: http/classes/Core/ACswui.php:181
+#: http/classes/Core/ACswui.php:191
 msgid "Select on which server slot the session shall be driven"
 msgstr "Wähle auf welchem Server-Slot die Session gefahren werden soll"
 
-#: http/classes/Core/ACswui.php:183
+#: http/classes/Core/ACswui.php:193
 msgid "Practice Loop"
 msgstr "Trainingsschleife"
 
-#: http/classes/Core/ACswui.php:183
+#: http/classes/Core/ACswui.php:193
 msgid "Setup a session loop for practice"
 msgstr "Eine Trainingsschleife aufsetzen"
 
-#: http/classes/Core/ACswui.php:184 http/classes/DbEntry/ServerPreset.php:465
+#: http/classes/Core/ACswui.php:194 http/classes/DbEntry/ServerPreset.php:465
 #: http/classes/DbEntry/ServerPreset.php:516
 #: http/content/html/W_Sessions/SessionLoops.php:153
 msgid "Enable"
 msgstr "Aktiveren"
 
-#: http/classes/Core/ACswui.php:184
+#: http/classes/Core/ACswui.php:194
 msgid "Enable practice session loop"
 msgstr "Trainingsschleife aktivieren"
 
-#: http/classes/Core/ACswui.php:185
+#: http/classes/Core/ACswui.php:195
 msgid "Select the server preset for the practice"
 msgstr "Wähle das Server-Preset für das Training"
 
-#: http/classes/Core/ACswui.php:192
+#: http/classes/Core/ACswui.php:202
 msgid "Ballance Driver Ranking"
 msgstr "Ausgleich Fahrerwertung"
 
-#: http/classes/Core/ACswui.php:192
+#: http/classes/Core/ACswui.php:202
 msgid "Ballance of performacne based on driver ranking"
 msgstr "Generalausgleich basierend auf der Fahrerwertung "
 
-#: http/classes/Core/ACswui.php:196
+#: http/classes/Core/ACswui.php:206
 msgid "Add ballast or restrictors to driver in this ranking group"
 msgstr "Zusatzgewicht und Begrenzer für Fahrer aus dieser Wertungsgruppe"
 
-#: http/classes/Core/ACswui.php:198 http/classes/Core/ACswui.php:208
+#: http/classes/Core/ACswui.php:208 http/classes/Core/ACswui.php:218
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:151
-#: http/content/html/W_Sessions/SessionSchedules.php:337
+#: http/content/html/W_Sessions/SessionSchedules.php:341
 msgid "Ballast"
 msgstr "Gewicht"
 
-#: http/classes/Core/ACswui.php:198
+#: http/classes/Core/ACswui.php:208
 msgid "Additional ballast for this group"
 msgstr "Zusatzgewicht für diese Gruppe"
 
-#: http/classes/Core/ACswui.php:202 http/classes/Core/ACswui.php:211
+#: http/classes/Core/ACswui.php:212 http/classes/Core/ACswui.php:221
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:152
-#: http/content/html/W_Sessions/SessionSchedules.php:338
+#: http/content/html/W_Sessions/SessionSchedules.php:342
 msgid "Restrictor"
 msgstr "Begrenzer"
 
-#: http/classes/Core/ACswui.php:202
+#: http/classes/Core/ACswui.php:212
 msgid "Additional restrictor for this group"
 msgstr "Zusätzlicher Begrenzer für diese Gruppe"
 
-#: http/classes/Core/ACswui.php:207
+#: http/classes/Core/ACswui.php:217
 msgid ""
 "Add ballast or restrictors to drivers which are not in the driver ranking"
 msgstr "Zusatzgewicht und Begrenzer für Fahrer außerhalb der Fahrerwertung"
 
-#: http/classes/Core/ACswui.php:208
+#: http/classes/Core/ACswui.php:218
 msgid "Additional ballast for drivers who are not in the driver ranking"
 msgstr "Zusatzgewicht für Fahrer außerhalb der Wertung"
 
-#: http/classes/Core/ACswui.php:211
+#: http/classes/Core/ACswui.php:221
 msgid "Additional restrictor for drivers who are not in the driver ranking"
 msgstr "Begrenzer für Fahrer außerhalb der Wertung"
 
-#: http/classes/Core/ACswui.php:223
+#: http/classes/Core/ACswui.php:233
 msgid "Default User Settings"
 msgstr "Standard Benutzereinstellungen"
 
-#: http/classes/Core/ACswui.php:223
+#: http/classes/Core/ACswui.php:233
 msgid "Settings for users"
 msgstr "Einstellungen für Benutzer"
 
-#: http/classes/Core/ACswui.php:224
+#: http/classes/Core/ACswui.php:234
 msgid "Privacy"
 msgstr "Privatsphäre"
 
-#: http/classes/Core/ACswui.php:224
+#: http/classes/Core/ACswui.php:234
 msgid ""
 "Privacy settings\n"
 "'Private' means nobody can identify me\n"
@@ -614,20 +663,20 @@ msgstr ""
 "aktiven Fahrer:innen, können mich identifizieren - so lange ich selbst "
 "aktiver Fahrer bin'Öffentlich' bedeutet, jeder kann mich identifizieren"
 
-#: http/classes/Core/ACswui.php:225
+#: http/classes/Core/ACswui.php:235
 msgid "Color"
 msgstr "Farbe"
 
-#: http/classes/Core/ACswui.php:225
+#: http/classes/Core/ACswui.php:235
 msgid "Your preferred color to better identify you in diagrams"
 msgstr ""
 "Wähle deine präferierte Farbe aus, die in Diagrammen verwendet werden soll."
 
-#: http/classes/Core/ACswui.php:226
+#: http/classes/Core/ACswui.php:236
 msgid "Login Expire"
 msgstr "Login Erlischt"
 
-#: http/classes/Core/ACswui.php:226
+#: http/classes/Core/ACswui.php:236
 msgid ""
 "The user login is saved via a token inside a client cookie. This defines the "
 "amount of days when this token expires"
@@ -635,19 +684,19 @@ msgstr ""
 "Der Benutzer-Login wird mit einem Token als Browser-Cookie gespeichert. "
 "Dieser Wert legt fest, nach wie vielen Tagen dieser Cookie verfällt."
 
-#: http/classes/Core/ACswui.php:230
+#: http/classes/Core/ACswui.php:240
 msgid "Content View"
 msgstr "Inhaltsanzeige"
 
-#: http/classes/Core/ACswui.php:230
+#: http/classes/Core/ACswui.php:240
 msgid "View options for special content"
 msgstr "Ansichtseinstellungen für bestimmte Inhalte"
 
-#: http/classes/Core/ACswui.php:231
+#: http/classes/Core/ACswui.php:241
 msgid "Skip Private Records"
 msgstr "Überspringe Private Rekorde"
 
-#: http/classes/Core/ACswui.php:231
+#: http/classes/Core/ACswui.php:241
 msgid ""
 "Skip users which do not allow to show private information in car/track "
 "records tables"
@@ -655,91 +704,91 @@ msgstr ""
 "Blende Fahrer:innen in Rekordtabellen aus, die nicht identifiziert werden "
 "wollen (bessere Übersicht)."
 
-#: http/classes/Core/ACswui.php:232
+#: http/classes/Core/ACswui.php:242
 msgid "Track Order"
 msgstr "Streckensortierung"
 
-#: http/classes/Core/ACswui.php:232
+#: http/classes/Core/ACswui.php:242
 msgid "In which order shall tracks be shown"
 msgstr "In welcher Reihenfolge sollen Strecken sortiert werden"
 
-#: http/classes/Core/ACswui.php:233
+#: http/classes/Core/ACswui.php:243
 msgid "By Country"
 msgstr "nach Land"
 
-#: http/classes/Core/ACswui.php:234
+#: http/classes/Core/ACswui.php:244
 msgid "Alphabetically"
 msgstr "nach Alphabet"
 
-#: http/classes/Core/ACswui.php:237
+#: http/classes/Core/ACswui.php:247
 msgid "Loc-/Internationalization"
 msgstr "Internationalisierung"
 
-#: http/classes/Core/ACswui.php:237
+#: http/classes/Core/ACswui.php:247
 msgid "Options for localization and internationalization"
 msgstr "Optionen zur lokalen/internationalen Anpassung"
 
-#: http/classes/Core/ACswui.php:238
+#: http/classes/Core/ACswui.php:248
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:25
 #: http/content/html/B_User.php:106
 msgid "Country"
 msgstr "Land"
 
-#: http/classes/Core/ACswui.php:238
+#: http/classes/Core/ACswui.php:248
 msgid "Select which country you want to represent"
 msgstr "Wähle, welches Land du repräsentieren möchtest"
 
-#: http/classes/Core/ACswui.php:239
+#: http/classes/Core/ACswui.php:249
 msgid "Locale"
 msgstr "Lokalisierung"
 
-#: http/classes/Core/ACswui.php:239
+#: http/classes/Core/ACswui.php:249
 msgid "Localization settings"
 msgstr "Lakalisationseinstellung"
 
-#: http/classes/Core/ACswui.php:240
+#: http/classes/Core/ACswui.php:250
 msgid "Timezone"
 msgstr "Zeitzone"
 
-#: http/classes/Core/ACswui.php:240
+#: http/classes/Core/ACswui.php:250
 msgid "Define your preferred timezone"
 msgstr "Wähle deine präferierte Zeitzone"
 
-#: http/classes/Core/ACswui.php:242
+#: http/classes/Core/ACswui.php:252
 msgid "Units"
 msgstr "Einheiten"
 
-#: http/classes/Core/ACswui.php:242
+#: http/classes/Core/ACswui.php:252
 msgid "Setup preferred units for values"
 msgstr "Einstellungen für bevorzugte Einheiten"
 
-#: http/classes/Core/ACswui.php:243 http/classes/DbEntry/Car.php:256
+#: http/classes/Core/ACswui.php:253 http/classes/DbEntry/Car.php:256
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:41
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:149
 msgid "Power"
 msgstr "Leistung"
 
-#: http/classes/Core/ACswui.php:244
+#: http/classes/Core/ACswui.php:254
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:42
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:153
 msgid "Specific Power"
 msgstr "Spezifische Leistung"
 
-#: http/classes/Core/ACswui.php:245
+#: http/classes/Core/ACswui.php:255
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:39
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:150
 msgid "Weight"
 msgstr "Gewicht"
 
-#: http/classes/Core/ACswui.php:246
+#: http/classes/Core/ACswui.php:256
 msgid "Date/Time Format"
 msgstr "Datum/Zeit Format"
 
-#: http/classes/Core/ACswui.php:246
+#: http/classes/Core/ACswui.php:256
 msgid "How shal date-times be presented"
 msgstr "Wähle, wie Datum/Zeit präsentiert werden sollen"
 
-#: http/classes/Core/ACswui.php:247
+#: http/classes/Core/ACswui.php:257
 #: http/content/json/ListPopularCarClasses.php:23
 #: http/content/json/ListPopularTracks.php:23
 #: http/content/json/ListPopularTracks.php:29
@@ -747,27 +796,27 @@ msgstr "Wähle, wie Datum/Zeit präsentiert werden sollen"
 msgid "Length"
 msgstr "Länge"
 
-#: http/classes/Core/ACswui.php:249
+#: http/classes/Core/ACswui.php:259
 msgid "Laptime Distribution Diagrams"
 msgstr "Rundenzeitenverteilungsdiagramm"
 
-#: http/classes/Core/ACswui.php:249
+#: http/classes/Core/ACswui.php:259
 msgid "Options to adjust the laptime distribution diagrams"
 msgstr "Optionen um das Rundenzeitenverteilungsdiagramm einszustellen"
 
-#: http/classes/Core/ACswui.php:250
+#: http/classes/Core/ACswui.php:260
 msgid "Max Delta"
 msgstr "Maximale Differenz"
 
-#: http/classes/Core/ACswui.php:250
+#: http/classes/Core/ACswui.php:260
 msgid "Defines the maximum of the x-axis (how much seconds to show)"
 msgstr "Definiert das Maximum der X-Achse (wieviele Sekunden angezeigt werden)"
 
-#: http/classes/Core/ACswui.php:253
+#: http/classes/Core/ACswui.php:263
 msgid "Time Axis"
 msgstr "Zeitachse"
 
-#: http/classes/Core/ACswui.php:253
+#: http/classes/Core/ACswui.php:263
 msgid ""
 "The time axis (distance to best session laptime) can be drawn logarithmic or "
 "linear"
@@ -775,19 +824,19 @@ msgstr ""
 "Die Zeitachse (Abstand zur Session-Bestzeit) cann logarithmisch oder linear "
 "dargestellt werden."
 
-#: http/classes/Core/ACswui.php:254
+#: http/classes/Core/ACswui.php:264
 msgid "Linear"
 msgstr "Linear"
 
-#: http/classes/Core/ACswui.php:255
+#: http/classes/Core/ACswui.php:265
 msgid "Logarithmic"
 msgstr "Logarithmisch"
 
-#: http/classes/Core/ACswui.php:257
+#: http/classes/Core/ACswui.php:267
 msgid "Available Types"
 msgstr "Verfügbare Typen"
 
-#: http/classes/Core/ACswui.php:257
+#: http/classes/Core/ACswui.php:267
 msgid ""
 "Select which options shall be available for laptime distribution diagrams "
 "(just prevents to click wrong buttons)"
@@ -795,13 +844,38 @@ msgstr ""
 "Wähle, welche Typen für Rundenzeitenverteilungsdiagramme angeboten werden "
 "sollen (Reduktion hilf den richtigen Button zu treffen)"
 
-#: http/classes/Core/ACswui.php:258
+#: http/classes/Core/ACswui.php:268
 msgid "Histogram"
 msgstr "Histogramm"
 
-#: http/classes/Core/ACswui.php:259
+#: http/classes/Core/ACswui.php:269
 msgid "Gaussian"
 msgstr "Gaußverteilung"
+
+#: http/classes/Core/ACswui.php:272
+msgid "Session Position Diagrams"
+msgstr "Session Positionsdiagramm"
+
+#: http/classes/Core/ACswui.php:272
+msgid "Options to adjust the session position diagrams"
+msgstr "Optionen um das Session-Positionsdiagramm einzustellen"
+
+#: http/classes/Core/ACswui.php:273
+msgid "Type"
+msgstr "Typ"
+
+#: http/classes/Core/ACswui.php:273
+msgid "The type of the y-axis (place or time-gap)."
+msgstr "Der Typ der Y-Achse (Platzierung oder Zeit-Abstand)"
+
+#: http/classes/Core/ACswui.php:274
+msgid "Place"
+msgstr "Platz"
+
+#: http/classes/Core/ACswui.php:275 http/classes/DbEntry/ServerPreset.php:608
+#: http/content/html/W_Sessions/SessionOverview.php:172
+msgid "Gap"
+msgstr "Abstand"
 
 #: http/classes/Core/UserManager.php:64
 msgid "Logout"
@@ -1034,7 +1108,7 @@ msgstr "Zeile Löschen"
 msgid "Not Delete Row Entry"
 msgstr "Zeile nicht Löschen"
 
-#: http/classes/Core/ICalendar.php:40 http/content/html/B_User/DriverList.php:8
+#: http/classes/Core/VEvent.php:41 http/content/html/B_User/DriverList.php:8
 msgid "Drivers"
 msgstr "Fahrer "
 
@@ -1760,7 +1834,7 @@ msgstr ""
 "Eine Nachricht, die jedem Fahrer angezeigt wird, wenn er den Server betritt."
 
 #: http/classes/DbEntry/ServerPreset.php:219
-#: http/content/html/W_Sessions/SessionOverview.php:191
+#: http/content/html/W_Sessions/SessionOverview.php:195
 msgid "Environment"
 msgstr "Umgebung"
 
@@ -1942,7 +2016,7 @@ msgstr "Einstellungen für die Renn-Session"
 #: http/content/json/ListPopularCarClasses.php:22
 #: http/content/json/ListPopularTracks.php:28
 #: http/content/html/W_Sessions/SessionOverview.php:168
-#: http/content/html/W_Sessions/SessionOverview.php:189
+#: http/content/html/W_Sessions/SessionOverview.php:193
 msgid "Laps"
 msgstr "Runden"
 
@@ -2361,11 +2435,6 @@ msgstr "Bei fliegendem Start: Verzögerung nach dem Roten Licht, bis Grün kommt
 #: http/classes/DbEntry/ServerPreset.php:430
 msgid "No Penalty"
 msgstr "Keine Strafe"
-
-#: http/classes/DbEntry/ServerPreset.php:431
-#: http/classes/DbEntry/ServerPreset.php:436
-msgid "GUIDs"
-msgstr "GUIDs"
 
 #: http/classes/DbEntry/ServerPreset.php:431
 msgid ""
@@ -2845,10 +2914,6 @@ msgid "Drs"
 msgstr "DRS"
 
 #: http/classes/DbEntry/ServerPreset.php:608
-msgid "Gap"
-msgstr "Abstand"
-
-#: http/classes/DbEntry/ServerPreset.php:608
 msgid "Max gap in seconds from front car."
 msgstr "Maximaler Abstand zum vorfahrenden Fahrzeug"
 
@@ -3049,96 +3114,96 @@ msgstr "Drehmoment"
 msgid "Revolutions"
 msgstr "Umdrehungen"
 
-#: http/content/json/SessionData.php:89
+#: http/content/json/SessionData.php:80
 msgid "Timestamp"
 msgstr "Zeitstempel"
 
-#: http/content/json/SessionData.php:90
+#: http/content/json/SessionData.php:81
 msgid "Suspect"
 msgstr "Verursacher"
 
-#: http/content/json/SessionData.php:91
+#: http/content/json/SessionData.php:82
 msgid "Victim"
 msgstr "Geschädigter"
 
-#: http/content/json/SessionData.php:92
+#: http/content/json/SessionData.php:83
 msgid "Speed"
 msgstr "Geschwindigkeit"
 
-#: http/content/json/SessionData.php:93
+#: http/content/json/SessionData.php:84
 msgid "Safety-Points"
 msgstr "Sicherheitspunkte"
 
-#: http/content/json/SessionData.php:94
+#: http/content/json/SessionData.php:85
 msgid "Collision Id"
 msgstr "Kollision ID"
 
-#: http/content/json/SessionData.php:133 http/content/json/TrackRecords.php:48
+#: http/content/json/SessionData.php:124 http/content/json/TrackRecords.php:48
 #: http/content/json/CarClassRecords.php:48
 #: http/content/html/W_Sessions/SessionOverview.php:88
 msgid "Lap"
 msgstr "Runde"
 
-#: http/content/json/SessionData.php:134 http/content/json/TrackRecords.php:40
+#: http/content/json/SessionData.php:125 http/content/json/TrackRecords.php:40
 #: http/content/json/CarClassRecords.php:40
 #: http/content/html/W_Sessions/SessionOverview.php:82
 msgid "Laptime"
 msgstr "Rundenzeit"
 
-#: http/content/json/SessionData.php:135
+#: http/content/json/SessionData.php:126
 msgid "Difference to session best lap"
 msgstr "Abstand zur Bestzeit der Session"
 
-#: http/content/json/SessionData.php:135 http/content/json/TrackRecords.php:41
+#: http/content/json/SessionData.php:126 http/content/json/TrackRecords.php:41
 #: http/content/json/CarClassRecords.php:41
 #: http/content/html/W_Sessions/SessionOverview.php:83
 msgid "Delta"
 msgstr "Differenz"
 
-#: http/content/json/SessionData.php:137 http/content/json/TrackRecords.php:42
+#: http/content/json/SessionData.php:128 http/content/json/TrackRecords.php:42
 #: http/content/json/CarClassRecords.php:42
 #: http/content/html/B_User/DriverRanking.php:42
-#: http/content/html/W_Sessions/SessionSchedules.php:335
+#: http/content/html/W_Sessions/SessionSchedules.php:339
 #: http/content/html/W_Sessions/SessionOverview.php:81
-#: http/content/html/W_Sessions/SessionOverview.php:177
+#: http/content/html/W_Sessions/SessionOverview.php:181
 msgid "Driver"
 msgstr "Fahrer"
 
-#: http/content/json/SessionData.php:138 http/content/json/TrackRecords.php:43
+#: http/content/json/SessionData.php:129 http/content/json/TrackRecords.php:43
 #: http/content/json/CarClassRecords.php:43
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:33
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:147
 #: http/content/html/W_Sessions/SessionOverview.php:85
-#: http/content/html/W_Sessions/SessionOverview.php:178
+#: http/content/html/W_Sessions/SessionOverview.php:182
 msgid "Car"
 msgstr "Auto"
 
-#: http/content/json/SessionData.php:139 http/content/json/TrackRecords.php:44
+#: http/content/json/SessionData.php:130 http/content/json/TrackRecords.php:44
 #: http/content/json/CarClassRecords.php:44
 #: http/content/html/W_Sessions/SessionOverview.php:86
-#: http/content/html/W_Sessions/SessionOverview.php:181
+#: http/content/html/W_Sessions/SessionOverview.php:185
 msgid "BOP"
 msgstr "Ausgleich"
 
-#: http/content/json/SessionData.php:140
+#: http/content/json/SessionData.php:131
 msgid "Traction"
 msgstr "Traktion"
 
-#: http/content/json/SessionData.php:141
+#: http/content/json/SessionData.php:132
 msgid "Lap ID"
 msgstr "Runde ID"
 
 #: http/content/json/TrackRecords.php:39
 #: http/content/json/CarClassRecords.php:39
-#: http/content/html/W_Sessions/SessionOverview.php:169
-#: http/content/html/W_Sessions/SessionOverview.php:176
+#: http/content/html/W_Sessions/SessionOverview.php:170
+#: http/content/html/W_Sessions/SessionOverview.php:180
 msgid "Position"
 msgstr "Position"
 
 #: http/content/json/TrackRecords.php:45
 #: http/content/json/CarClassRecords.php:45
 #: http/content/html/W_Sessions/SessionOverview.php:87
-#: http/content/html/W_Sessions/SessionOverview.php:256
+#: http/content/html/W_Sessions/SessionOverview.php:260
 msgid "Grip"
 msgstr "Traktion"
 
@@ -3153,7 +3218,7 @@ msgid "Pits"
 msgstr "Boxen"
 
 #: http/content/json/ListPopularTracks.php:24
-#: http/content/html/W_Sessions/SessionOverview.php:182
+#: http/content/html/W_Sessions/SessionOverview.php:186
 msgid "Driven"
 msgstr "Gefahren"
 
@@ -3440,7 +3505,7 @@ msgid "Letters"
 msgstr "Buchstaben"
 
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:11
-#: http/content/html/W_Sessions/SessionSchedules.php:336
+#: http/content/html/W_Sessions/SessionSchedules.php:340
 msgid "Car Skin"
 msgstr "Lackierung"
 
@@ -3844,23 +3909,23 @@ msgstr "Pos."
 msgid "Sum"
 msgstr "Summe"
 
-#: http/content/html/B_User/DriverRanking.php:98
+#: http/content/html/B_User/DriverRanking.php:103
 msgid "Driver will rise to next group"
 msgstr "Fahrer wird eine Gruppe aufsteigen"
 
-#: http/content/html/B_User/DriverRanking.php:100
+#: http/content/html/B_User/DriverRanking.php:105
 msgid "Driver will fall to previous group"
 msgstr "Fahrer wird eine Gruppe absteigen"
 
-#: http/content/html/B_User/DriverRanking.php:106
+#: http/content/html/B_User/DriverRanking.php:111
 msgid "Load Diagram Data"
 msgstr "Lade Diagrammdaten"
 
-#: http/content/html/B_User/DriverRanking.php:137
+#: http/content/html/B_User/DriverRanking.php:142
 msgid "Mean Value"
 msgstr "Mittelwert"
 
-#: http/content/html/B_User/DriverRanking.php:169
+#: http/content/html/B_User/DriverRanking.php:174
 msgid "Minimum points required for this Group"
 msgstr "Erforderliche Mindespunkte für diese Gruppe"
 
@@ -4012,7 +4077,7 @@ msgid "Really Deleting Session Schedule Item?"
 msgstr "Zeitplanelement wirklich löschen?"
 
 #: http/content/html/W_Sessions/SessionSchedules.php:119
-#: http/content/html/W_Sessions/SessionSchedules.php:206
+#: http/content/html/W_Sessions/SessionSchedules.php:210
 msgid "Delete"
 msgstr "löschen"
 
@@ -4021,66 +4086,70 @@ msgstr "löschen"
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:177
+#: http/content/html/W_Sessions/SessionSchedules.php:157
+msgid "iCalendar Link"
+msgstr "iCalendar Link"
+
+#: http/content/html/W_Sessions/SessionSchedules.php:181
 msgid "Registrations"
 msgstr "Anmeldungen"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:185
+#: http/content/html/W_Sessions/SessionSchedules.php:189
 msgid "Results"
 msgstr "Ergebnisse"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:190
-#: http/content/html/W_Sessions/SessionSchedules.php:316
+#: http/content/html/W_Sessions/SessionSchedules.php:194
+#: http/content/html/W_Sessions/SessionSchedules.php:320
 msgid "Registered"
 msgstr "Angemeldet"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:193
-#: http/content/html/W_Sessions/SessionSchedules.php:319
+#: http/content/html/W_Sessions/SessionSchedules.php:197
+#: http/content/html/W_Sessions/SessionSchedules.php:323
 msgid "Unregister"
 msgstr "Abmelden"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:196
-#: http/content/html/W_Sessions/SessionSchedules.php:322
+#: http/content/html/W_Sessions/SessionSchedules.php:200
+#: http/content/html/W_Sessions/SessionSchedules.php:326
 msgid "Not Registered"
 msgstr "Nicht Angemeldet"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:197
-#: http/content/html/W_Sessions/SessionSchedules.php:323
+#: http/content/html/W_Sessions/SessionSchedules.php:201
+#: http/content/html/W_Sessions/SessionSchedules.php:327
 msgid "Register"
 msgstr "Anmelden"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:205
+#: http/content/html/W_Sessions/SessionSchedules.php:209
 msgid "Edit"
 msgstr "Editieren"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:208
+#: http/content/html/W_Sessions/SessionSchedules.php:212
 msgid "Registration Roster"
 msgstr "Anmeldeliste"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:218
+#: http/content/html/W_Sessions/SessionSchedules.php:222
 msgid "Create new Schedule item"
 msgstr "Neues Zeitplanelement Erstellen"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:238
-#: http/content/html/W_Sessions/SessionSchedules.php:261
+#: http/content/html/W_Sessions/SessionSchedules.php:242
+#: http/content/html/W_Sessions/SessionSchedules.php:265
 msgid "Save Registration"
 msgstr "Anmeldung Speichern"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:339
+#: http/content/html/W_Sessions/SessionSchedules.php:343
 msgid "Registration"
 msgstr "Anmeldung"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:376
+#: http/content/html/W_Sessions/SessionSchedules.php:380
 msgid "Add Driver"
 msgstr "Fahrer Hinzufügen"
 
-#: http/content/html/W_Sessions/SessionSchedules.php:390
+#: http/content/html/W_Sessions/SessionSchedules.php:394
 msgid "Save Registration Roster"
 msgstr "Anmeldeliste"
 
 #: http/content/html/W_Sessions/SessionLoops.php:11
 msgid "Loops"
-msgstr "Schelifen"
+msgstr "Schleifen"
 
 #: http/content/html/W_Sessions/SessionLoops.php:139
 msgid "New Loop Item"
@@ -4136,7 +4205,7 @@ msgid "Load Laptime Distribution Data"
 msgstr "Rundenzeitenverteilung laden"
 
 #: http/content/html/W_Sessions/SessionOverview.php:145
-#: http/content/html/W_Sessions/SessionOverview.php:184
+#: http/content/html/W_Sessions/SessionOverview.php:188
 msgid "Collisions"
 msgstr "Kollisionen"
 
@@ -4164,55 +4233,55 @@ msgstr "Session Positionsdiagramm"
 msgid "Minutes"
 msgstr "Minuten"
 
-#: http/content/html/W_Sessions/SessionOverview.php:179
+#: http/content/html/W_Sessions/SessionOverview.php:183
 msgid "Best Lap"
 msgstr "Beste Runde"
 
-#: http/content/html/W_Sessions/SessionOverview.php:180
+#: http/content/html/W_Sessions/SessionOverview.php:184
 msgid "Total Time"
 msgstr "Gesamtzeit"
 
-#: http/content/html/W_Sessions/SessionOverview.php:190
+#: http/content/html/W_Sessions/SessionOverview.php:194
 msgid "Distance"
 msgstr "Entfernung"
 
-#: http/content/html/W_Sessions/SessionOverview.php:192
+#: http/content/html/W_Sessions/SessionOverview.php:196
 msgid "Other Cars"
 msgstr "Andere Autos"
 
-#: http/content/html/W_Sessions/SessionOverview.php:236
+#: http/content/html/W_Sessions/SessionOverview.php:240
 msgid "Session Information"
 msgstr "Session Informationen"
 
-#: http/content/html/W_Sessions/SessionOverview.php:257
+#: http/content/html/W_Sessions/SessionOverview.php:261
 msgid "Max"
 msgstr "Max"
 
-#: http/content/html/W_Sessions/SessionOverview.php:258
+#: http/content/html/W_Sessions/SessionOverview.php:262
 msgid "Min"
 msgstr "Min"
 
-#: http/content/html/W_Sessions/SessionOverview.php:264
+#: http/content/html/W_Sessions/SessionOverview.php:268
 msgid "Weahter"
 msgstr "Wetter"
 
-#: http/content/html/W_Sessions/SessionOverview.php:265
+#: http/content/html/W_Sessions/SessionOverview.php:269
 msgid "Graphics"
 msgstr "Grafik"
 
-#: http/content/html/W_Sessions/SessionOverview.php:266
+#: http/content/html/W_Sessions/SessionOverview.php:270
 msgid "Ambient"
 msgstr "Umgebung"
 
-#: http/content/html/W_Sessions/SessionOverview.php:267
+#: http/content/html/W_Sessions/SessionOverview.php:271
 msgid "Road"
 msgstr "Strecke"
 
-#: http/content/html/W_Sessions/SessionOverview.php:296
+#: http/content/html/W_Sessions/SessionOverview.php:300
 msgid "Apply Filter"
 msgstr "Filter Anwenden"
 
-#: http/content/html/W_Sessions/SessionOverview.php:302
+#: http/content/html/W_Sessions/SessionOverview.php:306
 msgid "Session Select"
 msgstr "Session Auswählen"
 
