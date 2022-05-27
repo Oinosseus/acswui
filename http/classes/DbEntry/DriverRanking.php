@@ -249,19 +249,6 @@ class DriverRanking extends DbEntry implements \JsonSerializable {
     }
 
 
-    //! @return The increase of points since last pushHistroy()
-    public function pointsIncrease() {
-        if ($this->PointsIncrease === NULL) {
-            $this->PointsIncrease = $this->points();
-            if ($this->lastHistory() !== NULL) {
-                $this->PointsIncrease -= $this->lastHistory()->points();
-            }
-        }
-
-        return $this->PointsIncrease;
-    }
-
-
     /**
      * Pushes this DriverRanking object into the database.
      * This is only allowed on a latest driver ranking object and will fail on objects retrieved from database.
