@@ -3,17 +3,48 @@ var SessionPositionDiagramSessionId = null;
 var SessionPositionDiagramDrivers = null;
 
 
-function SessionPositionDiagramFillData(response) {
-    for (let info of JSON.parse(response)) {
-        var data = new Array();
-        for (let i=0; i < info.Positions.length; ++i) data.push(info.Positions[i]);
+function SessionPositionDiagramReceiveData(response) {
+    // get canvas element
+    var canvas_div = document.getElementById("SessionPositionDiagram");
+    var canvas = null;
+    for (var i=0; i < canvas_div.children.length; ++i) {
+        var chld = canvas_div.children[i]
+        if (chld.tagName == "CANVAS") {
+            canvas = chld;
+            break;
+        }
+    }
 
+    var dia_type = canvas.getAttribute("diagramType");
+    var data = JSON.parse(response);
+
+    for (let user_id in data.Positions.Data) {
+
+        // collect data
+        var chart_data = new Array();
+        for (let lap_nr in data.Positions.Data[user_id]) {
+            if (data.Positions.Data[user_id][lap_nr].Place > 0) {
+
+                var y = 0;
+                if (dia_type == "place") {
+                    y = data.Positions.Data[user_id][lap_nr].Place;
+                } else if (dia_type == "gap") {
+                    y = data.Positions.Data[user_id][lap_nr].Gap / -1000;
+                }
+
+                var point =  {'x': lap_nr, 'y': y};
+                chart_data.push(point);
+            }
+        }
+
+        // draw data
+//         console.log("" + user_id + ", " + data.UserInfo[user_id].Name);
         var dataset = {
                         type: "line",
-                        label: info.User.Name,
-                        backgroundColor: info.User.Color,
-                        borderColor: info.User.Color,
-                        data: info.Positions,
+                        label: data.UserInfo[user_id].Name,
+                        backgroundColor: data.UserInfo[user_id].Color,
+                        borderColor: data.UserInfo[user_id].Color,
+                        data: chart_data,
                         radius: 1,
                         borderWidth: 5,
                     };
@@ -42,12 +73,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var ax_x_title = canvas.getAttribute("axXTitle");
     SessionPositionDiagramSessionId = canvas.getAttribute("sessionId");
     var positions  = canvas.getAttribute("positions");
+    var dia_type = canvas.getAttribute("diagramType");
 
-    // calculate y-axis-categories
-    var y_axis_categories = new Array();
-    for (var i = 1; i <= positions; ++i) {
-        y_axis_categories.push(i);
-    }
+//     // calculate y-axis-categories
+//     var y_axis_categories = new Array();
+//     for (var i = 1; i <= positions; ++i) {
+//         y_axis_categories.push(i);
+//     }
 
     // create chart
     SessionPositionDiagramChart = new Chart(canvas, {
@@ -65,9 +97,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     },
                     y: {
-                        type: 'category',
-                        labels: y_axis_categories,
-//                         max: -1,
+                        reverse: (dia_type == "place") ? true : false,
+//                         type: 'category',
+//                         labels: y_axis_categories,
+                        max: (dia_type == "place") ? positions : 0,
 //                         min: -1 * positions,
 //                         bottom: 10,
 //                         top: 1,
@@ -100,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == '200') {
             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            SessionPositionDiagramFillData(xobj.responseText);
+            SessionPositionDiagramReceiveData(xobj.responseText);
         }
     };
     xobj.send(null);

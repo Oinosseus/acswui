@@ -269,6 +269,12 @@ class ACswui  {
             new \Parameter\EnumItem($p, 'gauss',  _("Gaussian"));
             $p->setValue("gauss");
 
+            $coll = new \Parameter\Collection(NULL, $pc, "UserSessionPositionDia", _("Session Position Diagrams"), _("Options to adjust the session position diagrams"));
+            $p = new \Parameter\ParamEnum(NULL, $coll, "UserSessionPositionDiaType", _("Type"), _("The type of the y-axis (place or time-gap)."));
+            new \Parameter\EnumItem($p, 'place',  _("Place"));
+            new \Parameter\EnumItem($p, 'gap',  _("Gap"));
+            $p->setValue("place");
+
 
             // derive root collection
             $root_collection->setAllAccessible();
