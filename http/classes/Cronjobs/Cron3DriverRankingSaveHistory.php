@@ -48,9 +48,9 @@ class Cron3DriverRankingSaveHistory extends \Core\Cronjob {
             // check if to store into db
             $do_store = FALSE;
             if ($rnk_old === NULL ||                                    // no previous ranking exists
-                $driver_did_race ||                                     // driver attended a race
-                ($rnk_old->points() + 0.04) < $rnk_cur->points() ||     // significant point decrease
-                ($rnk_old->points() - 0.04) > $rnk_cur->points()        // significant point increase
+                $driver_did_race                                        // driver attended a race
+//                 ($rnk_old->points() + 0.04) < $rnk_cur->points() ||     // significant point decrease
+//                 ($rnk_old->points() - 0.04) > $rnk_cur->points()        // significant point increase
                 ) {
 
                 // save into db
