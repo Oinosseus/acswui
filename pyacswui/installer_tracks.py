@@ -3,7 +3,8 @@ import os
 import re
 
 from .verbosity import Verbosity
-from .helper_functions import generateHtmlImg
+from .helper_functions import generateHtmlImg, parse_json, parse_geocoordinate, Longitude, Latitude
+
 
 class InstallerTracks(object):
 
@@ -121,6 +122,12 @@ class InstallerTracks(object):
                 if os.path.isdir(track_path + "/ui/" + track_config):
                     if os.path.isfile(track_path + "/ui/" + track_config + "/ui_track.json"):
                         Verbosity(verb).print("track config", track_config)
+
+                        json_dict = parse_json(track_path + "/ui/" + track_config + "/ui_track.json",
+                                               ['geotags', 'name', 'length',
+                                                'pitboxes', 'version', 'author',
+                                                'description', 'country'])
+
                         track_name   = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "name", track)
                         track_length = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "length", "0")
                         track_length = self._interpret_length(track_length)
@@ -132,6 +139,14 @@ class InstallerTracks(object):
                         track_names.append(track_name)
                         track_countries.append(track_country)
                         track_descriptions.append(track_descr)
+
+                        # update geotags
+                        geo_lat, geo_lon = self._interpret_geotags(json_dict["geotags"])
+                        if None not in [geo_lat, geo_lon]:
+                            res = self.__db.fetch("TrackLocations", ['Longitude', 'Latitude'], {'Id': track_location_id})
+                            if res[0]['Longitude'] == 0.0 and res[0]['Latitude'] == 0.0: # only update if not already set (avoid override of manual adjustments)
+                                self.__db.updateRow("TrackLocations", track_location_id, {'Longitude': geo_lon, 'Latitude': geo_lat})
+                            #print("GEOTAGS=", track_geotags, "<=", json_dict["geotags"])
 
                         existing_track_ids = self._find_track_ids(track_location_id, track_config)
                         table_fields = {"Location": track_location_id,
@@ -232,6 +247,33 @@ class InstallerTracks(object):
 
         self.__db.updateRow("TrackLocations", track_location_id, {"Name": track_location_name, "Country": track_country, "Deprecated": 0})
 
+
+    def _interpret_geotags(selparse_geocoordinatef, geotags):
+        """ Returns tuple: (latitude, longitude)
+        """
+
+        lat = None
+        lon = None
+
+        if type(geotags) == type([]):
+
+            if len(geotags) >= 2:
+
+                # convert each part
+                for i in [0, 1]:
+
+                    coord = parse_geocoordinate(geotags[i])
+                    if isinstance(coord, Latitude):
+                        lat = coord
+                    elif isinstance(coord, Longitude):
+                        lon = coord
+                    elif isinstance(coord, float):
+                        if i == 0:
+                            lat = coord
+                        else:
+                            lon = coord
+
+        return lat, lon
 
 
     def _interpret_length(self, length):
