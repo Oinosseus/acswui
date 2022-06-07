@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-28 01:26+0200\n"
-"PO-Revision-Date: 2022-05-28 01:32+0200\n"
+"POT-Creation-Date: 2022-06-07 18:40+0200\n"
+"PO-Revision-Date: 2022-06-07 18:41+0200\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -123,8 +123,9 @@ msgid ""
 "When activated, each session will get one car slot reserved for a TV Car. "
 "Attention: This occupies one available pit of the track."
 msgstr ""
-"Wenn aktiviert wird für jede Session ein Slot für ein TV Fahrzeug reserviert. "
-"Achtung: Dadurch wird auf der Strecke eine zusätzliche Box belegt."
+"Wenn aktiviert wird für jede Session ein Slot für ein TV Fahrzeug "
+"reserviert. Achtung: Dadurch wird auf der Strecke eine zusätzliche Box "
+"belegt."
 
 #: http/classes/Core/ACswui.php:68 http/classes/DbEntry/ServerPreset.php:431
 #: http/classes/DbEntry/ServerPreset.php:436
@@ -136,8 +137,8 @@ msgid ""
 "List of the Steam GUIDs (seperated by a semicolon) that get presevred for "
 "the TV Car slot"
 msgstr ""
-"Liste von Steam GUIDs (getrennt durch Semikolon), die für den TV Fahrzeug"
-" Slot reserviert werden sollen."
+"Liste von Steam GUIDs (getrennt durch Semikolon), die für den TV Fahrzeug "
+"Slot reserviert werden sollen."
 
 #: http/classes/Core/ACswui.php:69
 msgid "Model"
@@ -729,7 +730,7 @@ msgid "Options for localization and internationalization"
 msgstr "Optionen zur lokalen/internationalen Anpassung"
 
 #: http/classes/Core/ACswui.php:248
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:25
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:47
 #: http/content/html/B_User.php:106
 msgid "Country"
 msgstr "Land"
@@ -3555,7 +3556,7 @@ msgstr "Datenbank ID"
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:49
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:50
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:40
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:26
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:48
 msgid "Deprecated"
 msgstr "Obsolet"
 
@@ -3563,7 +3564,7 @@ msgstr "Obsolet"
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:50
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:40
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:41
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:26
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:48
 msgid "yes"
 msgstr "Ja"
 
@@ -3661,7 +3662,7 @@ msgid "Unclassed Cars"
 msgstr "Nicht Klassifizierte Fahrzeuge"
 
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:26
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:23
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:45
 msgid "Location Name"
 msgstr "Standort Name"
 
@@ -3698,13 +3699,38 @@ msgstr "Streckenrekorde"
 msgid "Load Track Records"
 msgstr "Lade Streckenrekorde"
 
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:8
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:10
 msgid "Track Location"
 msgstr "Streckenstandort"
 
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:22
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:44
 msgid "Track Location Info"
 msgstr "Standort Information"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:53
+msgid "Geographic Location"
+msgstr "Geographische Lage"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:54
+msgid "HTML URL"
+msgstr "Html-URL"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:59
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:61
+msgid "Geo URL"
+msgstr "Geo-URL"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:66
+#: http/content/html/B_User/GroupManagement.php:109
+#: http/content/html/B_User/UserSettings.php:26
+#: http/content/html/T_Settings/ACswui.php:38
+#: http/content/html/W_Sessions/SessionSchedules.php:141
+msgid "Save"
+msgstr "Speichern"
+
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:70
+msgid "Available Track Variants"
+msgstr "Verfügbare Streckenvarianten"
 
 #: http/content/html/ServerContent/AvailableBrands.php:8
 msgid "Car Brands"
@@ -3885,13 +3911,6 @@ msgstr "Name der neuen Gruppe"
 #: http/content/html/B_User/GroupManagement.php:97
 msgid "Delete Group"
 msgstr "Gruppe Löschen"
-
-#: http/content/html/B_User/GroupManagement.php:109
-#: http/content/html/B_User/UserSettings.php:26
-#: http/content/html/T_Settings/ACswui.php:38
-#: http/content/html/W_Sessions/SessionSchedules.php:141
-msgid "Save"
-msgstr "Speichern"
 
 #: http/content/html/B_User/UserSettings.php:8
 msgid "User Settings"
