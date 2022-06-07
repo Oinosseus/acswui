@@ -57,11 +57,6 @@ class CommandInstall(Command):
         self._verbosity.print("ddownload flags from flagpedia")
         self.__work_flagpedia()
 
-        # temporarily needed to rename SessionQueue to SessionLoops
-        if "SessionQueue" in self.__db.tables():
-             query = "RENAME TABLE SessionQueue TO SessionLoops; "
-             self.__db.rawQuery(query)
-
         # database
         self._verbosity.print("install datatabase tables")
         installer = InstallerDatabase(self.__db, self._verbosity)
@@ -69,34 +64,6 @@ class CommandInstall(Command):
 
         # document begin of installation
         self.__installer_info_id = self.__db.insertRow("installer", {"version": version(), "info": "database installed"})
-
-        # temporarily needed to fix track location table
-        # this can be deleted later
-        if "Track" in self.__db.columns("Tracks"):
-            for row in self.__db.fetch("Tracks", "Track", {}, sort_by_cloumn="Track"):
-                track = row['Track']
-                fields = {"Track":track}
-                locations = self.__db.findIds("TrackLocations", fields)
-                if len(locations) == 0:
-                    fields.update({"Deprecated": 1})
-                    self.__db.insertRow("TrackLocations", fields)
-            for row in self.__db.fetch("Tracks", ['Id', 'Track'], {}, sort_by_cloumn="Track"):
-                track_track = row['Track']
-                track_id = row['Id']
-                locations = self.__db.findIds("TrackLocations", {"Track": track_track})
-                if len(locations) > 1:
-                    raise NotImplementedError("track " + track)
-                elif len(locations) == 1:
-                    location_id = locations[0]
-                    self.__db.updateRow("Tracks", track_id, {'Location': location_id})
-
-        # temporarily needed to fix Users.Name column
-        # this can be deleted later
-        if "Login" in self.__db.columns("Users"):
-            for row in self.__db.fetch("Users", ["Id", "Login"], {}, sort_by_cloumn="Id"):
-                self.__db.updateRow("Users", row['Id'], {'Name': row['Login']})
-
-
         self.__work_cconfig()
 
         # cars
@@ -611,6 +578,7 @@ class CommandInstall(Command):
         permissions.append("ServerContent_Cars_View")
         permissions.append("ServerContent_Teams_View")
         permissions.append("ServerContent_Tracks_View")
+        permissions.append("ServerContent_Tracks_UpdateGeoLocation")
         permissions.append("ServerContent_View")
         permissions.append("User_DriverRanking_View")
         permissions.append("User_View")

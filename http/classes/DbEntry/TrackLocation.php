@@ -180,6 +180,19 @@ class TrackLocation extends DbEntry {
     }
 
 
+    /**
+     * Set a new geographic location for this track location and save it into the database
+     * @param $geo_location The new location
+     */
+    public function setGeoLocation(\Core\GeoLocation $geo_location) : void {
+        $lat = sprintf("%0.5F", $geo_location->latitude());
+        $lon = sprintf("%0.5F", $geo_location->longitude());
+        $this->storeColumns(["Latitude"=>$lat,
+                             "Longitude"=>$lon]);
+        $this->GeoLocation = NULL;
+    }
+
+
     //! @return The track name in content/tracks folder
     public function track() {
         if ($this->Track === NULL) $this->Track = $this->loadColumn("Track");
