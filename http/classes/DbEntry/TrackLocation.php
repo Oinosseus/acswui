@@ -10,6 +10,7 @@ class TrackLocation extends DbEntry {
     private $Track = NULL;
     private $Name = NULL;
     private $Deprecated = NULL;
+    private $GeoLocation = NULL;
 
     private $ListTracksNDepr = NULL;  // excluding deprecated
     private $ListTracksDepr = NULL;  // including deprecated
@@ -45,6 +46,18 @@ class TrackLocation extends DbEntry {
      */
     public static function fromId(int $id) {
         return parent::getCachedObject("TrackLocations", "TrackLocation", $id);
+    }
+
+
+    //! @return An GeoLocation object
+    public function geoLocation() : \Core\GeoLocation {
+        if ($this->GeoLocation === NULL) {
+            $lat = (float) $this->loadColumn("Latitude");
+            $lon = (float) $this->loadColumn("Longitude");
+            $this->GeoLocation = new \Core\GeoLocation($lat, $lon);
+        }
+
+        return $this->GeoLocation;
     }
 
 

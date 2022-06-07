@@ -73,15 +73,10 @@ main.TrackLocation a.TrackLink {
     margin-bottom: 0.5em;
 }
 
-
-
-/******************************************************************************
-                                   TrackLocation
- ******************************************************************************/
-
-main.TrackLocation #TrackInfoGeneral {
-    display: block;
-    margin-bottom: 2em;
+main.TrackLocation #TrackInfoGeneral,
+main.TrackLocation #TrackInfoGeoLocation {
+    display: inline-block;
+    margin-right: 2em;
 }
 
 

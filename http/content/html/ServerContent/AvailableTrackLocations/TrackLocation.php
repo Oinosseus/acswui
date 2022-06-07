@@ -26,11 +26,20 @@ class TrackLocation extends \core\HtmlContent {
             $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($tl->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
             $html .= "</table>";
 
+            $html .= "<table id=\"TrackInfoGeoLocation\">";
+            $html .= "<caption>" . _("Geographic Location") . "</caption>";
+            $html .= "<tr><td>". $tl->geoLocation()->htmlLink() . "</td></tr>";
+            $html .= "<tr><td>". $tl->geoLocation()->htmlOsmEmbed() . "</td></tr>";
+            $html .= "</table>";
+
+            $html .= "<h2>" . _("Available Track Variants") . "</h2>";
+
             $html .= "<div id=\"AvailableTracks\">";
             foreach ($tl->listTracks() as $t) {
                 $html .= $t->html();
             }
             $html .= "</div>";
+
 
         } else {
             \Core\Log::warning("No Id parameter given!");
