@@ -366,6 +366,12 @@ class DriverRanking extends DbEntry implements \JsonSerializable {
             }
         }
 
+        // remember for each driver in how many best time tables is tooks place
+        $records_table_count = array();
+        foreach (array_keys($user_ranking) as $uid) {
+            $records_table_count[$uid] = 0;
+        }
+
         // count best time positions
         $scanned_records = 0;
         $records_file = \Core\Config::AbsPathData . "/htcache/records_carclass.json";
@@ -382,6 +388,7 @@ class DriverRanking extends DbEntry implements \JsonSerializable {
 
                         if (array_key_exists($uid, $user_ranking)) {
                             $user_ranking[$uid]['SX']['BT'] += $leading_positions * \Core\Acswui::getPAram('DriverRankingSxBt');
+                            $records_table_count[$uid] += 1;
                         }
 
                         $leading_positions += 1;
@@ -389,6 +396,15 @@ class DriverRanking extends DbEntry implements \JsonSerializable {
                 }
             }
         }
+
+        // apply averaging of best time points
+        if (\Core\Acswui::getPAram('DriverRankingSxBtAvrg')) {
+            foreach (array_keys($user_ranking) as $uid) {
+                if ($records_table_count[$uid] > 0)
+                    $user_ranking[$uid]['SX']['BT'] /= $records_table_count[$uid];
+            }
+        }
+
 
         // create DriverRanking objects
         $driver_rankings = array();

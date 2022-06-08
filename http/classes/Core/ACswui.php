@@ -112,18 +112,19 @@ class ACswui  {
 
             // success
             $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingSx", _("Success"), _("Settings how drivers earn points for their success"));
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxBt", _("Best Time"), _("Points for best times per track and car class (per leading position prior to another driver)"), "Points/Position", 0.1);
-            $p->setMin(0);
-            $p->setMax(9999);
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxRt", _("Race Time"), _("Points for fastest lap in a race"), "Points/Race", 2.0);
-            $p->setMin(0);
-            $p->setMax(9999);
             $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxQ", _("Qualifying"), _("Points for positions in qualifying sessions (per leading position prior to another driver)"), "Points/Position", 0.5);
             $p->setMin(0);
             $p->setMax(9999);
             $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxR", _("Race"), _("Points for positions in race sessions (per leading position prior to another driver)"), "Points/Position", 1.0);
             $p->setMin(0);
             $p->setMax(9999);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxRt", _("Race Time"), _("Points for fastest lap in a race"), "Points/Race", 2.0);
+            $p->setMin(0);
+            $p->setMax(9999);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxBt", _("Best Time"), _("Points for best times per track and car class (per leading position prior to another driver)"), "Points/Position", 2.0);
+            $p->setMin(0);
+            $p->setMax(9999);
+            $p = new \Parameter\ParamBool(NULL, $coll, "DriverRankingSxBtAvrg", _("Best Time Average"), _("Since best times will never fade away, these will cummulate over time. New drivers may have a hard time to catch these up. With averaging, the best time points are devided by amount of record tables each driver tooks place. So new drivers can easily compare to older ones."), "", TRUE);
 
             // safety
             $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingSf", _("Safety"), _("Settings for penalty points that drivers get"));
