@@ -243,6 +243,10 @@ class ServerPreset extends DbEntry {
                 // weather
                 $coll = new \Parameter\Collection(NULL, $coll_group, "WeatherGroup", _("Weather"), "");
                 $p = new \Parameter\ParamSpecialWeathers(NULL, $coll, "Weathers", _("Weathers"), _("Select which weathers shall be used on the server"));
+                $p = new \Parameter\ParamEnum(NULL, $coll, "WeatherRandomize", _("Randomize"), _("When multiple weather are selected, they are assigned randomly. By default, assetto corsa selects a random weather 'per Session'. Which means the qualifying may have completely different weather than the race. When selecting 'per Server Run' all sessions (P/Q/R) will have the same weather, but at next server run a new random weather is assigned."));
+                new \Parameter\EnumItem($p, "server_run", _("per Server Run"));
+                new \Parameter\EnumItem($p, "session", _("per Session"));
+                $p->setValue("server_run");
 
 
                 ////////////////////

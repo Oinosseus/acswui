@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-08 11:34+0200\n"
-"PO-Revision-Date: 2022-06-08 11:39+0200\n"
+"POT-Creation-Date: 2022-06-08 14:12+0200\n"
+"PO-Revision-Date: 2022-06-08 14:16+0200\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -127,8 +127,8 @@ msgstr ""
 "reserviert. Achtung: Dadurch wird auf der Strecke eine zusätzliche Box "
 "belegt."
 
-#: http/classes/Core/ACswui.php:68 http/classes/DbEntry/ServerPreset.php:431
-#: http/classes/DbEntry/ServerPreset.php:436
+#: http/classes/Core/ACswui.php:68 http/classes/DbEntry/ServerPreset.php:435
+#: http/classes/DbEntry/ServerPreset.php:440
 msgid "GUIDs"
 msgstr "GUIDs"
 
@@ -246,7 +246,7 @@ msgstr "Erfahrung"
 msgid "Drivers earn experience when completing laps"
 msgstr "Fahrer:innen gewinnen an Erfahrung durch Absolvieren von Runden."
 
-#: http/classes/Core/ACswui.php:103 http/classes/DbEntry/ServerPreset.php:261
+#: http/classes/Core/ACswui.php:103 http/classes/DbEntry/ServerPreset.php:265
 #: http/content/html/Z_About/AboutDriverRanking.php:46
 #: http/content/html/W_Sessions/SessionOverview.php:290
 msgid "Practice"
@@ -257,8 +257,8 @@ msgid "Earned experience points by driven distance in practice"
 msgstr "Erfahrungspunkte durch Trainingsrunden"
 
 #: http/classes/Core/ACswui.php:106 http/classes/Core/ACswui.php:115
-#: http/classes/DbEntry/ServerPreset.php:272
-#: http/classes/DbEntry/ServerPreset.php:628
+#: http/classes/DbEntry/ServerPreset.php:276
+#: http/classes/DbEntry/ServerPreset.php:632
 #: http/content/html/Z_About/AboutDriverRanking.php:47
 #: http/content/html/Z_About/AboutDriverRanking.php:74
 #: http/content/html/W_Sessions/SessionOverview.php:294
@@ -270,8 +270,8 @@ msgid "Earned experience points by driven distance in qualifying"
 msgstr "Erfahrung von gefahrener Qualifikationsdistanz"
 
 #: http/classes/Core/ACswui.php:109 http/classes/Core/ACswui.php:118
-#: http/classes/DbEntry/ServerPreset.php:286
-#: http/classes/DbEntry/ServerPreset.php:631
+#: http/classes/DbEntry/ServerPreset.php:290
+#: http/classes/DbEntry/ServerPreset.php:635
 #: http/content/html/Z_About/AboutDriverRanking.php:48
 #: http/content/html/Z_About/AboutDriverRanking.php:75
 #: http/content/html/W_Sessions/SessionOverview.php:298
@@ -339,14 +339,14 @@ msgid ""
 "time points are devided by amount of record tables each driver tooks place. "
 "So new drivers can easily compare to older ones."
 msgstr ""
-"Da Bestzeiten nicht automatisch verschwinden, addieren diese sich über Zeit"
-" sehr hoch.\n"
-"Neue Fahrer werden es schwer haben andere einzuholen, die schon viele"
-" Fahrzeugklassen/Strecken Kombinationen gefahren sind und somit in vielen"
-" Rekordtabellen stehen.\n"
-"Werden Bestzeiten gemittelt relativiert sich dieser Effekt. Das bedeutet die"
-" Anzahl der Punkte für Bestzeiten wird für jeden Fahrer durch die Anzahl an"
-" Rekordtabellen geteilt, in denen er steht."
+"Da Bestzeiten nicht automatisch verschwinden, addieren diese sich über Zeit "
+"sehr hoch.\n"
+"Neue Fahrer werden es schwer haben andere einzuholen, die schon viele "
+"Fahrzeugklassen/Strecken Kombinationen gefahren sind und somit in vielen "
+"Rekordtabellen stehen.\n"
+"Werden Bestzeiten gemittelt relativiert sich dieser Effekt. Das bedeutet die "
+"Anzahl der Punkte für Bestzeiten wird für jeden Fahrer durch die Anzahl an "
+"Rekordtabellen geteilt, in denen er steht."
 
 #: http/classes/Core/ACswui.php:130
 #: http/content/html/Z_About/AboutDriverRanking.php:79
@@ -461,10 +461,10 @@ msgstr "Einstellungen für die Fahrerwertung"
 #: http/classes/Core/ACswui.php:163 http/classes/Core/ACswui.php:167
 #: http/classes/Core/ACswui.php:183 http/classes/Core/ServerSlot.php:141
 #: http/classes/DbEntry/ServerPreset.php:191
-#: http/classes/DbEntry/ServerPreset.php:255
-#: http/classes/DbEntry/ServerPreset.php:262
-#: http/classes/DbEntry/ServerPreset.php:273
-#: http/classes/DbEntry/ServerPreset.php:287
+#: http/classes/DbEntry/ServerPreset.php:259
+#: http/classes/DbEntry/ServerPreset.php:266
+#: http/classes/DbEntry/ServerPreset.php:277
+#: http/classes/DbEntry/ServerPreset.php:291
 #: http/classes/DbEntry/Weather.php:148
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:34
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:38
@@ -597,8 +597,8 @@ msgstr "Trainingsschleife"
 msgid "Setup a session loop for practice"
 msgstr "Eine Trainingsschleife aufsetzen"
 
-#: http/classes/Core/ACswui.php:195 http/classes/DbEntry/ServerPreset.php:465
-#: http/classes/DbEntry/ServerPreset.php:516
+#: http/classes/Core/ACswui.php:195 http/classes/DbEntry/ServerPreset.php:469
+#: http/classes/DbEntry/ServerPreset.php:520
 #: http/content/html/W_Sessions/SessionLoops.php:153
 msgid "Enable"
 msgstr "Aktiveren"
@@ -893,7 +893,7 @@ msgstr "Der Typ der Y-Achse (Platzierung oder Zeit-Abstand)"
 msgid "Place"
 msgstr "Platz"
 
-#: http/classes/Core/ACswui.php:276 http/classes/DbEntry/ServerPreset.php:608
+#: http/classes/Core/ACswui.php:276 http/classes/DbEntry/ServerPreset.php:612
 #: http/content/html/W_Sessions/SessionOverview.php:172
 msgid "Gap"
 msgstr "Abstand"
@@ -1793,8 +1793,8 @@ msgid "Assetto Corsa Server Sesstings"
 msgstr "Assetto Corsa Server Einstellungen"
 
 #: http/classes/DbEntry/ServerPreset.php:207
-#: http/classes/DbEntry/ServerPreset.php:409
-#: http/classes/DbEntry/ServerPreset.php:500
+#: http/classes/DbEntry/ServerPreset.php:413
+#: http/classes/DbEntry/ServerPreset.php:504
 msgid "General"
 msgstr "Allgemein"
 
@@ -1945,80 +1945,108 @@ msgstr "Wetter"
 msgid "Select which weathers shall be used on the server"
 msgstr "Wähle welche Wetter auf dem Server verwendet werden sollen"
 
-#: http/classes/DbEntry/ServerPreset.php:251
+#: http/classes/DbEntry/ServerPreset.php:246
+msgid "Randomize"
+msgstr "Zufälligkeit"
+
+#: http/classes/DbEntry/ServerPreset.php:246
+msgid ""
+"When multiple weather are selected, they are assigned randomly. By default, "
+"assetto corsa selects a random weather 'per Session'. Which means the "
+"qualifying may have completely different weather than the race. When "
+"selecting 'per Server Run' all sessions (P/Q/R) will have the same weather, "
+"but at next server run a new random weather is assigned."
+msgstr ""
+"Wenn mehrere Wetter ausgewählt sind werden sie per Zufall ausgewählt."
+" Standardmäßig wählt Assetto Corsa für jede Session ein Wetter aus (\"per"
+" Session\"). Das bedeutet im Qualifying könnte ein ganz anderes Wetter sein"
+" als im Rennen. "
+"Stellt man \"per Serverstart\" ein, wird das Wetter einmal vor dem Start des"
+" Servers zufällig gewählt. Dann haben alle Sessions (P/Q/R) das gleiche"
+" Wetter."
+
+#: http/classes/DbEntry/ServerPreset.php:247
+msgid "per Server Run"
+msgstr "per Serverstart"
+
+#: http/classes/DbEntry/ServerPreset.php:248
+msgid "per Session"
+msgstr "per Session"
+
+#: http/classes/DbEntry/ServerPreset.php:255
 #: http/content/html/W_Sessions.php:10
 msgid "Sessions"
 msgstr "Sessions"
 
-#: http/classes/DbEntry/ServerPreset.php:251
+#: http/classes/DbEntry/ServerPreset.php:255
 msgid "Session Settings"
 msgstr "Session Einstellungen"
 
-#: http/classes/DbEntry/ServerPreset.php:254
+#: http/classes/DbEntry/ServerPreset.php:258
 msgid "Booking"
 msgstr "Reservierung"
 
-#: http/classes/DbEntry/ServerPreset.php:254
+#: http/classes/DbEntry/ServerPreset.php:258
 msgid "Settings for Booking Session"
 msgstr "Einstellungen für die Reservierung"
 
-#: http/classes/DbEntry/ServerPreset.php:255
-#: http/classes/DbEntry/ServerPreset.php:262
-#: http/classes/DbEntry/ServerPreset.php:273
-#: http/classes/DbEntry/ServerPreset.php:287
+#: http/classes/DbEntry/ServerPreset.php:259
+#: http/classes/DbEntry/ServerPreset.php:266
+#: http/classes/DbEntry/ServerPreset.php:277
+#: http/classes/DbEntry/ServerPreset.php:291
 msgid "Name of the session"
 msgstr "Name der Session"
 
-#: http/classes/DbEntry/ServerPreset.php:256
-#: http/classes/DbEntry/ServerPreset.php:263
-#: http/classes/DbEntry/ServerPreset.php:274
-#: http/classes/DbEntry/ServerPreset.php:291
+#: http/classes/DbEntry/ServerPreset.php:260
+#: http/classes/DbEntry/ServerPreset.php:267
+#: http/classes/DbEntry/ServerPreset.php:278
+#: http/classes/DbEntry/ServerPreset.php:295
 msgid "Time"
 msgstr "Zeit"
 
-#: http/classes/DbEntry/ServerPreset.php:256
-#: http/classes/DbEntry/ServerPreset.php:263
-#: http/classes/DbEntry/ServerPreset.php:274
+#: http/classes/DbEntry/ServerPreset.php:260
+#: http/classes/DbEntry/ServerPreset.php:267
+#: http/classes/DbEntry/ServerPreset.php:278
 msgid "Duration of session in Minutes"
 msgstr "Dauer der Session in Minuten"
 
-#: http/classes/DbEntry/ServerPreset.php:261
+#: http/classes/DbEntry/ServerPreset.php:265
 msgid "Settings for Practice Session"
 msgstr "Einstellungen für die Trainings-Session"
 
-#: http/classes/DbEntry/ServerPreset.php:266
-#: http/classes/DbEntry/ServerPreset.php:277
-#: http/classes/DbEntry/ServerPreset.php:297
+#: http/classes/DbEntry/ServerPreset.php:270
+#: http/classes/DbEntry/ServerPreset.php:281
+#: http/classes/DbEntry/ServerPreset.php:301
 msgid "Is Open"
 msgstr "Zugang"
 
-#: http/classes/DbEntry/ServerPreset.php:266
-#: http/classes/DbEntry/ServerPreset.php:277
-#: http/classes/DbEntry/ServerPreset.php:297
+#: http/classes/DbEntry/ServerPreset.php:270
+#: http/classes/DbEntry/ServerPreset.php:281
+#: http/classes/DbEntry/ServerPreset.php:301
 msgid "Either Session can be joined"
 msgstr "Ob Fahrer:innen der Session beitreten können"
 
-#: http/classes/DbEntry/ServerPreset.php:267
-#: http/classes/DbEntry/ServerPreset.php:278
-#: http/classes/DbEntry/ServerPreset.php:298
+#: http/classes/DbEntry/ServerPreset.php:271
+#: http/classes/DbEntry/ServerPreset.php:282
+#: http/classes/DbEntry/ServerPreset.php:302
 msgid "No Join"
 msgstr "Kein Zutritt"
 
-#: http/classes/DbEntry/ServerPreset.php:268
-#: http/classes/DbEntry/ServerPreset.php:279
-#: http/classes/DbEntry/ServerPreset.php:299
+#: http/classes/DbEntry/ServerPreset.php:272
+#: http/classes/DbEntry/ServerPreset.php:283
+#: http/classes/DbEntry/ServerPreset.php:303
 msgid "Free Join"
 msgstr "Freier Zutritt"
 
-#: http/classes/DbEntry/ServerPreset.php:272
+#: http/classes/DbEntry/ServerPreset.php:276
 msgid "Settings for Qualifying Session"
 msgstr "Einstellunken für die Qualifikations-Session"
 
-#: http/classes/DbEntry/ServerPreset.php:281
+#: http/classes/DbEntry/ServerPreset.php:285
 msgid "Wait"
 msgstr "Warten"
 
-#: http/classes/DbEntry/ServerPreset.php:281
+#: http/classes/DbEntry/ServerPreset.php:285
 #, php-format
 msgid ""
 "this is the factor to calculate the remaining time in a qualify session "
@@ -2029,11 +2057,11 @@ msgstr ""
 "um die aktuelle Runde von Fahrer:innen zu beenden. Definiert in Prozent der "
 "bisher besten Rundenzeit."
 
-#: http/classes/DbEntry/ServerPreset.php:286
+#: http/classes/DbEntry/ServerPreset.php:290
 msgid "Settings for Race Session"
 msgstr "Einstellungen für die Renn-Session"
 
-#: http/classes/DbEntry/ServerPreset.php:288
+#: http/classes/DbEntry/ServerPreset.php:292
 #: http/content/json/ListPopularCarClasses.php:22
 #: http/content/json/ListPopularTracks.php:28
 #: http/content/html/W_Sessions/SessionOverview.php:168
@@ -2041,32 +2069,32 @@ msgstr "Einstellungen für die Renn-Session"
 msgid "Laps"
 msgstr "Runden"
 
-#: http/classes/DbEntry/ServerPreset.php:288
+#: http/classes/DbEntry/ServerPreset.php:292
 msgid "Amount of Laps for the race"
 msgstr "Dauer des Rennens in Runden"
 
-#: http/classes/DbEntry/ServerPreset.php:291
+#: http/classes/DbEntry/ServerPreset.php:295
 msgid "Amount of Minutes for the race (only if Laps=0)"
 msgstr "Dauer des Rennens in Minuten (nur wenn Runden=0)"
 
-#: http/classes/DbEntry/ServerPreset.php:294
-#: http/classes/DbEntry/ServerPreset.php:762
+#: http/classes/DbEntry/ServerPreset.php:298
+#: http/classes/DbEntry/ServerPreset.php:766
 msgid "Wait Time"
 msgstr "Wartezeit"
 
-#: http/classes/DbEntry/ServerPreset.php:294
+#: http/classes/DbEntry/ServerPreset.php:298
 msgid "Seconds before start of the Session"
 msgstr "Wartezeit in Sekunden vor dem Start der Session"
 
-#: http/classes/DbEntry/ServerPreset.php:300
+#: http/classes/DbEntry/ServerPreset.php:304
 msgid "Join 20s"
 msgstr "Zugang 20s"
 
-#: http/classes/DbEntry/ServerPreset.php:302
+#: http/classes/DbEntry/ServerPreset.php:306
 msgid "Over Time"
 msgstr "Nachfahrzeit"
 
-#: http/classes/DbEntry/ServerPreset.php:302
+#: http/classes/DbEntry/ServerPreset.php:306
 msgid ""
 "Time remaining in seconds to finish the race from the moment the first one "
 "passes on the finish line"
@@ -2074,27 +2102,27 @@ msgstr ""
 "Maximale Zeit (in Sekunden) um das Rennen zu beenden, nachdem der Führende "
 "die Ziellinie überfahren hat."
 
-#: http/classes/DbEntry/ServerPreset.php:305
+#: http/classes/DbEntry/ServerPreset.php:309
 msgid "Pit Window Open"
 msgstr "Boxenfenster Öffnet"
 
-#: http/classes/DbEntry/ServerPreset.php:305
+#: http/classes/DbEntry/ServerPreset.php:309
 msgid "Pit window open at lap/minute (depends on the race mode)"
 msgstr "Wann das Boxenfenster öffnet (Runde/Minute)"
 
-#: http/classes/DbEntry/ServerPreset.php:308
+#: http/classes/DbEntry/ServerPreset.php:312
 msgid "Pit Window Close"
 msgstr "Boxenfenster Schließt"
 
-#: http/classes/DbEntry/ServerPreset.php:308
+#: http/classes/DbEntry/ServerPreset.php:312
 msgid "Pit window closes at lap/minute (depends on the race mode)"
 msgstr "Wann das Boxenfenster schließt (Runde/Minute)"
 
-#: http/classes/DbEntry/ServerPreset.php:311
+#: http/classes/DbEntry/ServerPreset.php:315
 msgid "Reversed Grid"
 msgstr "Invertierter Start"
 
-#: http/classes/DbEntry/ServerPreset.php:311
+#: http/classes/DbEntry/ServerPreset.php:315
 msgid ""
 "0 = no additional race, 1toX = only those position will be reversed for the "
 "next race, -1 = all the position will be reversed (Retired players will be "
@@ -2104,68 +2132,68 @@ msgstr ""
 "werden invertiert (außer DNF Fahrer:innen)1..20 - Nur die ersten x-"
 "Positionen werden invertiert."
 
-#: http/classes/DbEntry/ServerPreset.php:312
-#: http/classes/DbEntry/ServerPreset.php:360
+#: http/classes/DbEntry/ServerPreset.php:316
+#: http/classes/DbEntry/ServerPreset.php:364
 msgid "No"
 msgstr "Nein"
 
-#: http/classes/DbEntry/ServerPreset.php:313
+#: http/classes/DbEntry/ServerPreset.php:317
 msgid "All"
 msgstr "Alle"
 
-#: http/classes/DbEntry/ServerPreset.php:314
+#: http/classes/DbEntry/ServerPreset.php:318
 msgid "Positions"
 msgstr "Positionen"
 
-#: http/classes/DbEntry/ServerPreset.php:316
+#: http/classes/DbEntry/ServerPreset.php:320
 msgid "Extra Lap"
 msgstr "Extra Runde"
 
-#: http/classes/DbEntry/ServerPreset.php:316
+#: http/classes/DbEntry/ServerPreset.php:320
 msgid ""
 "if it's a timed race, with 1 the race will not end when the time is over and "
 "the leader crosses the line, but the latter will be forced to drive another "
 "extra lap."
 msgstr "Nach abgelaufener Zeit eine weitere Runde fahren bis zur Ziellinie."
 
-#: http/classes/DbEntry/ServerPreset.php:322
+#: http/classes/DbEntry/ServerPreset.php:326
 msgid "Realism"
 msgstr "Realismus"
 
-#: http/classes/DbEntry/ServerPreset.php:322
+#: http/classes/DbEntry/ServerPreset.php:326
 msgid "Realism Settings"
 msgstr "Realismus Einstellungen"
 
-#: http/classes/DbEntry/ServerPreset.php:325
+#: http/classes/DbEntry/ServerPreset.php:329
 msgid "Penalties"
 msgstr "Strafen"
 
-#: http/classes/DbEntry/ServerPreset.php:326
+#: http/classes/DbEntry/ServerPreset.php:330
 msgid "Race Gas Penalty"
 msgstr "Race Gas Penalty"
 
 # WTF ???
-#: http/classes/DbEntry/ServerPreset.php:326
+#: http/classes/DbEntry/ServerPreset.php:330
 msgid ""
 "0  any cut will be penalized with the gas cut message; 1 no penalization "
 "will be forced, but cuts will be saved in the race result json."
 msgstr "Wenn aktiv, wird jedes Verlassen der Streckenbegrenzung bestraft"
 
-#: http/classes/DbEntry/ServerPreset.php:327
+#: http/classes/DbEntry/ServerPreset.php:331
 msgid "Max Contacts"
 msgstr "Maximale Kontakte"
 
-#: http/classes/DbEntry/ServerPreset.php:327
+#: http/classes/DbEntry/ServerPreset.php:331
 msgid "If a driver has more contacts per kilometer he will be reset to pit"
 msgstr ""
 "Haben Fahrer:innen mehr Kontakte pro kilometer, werden sie an die Box zurück "
 "gesetzt"
 
-#: http/classes/DbEntry/ServerPreset.php:330
+#: http/classes/DbEntry/ServerPreset.php:334
 msgid "Start Rule"
 msgstr "Startregel"
 
-#: http/classes/DbEntry/ServerPreset.php:330
+#: http/classes/DbEntry/ServerPreset.php:334
 msgid ""
 "0 is car locked until start;   1 is teleport   ; 2 is drivethru (if race has "
 "3 or less laps then the Teleport penalty is enabled)"
@@ -2174,195 +2202,195 @@ msgstr ""
 "Fahrer:innen werden bei Frühstart an die Box zurück gesetzt'Drivetru' - "
 "Fahrer:innen müssen bei Frühstart einmal durch die Box fahren"
 
-#: http/classes/DbEntry/ServerPreset.php:331
+#: http/classes/DbEntry/ServerPreset.php:335
 msgid "Locked"
 msgstr "Gesperrt"
 
-#: http/classes/DbEntry/ServerPreset.php:332
-#: http/classes/DbEntry/ServerPreset.php:485
+#: http/classes/DbEntry/ServerPreset.php:336
+#: http/classes/DbEntry/ServerPreset.php:489
 msgid "Teleport"
 msgstr "Teleportieren"
 
-#: http/classes/DbEntry/ServerPreset.php:333
+#: http/classes/DbEntry/ServerPreset.php:337
 msgid "Drivethru"
 msgstr "Drive-Thru"
 
-#: http/classes/DbEntry/ServerPreset.php:335
+#: http/classes/DbEntry/ServerPreset.php:339
 msgid "Allowed Tyres Out"
 msgstr "Streckenbegrenzung"
 
-#: http/classes/DbEntry/ServerPreset.php:335
+#: http/classes/DbEntry/ServerPreset.php:339
 msgid "Amount of tyres that are allowed to cross the driving line"
 msgstr ""
 "Anzahl der Reifen, die sich außerhalb der Streckenbegrenzung befinden dürfen"
 
-#: http/classes/DbEntry/ServerPreset.php:335
+#: http/classes/DbEntry/ServerPreset.php:339
 msgid "Tyres"
 msgstr "Reifen"
 
-#: http/classes/DbEntry/ServerPreset.php:340
+#: http/classes/DbEntry/ServerPreset.php:344
 msgid "Driving Aids"
 msgstr "Fahrhilfen"
 
-#: http/classes/DbEntry/ServerPreset.php:340
+#: http/classes/DbEntry/ServerPreset.php:344
 msgid "Allowance of systems that support drivability"
 msgstr "Unterstüzung zur Fahrbarkeit"
 
-#: http/classes/DbEntry/ServerPreset.php:341
+#: http/classes/DbEntry/ServerPreset.php:345
 msgid "ABS"
 msgstr "ABS"
 
-#: http/classes/DbEntry/ServerPreset.php:341
+#: http/classes/DbEntry/ServerPreset.php:345
 msgid "Anti-Lock Braking System"
 msgstr "Antiblockiersystem"
 
-#: http/classes/DbEntry/ServerPreset.php:342
-#: http/classes/DbEntry/ServerPreset.php:347
-#: http/classes/DbEntry/ServerPreset.php:352
+#: http/classes/DbEntry/ServerPreset.php:346
+#: http/classes/DbEntry/ServerPreset.php:351
 #: http/classes/DbEntry/ServerPreset.php:356
+#: http/classes/DbEntry/ServerPreset.php:360
 msgid "Disabled"
 msgstr "Deaktiviert"
 
-#: http/classes/DbEntry/ServerPreset.php:343
-#: http/classes/DbEntry/ServerPreset.php:348
+#: http/classes/DbEntry/ServerPreset.php:347
+#: http/classes/DbEntry/ServerPreset.php:352
 msgid "Car Dependent"
 msgstr "Fahrzeugabhängig"
 
-#: http/classes/DbEntry/ServerPreset.php:344
-#: http/classes/DbEntry/ServerPreset.php:349
+#: http/classes/DbEntry/ServerPreset.php:348
+#: http/classes/DbEntry/ServerPreset.php:353
 msgid "Enabled"
 msgstr "Aktiviert"
 
-#: http/classes/DbEntry/ServerPreset.php:346
+#: http/classes/DbEntry/ServerPreset.php:350
 msgid "TC"
 msgstr "ASR"
 
-#: http/classes/DbEntry/ServerPreset.php:346
+#: http/classes/DbEntry/ServerPreset.php:350
 msgid "Traction Control"
 msgstr "Traktionskontrolle"
 
-#: http/classes/DbEntry/ServerPreset.php:351
+#: http/classes/DbEntry/ServerPreset.php:355
 msgid "ESC"
 msgstr "ESP"
 
-#: http/classes/DbEntry/ServerPreset.php:351
+#: http/classes/DbEntry/ServerPreset.php:355
 msgid "Electronic Stability Control"
 msgstr "Elektronisches Stabilitätsprogramm"
 
-#: http/classes/DbEntry/ServerPreset.php:353
 #: http/classes/DbEntry/ServerPreset.php:357
+#: http/classes/DbEntry/ServerPreset.php:361
 msgid "Allow"
 msgstr "Erlauben"
 
-#: http/classes/DbEntry/ServerPreset.php:355
+#: http/classes/DbEntry/ServerPreset.php:359
 msgid "Automatic Clutch"
 msgstr "Automatische Kupplung"
 
-#: http/classes/DbEntry/ServerPreset.php:355
+#: http/classes/DbEntry/ServerPreset.php:359
 msgid "Automatic Clutch Assist"
 msgstr "Automatische Kupplung"
 
-#: http/classes/DbEntry/ServerPreset.php:359
+#: http/classes/DbEntry/ServerPreset.php:363
 msgid "Tyre Blankets"
 msgstr "Reifen Heizdecken"
 
-#: http/classes/DbEntry/ServerPreset.php:359
+#: http/classes/DbEntry/ServerPreset.php:363
 msgid ""
 "At the start of the session or after the pitstop the tyre will have the the "
 "optimal temperature"
 msgstr ""
 "Wenn aktiv, haben die Reifen beim Start bereits die optimale Temperatur"
 
-#: http/classes/DbEntry/ServerPreset.php:361
+#: http/classes/DbEntry/ServerPreset.php:365
 msgid "Yes"
 msgstr "Ja"
 
-#: http/classes/DbEntry/ServerPreset.php:363
+#: http/classes/DbEntry/ServerPreset.php:367
 msgid "Virtual Mirror"
 msgstr "Virtueller Spiegel"
 
-#: http/classes/DbEntry/ServerPreset.php:363
+#: http/classes/DbEntry/ServerPreset.php:367
 msgid "With this setting the virtual mirror can be forced for every driver."
 msgstr "Mit dieser Einstellung kann der virtuelle Spiegel erzwungen werden"
 
-#: http/classes/DbEntry/ServerPreset.php:364
+#: http/classes/DbEntry/ServerPreset.php:368
 msgid "Optional"
 msgstr "Optional"
 
-#: http/classes/DbEntry/ServerPreset.php:365
+#: http/classes/DbEntry/ServerPreset.php:369
 msgid "Forced"
 msgstr "Erzwungen"
 
-#: http/classes/DbEntry/ServerPreset.php:369
+#: http/classes/DbEntry/ServerPreset.php:373
 msgid "Physics"
 msgstr "Physik"
 
-#: http/classes/DbEntry/ServerPreset.php:369
+#: http/classes/DbEntry/ServerPreset.php:373
 msgid "Adjustment constants of physics"
 msgstr "Physikalische Einstellungen"
 
-#: http/classes/DbEntry/ServerPreset.php:370
+#: http/classes/DbEntry/ServerPreset.php:374
 msgid "Fuel Rate"
 msgstr "Spritverbrauch"
 
-#: http/classes/DbEntry/ServerPreset.php:370
+#: http/classes/DbEntry/ServerPreset.php:374
 msgid "Fuel usage from 0 (no fuel usage) to XXX (100 is the realistic one)"
 msgstr ""
 "Spritverbrauch in Prozent (100% entspricht dem realistischen Verbrauch)"
 
-#: http/classes/DbEntry/ServerPreset.php:373
+#: http/classes/DbEntry/ServerPreset.php:377
 msgid "Damage Multiplier"
 msgstr "Schaden"
 
-#: http/classes/DbEntry/ServerPreset.php:373
+#: http/classes/DbEntry/ServerPreset.php:377
 msgid "Damage from 0 (no damage) to 100 (full damage)"
 msgstr "Schaden in Prozent (100% entspricht dem realistischen Schaden)"
 
-#: http/classes/DbEntry/ServerPreset.php:376
+#: http/classes/DbEntry/ServerPreset.php:380
 msgid "Tyre Wear Rate"
 msgstr "Reifenverschleiß"
 
-#: http/classes/DbEntry/ServerPreset.php:376
+#: http/classes/DbEntry/ServerPreset.php:380
 msgid "Tyre wear from 0 (no tyre wear) to XXX (100 is the realistic one)"
 msgstr "Reifenverscleiß in Prozent (100% entspricht realistischem Verschleiß)"
 
-#: http/classes/DbEntry/ServerPreset.php:381
+#: http/classes/DbEntry/ServerPreset.php:385
 msgid "Dynamic Track"
 msgstr "Dynamische Strecke"
 
-#: http/classes/DbEntry/ServerPreset.php:381
+#: http/classes/DbEntry/ServerPreset.php:385
 msgid "Dynamic Grip Level of the Track"
 msgstr "Dynamische Traktionsbedingungen auf der Strecke"
 
-#: http/classes/DbEntry/ServerPreset.php:382
+#: http/classes/DbEntry/ServerPreset.php:386
 msgid "Start Grip"
 msgstr "Start-Haftung"
 
-#: http/classes/DbEntry/ServerPreset.php:382
+#: http/classes/DbEntry/ServerPreset.php:386
 msgid "Amount of Grip at session start"
 msgstr "Traktion zu beginn der Session"
 
-#: http/classes/DbEntry/ServerPreset.php:385
+#: http/classes/DbEntry/ServerPreset.php:389
 msgid "Randomness"
 msgstr "Zufälligkeit"
 
-#: http/classes/DbEntry/ServerPreset.php:385
+#: http/classes/DbEntry/ServerPreset.php:389
 msgid "Level of randomness added to the start grip"
 msgstr "Zufällige Abweichung der Traktion zu Beginn der Session"
 
-#: http/classes/DbEntry/ServerPreset.php:388
+#: http/classes/DbEntry/ServerPreset.php:392
 msgid "Lap Gain"
 msgstr "Anstieg"
 
-#: http/classes/DbEntry/ServerPreset.php:388
+#: http/classes/DbEntry/ServerPreset.php:392
 msgid "How many laps are needed to increase the grip by 1%"
 msgstr "Die Anzahl der gefahrenen Runden um die Traktion um 1% zu erhöhen."
 
-#: http/classes/DbEntry/ServerPreset.php:391
+#: http/classes/DbEntry/ServerPreset.php:395
 msgid "Session Transfer"
 msgstr "Session Übertrag"
 
-#: http/classes/DbEntry/ServerPreset.php:391
+#: http/classes/DbEntry/ServerPreset.php:395
 msgid ""
 "How much of the gained grip is to be added to the next session 100 -> all "
 "the gained grip. Example: difference between starting (90) and ending (96) "
@@ -2373,57 +2401,57 @@ msgstr ""
 "soll.Beispiel: Traktionsgewinn von Beginn bei 90% und zu Ende 96% (6& "
 "Zuwachs).Bei 50% Transfer wird die nächste Session mit 93% starten."
 
-#: http/classes/DbEntry/ServerPreset.php:400
+#: http/classes/DbEntry/ServerPreset.php:404
 msgid "Real Penalty"
 msgstr "Real Penalty"
 
-#: http/classes/DbEntry/ServerPreset.php:400
+#: http/classes/DbEntry/ServerPreset.php:404
 msgid "Real Penalty Plugin Sesstings"
 msgstr "eal Penalty Plugin Sesstings"
 
-#: http/classes/DbEntry/ServerPreset.php:406
+#: http/classes/DbEntry/ServerPreset.php:410
 msgid "AC Settings"
 msgstr "Assetto Corsa Einstellungen"
 
-#: http/classes/DbEntry/ServerPreset.php:410
+#: http/classes/DbEntry/ServerPreset.php:414
 msgid "Cockpit Camera"
 msgstr "Cockpit Kamera"
 
-#: http/classes/DbEntry/ServerPreset.php:411
+#: http/classes/DbEntry/ServerPreset.php:415
 msgid "Weather Checksum"
 msgstr "Wetter Prüfsumme"
 
-#: http/classes/DbEntry/ServerPreset.php:412
+#: http/classes/DbEntry/ServerPreset.php:416
 msgid "SOL Mandatory"
 msgstr "SOL Erforderlich"
 
-#: http/classes/DbEntry/ServerPreset.php:413
+#: http/classes/DbEntry/ServerPreset.php:417
 msgid "CSP Mandatory"
 msgstr "CSP Erforderlich"
 
-#: http/classes/DbEntry/ServerPreset.php:416
+#: http/classes/DbEntry/ServerPreset.php:420
 msgid "Safety Car"
 msgstr "Safety Car"
 
-#: http/classes/DbEntry/ServerPreset.php:417
+#: http/classes/DbEntry/ServerPreset.php:421
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:11
 msgid "Car Model"
 msgstr "Fahrzeugmodell"
 
-#: http/classes/DbEntry/ServerPreset.php:417
+#: http/classes/DbEntry/ServerPreset.php:421
 msgid "Car model of safety car (folder name in assettocorsa/content/cars)"
 msgstr ""
 "Fahrzeugmodell für das Safetycar (Ordnername in assettocorsa/content/cars)"
 
-#: http/classes/DbEntry/ServerPreset.php:418
+#: http/classes/DbEntry/ServerPreset.php:422
 msgid "Sart Behind SC"
 msgstr "Start Hinter SC"
 
-#: http/classes/DbEntry/ServerPreset.php:419
+#: http/classes/DbEntry/ServerPreset.php:423
 msgid "Normalized Light Off Position"
 msgstr "Normierte Licht-Aus Position"
 
-#: http/classes/DbEntry/ServerPreset.php:419
+#: http/classes/DbEntry/ServerPreset.php:423
 msgid ""
 "Rolling start: normalized position (rance 0-1 - 0 = start of first lap, 1 = "
 "end of first lap) of the first driver during rolling start when the app "
@@ -2431,11 +2459,11 @@ msgid ""
 msgstr ""
 
 # WTF???
-#: http/classes/DbEntry/ServerPreset.php:422
+#: http/classes/DbEntry/ServerPreset.php:426
 msgid "Normalized Start Position"
 msgstr "Normalisierte Startposition"
 
-#: http/classes/DbEntry/ServerPreset.php:422
+#: http/classes/DbEntry/ServerPreset.php:426
 msgid ""
 "Rolling start: normalized position (racege 0 - 1.xx - 0 = start of first "
 "lap, 1 = end of first lap, >1 during second lap) of the first driver during "
@@ -2443,21 +2471,21 @@ msgid ""
 "START_NORMALIZED_POSITION must be greater than LIGHT_OFF_NORMALIZED_POSITION"
 msgstr ""
 
-#: http/classes/DbEntry/ServerPreset.php:425
+#: http/classes/DbEntry/ServerPreset.php:429
 msgid "Green Light Delay"
 msgstr "Grünes-Licht-Verzögerung"
 
-#: http/classes/DbEntry/ServerPreset.php:425
+#: http/classes/DbEntry/ServerPreset.php:429
 msgid ""
 "Rolling start: delay of the green light after red signal (seconds). Default "
 "2.5"
 msgstr "Bei fliegendem Start: Verzögerung nach dem Roten Licht, bis Grün kommt"
 
-#: http/classes/DbEntry/ServerPreset.php:430
+#: http/classes/DbEntry/ServerPreset.php:434
 msgid "No Penalty"
 msgstr "Keine Strafe"
 
-#: http/classes/DbEntry/ServerPreset.php:431
+#: http/classes/DbEntry/ServerPreset.php:435
 msgid ""
 "List of the Steam GUIDs (seperated by a semicolon) that can connect to the "
 "server without the app and sol (for example \"Race Direction\" or for \"Live"
@@ -2467,11 +2495,11 @@ msgstr ""
 "können,ohne RP App und SOL installiert zu haben.Zum Beispiel für Rennleitung "
 "oder Live-Aufnahmen"
 
-#: http/classes/DbEntry/ServerPreset.php:432
+#: http/classes/DbEntry/ServerPreset.php:436
 msgid "Cars"
 msgstr "Fahrzeuge"
 
-#: http/classes/DbEntry/ServerPreset.php:432
+#: http/classes/DbEntry/ServerPreset.php:436
 msgid ""
 "List of car models (seperated by a semicolon) wihtout penalties and checks.\n"
 "Example: Cars=car_name1;car_name2,car_name3"
@@ -2479,67 +2507,67 @@ msgstr ""
 "Liste and Fahrzeugmodellen (gentrennt durch Semikolon), ohne Strafen und "
 "Prüfungen."
 
-#: http/classes/DbEntry/ServerPreset.php:435
+#: http/classes/DbEntry/ServerPreset.php:439
 msgid "Admin"
 msgstr "Administrator"
 
-#: http/classes/DbEntry/ServerPreset.php:436
+#: http/classes/DbEntry/ServerPreset.php:440
 msgid ""
 "list of the Steam GUIDs. This drivers can send \"commands\" to the server "
 "via chat"
 msgstr ""
 "Liste an Steam GUIDs, welche Kommandos an den Server senden dürfen (im Chat)"
 
-#: http/classes/DbEntry/ServerPreset.php:439
+#: http/classes/DbEntry/ServerPreset.php:443
 msgid "Helicorsa"
 msgstr "Helicorsa"
 
-#: http/classes/DbEntry/ServerPreset.php:440
+#: http/classes/DbEntry/ServerPreset.php:444
 msgid "Mandatory"
 msgstr "Erforderlich"
 
-#: http/classes/DbEntry/ServerPreset.php:441
+#: http/classes/DbEntry/ServerPreset.php:445
 msgid "Distance Threshold"
 msgstr "Entfernungsschwelle"
 
-#: http/classes/DbEntry/ServerPreset.php:441
+#: http/classes/DbEntry/ServerPreset.php:445
 msgid "Distance threshold: How far away are the cars we paint?"
 msgstr "Wie weit weg werden Autos dargestellt"
 
-#: http/classes/DbEntry/ServerPreset.php:444
+#: http/classes/DbEntry/ServerPreset.php:448
 msgid "World Zoom"
 msgstr "Welt Zoom"
 
-#: http/classes/DbEntry/ServerPreset.php:444
+#: http/classes/DbEntry/ServerPreset.php:448
 msgid " world coordinates zoom or how big the bars are"
 msgstr "Welt Koordinaten Zoom - oder, wie groß die Autos sein sollen."
 
-#: http/classes/DbEntry/ServerPreset.php:447
+#: http/classes/DbEntry/ServerPreset.php:451
 msgid "Opacity Threshold"
 msgstr "Transparenz Schwelle"
 
-#: http/classes/DbEntry/ServerPreset.php:447
+#: http/classes/DbEntry/ServerPreset.php:451
 msgid ""
 "Opacity threshold: At wich distance (in meters) should the cars start to "
 "fade?"
 msgstr "Bei welcher Distanz (in Metern) die Autos ausblenden sollen"
 
-#: http/classes/DbEntry/ServerPreset.php:450
+#: http/classes/DbEntry/ServerPreset.php:454
 msgid "Front Fadeout Arc"
 msgstr "Vorderer Ausblendebogen"
 
-#: http/classes/DbEntry/ServerPreset.php:450
+#: http/classes/DbEntry/ServerPreset.php:454
 msgid ""
 "fade out cars in front of the player in an arc of X degrees (0 to disable)"
 msgstr ""
 "Fahrzeuge vor Fahrer:innen werden in einem Winkel von X-Grad ausgeblendet "
 "('0' zum deaktivieren)"
 
-#: http/classes/DbEntry/ServerPreset.php:453
+#: http/classes/DbEntry/ServerPreset.php:457
 msgid "Front Fade Angle"
 msgstr "Vorderer Ausblendewinkel"
 
-#: http/classes/DbEntry/ServerPreset.php:453
+#: http/classes/DbEntry/ServerPreset.php:457
 msgid ""
 "if a car in front is faded out, how soft should it fade? (again in degrees, "
 "0 to disable = on/off, 10? is default and quite nice)"
@@ -2547,31 +2575,31 @@ msgstr ""
 "Wenn ein vorfahrendes Fahrzeug ausgeblendet wird, wie weich soll das "
 "geschehen? (Wieder in Grad, '0' zum deaktivieren)"
 
-#: http/classes/DbEntry/ServerPreset.php:456
+#: http/classes/DbEntry/ServerPreset.php:460
 msgid "Car Length"
 msgstr "Fahrzeuglänge"
 
-#: http/classes/DbEntry/ServerPreset.php:456
-#: http/classes/DbEntry/ServerPreset.php:459
+#: http/classes/DbEntry/ServerPreset.php:460
+#: http/classes/DbEntry/ServerPreset.php:463
 msgid ""
 "Real Penalty reads the size of the cars from collider. Only if enable to do "
 "it because some error it use this option. Default 4.3/1.8"
 msgstr "Real Penalty erkennt die Fahrzeuggröße am 'collider'. "
 
 # WTF??
-#: http/classes/DbEntry/ServerPreset.php:459
+#: http/classes/DbEntry/ServerPreset.php:463
 msgid "Car Width"
 msgstr "Fahrzeugbreite"
 
-#: http/classes/DbEntry/ServerPreset.php:464
+#: http/classes/DbEntry/ServerPreset.php:468
 msgid "Driver Swap"
 msgstr "Fahrerwechsel"
 
-#: http/classes/DbEntry/ServerPreset.php:466
+#: http/classes/DbEntry/ServerPreset.php:470
 msgid "Min Time"
 msgstr "Minimale Zeit"
 
-#: http/classes/DbEntry/ServerPreset.php:466
+#: http/classes/DbEntry/ServerPreset.php:470
 msgid ""
 "Min swap time (pit lane time) in seconds. Wihtout this value the swap does "
 "not work! No default"
@@ -2579,11 +2607,11 @@ msgstr ""
 "Minimale Wechselzeit (Boxenzeit) in Sekunden. Ohne diese Zeit funktioniert "
 "der Wechsel nicht."
 
-#: http/classes/DbEntry/ServerPreset.php:469
+#: http/classes/DbEntry/ServerPreset.php:473
 msgid "Min Count"
 msgstr "Minimale Anzahl"
 
-#: http/classes/DbEntry/ServerPreset.php:469
+#: http/classes/DbEntry/ServerPreset.php:473
 msgid ""
 "min mandatory swap count for every team until the end of the race . Wihtout "
 "this value the swap does not work! Zero is also ok! No default"
@@ -2592,37 +2620,37 @@ msgstr ""
 "Ohne diesen Wert funktioniert der Fahrerwechsel nicht.Null ist ein gültiger "
 "Wert."
 
-#: http/classes/DbEntry/ServerPreset.php:472
+#: http/classes/DbEntry/ServerPreset.php:476
 msgid "Enable Penalty"
 msgstr "Strafe Aktivieren"
 
-#: http/classes/DbEntry/ServerPreset.php:473
+#: http/classes/DbEntry/ServerPreset.php:477
 msgid "Penalty Time"
 msgstr "Strafzeit"
 
-#: http/classes/DbEntry/ServerPreset.php:473
+#: http/classes/DbEntry/ServerPreset.php:477
 msgid ""
 "Only if enable_penalty = true. Additional penalty time for each invalid swap "
 "(for stop&go or to the final time) for each wrong swap."
 msgstr "Zusätzliche Zeit für jeden ungültigen Fahrerwechsel"
 
-#: http/classes/DbEntry/ServerPreset.php:476
+#: http/classes/DbEntry/ServerPreset.php:480
 msgid "Penalty During Race"
 msgstr "Strafen im Rennen"
 
-#: http/classes/DbEntry/ServerPreset.php:477
+#: http/classes/DbEntry/ServerPreset.php:481
 msgid "Convert Time Penalty"
 msgstr "Zeitstrafen Wandeln"
 
-#: http/classes/DbEntry/ServerPreset.php:478
+#: http/classes/DbEntry/ServerPreset.php:482
 msgid "Convert Race Penalty"
 msgstr "Rennstrafen Wandeln"
 
-#: http/classes/DbEntry/ServerPreset.php:479
+#: http/classes/DbEntry/ServerPreset.php:483
 msgid "Disqualify Time"
 msgstr "Disqualifizierungszeit"
 
-#: http/classes/DbEntry/ServerPreset.php:479
+#: http/classes/DbEntry/ServerPreset.php:483
 #, php-format
 msgid ""
 "Only if enable_penalty = true. Disqualify if the team completes the swap and "
@@ -2632,15 +2660,15 @@ msgstr ""
 "Disqualifizieren, wenn das Team den Fahrerwechsel druchführt und die "
 "verbleibende Zeit kürzer ist."
 
-#: http/classes/DbEntry/ServerPreset.php:482
+#: http/classes/DbEntry/ServerPreset.php:486
 msgid "Driver Change"
 msgstr "Fahrerwechsel"
 
-#: http/classes/DbEntry/ServerPreset.php:486
+#: http/classes/DbEntry/ServerPreset.php:490
 msgid "Max Distance"
 msgstr "Maximale Entfernung"
 
-#: http/classes/DbEntry/ServerPreset.php:486
+#: http/classes/DbEntry/ServerPreset.php:490
 msgid ""
 "Permitted max distance from the pit for teleport. Default 10\n"
 "This value is valid only inside the pit lane! Every teleport from the track "
@@ -2649,38 +2677,38 @@ msgstr ""
 "Maximale Entfernung zur Box für den Teleport. nur gültig in der Box - jeder "
 "Teleport auf der Stracke ist nicht erlaubt."
 
-#: http/classes/DbEntry/ServerPreset.php:489
+#: http/classes/DbEntry/ServerPreset.php:493
 msgid "Practice Enabled"
 msgstr "Training Aktiviert"
 
-#: http/classes/DbEntry/ServerPreset.php:490
+#: http/classes/DbEntry/ServerPreset.php:494
 msgid "Qualify Enabled"
 msgstr "Qualifikation Aktiviert"
 
-#: http/classes/DbEntry/ServerPreset.php:491
+#: http/classes/DbEntry/ServerPreset.php:495
 msgid "Race Enabled"
 msgstr "Rennen Aktiviert"
 
-#: http/classes/DbEntry/ServerPreset.php:497
+#: http/classes/DbEntry/ServerPreset.php:501
 msgid "Penalty Settings"
 msgstr "Straf-Einstellungen"
 
-#: http/classes/DbEntry/ServerPreset.php:501
+#: http/classes/DbEntry/ServerPreset.php:505
 msgid "Laps To Take Penalty"
 msgstr "Runden zur Büße"
 
-#: http/classes/DbEntry/ServerPreset.php:501
+#: http/classes/DbEntry/ServerPreset.php:505
 msgid ""
 "How many laps a driver has to take a penalty in. Default 3 (if "
 "LAPS_TO_TAKE_PENALTY > 2 --> Jump start is always 2 for AC limit!)"
 msgstr ""
 "Anzahl der Runden, innerhalb der Fahrer:innen eine Strafe verbüßen müssen."
 
-#: http/classes/DbEntry/ServerPreset.php:504
+#: http/classes/DbEntry/ServerPreset.php:508
 msgid "Penalty Seconds"
 msgstr "Strafsekunden"
 
-#: http/classes/DbEntry/ServerPreset.php:504
+#: http/classes/DbEntry/ServerPreset.php:508
 msgid ""
 "Number of seconds to add manually to the final race result for all penalties "
 "not taken during the race."
@@ -2688,11 +2716,11 @@ msgstr ""
 "Anzahl an Sekunden, die dem Rennergebnis hinzugefügt werden, für jede nicht "
 "verbüßte Strafe"
 
-#: http/classes/DbEntry/ServerPreset.php:507
+#: http/classes/DbEntry/ServerPreset.php:511
 msgid "Last Time Without Penalty"
 msgstr "Letzte Zeit Ohne Strafe"
 
-#: http/classes/DbEntry/ServerPreset.php:507
+#: http/classes/DbEntry/ServerPreset.php:511
 msgid ""
 "Only for Time Race - Seconds at and of race to end race time (remembere the "
 "optional +1 lap is extra) without mandatory penalty\n"
@@ -2702,11 +2730,11 @@ msgid ""
 "additional lap (ca. 3/5 laps but in according to LAPS_TO_TAKE_PENALTY)."
 msgstr ""
 
-#: http/classes/DbEntry/ServerPreset.php:510
+#: http/classes/DbEntry/ServerPreset.php:514
 msgid "Last Laps Without Penalty"
 msgstr "Letzte Runden Ohne Strafe"
 
-#: http/classes/DbEntry/ServerPreset.php:510
+#: http/classes/DbEntry/ServerPreset.php:514
 msgid ""
 "If a divers gets a penalty in the last N laps (N = LAPS_TO_TAKE_PENALTY + "
 "LAST_LAPS_WITHOUT_PENALTY) can drive to the end of the race without taking "
@@ -2714,50 +2742,50 @@ msgid ""
 "= PENALTY_SECONDS + 10, .......)."
 msgstr ""
 
-#: http/classes/DbEntry/ServerPreset.php:515
+#: http/classes/DbEntry/ServerPreset.php:519
 msgid "Cutting"
 msgstr "Schneiden"
 
-#: http/classes/DbEntry/ServerPreset.php:517
+#: http/classes/DbEntry/ServerPreset.php:521
 msgid "During Safety Car"
 msgstr "Während Safety Car"
 
-#: http/classes/DbEntry/ServerPreset.php:518
+#: http/classes/DbEntry/ServerPreset.php:522
 msgid "Total Cut Warnings"
 msgstr "Anzahl Warnungen"
 
-#: http/classes/DbEntry/ServerPreset.php:518
+#: http/classes/DbEntry/ServerPreset.php:522
 msgid "How many warnings are allowed before a penalty is given."
 msgstr "Wieviele Warnungen werden gezeigt bevor eine Strafe erlassen wird."
 
-#: http/classes/DbEntry/ServerPreset.php:521
+#: http/classes/DbEntry/ServerPreset.php:525
 msgid "Tyre Dirt"
 msgstr "Reifen Schmutz"
 
-#: http/classes/DbEntry/ServerPreset.php:522
-#: http/classes/DbEntry/ServerPreset.php:614
+#: http/classes/DbEntry/ServerPreset.php:526
+#: http/classes/DbEntry/ServerPreset.php:618
 #: http/classes/DbEntry/Weather.php:168
 msgid "Minimum Speed"
 msgstr "Minimale Geschwindigkeit"
 
-#: http/classes/DbEntry/ServerPreset.php:522
+#: http/classes/DbEntry/ServerPreset.php:526
 msgid "The minimum speed, in kph, that will trigger a cut."
 msgstr "Die minimale Geschwindigkeit in km/h, die einen Schnitt verlangt"
 
-#: http/classes/DbEntry/ServerPreset.php:525
+#: http/classes/DbEntry/ServerPreset.php:529
 msgid "Seconds Between Cuts"
 msgstr "Sekunden zwischen Schnitten"
 
-#: http/classes/DbEntry/ServerPreset.php:525
+#: http/classes/DbEntry/ServerPreset.php:529
 msgid "You won't get a cut until this many seconds after the last one."
 msgstr ""
 "Es wird keine Schnitt erkannt für so viele Sekunden bis zum letzten Schnitt."
 
-#: http/classes/DbEntry/ServerPreset.php:528
+#: http/classes/DbEntry/ServerPreset.php:532
 msgid "Maximum Time"
 msgstr "Maximale Zeit"
 
-#: http/classes/DbEntry/ServerPreset.php:528
+#: http/classes/DbEntry/ServerPreset.php:532
 msgid ""
 "The maximum time cut (in seconds) to trigger a warning. If you make this too "
 "long, off-track accidents may trigger cut warnings."
@@ -2765,11 +2793,11 @@ msgstr ""
 "Die maximale Zeit (in Sekunden) die beim Verlassen der Strecke als Schnitt "
 "gelten. Wenn dieser Wert zu groß ist, werden Unfälle als Schnitte erkannt."
 
-#: http/classes/DbEntry/ServerPreset.php:531
+#: http/classes/DbEntry/ServerPreset.php:535
 msgid "Min Slowdown Ratio"
 msgstr ""
 
-#: http/classes/DbEntry/ServerPreset.php:531
+#: http/classes/DbEntry/ServerPreset.php:535
 #, php-format
 msgid ""
 "The minimum ratio of speed at leaving the track to speed at re-entering the "
@@ -2782,11 +2810,11 @@ msgid ""
 "car has sped up. Default 0.9."
 msgstr ""
 
-#: http/classes/DbEntry/ServerPreset.php:534
+#: http/classes/DbEntry/ServerPreset.php:538
 msgid "Qual Slow Down Speed"
 msgstr ""
 
-#: http/classes/DbEntry/ServerPreset.php:534
+#: http/classes/DbEntry/ServerPreset.php:538
 msgid ""
 "Slowing down to this speed (kph) will make the \"INVALID LAP, SLOW DOWN\" "
 "message in qualifying go away. Default 50."
@@ -2794,22 +2822,22 @@ msgstr ""
 "Bei Unterscheiten dieser Geschwindigkeit (in km/h) verschwindet die Warn-"
 "nachricht während der Qualifikation"
 
-#: http/classes/DbEntry/ServerPreset.php:537
+#: http/classes/DbEntry/ServerPreset.php:541
 msgid "Qual Max Sector Out Speed"
 msgstr ""
 
-#: http/classes/DbEntry/ServerPreset.php:537
+#: http/classes/DbEntry/ServerPreset.php:541
 msgid ""
 "Initial qualify max allowed speed on the start line after cutting in the "
 "last corner. Default 150 \n"
 "IMPORTAN! Adjust this value in according to the track and the cars!!!!!!!!!"
 msgstr ""
 
-#: http/classes/DbEntry/ServerPreset.php:540
+#: http/classes/DbEntry/ServerPreset.php:544
 msgid "Qual Slowdown Ratio"
 msgstr ""
 
-#: http/classes/DbEntry/ServerPreset.php:540
+#: http/classes/DbEntry/ServerPreset.php:544
 msgid ""
 "Ratio of the QUALIFY_MAX_SECTOR_OUT_SPEED. Default 0.99\n"
 "The max allowed speed on the start line after cutting  =\n"
@@ -2817,11 +2845,11 @@ msgid ""
 "QUALIFY_SLOW_DOWN_SPEED_RATIO"
 msgstr ""
 
-#: http/classes/DbEntry/ServerPreset.php:543
+#: http/classes/DbEntry/ServerPreset.php:547
 msgid "Post Cutting Time"
 msgstr ""
 
-#: http/classes/DbEntry/ServerPreset.php:543
+#: http/classes/DbEntry/ServerPreset.php:547
 msgid ""
 "Bonus time after reentering on the track. If speed decreses in this time --> "
 "No cutting! Default 2.\n"
@@ -2829,27 +2857,27 @@ msgid ""
 "the track)"
 msgstr ""
 
-#: http/classes/DbEntry/ServerPreset.php:546
-#: http/classes/DbEntry/ServerPreset.php:585
-#: http/classes/DbEntry/ServerPreset.php:607
+#: http/classes/DbEntry/ServerPreset.php:550
+#: http/classes/DbEntry/ServerPreset.php:589
+#: http/classes/DbEntry/ServerPreset.php:611
 msgid "Penalty Type"
 msgstr "Strafe"
 
-#: http/classes/DbEntry/ServerPreset.php:546
+#: http/classes/DbEntry/ServerPreset.php:550
 msgid "Penalty type for cutting."
 msgstr "Strafe für Schneiden"
 
-#: http/classes/DbEntry/ServerPreset.php:549
-#: http/classes/DbEntry/ServerPreset.php:550
+#: http/classes/DbEntry/ServerPreset.php:553
+#: http/classes/DbEntry/ServerPreset.php:554
 msgid "Speeding"
 msgstr "Geschwindigkeitsüberschreitung"
 
-#: http/classes/DbEntry/ServerPreset.php:552
-#: http/classes/DbEntry/ServerPreset.php:595
+#: http/classes/DbEntry/ServerPreset.php:556
+#: http/classes/DbEntry/ServerPreset.php:599
 msgid "Speed Limit 1"
 msgstr "Geschwindigkeit 1"
 
-#: http/classes/DbEntry/ServerPreset.php:552
+#: http/classes/DbEntry/ServerPreset.php:556
 msgid ""
 "The speed, in kph, above which you will be deemed to be speeding in pits. "
 "Make this higher to give more leniency on pit lane entry."
@@ -2857,108 +2885,108 @@ msgstr ""
 "Die Geschwindigkeit (in km/h) ab der eine Überschreitung zählt. Dies kann "
 "erhöht werden um mehr Toleranz zu gewähren:"
 
-#: http/classes/DbEntry/ServerPreset.php:555
-#: http/classes/DbEntry/ServerPreset.php:593
+#: http/classes/DbEntry/ServerPreset.php:559
+#: http/classes/DbEntry/ServerPreset.php:597
 msgid "Penalty Type 1"
 msgstr "Strafe 1"
 
-#: http/classes/DbEntry/ServerPreset.php:555
-#: http/classes/DbEntry/ServerPreset.php:561
-#: http/classes/DbEntry/ServerPreset.php:567
-#: http/classes/DbEntry/ServerPreset.php:573
-#: http/classes/DbEntry/ServerPreset.php:579
-#: http/classes/DbEntry/ServerPreset.php:585
+#: http/classes/DbEntry/ServerPreset.php:559
+#: http/classes/DbEntry/ServerPreset.php:565
+#: http/classes/DbEntry/ServerPreset.php:571
+#: http/classes/DbEntry/ServerPreset.php:577
+#: http/classes/DbEntry/ServerPreset.php:583
 #: http/classes/DbEntry/ServerPreset.php:589
 #: http/classes/DbEntry/ServerPreset.php:593
-#: http/classes/DbEntry/ServerPreset.php:598
-#: http/classes/DbEntry/ServerPreset.php:607
+#: http/classes/DbEntry/ServerPreset.php:597
+#: http/classes/DbEntry/ServerPreset.php:602
+#: http/classes/DbEntry/ServerPreset.php:611
 msgid "Penalty type for speeding"
 msgstr "Strafe für Überschnell"
 
-#: http/classes/DbEntry/ServerPreset.php:558
-#: http/classes/DbEntry/ServerPreset.php:600
+#: http/classes/DbEntry/ServerPreset.php:562
+#: http/classes/DbEntry/ServerPreset.php:604
 msgid "Speed Limit 2"
 msgstr "Geschwindigkeit 2"
 
-#: http/classes/DbEntry/ServerPreset.php:561
-#: http/classes/DbEntry/ServerPreset.php:598
+#: http/classes/DbEntry/ServerPreset.php:565
+#: http/classes/DbEntry/ServerPreset.php:602
 msgid "Penalty Type 2"
 msgstr "Strafe 2"
 
-#: http/classes/DbEntry/ServerPreset.php:564
+#: http/classes/DbEntry/ServerPreset.php:568
 msgid "Speed Limit 3"
 msgstr "Geschwindigkeit 3"
 
-#: http/classes/DbEntry/ServerPreset.php:567
+#: http/classes/DbEntry/ServerPreset.php:571
 msgid "Penalty Type 3"
 msgstr "Strafe 3"
 
-#: http/classes/DbEntry/ServerPreset.php:570
+#: http/classes/DbEntry/ServerPreset.php:574
 msgid "Speed Limit 4"
 msgstr "Geschwindigkeit 4"
 
-#: http/classes/DbEntry/ServerPreset.php:573
+#: http/classes/DbEntry/ServerPreset.php:577
 msgid "Penalty Type 4"
 msgstr "Strafe 4"
 
-#: http/classes/DbEntry/ServerPreset.php:576
+#: http/classes/DbEntry/ServerPreset.php:580
 msgid "Speed Limit 5"
 msgstr "Geschwindigkeit 5"
 
-#: http/classes/DbEntry/ServerPreset.php:579
+#: http/classes/DbEntry/ServerPreset.php:583
 msgid "Penalty Type 5"
 msgstr "Strafe 5"
 
-#: http/classes/DbEntry/ServerPreset.php:583
-#: http/classes/DbEntry/ServerPreset.php:584
+#: http/classes/DbEntry/ServerPreset.php:587
+#: http/classes/DbEntry/ServerPreset.php:588
 msgid "Crossing"
 msgstr "Überfahren"
 
-#: http/classes/DbEntry/ServerPreset.php:588
+#: http/classes/DbEntry/ServerPreset.php:592
 msgid "Jump Start"
 msgstr "Frühstart"
 
-#: http/classes/DbEntry/ServerPreset.php:589
+#: http/classes/DbEntry/ServerPreset.php:593
 msgid "Penalty Type 0"
 msgstr "Strafe 0"
 
-#: http/classes/DbEntry/ServerPreset.php:590
+#: http/classes/DbEntry/ServerPreset.php:594
 msgid "Speed Limit 0"
 msgstr "Geschwindigkeit 0"
 
-#: http/classes/DbEntry/ServerPreset.php:605
+#: http/classes/DbEntry/ServerPreset.php:609
 msgid "DRS"
 msgstr "DRS"
 
-#: http/classes/DbEntry/ServerPreset.php:606
+#: http/classes/DbEntry/ServerPreset.php:610
 msgid "Drs"
 msgstr "DRS"
 
-#: http/classes/DbEntry/ServerPreset.php:608
+#: http/classes/DbEntry/ServerPreset.php:612
 msgid "Max gap in seconds from front car."
 msgstr "Maximaler Abstand zum vorfahrenden Fahrzeug"
 
-#: http/classes/DbEntry/ServerPreset.php:611
+#: http/classes/DbEntry/ServerPreset.php:615
 msgid "Enabled After"
 msgstr "Aktiviert Nach"
 
-#: http/classes/DbEntry/ServerPreset.php:611
+#: http/classes/DbEntry/ServerPreset.php:615
 msgid ""
 "DRS enabled after N lap from start (+1 if rolling start with SC - file "
 "ac_settings.ini)."
 msgstr "DRS aktiviert nach N-Runden nach Start (+1 für fliegenden Start)"
 
-#: http/classes/DbEntry/ServerPreset.php:614
+#: http/classes/DbEntry/ServerPreset.php:618
 msgid "IF the car speed < MIN SPEED no penaly for illegal DRS use."
 msgstr ""
 "Wenn die Geschwindigkeit kleiner als Mininale-Geschwindigkeit, keine Strafe "
 "für falsche DRS Anwendung"
 
-#: http/classes/DbEntry/ServerPreset.php:617
+#: http/classes/DbEntry/ServerPreset.php:621
 msgid "Bonus Time"
 msgstr "Zusatzzeit"
 
-#: http/classes/DbEntry/ServerPreset.php:617
+#: http/classes/DbEntry/ServerPreset.php:621
 msgid ""
 "How many seconds the DRS can remain open during each illegal use before the "
 "penalty."
@@ -2966,11 +2994,11 @@ msgstr ""
 "Wieviele Sekunden darf das DRS aktiviert sein, bevor eine Strafe erhoben "
 "wird."
 
-#: http/classes/DbEntry/ServerPreset.php:620
+#: http/classes/DbEntry/ServerPreset.php:624
 msgid "Illegal Uses"
 msgstr "Falsche Anwendungen"
 
-#: http/classes/DbEntry/ServerPreset.php:620
+#: http/classes/DbEntry/ServerPreset.php:624
 msgid ""
 "How many time the driver can open the illegal DRS in each sector before the "
 "penalty."
@@ -2978,15 +3006,15 @@ msgstr ""
 "Wie oft darf ein Fahrer:in das DRS pro Sektor falsch aktrivieren befor eine "
 "Strafe erhoben wird"
 
-#: http/classes/DbEntry/ServerPreset.php:623
+#: http/classes/DbEntry/ServerPreset.php:627
 msgid "During Safetycar"
 msgstr "Während Safetycar"
 
-#: http/classes/DbEntry/ServerPreset.php:624
+#: http/classes/DbEntry/ServerPreset.php:628
 msgid "Omit Cars"
 msgstr "Ignorierte Autos"
 
-#: http/classes/DbEntry/ServerPreset.php:624
+#: http/classes/DbEntry/ServerPreset.php:628
 msgid ""
 "List of cars wihtout DRS (sorry, no information from AC available)\n"
 "if all cars are without DRS set ENABLE_DRS_PENALTIES in General to false!!!"
@@ -2994,29 +3022,29 @@ msgstr ""
 "Liste von allen Fahrzeugen ohne DRS. Wenn alle Fahrzeuge kein DRS haben, "
 "besser die DRS Überwachung generell deaktivieren"
 
-#: http/classes/DbEntry/ServerPreset.php:627
+#: http/classes/DbEntry/ServerPreset.php:631
 msgid "Blue Flag"
 msgstr "Blaue Flagge"
 
-#: http/classes/DbEntry/ServerPreset.php:628
+#: http/classes/DbEntry/ServerPreset.php:632
 msgid "Time distance (seconds) to show the blue flag in qualifying."
 msgstr ""
 "Zeitabstand (in Sekuden) während der Qualifikation ab der eine blaue Flagge "
 "gezeigt wird."
 
-#: http/classes/DbEntry/ServerPreset.php:631
+#: http/classes/DbEntry/ServerPreset.php:635
 msgid "Time distance (seconds) to show the blue flag in race."
 msgstr ""
 "Zeitabstand (in Sekuden) während des Rennens ab der eine blaue Flagge "
 "gezeigt wird."
 
-#: http/classes/DbEntry/ServerPreset.php:727
-#: http/classes/DbEntry/ServerPreset.php:745
-#: http/classes/DbEntry/ServerPreset.php:791
+#: http/classes/DbEntry/ServerPreset.php:731
+#: http/classes/DbEntry/ServerPreset.php:749
+#: http/classes/DbEntry/ServerPreset.php:795
 msgid "Result Screen"
 msgstr "Ergebnis Anzeige"
 
-#: http/classes/DbEntry/ServerPreset.php:800
+#: http/classes/DbEntry/ServerPreset.php:804
 msgid "End"
 msgstr "Ende"
 
@@ -3354,14 +3382,14 @@ msgid ""
 "This means the amount of best time points are divided by the amount of "
 "record tables each driver takes place in."
 msgstr ""
-"Da Bestzeiten nicht automatisch verschwinden, addieren diese sich über Zeit"
-" sehr hoch.\n"
-"Neue Fahrer werden es schwer haben andere einzuholen, die schon viele"
-" Fahrzeugklassen/Strecken Kombinationen gefahren sind und somit in vielen"
-" Rekordtabellen stehen.\n"
-"Daher werden Bestzeiten gemittelt (relativiert). Das bedeutet die Anzahl der"
-" Punkte für Bestzeiten wird für jeden Fahrer durch die Anzahl an"
-" Rekordtabellen geteilt, in denen er steht."
+"Da Bestzeiten nicht automatisch verschwinden, addieren diese sich über Zeit "
+"sehr hoch.\n"
+"Neue Fahrer werden es schwer haben andere einzuholen, die schon viele "
+"Fahrzeugklassen/Strecken Kombinationen gefahren sind und somit in vielen "
+"Rekordtabellen stehen.\n"
+"Daher werden Bestzeiten gemittelt (relativiert). Das bedeutet die Anzahl der "
+"Punkte für Bestzeiten wird für jeden Fahrer durch die Anzahl an "
+"Rekordtabellen geteilt, in denen er steht."
 
 #: http/content/html/Z_About/AboutDriverRanking.php:81
 msgid ""
@@ -4586,9 +4614,6 @@ msgstr ""
 
 #~ msgid "Fastest Laps"
 #~ msgstr "Schnellste Runde"
-
-#~ msgid "Stop Server"
-#~ msgstr "Server Anhalten"
 
 #~ msgid "Kill Server"
 #~ msgstr "Server Abbrechen"

@@ -626,30 +626,59 @@ class ServerSlot {
 
         // weather
         $weathers = $preset->weathers();
-        for ($i=0; $i<count($weathers); ++$i) {
-            $wpc = $weathers[$i]->parameterCollection();
-            fwrite($f, "\n[WEATHER_$i]\n");
+        switch ($ppc->child("WeatherRandomize")->value()) {
+            case "server_run":
+                $w = $weathers[rand(0, count($weathers) - 1)];
+                $s = $this->writeAcServerCfgWeatherSection(0, $w, $preset);
+                fwrite($f, "\n" . $s);
+                break;
 
-            $g = $wpc->child("Graphic");
-            $g_str = $g->getGraphic();
-            if ($g->csp()) {
-                $g_str .= "_time=" . $ppc->child("SessionStartTime")->valueSeconds();
-                $g_str .= "_mult=" . 10 * $ppc->child("AcServerTimeMultiplier")->value();
-            }
-            fwrite($f, "GRAPHICS=$g_str\n");
+            // write all weather to server_cfg
+            case "session":
+                for ($i=0; $i<count($weathers); ++$i) {
+                    $w = $weathers[$i];
+                    $s = $this->writeAcServerCfgWeatherSection($i, $weathers[$i], $preset);
+                    fwrite($f, "\n" . $s);
+                }
+                break;
 
-            fwrite($f, "BASE_TEMPERATURE_AMBIENT=" . $wpc->child("AmbientBase")->value() . "\n");
-            fwrite($f, "VARIATION_AMBIENT=" . $wpc->child("AmbientVar")->value() . "\n");
-            fwrite($f, "BASE_TEMPERATURE_ROAD=" . $wpc->child("RoadBase")->value() . "\n");
-            fwrite($f, "VARIATION_ROAD=" . $wpc->child("RoadVar")->value() . "\n");
-            fwrite($f, "WIND_BASE_SPEED_MIN=" . $wpc->child("WindBaseMin")->value() . "\n");
-            fwrite($f, "WIND_BASE_SPEED_MAX=" . $wpc->child("WindBaseMax")->value() . "\n");
-            fwrite($f, "WIND_BASE_DIRECTION=" . $wpc->child("WindDirection")->value() . "\n");
-            fwrite($f, "WIND_VARIATION_DIRECTION=" . $wpc->child("WindDirectionVar")->value() . "\n");
+            default:
+                \Core\Log::error("Unnown value '{$ppc->child('WeatherRandomize')->value()}'!");
         }
 
-
         fclose($f);
+    }
+
+
+    //! @return A string containing a weather section for the server_cfg.ini
+    private function writeAcServerCfgWeatherSection(int $weather_index,
+                                                    \DbEntry\Weather $weather,
+                                                    \DbEntry\ServerPreset $preset
+                                                    ) : string {
+        $ppc = $preset->parameterCollection();
+        $wpc = $weather->parameterCollection();
+
+        $s = "";
+        $s .= "[WEATHER_$weather_index]\n";
+
+        $g = $wpc->child("Graphic");
+        $g_str = $g->getGraphic();
+        if ($g->csp()) {
+            $g_str .= "_time=" . $ppc->child("SessionStartTime")->valueSeconds();
+            $g_str .= "_mult=" . 10 * $ppc->child("AcServerTimeMultiplier")->value();
+        }
+        $s .= "GRAPHICS=$g_str\n";
+
+        $s .= "BASE_TEMPERATURE_AMBIENT=" . $wpc->child("AmbientBase")->value() . "\n";
+        $s .= "VARIATION_AMBIENT=" . $wpc->child("AmbientVar")->value() . "\n";
+        $s .= "BASE_TEMPERATURE_ROAD=" . $wpc->child("RoadBase")->value() . "\n";
+        $s .= "VARIATION_ROAD=" . $wpc->child("RoadVar")->value() . "\n";
+        $s .= "WIND_BASE_SPEED_MIN=" . $wpc->child("WindBaseMin")->value() . "\n";
+        $s .= "WIND_BASE_SPEED_MAX=" . $wpc->child("WindBaseMax")->value() . "\n";
+        $s .= "WIND_BASE_DIRECTION=" . $wpc->child("WindDirection")->value() . "\n";
+        $s .= "WIND_VARIATION_DIRECTION=" . $wpc->child("WindDirectionVar")->value() . "\n";
+
+        return $s;
     }
 
 
