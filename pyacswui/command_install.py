@@ -242,6 +242,12 @@ class CommandInstall(Command):
             Verbosity(Verbosity(verb)).print("mkdirs " + path_htcache_cronjobs)
             self.mkdirs(path_htcache_cronjobs)
 
+        # htcache/real_weather_cache
+        path_htcache_rwc = os.path.join(path_data, "htcache", "real_weather_cache")
+        if not os.path.isdir(path_htcache_rwc):
+            Verbosity(Verbosity(verb)).print("mkdirs " + path_htcache_rwc)
+            self.mkdirs(path_htcache_rwc)
+
         # acserver binaries
         path_srvpkg_acserver = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver")
         for slot_nr in range(1, 1 + int(self.getGeneralArg('server-slot-amount'))):

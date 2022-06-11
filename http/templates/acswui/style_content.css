@@ -79,6 +79,10 @@ main.TrackLocation #TrackInfoGeoLocation {
     margin-right: 2em;
 }
 
+main.TrackLocation #RealWeaterData td>img {
+    float:left;
+    height: 4em;
+}
 
 
 /******************************************************************************

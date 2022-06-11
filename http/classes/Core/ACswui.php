@@ -59,6 +59,13 @@ class ACswui  {
             $p->setMin(1);
             $p->setMax(3650);
 
+            // OpenWeatherMap
+            $pc3 = new \Parameter\Collection(NULL, $pc2, "OpenWeatherMap", "OpenWeatherMap", _("Settings for connection to openweathermap.com"));
+            $p = new \Parameter\ParamString(NULL, $pc3, "OpenWeatherMapApiKey", _("API Key"), _("The API key to retrieve weather data (leave empty for not using OpenWeatherMap)"), "", "");
+            $p = new \Parameter\ParamInt(NULL, $pc3, "OpenWeatherMapRPM", _("Requests Per Minute"), _("Depending on the account type, OpenWeatherMap allows only a maximum of requests per minute. This value limits the requests of the ACswui system."), "1/Min", 10);
+            $p->setMin(1);
+            $p->setMax(60);
+
 
             /////////
             // TV Car

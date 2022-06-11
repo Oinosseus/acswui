@@ -76,6 +76,36 @@ class TrackLocation extends \core\HtmlContent {
         $html .= "</div>";
 
 
+        // real weather
+        $html .= "<h2>" . _("Real Weather") . "</h2>";
+        $rwche = \Core\RealWeatherCache::fromTrackLocation($track_location);
+
+        $html .= "<table id=\"RealWeaterData\">";
+
+        $html .= "<tr>";
+        $html .= "<th>" . _("Time") . "</th>";
+        $html .= "<th>" . _("Weather Forecast") . "</th>";
+        $html .= "</tr>";
+
+        foreach ($rwche->conditions() as $rwc) {
+            $html .= "<tr>";
+            $html .= "<td>" . \Core\UserManager::currentUser()->formatDateTimeNoSeconds($rwc->timestamp()) . "</td>";
+            $html .= "<td>";
+            $html .= $rwc->htmlImg();
+            $html .= sprintf("%0.1f", $rwc->temperature()) . "&deg;C | ";
+            $html .= sprintf("%0.1f", $rwc->precipitation()) . "mm/h<br>";
+
+            $html .= round(100 * $rwc->humidity()) . "&percnt;H | ";
+            $html .= round(100 * $rwc->cloudiness()) . "&percnt;C<br>";
+
+            $html .= sprintf("%0.1f", $rwc->windSpeed()) . "m/s | ";
+            $html .= $rwc->windDirection() . "&deg;<br>";
+            $html .= "</td>";
+            $html .= "</tr>";
+        }
+
+        $html .= "</table>";
+
         return $html;
     }
 }
