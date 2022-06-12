@@ -39,7 +39,7 @@ class RealWeatherCache {
 
         // check if object already exists
         if (array_key_exists($track_location->id(), RealWeatherCache::$InstantiatedObjects)) {
-            return RealWeatherCache::InstantiatedObjects[$track_location->id()];
+            return RealWeatherCache::$InstantiatedObjects[$track_location->id()];
         }
 
         // create new object
