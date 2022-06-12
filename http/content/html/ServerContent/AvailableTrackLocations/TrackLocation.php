@@ -85,11 +85,18 @@ class TrackLocation extends \core\HtmlContent {
         $html .= "<tr>";
         $html .= "<th>" . _("Time") . "</th>";
         $html .= "<th>" . _("Weather Forecast") . "</th>";
+        $html .= "<th>" . _("AC Weather") . "</th>";
         $html .= "</tr>";
 
         foreach ($rwche->conditions() as $rwc) {
             $html .= "<tr>";
-            $html .= "<td>" . \Core\UserManager::currentUser()->formatDateTimeNoSeconds($rwc->timestamp()) . "</td>";
+
+            $html .= "<td>";
+            $html .= \Core\UserManager::currentUser()->formatDateTimeNoSeconds($rwc->timestamp());
+            $html .= "<br>" . _("Geo Time") . ": ";
+            $html .= $rwc->timestamp()->format("H:i");
+            $html .= "</td>";
+
             $html .= "<td>";
             $html .= $rwc->htmlImg();
             $html .= sprintf("%0.1f", $rwc->temperature()) . "&deg;C | ";
@@ -101,6 +108,18 @@ class TrackLocation extends \core\HtmlContent {
             $html .= sprintf("%0.1f", $rwc->windSpeed()) . "m/s | ";
             $html .= $rwc->windDirection() . "&deg;<br>";
             $html .= "</td>";
+
+            $html .= "<td>";
+            $ac_weather = $rwc->weather();
+            $html .= $ac_weather->parameterCollection()->child("Graphic")->valueLabel() . "<br>";
+            $t_amb = $ac_weather->parameterCollection()->child("AmbientBase")->value();
+            $html .= _("Ambient") . ": $t_amb&deg;C<br>";
+            $road = $t_amb + $ac_weather->parameterCollection()->child("RoadBase")->value();
+            $html .= _("Road") . ": $road&deg;C<br>";
+            $html .= _("Wind") . ": " . $ac_weather->parameterCollection()->child("WindBaseMin")->valueLabel() . "m/s";
+            $html .= "; " . $ac_weather->parameterCollection()->child("WindDirection")->valueLabel() . "&deg;<br>";
+            $html .= "</td>";
+
             $html .= "</tr>";
         }
 

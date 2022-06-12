@@ -71,6 +71,34 @@ class GeoLocation {
     }
 
 
+    /**
+     * This does NOT return the correct local time zone,
+     * but an offset depending on the geological longitude.
+     * @return The DateTimeZone defined by hours and minutes
+     */
+    public function geoLocalTimeZone() : \DateTimeZone {
+
+        // get longitude
+        $lon = $this->longitude();
+
+        // restrict to [-180, +180]
+        $lon += 180;
+        $lon = $lon % 360;
+        $lon -= 180;
+
+        // calculate geo-UTC offset in minutes
+        $minutes = round(12*60 * $lon / 180);
+        $sign = ($minutes < 0) ? "-" : "+";
+        $minutes = ($minutes < 0) ? -1 * $minutes : $minutes;
+
+        // extract single minutes and hours
+        $m = $minutes % 60;
+        $h = ($minutes - $m) / 60;
+
+        return new \DateTimeZone($sign . sprintf("%02d%02d", $h, $m));
+    }
+
+
     //! @return A human readable label of the coordinates
     public function label() : string {
         $label = "";

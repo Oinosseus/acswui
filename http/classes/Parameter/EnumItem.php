@@ -8,7 +8,7 @@ class EnumItem {
     private $Label = NULL;
 
 
-    public function __construct(ParamEnum $param, string $value, string $label) {
+    public function __construct(ParamEnum $param, $value, string $label) {
         $this->Value = $value;
         $this->Label = $label;
         $param->addEnumItem($this);

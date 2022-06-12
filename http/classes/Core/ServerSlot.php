@@ -625,7 +625,7 @@ class ServerSlot {
         fwrite($f, "SESSION_TRANSFER=" . $ppc->child("AcServerDynamicTrackSessionTransfer")->value() . "\n");
 
         // weather
-        $weathers = $preset->weathers();
+        $weathers = $preset->weathers($track->location());
         switch ($ppc->child("WeatherRandomize")->value()) {
             case "server_run":
                 $w = $weathers[rand(0, count($weathers) - 1)];

@@ -308,6 +308,29 @@ class SessionSchedules extends \core\HtmlContent {
         $html .= "</table>";
         $html .= "</div>";
 
+        // weather forecast
+        $html .= "<div>";
+        $html .= "<strong>" . _("Weather Forecast") . "</strong><br>";
+        $rwc = $ss->serverPreset()->forecastWeather($ss->start(), $ss->track()->location());
+        if ($rwc !== NULL) {
+            $wpc = $rwc->weather()->parameterCollection();
+            $html .= $rwc->htmlImg();
+            $html .= "<div id=\"SessionScheduleWeatherForecastData\">";
+            $html .= _("Ambient") . ": " . $wpc->child("AmbientBase")->value() . "&deg;C<br>";
+            $html .= _("Road") . ": " . ($wpc->child("AmbientBase")->value() + $wpc->child("RoadBase")->value()) . "&deg;C<br>";
+            $html .= _("Rain") . ": " . sprintf("%0.1f", $rwc->precipitation()) . "mm/h<br>";
+            $html .= _("Wind") . ": " . round(($wpc->child("WindBaseMin")->value() + $wpc->child("WindBaseMax")->value())/2) . "m/s<br>";
+            $html .= "</div>";
+        } else if (count($ss->serverPreset()->weathers($ss->track()->location())) == 1) {
+            $wpc = $ss->serverPreset()->weathers($ss->track()->location())[0]->parameterCollection();
+            $html .= "<div id=\"SessionScheduleWeatherForecastData\">";
+            $html .= _("Ambient") . ": " . $wpc->child("AmbientBase")->value() . "&deg;C<br>";
+            $html .= _("Road") . ": " . ($wpc->child("AmbientBase")->value() + $wpc->child("RoadBase")->value()) . "&deg;C<br>";
+            $html .= _("Wind") . ": " . round(($wpc->child("WindBaseMin")->value() + $wpc->child("WindBaseMax")->value())/2) . "m/s<br>";
+            $html .= "</div>";
+        }
+        $html .= "</div>";
+
         $html .= "</div><br>";
 
 

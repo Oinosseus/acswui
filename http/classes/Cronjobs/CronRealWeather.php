@@ -70,7 +70,7 @@ class CronRealWeather extends \Core\Cronjob {
                     $rwche->latestConditionTimestamp() < $latest_forecast_threshold
                    ) {
 
-                    $real_weaterh_cache->update();
+                    $rwche->update();
                     $this->verboseOutput("Update real weather data for track location #{$rwche->trackLocation()->id()} / '{$rwche->trackLocation()->name()}'<br>\n");
                     $last_request_amount += 1;
                 }

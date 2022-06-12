@@ -93,6 +93,34 @@ class RealWeatherCache {
     }
 
 
+    //! @return RealWeatherCondition at specific point in time (NULL if not availabe)
+    public function getCondition(\DateTime $dt) : ?RealWeatherCondition {
+
+        // get unix timestamp
+        $dt->setTimezone(new \DateTimeZone("UTC"));
+        $dt_unix = (int) $dt->format("U");
+
+        // find conditions before and after
+        $rwc_before = NULL;
+        $rwc_after = NULL;
+        foreach ($this->Conditions as $rwc) {
+            if ($rwc->dt() <= $dt_unix) {
+                $rwc_before = $rwc;
+            } else {
+                $rwc_after = $rwc;
+                break;
+            }
+        }
+
+        // ensure if interpolation is possible
+        if ($rwc_before === NULL) return NULL;
+        if ($rwc_after === NULL) return NULL;
+
+        $rwc = RealWeatherCondition::interpolate($dt_unix, $rwc_before, $rwc_after);
+        return $rwc;
+    }
+
+
     //! @return UNIX timestamp of last update
     public function lastUpdate() : int {
         return $this->LastUpdate;
@@ -128,6 +156,7 @@ class RealWeatherCache {
         $ret = file_get_contents($url);
         if ($ret === False) {
             \Core\Log::warning("Fail to request weather data from '$url' for track location {$this->TrackLocation->id()}!");
+            return [];
         }
         $data = json_decode($ret, True);
 
