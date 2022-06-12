@@ -435,21 +435,26 @@ class RealWeatherCondition {
     //! @return The amount of °C that the track is heated against environment temperature
     private function weatherRoadHeating() : float {
 
-        // caluclate hour of the day
-        $local_time = $this->timestamp();
-        $hours_of_day = (float) $local_time->format("H");
-        $hours_of_day += ((float) $local_time->format("i")) / 60.0;
+        // road heat factor under maximum possible conditions
+        $road_heat_factor = 1.4;
 
         // sun intensity (depending on daytime)
         // using gaussian bell curve (norm-density without sigma spread)
+        $local_time = $this->timestamp();
+        $hours_of_day = (float) $local_time->format("H");
+        $hours_of_day += ((float) $local_time->format("i")) / 60.0;
         $characteristic = 30;
-        $sun_intensity = exp(-1 * ($hours_of_day - 12)**2 / $characteristic );
+        $road_heat_factor *= exp(-1 * ($hours_of_day - 12)**2 / $characteristic );
 
         // reduce sun intensity at coulds
-        $sun_intensity *= (1 - $this->Cloudiness * 0.8);
+        $road_heat_factor *= (1 - $this->Cloudiness * 0.8);
+
+        // rate sun intensity according to latiude
+        $lat = $this->TrackLocation->geoLocation()->latitude() / pi();
+        $road_heat_factor *= abs(cos($lat));
 
         // sun can heat the track twice the ambient temperature
-        $road_temp_increase = $this->Temperature * $sun_intensity;
+        $road_temp_increase = $this->Temperature * $road_heat_factor;
 
         // rain can cool down the track surface
         // 1mm rain reduce the track temperature by 1°C
