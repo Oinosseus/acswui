@@ -443,18 +443,20 @@ class RealWeatherCondition {
         $local_time = $this->timestamp();
         $hours_of_day = (float) $local_time->format("H");
         $hours_of_day += ((float) $local_time->format("i")) / 60.0;
-        $characteristic = 30;
+        $characteristic = 10;
         $road_heat_factor *= exp(-1 * ($hours_of_day - 12)**2 / $characteristic );
 
         // reduce sun intensity at coulds
-        $road_heat_factor *= (1 - $this->Cloudiness * 0.8);
+        $road_heat_factor *= (1 - $this->Cloudiness * 0.9);
 
         // rate sun intensity according to latiude
         $lat = $this->TrackLocation->geoLocation()->latitude() * pi() / 180;
         $road_heat_factor *= abs(cos($lat));
 
         // calculate wind (at 30m/s all heating is blown away)
-        $wind_factor = 1.0 - $this->WindSpeed / 30.0;
+        $wind_order = 2;
+        $wind_zerospeed = 30;
+        $wind_factor = abs(($this->WindSpeed - $wind_zerospeed) ** $wind_order / $wind_zerospeed**$wind_order);
         if ($wind_factor < 0.0) $wind_factor = 0.0;
         if ($wind_factor > 1.0) $wind_factor = 1.0;
         $road_heat_factor *= $wind_factor;
@@ -463,8 +465,7 @@ class RealWeatherCondition {
         $road_temp_increase = $this->Temperature * $road_heat_factor;
 
         // rain can cool down the track surface
-        // 1mm rain reduce the track temperature by 1°C
-        $road_temp_increase -= $this->Precipitation;
+        $road_temp_increase -= 2 * $this->Precipitation;
 
         return $road_temp_increase;
     }
