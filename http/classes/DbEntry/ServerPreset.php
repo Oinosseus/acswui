@@ -29,7 +29,7 @@ class ServerPreset extends DbEntry {
     public function anyWeatherUsesCsp() {
         $ppc = $this->parameterCollection();
 
-        if ($this->parameterCollection()->child("WeatherReal")->value() == FALSE) {
+        if ($this->parameterCollection()->child("WeatherReal")->value() == TRUE) {
             return TRUE;
         }else if (count($ppc->child("Weathers")->valueList()) > 0) {
             foreach ($ppc->child("Weathers")->valueList() as $w_id) {

@@ -515,7 +515,7 @@ class ServerSlot {
         if ($preset->anyWeatherUsesCsp()) {
             $time_minutes = $ppc->child("SessionStartTime")->value();
             fwrite($f, "SUN_ANGLE=-80\n");
-            fwrite($f, "TIME_OF_DAY_MULT=0.1\n");
+            fwrite($f, "TIME_OF_DAY_MULT=1\n");
         } else {
             fwrite($f, "SUN_ANGLE=" . $ppc->child("SessionStartTime")->valueSunAngle() . "\n");
             fwrite($f, "TIME_OF_DAY_MULT=" . $ppc->child("AcServerTimeMultiplier")->value() . "\n");
@@ -665,7 +665,7 @@ class ServerSlot {
         $g_str = $g->getGraphic();
         if ($g->csp()) {
             $g_str .= "_time=" . $ppc->child("SessionStartTime")->valueSeconds();
-            $g_str .= "_mult=" . 10 * $ppc->child("AcServerTimeMultiplier")->value();
+            $g_str .= "_mult=" . $ppc->child("AcServerTimeMultiplier")->value();
         }
         $s .= "GRAPHICS=$g_str\n";
 

@@ -450,8 +450,14 @@ class RealWeatherCondition {
         $road_heat_factor *= (1 - $this->Cloudiness * 0.8);
 
         // rate sun intensity according to latiude
-        $lat = $this->TrackLocation->geoLocation()->latitude() / pi();
+        $lat = $this->TrackLocation->geoLocation()->latitude() * pi() / 180;
         $road_heat_factor *= abs(cos($lat));
+
+        // calculate wind (at 30m/s all heating is blown away)
+        $wind_factor = 1.0 - $this->WindSpeed / 30.0;
+        if ($wind_factor < 0.0) $wind_factor = 0.0;
+        if ($wind_factor > 1.0) $wind_factor = 1.0;
+        $road_heat_factor *= $wind_factor;
 
         // sun can heat the track twice the ambient temperature
         $road_temp_increase = $this->Temperature * $road_heat_factor;
