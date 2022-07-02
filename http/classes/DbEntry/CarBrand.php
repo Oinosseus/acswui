@@ -14,7 +14,8 @@ class CarBrand extends DbEntry {
 
     private static $ListBrands = NULL;
 
-    private $ListCars = NULL;
+    private $ListCarsNoDeprecated = NULL;
+    private $ListCarsAll = NULL;
 
 
     /**
@@ -65,16 +66,23 @@ class CarBrand extends DbEntry {
     }
 
 
-    //! @return A list of Car objects that belong to this brand
-    public function listCars() {
-        if ($this->ListCars === NULL) {
-            $this->ListCars = array();
+    /**
+     * @param $include_deprecated If TRUE, also deprecated cars will be listed
+     * @return A list of Car objects that belong to this brand
+     * @todo
+     */
+    public function listCars($include_deprecated = FALSE) {
+        if ($this->ListCarsAll === NULL) {
+            $this->ListCarsAll = array();
+            $this->ListCarsNoDeprecated = array();
             $res = \Core\Database::fetch("Cars", ['Id'], ['Brand'=>$this->id()], 'Name');
             foreach ($res as $row) {
-                $this->ListCars[] = Car::fromId($row['Id']);
+                $car = Car::fromId($row['Id']);
+                $this->ListCarsAll[] = $car;
+                if (!$car->deprecated()) $this->ListCarsNoDeprecated[] = $car;
             }
         }
-        return $this->ListCars;
+        return ($include_deprecated) ? $this->ListCarsAll : $this->ListCarsNoDeprecated;
     }
 
 
