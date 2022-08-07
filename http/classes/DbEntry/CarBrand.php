@@ -97,9 +97,13 @@ class CarBrand extends DbEntry {
         $brand_name = $this->name();
         $brand_id = $this->id();
         $car = $this->badgeCar();
-        $car_model = $car->model();
+        if ($car !== NULL) {
+            $car_model = $car->model();
+            $path = \Core\Config::RelPathHtdata . "/content/cars/$car_model/ui/badge.png";
+        } else {
+            $show_img = FALSE;
+        }
         $img_id = "CarBrand$brand_id";
-        $path = \Core\Config::RelPathHtdata . "/content/cars/$car_model/ui/badge.png";
 
         $html = "";
 
