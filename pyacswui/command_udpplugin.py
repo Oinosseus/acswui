@@ -71,3 +71,4 @@ class CommandUdpPlugin(Command):
         while True:
             udpp.process()
             sys.stdout.flush()
+        self._verbosity.print("Finished")

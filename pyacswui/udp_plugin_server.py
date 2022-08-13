@@ -235,13 +235,13 @@ class UdpPluginServer(object):
 
         # ACSP_END_SESSION
         elif prot == 55:
-            self.__verbosity.print("ACSP_END_SESSION")
 
             json_file_relpath = pkt.readStringW()
             json_file_abspath = os.path.join(self.__ac_server_path, json_file_relpath)
 
             # remember result file
             self.__database.updateRow("Sessions", self.__session.Id, {"ResultFile":json_file_relpath})
+            self.__verbosity.print("ACSP_END_SESSION, resultfile:", json_file_relpath)
 
 
         # ACSP_LAP_COMPLETED

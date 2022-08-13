@@ -348,6 +348,7 @@ class ServerSlot {
         $ac_server_command = "$ac_server -c $server_cfg -e $entry_list > $log_output 2>&1";
 
         // start server
+        $datetime_str = (new \DateTime("now", new \DateTimezone("UTC")))->format(\DateTimeInterface::ATOM);
         $cmd_ret = 0;
         $cmd = "nohup ". \Core\Config::AbsPathAcswui . "/acswui.py srvrun -vvvvvvvvvv";
         $cmd .= " \"" . \Core\Config::AbsPathData . "/acswui_udp_plugin/acswui_udp_plugin_$id.ini\" ";
@@ -355,7 +356,7 @@ class ServerSlot {
         if ($this->parameterCollection()->child("RPGeneralEnable")->value()) {
             $cmd .= " --real-penalty";
         }
-        $cmd .= " >" . \Core\Config::AbsPathData . "/logs_srvrun//slot_$id.srvrun.log 2>&1 &";
+        $cmd .= " >" . \Core\Config::AbsPathData . "/logs_srvrun//slot_$id.srvrun.{$datetime_str}.log 2>&1 &";
         $cmd_retstr = array();
         exec($cmd, $cmd_retstr, $cmd_ret);
         foreach ($cmd_retstr as $line) echo "$line<br>";
