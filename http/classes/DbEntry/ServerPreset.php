@@ -901,7 +901,7 @@ class ServerPreset extends DbEntry {
         $ppc = $this->parameterCollection();
         $weathers = array();
 
-        if ($ppc->child("WeatherReal")) {
+        if ($ppc->child("WeatherReal")->value() === TRUE) {
             $dt_now = new \DateTime("now");
             $rwc = $this->forecastWeather($dt_now, $track_location);
             if ($rwc !== NULL) {
@@ -910,7 +910,6 @@ class ServerPreset extends DbEntry {
             }
 
         } else {
-
             foreach ($ppc->child("Weathers")->valueList() as $w_id) {
                 $weathers[] = \DbEntry\Weather::fromId((int) $w_id);
             }
