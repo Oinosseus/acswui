@@ -47,28 +47,10 @@ class Polls extends \core\HtmlContent {
             $this->processSaveAddedCarClasses();
         }
 
-//         // SavePollVotes
-//         if (array_key_exists("SavePollVotes", $_POST)) {
-//             $p = $this->CurrentPoll;
-//             $user = \Core\UserManager::currentUser();
-//
-//             if (!$p->isClosed()) {
-//
-//                 // save tracks
-//                 $track_votes = array();
-//                 foreach ($p->tracks() as $t) {
-//                     $track_votes[$t->id()] = (int) $_POST["PointsTrackId" . $t->id()];
-//                 }
-//                 $p->saveTrackVotes($user, $track_votes);
-//
-//                 // save car classes
-//                 $carclass_votes = array();
-//                 foreach ($p->carClasses() as $cc) {
-//                     $carclass_votes[$cc->id()] = (int) $_POST["PointsCarClassId" . $cc->id()];
-//                 }
-//                 $p->saveCarClassVotes($user, $carclass_votes);
-//             }
-//         }
+        // SavePollVotes
+        if (array_key_exists("SavePollVotes", $_POST)) {
+            $this->processSavePollVotes();
+        }
 
 
         // --------------------------------------------------------------------
@@ -654,6 +636,30 @@ class Polls extends \core\HtmlContent {
                     }
                 }
             }
+        }
+    }
+
+
+
+    private function processSavePollVotes() {
+        $p = $this->CurrentPoll;
+        $user = \Core\UserManager::currentUser();
+
+        if (!$p->isClosed()) {
+
+            // save tracks
+            $track_votes = array();
+            foreach ($p->tracks() as $t) {
+                $track_votes[$t->id()] = (int) $_POST["PointsTrackId" . $t->id()];
+            }
+            $p->saveTrackVotes($user, $track_votes);
+
+            // save car classes
+            $carclass_votes = array();
+            foreach ($p->carClasses() as $cc) {
+                $carclass_votes[$cc->id()] = (int) $_POST["PointsCarClassId" . $cc->id()];
+            }
+            $p->saveCarClassVotes($user, $carclass_votes);
         }
     }
 }
