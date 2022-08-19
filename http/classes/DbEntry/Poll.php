@@ -154,6 +154,39 @@ class Poll extends DbEntry {
 
 
 
+    /**
+     * Deletes this Poll including all votes.
+     * The current object will stay in memory.
+     * When calling a sat*() method, a new Poll object will be created
+     */
+    public function deleteFromDb() {
+
+        // delete track votes
+        $query = "SELECT PollVotes.Id FROM  PollVotes INNER JOIN PollTracks ON PollVotes.PollTrack = PollTracks.Id WHERE PollTracks.Poll={$this->id()};";
+        foreach (\Core\Database::fetchRaw($query) as $row) {
+            \Core\Database::delete("PollVotes", $row['Id']);
+        }
+
+        // delete tracks
+        $query = "DELETE FROM PollTracks WHERE Poll={$this->id()};";
+        \Core\Database::query($query);
+
+        // delete carclass votes
+        $query = "SELECT PollVotes.Id FROM  PollVotes INNER JOIN PollCarClasses ON PollVotes.PollCarClass = PollCarClasses.Id WHERE PollCarClasses.Poll={$this->id()};";
+        foreach (\Core\Database::fetchRaw($query) as $row) {
+            \Core\Database::delete("PollVotes", $row['Id']);
+        }
+
+        // delete car classes
+        $query = "DELETE FROM PollCarClasses WHERE Poll={$this->id()};";
+        \Core\Database::query($query);
+
+        // delete this poll
+        parent::deleteFromDb();
+    }
+
+
+
     //! @retrun More detailed information about the poll
     public function description() {
         return $this->loadColumn("Description");

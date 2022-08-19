@@ -81,25 +81,52 @@ class Polls extends \core\HtmlContent {
             $html .= $this->getHtmlEditPoll();
 
         // add track
-        } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "EditTracks"){
+        } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "EditTracks") {
             $html .= $this->getHtmlEditTracks();
 
         // add car class
-        } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "EdirCarClasses"){
+        } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "EdirCarClasses") {
             $html .= $this->getHtmlEdirCarClasses();
 
         // edit poll
-        } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "EditPoll"){
+        } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "EditPoll") {
             $html .= $this->getHtmlEditPoll();
 
         // show poll
-        } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "ShowPoll"){
+        } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "ShowPoll") {
             $html .= $this->getHtmlShowPoll();
+
+        // delete poll
+        } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "AskDeletePoll") {
+            $html .= $this->getHtmlAskDeletePoll();
+        } else if (array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "DoDeletePoll") {
+            $this->processDoDeletePoll();
+            $html .= $this->getHtmlListPolls();
 
         // list polls
         } else {
             $html .= $this->getHtmlListPolls();
         }
+
+
+        return $html;
+    }
+
+
+
+    private function getHtmlAskDeletePoll() {
+        $p = $this->CurrentPoll;
+        if ($this->CurrentPoll === NULL) return "";
+        if (!$this->CanEdit) return "";
+        $html = "<h1>" . $p->name() . "</h1>";
+
+        $html .= _("Do you really want to delete the Poll?");
+
+        $html .= $this->newHtmlForm("POST");
+        $html .= "<input type=\"hidden\" name=\"PollId\" value=\"" . $p->id() . "\">";
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"DoDeletePoll\">" . _("Yes") . "</button>";
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"EditPoll\">" . _("No") . "</button>";
+        $html .= "</form>";
 
 
         return $html;
@@ -548,7 +575,30 @@ class Polls extends \core\HtmlContent {
         }
 
         $html .= "</form>";
+
+
+        // --------------------------------------------------------------------
+        //                           Delete Poll
+        // --------------------------------------------------------------------
+
+        $html .= $this->newHtmlForm("POST");
+        $html .= "<input type=\"hidden\" name=\"PollId\" value=\"" . $p->id() . "\">";
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"AskDeletePoll\">" . _("Delete Poll") . "</button>";
+        $html .= "</form>";
+
+
+
         return $html;
+    }
+
+
+
+    private function processDoDeletePoll() {
+        $p = $this->CurrentPoll;
+        if ($this->CanEdit) {
+            $p->deleteFromDb();
+            $this->CurrentPoll = NULL;
+        }
     }
 
 
