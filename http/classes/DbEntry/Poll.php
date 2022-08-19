@@ -7,13 +7,6 @@ namespace DbEntry;
  */
 class Poll extends DbEntry {
     private $Creator = NULL;
-    private $IsSecret = NULL;
-    private $PointsForTracks = NULL;
-    private $PointsPerTrack = NULL;
-    private $PointsPerCarClass = NULL;
-    private $PointsForCarClasses = NULL;
-    private $Name = NULL;
-    private $Description = NULL;
     private $Closing = NULL;
 
     private $Tracks = NULL;
@@ -507,7 +500,7 @@ class Poll extends DbEntry {
 
 
     //! @param $new_closing Define when the poll shall be closed
-    public function setClosing(DateTime $new_closing) {
+    public function setClosing(\DateTime $new_closing) {
         $timestamp = \Core\Database::timestamp($new_closing);
         $this->storeColumns(["Closing"=>$timestamp]);
         $this->Closing = $new_closing;
@@ -534,8 +527,7 @@ class Poll extends DbEntry {
 
     //! @param $points Set how many points can be voted per user for all car calsses in sum
     public function setPointsForCarClasses(int $points) {
-        \Core\Database::update("Polls", $this->id(), ["PointsForCarClasses"=>$points]);
-        $this->PointsForCarClasses = $points;
+        $this->storeColumns(["PointsForCarClasses"=>$points]);
 
         // clip points of votes
         $users = \Core\Database::fetchRaw("SELECT DISTINCT `User` FROM `PollVotes`");
@@ -567,8 +559,7 @@ class Poll extends DbEntry {
 
     //! @param $points Set how many points can be voted per user for a single car calss
     public function setPointsPerCarClass(int $points) {
-        \Core\Database::update("Polls", $this->id(), ["PointsPerCarClass"=>$points]);
-        $this->PointsPerCarClass = $points;
+        $this->storeColumns(["PointsPerCarClass"=>$points]);
 
         // clip points of votes
         $res = \Core\Database::fetch("PollCarClasses", ['Id'], ['Poll'=>$this->id()]);
@@ -586,8 +577,7 @@ class Poll extends DbEntry {
 
     //! @param $points Set how many points can be voted per user for all tracks in sum
     public function setPointsForTracks(int $points) {
-        \Core\Database::update("Polls", $this->id(), ["PointsForTracks"=>$points]);
-        $this->PointsForTracks = $points;
+        $this->storeColumns(["PointsForTracks"=>$points]);
 
         // clip points of votes
         $users = \Core\Database::fetchRaw("SELECT DISTINCT `User` FROM `PollVotes`");
@@ -619,10 +609,7 @@ class Poll extends DbEntry {
 
     //! @param $points Set how many points can be voted per user for a single track
     public function setPointsPerTrack(int $points) {
-
-        \Core\Database::update("Polls", $this->id(), ["PointsPerTrack"=>$points]);
-        $this->PointsPerTrack = $points;
-        $this->PointsTrackChanged = TRUE;
+        $this->storeColumns(["PointsPerTrack"=>$points]);
 
         // clip points of votes
         $res = \Core\Database::fetch("PollTracks", ['Id'], ['Poll'=>$this->id()]);
