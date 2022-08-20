@@ -376,7 +376,7 @@ class Polls extends \core\HtmlContent {
                 $html .= "<tr>";
                 $html .= "<th>" . _("Pos") . "</th>";
                 $html .= "<th>" . _("Sum Points") . "</th>";
-                $html .= "<th>" . _("Track") . "</th>";
+                $html .= "<th colspan=\"2\">" . _("Track") . "</th>";
                 $html .= "<th>" . _("Users Voted") . "</th>";
                 $html .= "<th>" . _("My Points") . "</th>";
                 $html .= "</tr>";
@@ -387,20 +387,27 @@ class Polls extends \core\HtmlContent {
                     // find voted users
                     $user_votes = "";
                     $user_votes_sum = 0;
-                    foreach ($poll->votedUsers(TRUE) as $user) {
-                        $user_vote = $poll->pointsOfTrack($user, $t);
-                        if ($user_vote > 0) {
-                            $user_votes_sum += 1;
-                            $user_votes .= $user->name() . ": $user_vote\n";
+                    if ($t) {  // track can be NULL if deleted
+                        foreach ($poll->votedUsers(TRUE) as $user) {
+                            $user_vote = $poll->pointsOfTrack($user, $t);
+                            if ($user_vote > 0) {
+                                $user_votes_sum += 1;
+                                $user_votes .= $user->name() . ": $user_vote\n";
+                            }
                         }
                     }
 
                     $html .= "<tr>";
                     $html .= "<td>$pos</td>";
-                    $html .= "<td>" . $poll->pointsOfTrack(NULL, $t) . "</td>";
-                    $html .= "<td>" . $t->name() . "</td>";
-                    $html .= "<td><span title=\"$user_votes\">$user_votes_sum</span></td>";
-                    $html .= "<td>" . $poll->pointsOfTrack($u, $t) . "</td>";
+                    if ($t) {  // track can be NULL if deleted
+                        $html .= "<td>" . $poll->pointsOfTrack(NULL, $t) . "</td>";
+                        $html .= "<td class=\"TrackCell\">" . $t->html(TRUE, FALSE, TRUE) . "</td>";
+                        $html .= "<td>" . $t->html(TRUE, TRUE, FALSE) . "</td>";
+                        $html .= "<td><span title=\"$user_votes\">$user_votes_sum</span></td>";
+                        $html .= "<td>" . $poll->pointsOfTrack($u, $t) . "</td>";
+                    } else {
+                        $html .= "<td colspan=\"2\">" . _("invalid track") . "</td>";
+                    }
                     $html .= "</tr>";
                 }
                 $html .= "<table>";
@@ -414,7 +421,7 @@ class Polls extends \core\HtmlContent {
                 $html .= "<tr>";
                 $html .= "<th>" . _("Pos") . "</th>";
                 $html .= "<th>" . _("Sum Points") . "</th>";
-                $html .= "<th>" . _("Car Class") . "</th>";
+                $html .= "<th colspan=\"2\">" . _("Car Class") . "</th>";
                 $html .= "<th>" . _("Users Voted") . "</th>";
                 $html .= "<th>" . _("My Points") . "</th>";
                 $html .= "</tr>";
@@ -425,20 +432,27 @@ class Polls extends \core\HtmlContent {
                     // find voted users
                     $user_votes = "";
                     $user_votes_sum = 0;
-                    foreach ($poll->votedUsers(TRUE) as $user) {
-                        $user_vote = $poll->pointsOfCarClass($user, $cc);
-                        if ($user_vote > 0) {
-                            $user_votes_sum += 1;
-                            $user_votes .= $user->name() . ": $user_vote\n";
+                    if ($cc) {  // carclass can be NULL if deleted
+                        foreach ($poll->votedUsers(TRUE) as $user) {
+                                $user_vote = $poll->pointsOfCarClass($user, $cc);
+                            if ($user_vote > 0) {
+                                $user_votes_sum += 1;
+                                $user_votes .= $user->name() . ": $user_vote\n";
+                            }
                         }
                     }
 
                     $html .= "<tr>";
                     $html .= "<td>$pos</td>";
-                    $html .= "<td>" . $poll->pointsOfCarClass(NULL, $cc) . "</td>";
-                    $html .= "<td>" . $cc->name() . "</td>";
-                    $html .= "<td><span title=\"$user_votes\">$user_votes_sum</span></td>";
-                    $html .= "<td>" . $poll->pointsOfCarClass($u, $cc) . "</td>";
+                    if ($cc) {  // carclass can be NULL if deleted
+                        $html .= "<td>" . $poll->pointsOfCarClass(NULL, $cc) . "</td>";
+                        $html .= "<td class=\"CarClassCell\">" . $cc->html(TRUE, FALSE, TRUE) . "</td>";
+                        $html .= "<td>" . $cc->html(TRUE, TRUE, FALSE) . "</td>";
+                        $html .= "<td class=\"CarClassCell\"><span title=\"$user_votes\">$user_votes_sum</span></td>";
+                        $html .= "<td>" . $poll->pointsOfCarClass($u, $cc) . "</td>";
+                    } else {
+                        $html .= "<td colspan=\"2\">" . _("invalid car class") . "</td>";
+                    }
                     $html .= "</tr>";
                 }
                 $html .= "<table>";

@@ -584,6 +584,22 @@ main.Polls div.PollItem > div {
     background-color: transparent;
 }
 
+main.Polls td.TrackCell div,
+main.Polls td.CarClassCell div {
+    background-color: transparent;
+    margin: 0px;
+}
+
+main.Polls td.TrackCell,
+main.Polls td.CarClassCell {
+    padding: 0px;
+}
+
+main.Polls td.TrackCell img,
+main.Polls td.CarClassCell img {
+    height: 4em;
+}
+
 
 
 /*****************************************************************************

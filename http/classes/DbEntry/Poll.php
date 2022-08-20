@@ -289,7 +289,7 @@ class Poll extends DbEntry {
 
 
     /**
-     * The amount of points votes for a certain track.
+     * The amount of points voted for a certain track.
      * When user is NULL, the summ of all users is returned.
      * When the Track is not valid, 0 is returned.
      * @param $user A User object or NULL (default)
