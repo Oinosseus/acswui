@@ -527,9 +527,11 @@ class Polls extends \core\HtmlContent {
 
         $html .= "<tr><td colspan=\"2\">";
         foreach ($p->tracks() as $t) {
-            $html .= "<div class=\"PollItem\">";
-            $html .= $t->html();
-            $html .= "</div>";
+            if ($t) {  // can be deleted over time
+                $html .= "<div class=\"PollItem\">";
+                $html .= $t->html();
+                $html .= "</div>";
+            }
         }
         $html .= "</td></tr>";
         $html .= "</table>";
@@ -558,9 +560,11 @@ class Polls extends \core\HtmlContent {
 
         $html .= "<tr><td colspan=\"2\">";
         foreach ($p->carClasses() as $cc) {
-            $html .= "<div class=\"PollItem\">";
-            $html .= $cc->html();
-            $html .= "</div>";
+            if ($cc) {  // can be NULL when deleted over time
+                $html .= "<div class=\"PollItem\">";
+                $html .= $cc->html();
+                $html .= "</div>";
+            }
         }
         $html .= "</td></tr>";
         $html .= "</table>";
