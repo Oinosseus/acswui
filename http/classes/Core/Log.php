@@ -39,6 +39,7 @@ class Log {
                 foreach ($bktrc[$i]['args'] as $arg) {
                     if ($backtrace_args != "") $backtrace_args .= ", ";
                     if (is_array($arg)) $backtrace_args .= "ARRAY";
+                    else if (is_a($arg, "\DateTime")) $backtrace_args .= $arg->format(\DateTime::ISO8601);
                     else $backtrace_args .= $arg;
                 }
                 $funct = "$backtrace_function($backtrace_args)";
