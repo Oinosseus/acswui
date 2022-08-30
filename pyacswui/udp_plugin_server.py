@@ -248,7 +248,8 @@ class UdpPluginServer(object):
 
         # ACSP_CAR_INFO
         elif prot == 54:
-            self.__verbosity.print("ACSP_CAR_INFO")
+            pass
+            #self.__verbosity.print("ACSP_CAR_INFO")
 
 
         # ACSP_END_SESSION

@@ -128,15 +128,14 @@ class CommandSrvrun(Command):
         # allow some time to shutdown processes
         time_start = time.time()
         while True:
-            if (time.time() - time_start) > 5:
-                break;
+            if (time.time() - time_start) > 5.0:
+                break
             if (not self.getArg("real-penalty") or rp_proc.poll() is None) and acswui_udpp_proc.poll() is None:
                 if self.getArg("real-penalty"):
                     if acserver_proc.poll() is None:
                         break
                 else:
                     break
-
 
         # kill processing
         if self.getArg("real-penalty"):

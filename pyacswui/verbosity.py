@@ -1,3 +1,4 @@
+import datetime
 
 class Verbosity(object):
 
@@ -39,6 +40,10 @@ class Verbosity(object):
     def print(self, *args, **kwargs):
 
         if self._verbose_level > 0:
+
+            # timestamp
+            t = datetime.datetime.now()
+            print(t.strftime("%H:%M:%S") + "  ", end="")
 
             # indent
             print("    " * self._indent_level, end="")
