@@ -145,8 +145,6 @@ class Poll extends DbEntry {
         $fields['Creator'] = \Core\UserManager::currentUser()->id();
         $fields['Name'] = "New Poll";
         $fields['Closing'] = \Core\Database::timestamp($closing);
-        $fields['PointsTrack'] = 10;
-        $fields['PointsCarClass'] = 10;
 
         $id = \Core\Database::insert("Polls", $fields);
         return Poll::fromId($id);
@@ -569,7 +567,7 @@ class Poll extends DbEntry {
 
             $query = "SELECT PollVotes.Id, PollVotes.Points FROM `PollVotes` ";
             $query .= "INNER JOIN PollCarClasses ON PollCarClasses.Id = PollVotes.PollCarClass ";
-            $query .= "WHERE PollVotes.PollTrack = 0 AND User = $user_id";
+            $query .= "WHERE PollVotes.PollTrack = 0 AND User = $user_id AND PollCarClasses.Poll = {$this->id()}";
             $votes = \Core\Database::fetchRaw($query);
 
             // sum vote points
@@ -619,7 +617,7 @@ class Poll extends DbEntry {
 
             $query = "SELECT PollVotes.Id, PollVotes.Points FROM `PollVotes` ";
             $query .= "INNER JOIN PollTracks ON PollTracks.Id = PollVotes.PollTrack ";
-            $query .= "WHERE PollVotes.PollCarClass = 0 AND User = $user_id";
+            $query .= "WHERE PollVotes.PollCarClass = 0 AND User = $user_id AND PollTracks.Poll = {$this->id()}";
             $votes = \Core\Database::fetchRaw($query);
 
             // sum vote points
