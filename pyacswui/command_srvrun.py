@@ -1,7 +1,6 @@
 import datetime
 import os
 import os.path
-import signal
 import sys
 import time
 
@@ -112,6 +111,10 @@ class CommandSrvrun(Command):
             time.sleep(0.1)  # wait to save CPU time
 
 
+        # grant sub processes one OS process execution round after AC has finished
+        time.sleep(0.1)
+
+
         # friendly ask to finish processing
         if self.getArg("real-penalty"):
             if rp_proc.poll() is None:
@@ -128,14 +131,17 @@ class CommandSrvrun(Command):
         # allow some time to shutdown processes
         time_start = time.time()
         while True:
+
+            # timeout for termination
             if (time.time() - time_start) > 5.0:
                 break
-            if (not self.getArg("real-penalty") or rp_proc.poll() is None) and acswui_udpp_proc.poll() is None:
-                if self.getArg("real-penalty"):
-                    if acserver_proc.poll() is None:
+
+            # skip wait time if all processes are down
+            if acserver_proc.poll() is not None:  # AC server has shut down
+                if acswui_udpp_proc.poll() is not None:  # ACswui UDP plugin has shut down
+                    if not self.getArg("real-penalty") or rp_proc.poll() is not None:  # real penalty has shut down
                         break
-                else:
-                    break
+
 
         # kill processing
         if self.getArg("real-penalty"):

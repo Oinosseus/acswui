@@ -4,7 +4,22 @@ from .command import Command
 from .database import Database
 from .udp_plugin_server import UdpPluginServer
 from .verbosity import Verbosity
+
+import datetime
+import signal
 import sys
+import time
+
+
+# catch external program termination
+__TERMINATION_REQUESTED__ = False
+def handler_sigterm(signum, frame):
+    global __TERMINATION_REQUESTED__
+    __TERMINATION_REQUESTED__ = True
+    t = datetime.datetime.now()
+    print(t.strftime("%H:%M:%S") + "  SIGTERM handler")
+signal.signal(signal.SIGTERM, handler_sigterm)
+
 
 
 class CommandUdpPlugin(Command):
@@ -15,6 +30,8 @@ class CommandUdpPlugin(Command):
 
 
     def process(self):
+        global __TERMINATION_REQUESTED__
+
         self._verbosity = Verbosity(self.getArg("v"), self.__class__.__name__)
 
         # setup database
@@ -71,4 +88,9 @@ class CommandUdpPlugin(Command):
         while True:
             udpp.process()
             sys.stdout.flush()
+
+            # quit at termination
+            if __TERMINATION_REQUESTED__:
+                break
+
         self._verbosity.print("Finished")
