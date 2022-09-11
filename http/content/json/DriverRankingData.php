@@ -41,9 +41,19 @@ class DriverRankingData extends \Core\JsonContent {
         $then = \Core\Database::timestamp($then);
         $query = "SELECT Id FROM DriverRanking WHERE User = {$user->id()} AND Timestamp > '$then' ORDER BY Id DESC;";
 
+        // add latest ranking
+        $data['Ranking'] = array();
+        $now = new \DateTime("now");
+        foreach (\DbEntry\DriverRanking::listLatest() as $rnk) {
+            if ($rnk->user() !== NULL && $rnk->user()->id() == $user->id()) {
+                $diff = \Core\TimeInterval::fromDateInterval($now->diff($rnk->timestamp()));
+                $data['Ranking'][] = array('x'=>$diff->days(), 'y'=>$rnk->points());
+                break;
+            }
+        }
+
         // request database
         $now = new \DateTime("now");
-        $data['Ranking'] = array();
         $res =  \Core\Database::fetchRaw($query);
         foreach ($res as $row) {
             $rnk = \DbEntry\DriverRanking::fromId($row['Id']);

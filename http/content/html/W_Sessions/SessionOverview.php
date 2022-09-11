@@ -166,9 +166,13 @@ class SessionOverview extends \core\HtmlContent {
         $html .= "<div id=\"SessionPositionDiagram\">";
         $title = _("Session Position Diagram");
         $axis_x_title = ($this->CurrentSession->type() == \DbEntry\Session::TypeRace) ? _("Laps") : _("Minutes");
-        $axis_y_title = _("Position");
+        if ($user->getParam("UserSessionPositionDiaType") == "place") {
+            $axis_y_title = _("Position");
+        } if ($user->getParam("UserSessionPositionDiaType") == "gap") {
+            $axis_y_title = _("Gap");
+        }
         $sid = $this->CurrentSession->id();
-        $html .= "<canvas axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" sessionId=\"$sid\" positions=\"$positions\"></canvas>";
+        $html .= "<canvas axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" sessionId=\"$sid\" positions=\"$positions\" diagramType=\"" . $user->getParam("UserSessionPositionDiaType") . "\"></canvas>";
         $html .= "</div>";
 
         $html .= "<table>";

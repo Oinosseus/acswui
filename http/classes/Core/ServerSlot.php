@@ -338,7 +338,7 @@ class ServerSlot {
             $el->fillSkins($car_class, $track);
         }
         $el->writeToFile(\Core\Config::AbsPathData . "/acserver/cfg/entry_list_" . $this->id() . ".ini");
-        $this->writeAcServerCfg($track, $car_class, $preset, $map_ballast);
+        $this->writeAcServerCfg($track, $car_class, $preset, $el, $map_ballast);
 
         // lunch server with plugins
         $ac_server = \Core\Config::AbsPathData . "/acserver/acServer$id";
@@ -348,6 +348,7 @@ class ServerSlot {
         $ac_server_command = "$ac_server -c $server_cfg -e $entry_list > $log_output 2>&1";
 
         // start server
+        $datetime_str = (new \DateTime("now", new \DateTimezone("UTC")))->format(\DateTimeInterface::ATOM);
         $cmd_ret = 0;
         $cmd = "nohup ". \Core\Config::AbsPathAcswui . "/acswui.py srvrun -vvvvvvvvvv";
         $cmd .= " \"" . \Core\Config::AbsPathData . "/acswui_udp_plugin/acswui_udp_plugin_$id.ini\" ";
@@ -355,7 +356,7 @@ class ServerSlot {
         if ($this->parameterCollection()->child("RPGeneralEnable")->value()) {
             $cmd .= " --real-penalty";
         }
-        $cmd .= " >" . \Core\Config::AbsPathData . "/logs_srvrun//slot_$id.srvrun.log 2>&1 &";
+        $cmd .= " >" . \Core\Config::AbsPathData . "/logs_srvrun//slot_$id.srvrun.{$datetime_str}.log 2>&1 &";
         $cmd_retstr = array();
         exec($cmd, $cmd_retstr, $cmd_ret);
         foreach ($cmd_retstr as $line) echo "$line<br>";
@@ -470,11 +471,13 @@ class ServerSlot {
      * @param $track The Track object for the server run
      * @param $car_class The CarClass of the server run
      * @param $preset The ServerPreset for the server run
+     * @param $el An EntryList object to extract cars from
      * @param $map_ballasts An associative array with Steam64GUID->Ballast and one key with 'OTHER'->Ballst
      */
     private function writeAcServerCfg(\DbEntry\Track $track,
                                       \DbEntry\CarClass $car_class,
                                       \DbEntry\ServerPreset $preset,
+                                      \Core\EntryList $el = NULL,
                                       array $map_ballasts = []) {
 
         // determine maximum ballast
@@ -513,7 +516,7 @@ class ServerSlot {
         if ($preset->anyWeatherUsesCsp()) {
             $time_minutes = $ppc->child("SessionStartTime")->value();
             fwrite($f, "SUN_ANGLE=-80\n");
-            fwrite($f, "TIME_OF_DAY_MULT=0.1\n");
+            fwrite($f, "TIME_OF_DAY_MULT=1\n");
         } else {
             fwrite($f, "SUN_ANGLE=" . $ppc->child("SessionStartTime")->valueSunAngle() . "\n");
             fwrite($f, "TIME_OF_DAY_MULT=" . $ppc->child("AcServerTimeMultiplier")->value() . "\n");
@@ -556,6 +559,10 @@ class ServerSlot {
         //! @todo Extract from CarClass and Track
         $cars = array();
         foreach ($car_class->cars() as $car) $cars[] = $car->model();
+        foreach ($el->entries() as $e) {
+            $model = $e->carSkin()->car()->model();
+            if (!in_array($model, $cars)) $cars[] = $model;
+        }
         fwrite($f, "CARS=" . implode(";", $cars) . "\n");
         fwrite($f, "MAX_BALLAST_KG=$max_ballast\n");
         fwrite($f, "TRACK=" . $track->location()->track() . "\n");
@@ -619,31 +626,60 @@ class ServerSlot {
         fwrite($f, "SESSION_TRANSFER=" . $ppc->child("AcServerDynamicTrackSessionTransfer")->value() . "\n");
 
         // weather
-        $weathers = $preset->weathers();
-        for ($i=0; $i<count($weathers); ++$i) {
-            $wpc = $weathers[$i]->parameterCollection();
-            fwrite($f, "\n[WEATHER_$i]\n");
+        $weathers = $preset->weathers($track->location());
+        switch ($ppc->child("WeatherRandomize")->value()) {
+            case "server_run":
+                $w = $weathers[rand(0, count($weathers) - 1)];
+                $s = $this->writeAcServerCfgWeatherSection(0, $w, $preset);
+                fwrite($f, "\n" . $s);
+                break;
 
-            $g = $wpc->child("Graphic");
-            $g_str = $g->getGraphic();
-            if ($g->csp()) {
-                $g_str .= "_time=" . $ppc->child("SessionStartTime")->valueSeconds();
-                $g_str .= "_mult=" . 10 * $ppc->child("AcServerTimeMultiplier")->value();
-            }
-            fwrite($f, "GRAPHICS=$g_str\n");
+            // write all weather to server_cfg
+            case "session":
+                for ($i=0; $i<count($weathers); ++$i) {
+                    $w = $weathers[$i];
+                    $s = $this->writeAcServerCfgWeatherSection($i, $weathers[$i], $preset);
+                    fwrite($f, "\n" . $s);
+                }
+                break;
 
-            fwrite($f, "BASE_TEMPERATURE_AMBIENT=" . $wpc->child("AmbientBase")->value() . "\n");
-            fwrite($f, "VARIATION_AMBIENT=" . $wpc->child("AmbientVar")->value() . "\n");
-            fwrite($f, "BASE_TEMPERATURE_ROAD=" . $wpc->child("RoadBase")->value() . "\n");
-            fwrite($f, "VARIATION_ROAD=" . $wpc->child("RoadVar")->value() . "\n");
-            fwrite($f, "WIND_BASE_SPEED_MIN=" . $wpc->child("WindBaseMin")->value() . "\n");
-            fwrite($f, "WIND_BASE_SPEED_MAX=" . $wpc->child("WindBaseMax")->value() . "\n");
-            fwrite($f, "WIND_BASE_DIRECTION=" . $wpc->child("WindDirection")->value() . "\n");
-            fwrite($f, "WIND_VARIATION_DIRECTION=" . $wpc->child("WindDirectionVar")->value() . "\n");
+            default:
+                \Core\Log::error("Unnown value '{$ppc->child('WeatherRandomize')->value()}'!");
         }
 
-
         fclose($f);
+    }
+
+
+    //! @return A string containing a weather section for the server_cfg.ini
+    private function writeAcServerCfgWeatherSection(int $weather_index,
+                                                    \DbEntry\Weather $weather,
+                                                    \DbEntry\ServerPreset $preset
+                                                    ) : string {
+        $ppc = $preset->parameterCollection();
+        $wpc = $weather->parameterCollection();
+
+        $s = "";
+        $s .= "[WEATHER_$weather_index]\n";
+
+        $g = $wpc->child("Graphic");
+        $g_str = $g->getGraphic();
+        if ($g->csp()) {
+            $g_str .= "_time=" . $ppc->child("SessionStartTime")->valueSeconds();
+            $g_str .= "_mult=" . $ppc->child("AcServerTimeMultiplier")->value();
+        }
+        $s .= "GRAPHICS=$g_str\n";
+
+        $s .= "BASE_TEMPERATURE_AMBIENT=" . $wpc->child("AmbientBase")->value() . "\n";
+        $s .= "VARIATION_AMBIENT=" . $wpc->child("AmbientVar")->value() . "\n";
+        $s .= "BASE_TEMPERATURE_ROAD=" . $wpc->child("RoadBase")->value() . "\n";
+        $s .= "VARIATION_ROAD=" . $wpc->child("RoadVar")->value() . "\n";
+        $s .= "WIND_BASE_SPEED_MIN=" . $wpc->child("WindBaseMin")->value() . "\n";
+        $s .= "WIND_BASE_SPEED_MAX=" . $wpc->child("WindBaseMax")->value() . "\n";
+        $s .= "WIND_BASE_DIRECTION=" . $wpc->child("WindDirection")->value() . "\n";
+        $s .= "WIND_VARIATION_DIRECTION=" . $wpc->child("WindDirectionVar")->value() . "\n";
+
+        return $s;
     }
 
 
@@ -692,7 +728,8 @@ class ServerSlot {
 
         // section No_Penalty
         fwrite($f, "\n[No_Penalty]\n");
-        fwrite($f, "GUIDs = " . $ppc->child("RpAcsNpGuids")->value() . "\n");
+        $guids = trim($ppc->child("RpAcsNpGuids")->value()) . ";" . \Core\ACswui::getParam('TVCarGuids');
+        fwrite($f, "GUIDs = $guids\n");
         fwrite($f, "Cars = " . $ppc->child("RpAcsNpCars")->value() . "\n");
 
         // section Admin
@@ -781,6 +818,10 @@ class ServerSlot {
         fwrite($f, "SPEED_LIMIT_PENALTY_1 = " . $ppc->child("RpPsSpeedingSpeedLimit1")->value() . "\n");
         fwrite($f, "PENALTY_TYPE_2 = " . $ppc->child("RpPsSpeedingPenType2")->value() . "\n");
         fwrite($f, "SPEED_LIMIT_PENALTY_2 = " . $ppc->child("RpPsSpeedingSpeedLimit2")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_3 = " . $ppc->child("RpPsSpeedingPenType3")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_3 = " . $ppc->child("RpPsSpeedingSpeedLimit3")->value() . "\n");
+        fwrite($f, "PENALTY_TYPE_4 = " . $ppc->child("RpPsSpeedingPenType4")->value() . "\n");
+        fwrite($f, "SPEED_LIMIT_PENALTY_5 = 99999\n");
 
         // section Crossing
         fwrite($f, "\n[Crossing]\n");

@@ -5,6 +5,7 @@
 function SessionOverviewDrawCollisions(response) {
     var data = JSON.parse(response);
     var tbl = document.getElementById("SessionCollisions");
+    loadingInProgress(tbl, false);
 
     // create header row
     var tbl_tr = document.createElement("tr");
@@ -31,7 +32,7 @@ function SessionOverviewDrawCollisions(response) {
 
 function SessionOverviewLoadCollisions(button) {
     button.style.visibility = "hidden";
-
+    loadingInProgress("SessionCollisions", true);
 
     var session_id = button.getAttribute("sessionId");
 
@@ -58,6 +59,7 @@ function SessionOverviewLoadCollisions(button) {
 function SessionOverviewDrawLaps(response) {
     var data = JSON.parse(response);
     var tbl = document.getElementById("SessionLaps");
+    loadingInProgress(tbl, false);
 
     // create header row
     var tbl_tr = document.createElement("tr");
@@ -78,7 +80,7 @@ function SessionOverviewDrawLaps(response) {
 
 function SessionOverviewLoadLaps(button) {
     button.style.visibility = "hidden";
-
+    loadingInProgress("SessionLaps", true);
 
     var session_id = button.getAttribute("sessionId");
 

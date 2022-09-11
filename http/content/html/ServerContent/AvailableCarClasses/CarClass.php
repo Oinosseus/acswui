@@ -233,7 +233,7 @@ class CarClass extends \core\HtmlContent {
         $html = "";
         $html .= "<h1>" . _("CarClass Records") . "</h1>";
         $html .= "<button type=\"button\" carClassId=\"" . $this->CarClass->id() . "\" onclick=\"CarClassLoadRecords(this)\">" . _("Load CarClass Records") . "</button>";
-        $html .= "<span id=\"CarClassRecordsList\"></span>";
+        $html .= "<div id=\"CarClassRecordsList\"></div>";
         return $html;
     }
 }

@@ -89,7 +89,6 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt("Sessions", "ServerPreset")
         self.__db.appendColumnUInt("Sessions", 'CarClass')
         self.__db.appendColumnUInt("Sessions", 'SessionSchedule')
-        self.__db.appendColumnString("Sessions", 'ResultFile', 90)
 
         # check table SessionResults
         Verbosity(verb).print("check database table `SessionResults`")
@@ -149,6 +148,8 @@ class InstallerDatabase(object):
         self.__db.appendColumnString("TrackLocations", "Name", 80)
         self.__db.appendColumnTinyInt("TrackLocations", "Deprecated")
         self.__db.appendColumnString("TrackLocations", "Country", 80)
+        self.__db.appendColumnFloat("TrackLocations", "Latitude")
+        self.__db.appendColumnFloat("TrackLocations", "Longitude")
 
         # check table Tracks
         Verbosity(verb).print("check database table `Tracks`")
@@ -346,5 +347,4 @@ class InstallerDatabase(object):
         self.__db.appendColumnFloat("DriverRanking", 'SF_CT')
         self.__db.appendColumnFloat("DriverRanking", 'SF_CE')
         self.__db.appendColumnFloat("DriverRanking", 'SF_CC')
-        self.__db.appendColumnFloat("DriverRanking", 'RankingLast')
         self.__db.appendColumnUInt("DriverRanking", 'RankingGroup')

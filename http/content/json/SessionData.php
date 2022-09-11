@@ -56,24 +56,15 @@ class SessionData extends \Core\JsonContent {
 
     private function requestDriverPositions($session) {
         $data = array();
+        $data['UserInfo'] = array();
+        $data['Positions'] = $session->dynamicPositions();
 
         foreach ($session->drivers() as $user) {
-            if (!$user->privacyFulfilled()) continue;
-
             $data_user = array();
-            $data_user['User'] = array();
-            $data_user['User']['Name'] = $user->name();
-            $data_user['User']['Color'] = $user->getParam("UserColor");
-
-            $data_user['Positions'] = array();
-            $index = 0;
-            foreach ($session->dynamicPositions($user) as $pos) {
-                if ($pos != 0)
-                    $data_user['Positions'][] = array('x'=>$index, 'y'=>$pos);
-                ++$index;
-            }
-
-            $data[] = $data_user;
+            $data_user = array();
+            $data_user['Name'] = $user->name();
+            $data_user['Color'] = $user->getParam("UserColor");
+            $data['UserInfo'][$user->id()] = $data_user;
         }
 
         return $data;

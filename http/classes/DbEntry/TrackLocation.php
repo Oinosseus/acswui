@@ -10,6 +10,7 @@ class TrackLocation extends DbEntry {
     private $Track = NULL;
     private $Name = NULL;
     private $Deprecated = NULL;
+    private $GeoLocation = NULL;
 
     private $ListTracksNDepr = NULL;  // excluding deprecated
     private $ListTracksDepr = NULL;  // including deprecated
@@ -45,6 +46,18 @@ class TrackLocation extends DbEntry {
      */
     public static function fromId(int $id) {
         return parent::getCachedObject("TrackLocations", "TrackLocation", $id);
+    }
+
+
+    //! @return An GeoLocation object
+    public function geoLocation() : \Core\GeoLocation {
+        if ($this->GeoLocation === NULL) {
+            $lat = (float) $this->loadColumn("Latitude");
+            $lon = (float) $this->loadColumn("Longitude");
+            $this->GeoLocation = new \Core\GeoLocation($lat, $lon);
+        }
+
+        return $this->GeoLocation;
     }
 
 
@@ -164,6 +177,19 @@ class TrackLocation extends DbEntry {
     public function name() {
         if ($this->Name === NULL) $this->Name = $this->loadColumn("Name");
         return $this->Name;
+    }
+
+
+    /**
+     * Set a new geographic location for this track location and save it into the database
+     * @param $geo_location The new location
+     */
+    public function setGeoLocation(\Core\GeoLocation $geo_location) : void {
+        $lat = sprintf("%0.5F", $geo_location->latitude());
+        $lon = sprintf("%0.5F", $geo_location->longitude());
+        $this->storeColumns(["Latitude"=>$lat,
+                             "Longitude"=>$lon]);
+        $this->GeoLocation = NULL;
     }
 
 

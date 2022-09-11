@@ -235,9 +235,9 @@ class UdpPluginCarEntry(object):
         if self.__driver_id is None:
             raise ValueError("Cannot report lap, because no driver is connected to this car!")
 
-        self.__verbosity2.print("Car", self.__id,
-                               " (" + self.__driver_name + ") completed lap with",
-                               cuts, "cuts after", laptime, "ms")
+        #self.__verbosity2.print("Car", self.__id,
+                               #" (" + self.__driver_name + ") completed lap with",
+                               #cuts, "cuts after", laptime, "ms")
 
         fields = {}
         fields['Session'] = session.Id
@@ -264,8 +264,8 @@ class UdpPluginCarEntry(object):
 
         # collision with environment
         if other_car_entry is None:
-            self.__verbosity2.print("Collision with environment of car ", self.__id,
-                                    " (" + self.__driver_name + ") at speed", speed)
+            #self.__verbosity2.print("Collision with environment of car ", self.__id,
+                                    #" (" + self.__driver_name + ") at speed", speed)
 
             fields = {}
             fields['Session'] = session.Id
@@ -276,11 +276,11 @@ class UdpPluginCarEntry(object):
 
         # collision with other car
         else:
-            self.__verbosity2.print("Collision of car ", self.__id,
-                                    " (" + self.__driver_name + ")",
-                                    "with other car ", other_car_entry.__id,
-                                    " (" + str(other_car_entry.__driver_name) + ")",
-                                    "at speed", speed)
+            #self.__verbosity2.print("Collision of car ", self.__id,
+                                    #" (" + self.__driver_name + ")",
+                                    #"with other car ", other_car_entry.__id,
+                                    #" (" + str(other_car_entry.__driver_name) + ")",
+                                    #"at speed", speed)
 
             fields = {}
             fields['Session'] = session.Id

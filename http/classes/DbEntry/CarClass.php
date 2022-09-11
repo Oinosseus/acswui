@@ -62,7 +62,7 @@ class CarClass extends DbEntry {
 
             // catch rare situation
             if (!array_key_exists($car->id(), $this->BallastMap)) {
-                \Core\Log::error("Cannot find car ID" . $car->id() . " in car class ID" . $this->Id . "!");
+                \Core\Log::error("Cannot find car ID" . $car->id() . " in car class ID" . $this->id() . "!");
             }
         }
 

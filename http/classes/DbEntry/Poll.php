@@ -7,13 +7,6 @@ namespace DbEntry;
  */
 class Poll extends DbEntry {
     private $Creator = NULL;
-    private $IsSecret = NULL;
-    private $PointsForTracks = NULL;
-    private $PointsPerTrack = NULL;
-    private $PointsPerCarClass = NULL;
-    private $PointsForCarClasses = NULL;
-    private $Name = NULL;
-    private $Description = NULL;
     private $Closing = NULL;
 
     private $Tracks = NULL;
@@ -152,11 +145,42 @@ class Poll extends DbEntry {
         $fields['Creator'] = \Core\UserManager::currentUser()->id();
         $fields['Name'] = "New Poll";
         $fields['Closing'] = \Core\Database::timestamp($closing);
-        $fields['PointsTrack'] = 10;
-        $fields['PointsCarClass'] = 10;
 
         $id = \Core\Database::insert("Polls", $fields);
         return Poll::fromId($id);
+    }
+
+
+
+    /**
+     * Deletes this Poll including all votes.
+     * The current object will stay in memory.
+     * When calling a sat*() method, a new Poll object will be created
+     */
+    public function deleteFromDb() {
+
+        // delete track votes
+        $query = "SELECT PollVotes.Id FROM  PollVotes INNER JOIN PollTracks ON PollVotes.PollTrack = PollTracks.Id WHERE PollTracks.Poll={$this->id()};";
+        foreach (\Core\Database::fetchRaw($query) as $row) {
+            \Core\Database::delete("PollVotes", $row['Id']);
+        }
+
+        // delete tracks
+        $query = "DELETE FROM PollTracks WHERE Poll={$this->id()};";
+        \Core\Database::query($query);
+
+        // delete carclass votes
+        $query = "SELECT PollVotes.Id FROM  PollVotes INNER JOIN PollCarClasses ON PollVotes.PollCarClass = PollCarClasses.Id WHERE PollCarClasses.Poll={$this->id()};";
+        foreach (\Core\Database::fetchRaw($query) as $row) {
+            \Core\Database::delete("PollVotes", $row['Id']);
+        }
+
+        // delete car classes
+        $query = "DELETE FROM PollCarClasses WHERE Poll={$this->id()};";
+        \Core\Database::query($query);
+
+        // delete this poll
+        parent::deleteFromDb();
     }
 
 
@@ -263,7 +287,7 @@ class Poll extends DbEntry {
 
 
     /**
-     * The amount of points votes for a certain track.
+     * The amount of points voted for a certain track.
      * When user is NULL, the summ of all users is returned.
      * When the Track is not valid, 0 is returned.
      * @param $user A User object or NULL (default)
@@ -507,7 +531,7 @@ class Poll extends DbEntry {
 
 
     //! @param $new_closing Define when the poll shall be closed
-    public function setClosing(DateTime $new_closing) {
+    public function setClosing(\DateTime $new_closing) {
         $timestamp = \Core\Database::timestamp($new_closing);
         $this->storeColumns(["Closing"=>$timestamp]);
         $this->Closing = $new_closing;
@@ -534,8 +558,7 @@ class Poll extends DbEntry {
 
     //! @param $points Set how many points can be voted per user for all car calsses in sum
     public function setPointsForCarClasses(int $points) {
-        \Core\Database::update("Polls", $this->id(), ["PointsForCarClasses"=>$points]);
-        $this->PointsForCarClasses = $points;
+        $this->storeColumns(["PointsForCarClasses"=>$points]);
 
         // clip points of votes
         $users = \Core\Database::fetchRaw("SELECT DISTINCT `User` FROM `PollVotes`");
@@ -544,7 +567,7 @@ class Poll extends DbEntry {
 
             $query = "SELECT PollVotes.Id, PollVotes.Points FROM `PollVotes` ";
             $query .= "INNER JOIN PollCarClasses ON PollCarClasses.Id = PollVotes.PollCarClass ";
-            $query .= "WHERE PollVotes.PollTrack = 0 AND User = $user_id";
+            $query .= "WHERE PollVotes.PollTrack = 0 AND User = $user_id AND PollCarClasses.Poll = {$this->id()}";
             $votes = \Core\Database::fetchRaw($query);
 
             // sum vote points
@@ -567,8 +590,7 @@ class Poll extends DbEntry {
 
     //! @param $points Set how many points can be voted per user for a single car calss
     public function setPointsPerCarClass(int $points) {
-        \Core\Database::update("Polls", $this->id(), ["PointsPerCarClass"=>$points]);
-        $this->PointsPerCarClass = $points;
+        $this->storeColumns(["PointsPerCarClass"=>$points]);
 
         // clip points of votes
         $res = \Core\Database::fetch("PollCarClasses", ['Id'], ['Poll'=>$this->id()]);
@@ -586,8 +608,7 @@ class Poll extends DbEntry {
 
     //! @param $points Set how many points can be voted per user for all tracks in sum
     public function setPointsForTracks(int $points) {
-        \Core\Database::update("Polls", $this->id(), ["PointsForTracks"=>$points]);
-        $this->PointsForTracks = $points;
+        $this->storeColumns(["PointsForTracks"=>$points]);
 
         // clip points of votes
         $users = \Core\Database::fetchRaw("SELECT DISTINCT `User` FROM `PollVotes`");
@@ -596,7 +617,7 @@ class Poll extends DbEntry {
 
             $query = "SELECT PollVotes.Id, PollVotes.Points FROM `PollVotes` ";
             $query .= "INNER JOIN PollTracks ON PollTracks.Id = PollVotes.PollTrack ";
-            $query .= "WHERE PollVotes.PollCarClass = 0 AND User = $user_id";
+            $query .= "WHERE PollVotes.PollCarClass = 0 AND User = $user_id AND PollTracks.Poll = {$this->id()}";
             $votes = \Core\Database::fetchRaw($query);
 
             // sum vote points
@@ -619,10 +640,7 @@ class Poll extends DbEntry {
 
     //! @param $points Set how many points can be voted per user for a single track
     public function setPointsPerTrack(int $points) {
-
-        \Core\Database::update("Polls", $this->id(), ["PointsPerTrack"=>$points]);
-        $this->PointsPerTrack = $points;
-        $this->PointsTrackChanged = TRUE;
+        $this->storeColumns(["PointsPerTrack"=>$points]);
 
         // clip points of votes
         $res = \Core\Database::fetch("PollTracks", ['Id'], ['Poll'=>$this->id()]);

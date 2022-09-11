@@ -16,6 +16,31 @@ class EntryList {
     private $CacheCarSkins = array();
 
     public function __construct() {
+
+        // add TVCar
+        if (\Core\ACswui::getParam('TVCarEna')) {
+
+            // get car
+            $model_name = \Core\ACswui::getParam('TVCarModel');
+            $car = \DbEntry\Car::fromModel($model_name);
+            if ($car === NULL) {
+                \Core\Log::warning("Model '$model_name' for TV Car not found!");
+            } else {
+
+                // get skin
+                $skin_name = \Core\ACswui::getParam('TVCarSkin');
+                $carskin = \DbEntry\CarSkin::fromSkin($car, $skin_name);
+                if ($carskin === NULL) {
+                    \Core\Log::warning("Skin '$skin_name' for TV Car model '$model_name' not found!");
+                } else {
+
+                    // add entry
+                    $eli = new EntryListItem($carskin, NULL, 0, 0);
+                    $eli->forceGUIDs(\Core\ACswui::getParam('TVCarGuids'));
+                    $this->add($eli);
+                }
+            }
+        }
     }
 
 
@@ -42,12 +67,20 @@ class EntryList {
      * @param $cc \DbEntry\CarClass to retrieve ballast/restrictor from
      */
     public function  applyCarClass(\DbEntry\CarClass $cc) {
+
+        // list all cars within class
+        $car_ids = array();
+        foreach ($cc->cars() as $car) $car_ids[] = $car->id();
+
+        // apply to all cars within class
         foreach ($this->ListItems as $eli) {
             $car = $eli->carSkin()->car();
-            $ballast = $cc->ballast($car);
-            $eli->setBallast($ballast);
-            $restrictor = $cc->restrictor($car);
-            $eli->setRestrictor($restrictor);
+            if (in_array($car->id(), $car_ids)) {
+                $ballast = $cc->ballast($car);
+                $eli->setBallast($ballast);
+                $restrictor = $cc->restrictor($car);
+                $eli->setRestrictor($restrictor);
+            }
         }
     }
 
@@ -67,6 +100,12 @@ class EntryList {
     //! @return The amount of EntryListItems
     public function count() {
         return count($this->ListItems);
+    }
+
+
+    //! @return An array of EntryListItem objects
+    public function entries() {
+        return $this->ListItems;
     }
 
 

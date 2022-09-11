@@ -30,6 +30,9 @@ class Session extends DbEntry {
     private $Results = NULL;
     private $DynamicPositions = NULL;
     private $Grip = NULL;
+//     private static $LatestSession = NULL;
+    private static $LastCompletedSession = NULL;
+    private static $LastFinishedSession = NULL;
 
 
     /**
@@ -96,6 +99,32 @@ class Session extends DbEntry {
 
 
     /**
+     * Tries to find A certain Session
+     * @param $max_id When not NULL, the Session with the Id lower or equal than this is returned
+     * @return The requested Session (can be NULL)
+     */
+    public static function find(int $max_id = NULL) {
+        $session = NULL;
+
+        // find by max ID
+        if ($max_id !== NULL) {
+
+            $query = "SELECT Id FROM Sessions WHERE Id <= $max_id ORDER BY Id DESC LIMIT 1;";
+            $res = \Core\Database::fetchRaw($query);
+            if (count($res) > 0) {
+                $session = Session::fromId($res[0]['Id']);
+            }
+
+        // no search specified
+        } else {
+            \Core\Logg::warning("No find criterias specified.");
+        }
+
+        return $session;
+    }
+
+
+    /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.
      * When $id is NULL or 0, NULL is returned
@@ -105,6 +134,110 @@ class Session extends DbEntry {
         if ($id === NULL or $id == 0) return NULL;
         return parent::getCachedObject("Sessions", "Session", $id);
     }
+
+
+    /**
+     * The Session that is safely completed.
+     * Which means there can be a newer Session also being finished,
+     * but then also a newer Session exist which is currently running.
+     *
+     * Completed means no older Session which is active (running) exists.
+     *
+     * To prevent race conditions the last completed session must be older than one minutie.
+     *
+     * @return The Session object of the last completed Session (can be NULL)
+     */
+    public static function fromLastCompleted() {
+        if (Session::$LastCompletedSession === NULL) {
+
+            // find lowest Session-Id of any current running slot
+            $lowest_online_session_id = NULL;
+            for ($id = 1; $id <= \Core\Config::ServerSlotAmount; ++$id) {
+                $slot = \Core\ServerSlot::fromId($id);
+                if ($slot->online()) {
+                    $session = $slot->currentSession();
+                    if ($session) {
+                        if ($lowest_online_session_id === NULL || $session->id() < $lowest_online_session_id)
+                            $lowest_online_session_id = $session->id();
+                    }
+                }
+            }
+
+            // find Session-Id that is lower than current running session
+            $minutes_ago = \Core\Database::timestamp((new \DateTime("now"))->sub(new \DateInterval("PT1M")));
+            $query = "SELECT Id FROM Sessions WHERE Timestamp <= '$minutes_ago'";
+            if ($lowest_online_session_id !== NULL)
+                $query .= " AND Id < $lowest_online_session_id";
+            $query .= "  ORDER BY Id DESC LIMIT 1;";
+            $res = \Core\Database::fetchRaw($query);
+            if (count($res) > 0) {
+                $session = \DbEntry\Session::fromId($res[0]['Id']);
+                Session::$LastCompletedSession = $session;
+            }
+        }
+
+        return Session::$LastCompletedSession;
+    }
+
+
+    /**
+     * The latest Session that is completed (not more online).
+     * To prevent race conditions the last completed session must be older than one minute.
+     *
+     * @warning There can exist older Sessions which still running.
+     * See fromLastCompleted() alo.
+     *
+     * @return The Session object of the newest offline Session (can be NULL)
+     */
+    public static function fromLastFinished() {
+
+        if (Session::$LastFinishedSession === NULL) {
+
+            // get list of session which are currently online
+            $online_sessions = array();
+            for ($i=1; $i <= \Core\Config::ServerSlotAmount; ++$i) {
+                $slot = \Core\ServerSlot::fromId($i);
+                $session = $slot->currentSession();
+                if ($session !== NULL) {
+                    $online_sessions[] = $session->id();
+                }
+            }
+
+            // get latest Session Id as starting point
+            $minutes_ago = \Core\Database::timestamp((new \DateTime("now"))->sub(new \DateInterval("PT1M")));
+            $query = "SELECT Id FROM Sessions WHERE Timestamp <= '$minutes_ago' ORDER BY Id DESC LIMIT 1;";
+            $res = \Core\Database::fetchRaw($query);
+            if (count($res) > 0) {
+
+                // recursivly find the highest session which is offline
+                $session = Session::fromId($res[0]['Id']);
+                while ($session !== NULL && in_array($session->id(), $online_sessions)) {
+                    $session = Session::find($session->id() - 1);
+                }
+                Session::$LastFinishedSession = $session;
+            }
+        }
+
+        return Session::$LastFinishedSession;
+    }
+
+
+
+//     /**
+//      * @return The newest Session (can be NULL)
+//      */
+//     public static function fromLatest() {
+//         if (Session::$LatestSession === NULL) {
+//             $query = "SELECT Id FROM Sessions ORDER BY Id DESC LIMIT 1;";
+//             $res = \Core\Database::fetchRaw($query);
+//             if (count($res) > 0) {
+//                 Session::$LatestSession = Session::fromId($res[0]['Id']);
+//             }
+//         }
+//
+//         return Session::$LatestSession;
+//     }
+
 
 
     //! @return A two-element array with minimum and maximum grip at the session
@@ -351,25 +484,19 @@ class Session extends DbEntry {
 
 
 
-
-
     /**
-     * Calculates an array for the requested driver with his session positions.
-     * Every entry in the array represents the curent position.
-     *
-     * For race session the array element [0] represents the start position (qualifying result).
-     * Every following element represents his position after completing a lap.
-     * The second last element represents the position in the final lap.
-     *
+     * Calculates an array with session positions.
      * For Practice and Qualifying, the elements represent session minutes (time).
-     * The first element contains the position from the previous session.
+     * For Race session, the elements represent lap numbers.
      *
-     * An element containing '0' as position indicates,
-     * that the driver did not complete this lap (in racing) or,
-     * that the driver did not drive at this minute (for practice and qualifying).
-     * The last element represents the session result.
+     * return Array:
+     * 'Info' -+- 'MaxPlace'
+     *         +- 'MaxGap'
+     * 'Data' -+- <UserId> - <LapNr/Minute> -+- 'Place'
+     *                                       +- 'Gap'       [ms]
+     *                                       +- 'Laptime'   [ms]
      */
-    public function dynamicPositions(User $user) {
+    public function dynamicPositions() {
 
         // update cache
         if ($this->DynamicPositions === NULL) {
@@ -377,12 +504,14 @@ class Session extends DbEntry {
             ///////////////
             // Initialize
 
-            // initialize cache with all drivers
+            // initialize cache
             $this->DynamicPositions = array();
+            $this->DynamicPositions['Info'] = array();
+            $this->DynamicPositions['Info']['MaxPlace'] = 0;
+            $this->DynamicPositions['Info']['MaxGap'] = 0;
+            $this->DynamicPositions['Data'] = array();
             foreach ($this->drivers() as $d) {
-                $uid = $d->id();
-                $this->DynamicPositions[$uid] = array();
-                $this->DynamicPositions[$uid][] = 0;
+                $this->DynamicPositions['Data'][$d->id()] = array();
             }
 
             //////////////////
@@ -391,50 +520,63 @@ class Session extends DbEntry {
             // determine positions based on laps
             if ($this->type() == Session::TypeRace) {
 
-                // get positions of qualifying session
-                $predec = $this->predecessor();
-                if ($predec !== NULL && $predec->type() == Session::TypeQualifying) {
-                    $predec_results = $predec->results();
-                    usort($predec_results, "\DbEntry\SessionResult::comparePosition");
-                    foreach ($predec_results as $rslt) {
-                        $uid = $rslt->user()->id();
-                        if (!array_key_exists($uid, $this->DynamicPositions)) {
-                            $this->DynamicPositions[$uid] = array();
-                            $this->DynamicPositions[$uid][] = 0;
-                        }
-                        $this->DynamicPositions[$uid][0] = $rslt->position();
-                    }
-                }
-
                 // get position of race laps
-                $lap_positions = array();
-                $driver_laps_amount = array(); // stores the amount of driven laps for a certain user
+                $leader_laptimes = array();      // laptimes of the race leader
+                $driver_laps_amount = array();   // stores the amount of driven laps for a certain user
+                $driver_laps_timesum = array();  // stores the sum of all laptimes per driver
                 foreach ($this->laps() as $lap) {
                     $uid = $lap->user()->id();
 
+                    // cumulate laptimes
+                    if (!array_key_exists($uid, $driver_laps_timesum)) $driver_laps_timesum[$uid] = 0;
+                    $driver_laps_timesum[$uid] += $lap->laptime();
+
                     // find current lap number of user
                     if (!array_key_exists($uid, $driver_laps_amount))
-                        $driver_laps_amount[$uid] = 0;
+                        $driver_laps_amount[$uid] = 1;
                     else
                         $driver_laps_amount[$uid] += 1;
                     $user_lap_nr = $driver_laps_amount[$uid];
 
-                    // grow lap position information
-                    while ($user_lap_nr >= count($lap_positions))
-                        $lap_positions[] = array();
+                    // grow data
+                    $next_place = 1;
+                    $leading_user_id = $uid;
+                    $leader_lap_nr = $user_lap_nr;
+                    foreach ($this->DynamicPositions['Data'] as $driver_id => $driver_data) {
 
-                    // put user into lap position array
-                    $lap_positions[$user_lap_nr][] = $uid;
-                }
+                        // grow driver laps
+                        if (!array_key_exists($user_lap_nr, $this->DynamicPositions['Data'][$driver_id])) {
+                            $this->DynamicPositions['Data'][$driver_id][$user_lap_nr] = array();
+                            $this->DynamicPositions['Data'][$driver_id][$user_lap_nr]['Place'] = 0;
+                            $this->DynamicPositions['Data'][$driver_id][$user_lap_nr]['Gap'] = 0;
+                            $this->DynamicPositions['Data'][$driver_id][$user_lap_nr]['Laptime'] = 0;
+                        }
 
-                // extract race positions
-                foreach ($lap_positions as $lap_nr=>$pos_array) {
-                    foreach (array_keys($this->DynamicPositions) as $uid) {
-                        $pos = array_search($uid, $pos_array);
-                        if ($pos === FALSE) $pos = 0;
-                        else $pos += 1;
-                        $this->DynamicPositions[$uid][] = $pos;
+                        // find leader
+                        if ($this->DynamicPositions['Data'][$driver_id][$user_lap_nr]['Place'] == 1) $leading_user_id = $driver_id;
+
+                        // find next assignable position
+                        if ($this->DynamicPositions['Data'][$driver_id][$user_lap_nr]['Place'] >= $next_place) $next_place = $this->DynamicPositions['Data'][$driver_id][$user_lap_nr]['Place'] + 1;
                     }
+
+                    // assign laptime
+                    $this->DynamicPositions['Data'][$uid][$user_lap_nr]['Laptime'] = $lap->laptime();
+
+                    // assign position
+                    $this->DynamicPositions['Data'][$uid][$user_lap_nr]['Place'] = $next_place;
+                    if ($next_place > $this->DynamicPositions['Info']['MaxPlace']) $this->DynamicPositions['Info']['MaxPlace'] = $next_place;
+                    if ($next_place == 1) $leader_laptimes[] = $lap->laptime();
+
+                    // calculate gap if lapped
+                    $gap_lapped = 0;
+                    for ($lapidx = $user_lap_nr; $lapidx < count($leader_laptimes); ++$lapidx) {
+                        $gap_lapped += $leader_laptimes[$lapidx];
+                    }
+
+                    // assign gap
+                    $gap = $driver_laps_timesum[$uid] - $driver_laps_timesum[$leading_user_id] + $gap_lapped;
+                    $this->DynamicPositions['Data'][$uid][$user_lap_nr]['Gap'] = $gap;
+                    if ($this->DynamicPositions['Data'][$uid][$user_lap_nr]['Gap'] > $this->DynamicPositions['Info']['MaxGap']) $this->DynamicPositions['Info']['MaxGap'] = $this->DynamicPositions['Data'][$uid][$user_lap_nr]['Gap'];
                 }
 
 
@@ -443,26 +585,52 @@ class Session extends DbEntry {
 
             // determine positions based on minutes
             } else {
-                $positions = array(); // array of SessionBestTime objects
-                $driver_besttimes = array(); // stores current best laptime for each driver
+                $driver_besttimes = array(); // stores current best laptime for each driver: key=user-id, value=laptime
                 $current_positions_uid = array(); // stores the current user-id ordered by their best time
+                $absolute_best_laptime = NULL;
+                $outlap_drivers = array(); // list of user-ids (to identify first lap / outlap)
 
                 foreach ($this->laps() as $lap) {
-                    if ($lap->cuts() > 0) continue;
                     $uid = $lap->user()->id();
 
-                    $user_minute = $lap->sessionMinutes();
+                    // filter outlaps
+                    $is_outlap = !in_array($uid, $outlap_drivers);
+                    if (!in_array($uid, $outlap_drivers)) $outlap_drivers[] = $uid;
 
-                    // grow lap position information
-                    while ($user_minute > count($positions))
-                        $positions[] = $current_positions_uid;
+                    // ignore invalid laps
+                    if ($lap->cuts() > 0 || $is_outlap) continue;
+
+                    $user_minute = "{$lap->sessionMinutes()}";
 
                     // update best times
-                    if (!array_key_exists($uid, $driver_besttimes)
-                        || $lap->laptime() < $driver_besttimes[$uid]) {
+                    if (!array_key_exists($uid, $driver_besttimes) || $lap->laptime() < $driver_besttimes[$uid]) {
 
                         // save best times
                         $driver_besttimes[$uid] = $lap->laptime();
+                        if ($absolute_best_laptime === NULL || $lap->laptime() < $absolute_best_laptime) {
+                            $absolute_best_laptime = $lap->laptime();
+                        }
+
+                        // grow driver laps
+                        foreach ($this->DynamicPositions['Data'] as $driver_id => $driver_data) {
+
+                            // skip if driver has currently no lap
+                            if (!array_key_exists($driver_id, $driver_besttimes)) continue;
+
+                            // initialize driver array
+                            if (!array_key_exists($user_minute, $this->DynamicPositions['Data'][$driver_id])) {
+                                $this->DynamicPositions['Data'][$driver_id][$user_minute] = array();
+                                $this->DynamicPositions['Data'][$driver_id][$user_minute]['Place'] = 0;
+                                $this->DynamicPositions['Data'][$driver_id][$user_minute]['Gap'] = 0;
+                                $this->DynamicPositions['Data'][$driver_id][$user_minute]['Laptime'] = 0;
+                            }
+
+                            // assign gap
+                            $this->DynamicPositions['Data'][$driver_id][$user_minute]['Gap'] = $driver_besttimes[$driver_id] - $absolute_best_laptime;
+                        }
+
+                        // assign laptime
+                        $this->DynamicPositions['Data'][$uid][$user_minute]['Laptime'] = $lap->laptime();
 
                         // determine current positions
                         $current_positions = array();
@@ -474,49 +642,18 @@ class Session extends DbEntry {
                         }
                         usort($current_positions, "\Core\SessionBestTime::compare");
 
-                        // translate to user-id array
-                        $current_positions_uid = array();
-                        foreach ($current_positions as $sbt) {
-                            $current_positions_uid[] = $sbt->UserId;
+                        // assign place
+                        for ($pos = 1; $pos <= count($current_positions); ++$pos) {
+                            if (!array_key_exists($pos, $current_positions)) continue;
+                            $sbt = $current_positions[$pos];
+                            $this->DynamicPositions['Data'][$sbt->UserId][$user_minute]['Place'] = $pos;
                         }
                     }
-
-                    // put user into lap position array
-                    $positions[$user_minute] = $current_positions_uid;
-                }
-
-                // extract session positions
-                foreach ($positions as $minute=>$pos_array) {
-                    foreach (array_keys($this->DynamicPositions) as $uid) {
-                        $pos = array_search($uid, $pos_array);
-                        if ($pos === FALSE) $pos = 0;
-                        else $pos += 1;
-                        $this->DynamicPositions[$uid][] = $pos;
-                    }
-                }
-
-                // add session result
-                $results = $this->results();
-                usort($results, "\DbEntry\SessionResult::comparePosition");
-                foreach (array_keys($this->DynamicPositions) as $uid) {
-                    $pos = 0;
-                    foreach ($results as $rslt) {
-                        if ($rslt->user()->id() == $uid) {
-                            $pos = $rslt->position();
-                            break;
-                        }
-                    }
-                    $this->DynamicPositions[$uid][] = $pos;
                 }
             }
         }
 
         // return result
-        if (!array_key_exists($user->id(), $this->DynamicPositions)) {
-            $acswuiLog->logError("No entry for user->id()=" . $user->id() . "!");
-        }
-        return $this->DynamicPositions[$user->id()];
+        return $this->DynamicPositions;
     }
 }
-
-?>

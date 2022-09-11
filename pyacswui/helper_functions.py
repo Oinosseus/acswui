@@ -162,3 +162,92 @@ def version(detailed=False):
     cp = subprocess.run(cmd, capture_output=True, check=True)
     version = cp.stdout
     return version.decode("utf-8").strip()
+
+
+
+class Longitude(float):
+    pass
+
+class Latitude(float):
+    pass
+
+
+def __parse_geocoordinate_direction_apply(direction, coordinate_value):
+    if direction == "N":
+        return Latitude(coordinate_value)
+    elif direction == "S":
+        return Latitude(-1 * coordinate_value)
+    elif direction == "E":
+        return Longitude(coordinate_value)
+    elif direction == "W":
+        return Longitude(-1 * coordinate_value)
+    else:
+        return None
+
+
+def parse_geocoordinate(string_value):
+    """ Parse a string value and returning a Latitude, Longitude, float or None object
+    """
+    string_value = string_value.replace(",", ".").upper().strip()
+
+    # 12.345? N
+    m = re.match("(\d+\.\d+).?\s+([N,S,E,W])", string_value.upper())
+    if m:
+        value = float(m.group(1))
+        direction = m.group(2)
+        coordinate = __parse_geocoordinate_direction_apply(direction, value)
+        if coordinate:
+            return coordinate
+
+    # 13?16?14.34?E
+    m = re.match("(\d+).?\s*(\d+).?\s*(\d+\.\d+).?\s*([N,S,E,W])", string_value.upper())
+    if m:
+        value = float(m.group(1)) + float(m.group(2))/60 + float(m.group(3))/3600
+        direction = m.group(4)
+        coordinate = __parse_geocoordinate_direction_apply(direction, value)
+        if coordinate:
+            return coordinate
+
+    # 13?16?14?E
+    m = re.match("(\d+).?\s*(\d+).?\s*(\d+).?\s*([N,S,E,W])", string_value.upper())
+    if m:
+        value = float(m.group(1)) + float(m.group(2))/60 + float(m.group(3))/3600
+        direction = m.group(4)
+        coordinate = __parse_geocoordinate_direction_apply(direction, value)
+        if coordinate:
+            return coordinate
+
+    # 13? 16.3456? E
+    m = re.match("(\d+).?\s+(\d+\.\d+).?\s+([N,S,E,W])", string_value.upper())
+    if m:
+        value = float(m.group(1)) + float(m.group(2))/60
+        direction = m.group(3)
+        coordinate = __parse_geocoordinate_direction_apply(direction, value)
+        if coordinate:
+            return coordinate
+
+    # LAT-25.5955
+    m = re.match("LAT\s*([-]*\d+\.\d+)", string_value.upper())
+    if m:
+        value = float(m.group(1))
+        return Latitude(value)
+
+    # LON 28.0408
+    m = re.match("LON\s*([-]*\d+\.\d+)", string_value.upper())
+    if m:
+        value = float(m.group(1))
+        return Longitude(value)
+
+    # 13? 16.3456?
+    m = re.match("(\d+).?\s+(\d+\.\d+).?", string_value.upper())
+    if m:
+        value = float(m.group(1)) + float(m.group(2))/60
+        return value
+
+    # 12.345
+    m = re.match("(\d+\.\d+)", string_value.upper())
+    if m:
+        value = float(m.group(1))
+        return value
+
+    return None

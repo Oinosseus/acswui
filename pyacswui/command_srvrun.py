@@ -1,8 +1,9 @@
+import datetime
 import os
-import signal
-import time
 import os.path
 import sys
+import time
+
 from subprocess import Popen, DEVNULL
 from configparser import ConfigParser
 from .command import Command, ArgumentException
@@ -23,6 +24,7 @@ class CommandSrvrun(Command):
         self._verbosity = Verbosity(self.getArg("v"), self.__class__.__name__)
 
         slot_str = str(self.getArg("slot"))
+        iso8601_str = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
 
 
 
@@ -38,7 +40,7 @@ class CommandSrvrun(Command):
         self._verbosity.print("starting ACswui plugin")
         path_acswui = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         path_acswui_udpp_ini = os.path.abspath(os.path.join(self.getGeneralArg("path-data"), "acswui_udp_plugin", "acswui_udp_plugin_" + slot_str + ".ini"))
-        path_log_acswuiudpp = os.path.join(self.getGeneralArg("path-data"), "logs_srvrun", "slot_" + slot_str + ".acswui_udp_plugin.log")
+        path_log_acswuiudpp = os.path.join(self.getGeneralArg("path-data"), "logs_srvrun", "slot_" + slot_str + ".acswui_udp_plugin." + iso8601_str + ".log")
         acswui_udpp_cmd = []
         acswui_udpp_cmd.append(os.path.join(path_acswui, "acswui.py"))
         acswui_udpp_cmd.append("udpplugin")
@@ -55,7 +57,7 @@ class CommandSrvrun(Command):
         path_data_acserver = os.path.join(self.getGeneralArg("path-data"), "acserver")
         path_entry_list = os.path.join(path_data_acserver, "cfg", "entry_list_" + slot_str + ".ini")
         path_server_cfg = os.path.join(path_data_acserver, "cfg", "server_cfg_" + slot_str + ".ini")
-        path_log_acserver = os.path.join(self.getGeneralArg("path-data"), "logs_srvrun", "slot_" + slot_str + ".acServer.log")
+        path_log_acserver = os.path.join(self.getGeneralArg("path-data"), "logs_srvrun", "slot_" + slot_str + ".acServer." + iso8601_str + ".log")
         acserver_cmd = []
         acserver_cmd.append(os.path.join(path_data_acserver, "acServer" + slot_str))
         acserver_cmd.append("-c")
@@ -109,36 +111,48 @@ class CommandSrvrun(Command):
             time.sleep(0.1)  # wait to save CPU time
 
 
+        # grant sub processes one OS process execution round after AC has finished
+        time.sleep(0.1)
+
+
         # friendly ask to finish processing
         if self.getArg("real-penalty"):
             if rp_proc.poll() is None:
+                self._verbosity.print("terminate real-penalty")
                 rp_proc.terminate()
         if acswui_udpp_proc.poll() is None:
+            self._verbosity.print("terminate acswui udp plugin")
             acswui_udpp_proc.terminate()
         if acserver_proc.poll() is None:
+            self._verbosity.print("terminate ac server")
             acserver_proc.terminate()
 
 
         # allow some time to shutdown processes
         time_start = time.time()
         while True:
-            if (time.time() - time_start) > 5:
-                break;
-            if (not self.getArg("real-penalty") or rp_proc.poll() is None) and acswui_udpp_proc.poll() is None:
-                if self.getArg("real-penalty"):
-                    if acserver_proc.poll() is None:
+
+            # timeout for termination
+            if (time.time() - time_start) > 5.0:
+                break
+
+            # skip wait time if all processes are down
+            if acserver_proc.poll() is not None:  # AC server has shut down
+                if acswui_udpp_proc.poll() is not None:  # ACswui UDP plugin has shut down
+                    if not self.getArg("real-penalty") or rp_proc.poll() is not None:  # real penalty has shut down
                         break
-                else:
-                    break
 
 
         # kill processing
         if self.getArg("real-penalty"):
             if rp_proc.poll() is None:
+                self._verbosity.print("kill real-penalty")
                 rp_proc.kill()
         if acswui_udpp_proc.poll() is None:
+            self._verbosity.print("kill acswui udp plugin")
             acswui_udpp_proc.kill()
         if acserver_proc.poll() is None:
+            self._verbosity.print("kill ac server")
             acserver_proc.kill()
 
         self._verbosity.print("finish server run")

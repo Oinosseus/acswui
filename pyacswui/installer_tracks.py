@@ -3,7 +3,8 @@ import os
 import re
 
 from .verbosity import Verbosity
-from .helper_functions import generateHtmlImg
+from .helper_functions import generateHtmlImg, parse_json, parse_geocoordinate, Longitude, Latitude
+
 
 class InstallerTracks(object):
 
@@ -19,24 +20,6 @@ class InstallerTracks(object):
         self.__path_htdata = path_htdata
         self._verbosity = Verbosity(verbosity, self.__class__.__name__)
 
-
-
-    def __parse_json(self, json_file, key_name, default_value):
-        ret = default_value
-        key_name = '"' + key_name + '":'
-        if os.path.isfile(json_file):
-            with open(json_file, "r", encoding='utf-8', errors='ignore') as f:
-                for line in f.readlines():
-                    if key_name in line.lower():
-                        ret = line.split(key_name, 1)[1]
-                        ret = ret.strip()
-                        if ret[:1] == '"':
-                            ret = ret[1:].strip()
-                        if ret[-1:] == ',':
-                            ret = ret[:-1].strip()
-                        if ret[-1:] == '"':
-                            ret = ret[:-1]
-        return ret
 
 
     def process(self):
@@ -94,14 +77,27 @@ class InstallerTracks(object):
 
         # update track
         if os.path.isfile(track_path + "/ui/ui_track.json"):
-            track_name   = self.__parse_json(track_path + "/ui/ui_track.json", "name", track)
-            track_length = self.__parse_json(track_path + "/ui/ui_track.json", "length", "0")
-            track_length = self._interpret_length(track_length)
-            track_pitbxs = self._interpret_pitboxes(self.__parse_json(track_path + "/ui/ui_track.json", "pitboxes", "0"))
-            track_version = self.__parse_json(track_path + "/ui/ui_track.json", "version", "")[:30]
-            track_author = self.__parse_json(track_path + "/ui/ui_track.json", "author", "")[:50]
-            track_country = self.__parse_json(track_path + "/ui/ui_track.json", "country", "")[:80]
-            track_descr = self.__parse_json(track_path + "/ui/ui_track.json", "description", "")
+            json_dict = parse_json(track_path + "/ui/ui_track.json",
+                                    ['geotags', 'name', 'length',
+                                    'pitboxes', 'version', 'author',
+                                    'description', 'country'])
+            track_name   = str(json_dict['name']).strip()
+            if track_name == "":
+                track_name = track
+
+            track_length = self._interpret_length(json_dict['length'])
+            track_pitbxs = json_dict['pitboxes'].strip()
+            track_version = str(json_dict['version']).strip()[:30]
+            track_author = str(json_dict['author']).strip()[:50]
+            track_descr = str(json_dict['description']).strip()
+            track_country = str(json_dict['country']).strip()[:80]
+            geo_lat, geo_lon = self._interpret_geotags(json_dict["geotags"])
+
+            # update geotags
+            if None not in [geo_lat, geo_lon]:
+                res = self.__db.fetch("TrackLocations", ['Longitude', 'Latitude'], {'Id': track_location_id})
+                if res[0]['Longitude'] == 0.0 and res[0]['Latitude'] == 0.0: # only update if not already set (avoid override of manual adjustments)
+                    self.__db.updateRow("TrackLocations", track_location_id, {'Longitude': geo_lon, 'Latitude': geo_lat})
 
             existing_track_ids = self._find_track_ids(track_location_id)
             if len(existing_track_ids) == 0:
@@ -121,17 +117,32 @@ class InstallerTracks(object):
                 if os.path.isdir(track_path + "/ui/" + track_config):
                     if os.path.isfile(track_path + "/ui/" + track_config + "/ui_track.json"):
                         Verbosity(verb).print("track config", track_config)
-                        track_name   = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "name", track)
-                        track_length = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "length", "0")
-                        track_length = self._interpret_length(track_length)
-                        track_pitbxs = self._interpret_pitboxes(self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "pitboxes", "0"))
-                        track_version = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "version", "")[:30]
-                        track_author = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "author", "")[:50]
-                        track_descr = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "description", "")
-                        track_country = self.__parse_json(track_path + "/ui/" + track_config + "/ui_track.json", "country", "")
+
+                        json_dict = parse_json(track_path + "/ui/" + track_config + "/ui_track.json",
+                                               ['geotags', 'name', 'length',
+                                                'pitboxes', 'version', 'author',
+                                                'description', 'country'])
+
+                        track_name   = str(json_dict['name']).strip()
+                        if track_name == "":
+                            track_name = track
+
+                        track_length = self._interpret_length(json_dict['length'])
+                        track_pitbxs = json_dict['pitboxes'].strip()
+                        track_version = str(json_dict['version']).strip()[:30]
+                        track_author = str(json_dict['author']).strip()[:50]
+                        track_descr = str(json_dict['description']).strip()
+                        track_country = str(json_dict['country']).strip()[:80]
+                        geo_lat, geo_lon = self._interpret_geotags(json_dict["geotags"])
                         track_names.append(track_name)
                         track_countries.append(track_country)
                         track_descriptions.append(track_descr)
+
+                        # update geotags
+                        if None not in [geo_lat, geo_lon]:
+                            res = self.__db.fetch("TrackLocations", ['Longitude', 'Latitude'], {'Id': track_location_id})
+                            if res[0]['Longitude'] == 0.0 and res[0]['Latitude'] == 0.0: # only update if not already set (avoid override of manual adjustments)
+                                self.__db.updateRow("TrackLocations", track_location_id, {'Longitude': geo_lon, 'Latitude': geo_lat})
 
                         existing_track_ids = self._find_track_ids(track_location_id, track_config)
                         table_fields = {"Location": track_location_id,
@@ -233,46 +244,74 @@ class InstallerTracks(object):
         self.__db.updateRow("TrackLocations", track_location_id, {"Name": track_location_name, "Country": track_country, "Deprecated": 0})
 
 
+    def _interpret_geotags(selparse_geocoordinatef, geotags):
+        """ Returns tuple: (latitude, longitude)
+        """
+
+        lat = None
+        lon = None
+
+        if type(geotags) == type([]):
+
+            if len(geotags) >= 2:
+
+                # convert each part
+                for i in [0, 1]:
+
+                    coord = parse_geocoordinate(geotags[i])
+                    if isinstance(coord, Latitude):
+                        lat = coord
+                    elif isinstance(coord, Longitude):
+                        lon = coord
+                    elif isinstance(coord, float):
+                        if i == 0:
+                            lat = coord
+                        else:
+                            lon = coord
+
+        return lat, lon
+
 
     def _interpret_length(self, length):
-            ret = ""
+        length = str(length)
+        ret = ""
 
-            REGEX_COMP_TRACKLENGTH = re.compile("([0-9]*[,\.]?[0-9]*)\s*(m|km)?(.*)")
-            match = REGEX_COMP_TRACKLENGTH.match(length)
-            if not match:
-                raise ValueError("Could not extract length information from string '%s'!\nCheck ui_track.json" % length)
+        REGEX_COMP_TRACKLENGTH = re.compile("([0-9]*[,\.]?[0-9]*)\s*(m|km)?(.*)")
+        match = REGEX_COMP_TRACKLENGTH.match(length)
+        if not match:
+            raise ValueError("Could not extract length information from string '%s'!\nCheck ui_track.json" % length)
 
-            #print("MATCH:", "'", match.group(1), "'", match.group(2), "'", match.group(3))
-            length = match.group(1)
-            if length == "":
-                length = "0"
-            length = length.replace(",", ".")
-            length = float(length)
-            unit = match.group(2)
-            rest = match.group(3)
+        #print("MATCH:", "'", match.group(1), "'", match.group(2), "'", match.group(3))
+        length = match.group(1)
+        if length == "":
+            length = "0"
+        length = length.replace(",", ".")
+        length = float(length)
+        unit = match.group(2)
+        rest = match.group(3)
 
-            if unit == "km":
-                length *= 1000
-            #print("MATCH:", length, unit, "//", rest)
+        if unit == "km":
+            length *= 1000
+        #print("MATCH:", length, unit, "//", rest)
 
-            # Guessing when a track is less than 100m the length was desired to be in [km]
-            # workaround for tracks with wrong comma setting
-            if length < 100:
-                length *= 1000
+        # Guessing when a track is less than 100m the length was desired to be in [km]
+        # workaround for tracks with wrong comma setting
+        if length < 100:
+            length *= 1000
 
-            return length
+        return length
 
 
 
     def _interpret_pitboxes(self, pitbxs):
-            ret = 0
-            for char in pitbxs:
-                if char in "0123456789":
-                    ret *= 10
-                    ret += int(char)
-                else:
-                    break
-            return ret
+        ret = 0
+        for char in pitbxs:
+            if char in "0123456789":
+                ret *= 10
+                ret += int(char)
+            else:
+                break
+        return ret
 
 
 

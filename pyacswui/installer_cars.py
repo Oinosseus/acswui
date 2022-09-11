@@ -157,6 +157,8 @@ class InstallerCars(object) :
             return 0
         elif weight_string == '---kg': # mustang_imsa_roush
             return 0
+        elif weight_string in [None, 'null']: # tv
+            return 0
 
         weight = None
 

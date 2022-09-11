@@ -11,6 +11,7 @@ class EntryListItem {
     private $User = NULL;
     private $Ballast = 0;
     private $Restrictor = 0;
+    private $ForceGUIDs = NULL;
 
     public function __construct(\DbEntry\CarSkin $skin,
                                 \DbEntry\User $user=NULL,
@@ -26,6 +27,15 @@ class EntryListItem {
     //! @return The CarSkin object of the occupation
     public function carSkin() {
         return $this->CarSkin;
+    }
+
+
+    /**
+     * This sets the GUID for the car item in the entry list.
+     * When using this function, the assigned User object is ignored.
+     */
+    public function forceGUIDs(string $guids) {
+        $this->ForceGUIDs = $guids;
     }
 
 
@@ -46,7 +56,10 @@ class EntryListItem {
         fwrite($f, "SKIN={$this->CarSkin->skin()}\n");
         fwrite($f, "SPECTATOR_MODE=0\n");
 
-        if ($this->User === NULL) {
+        if ($this->ForceGUIDs !== NULL) {
+            fwrite($f, "DRIVERNAME=ACswui TV Cam\n");
+            fwrite($f, "GUID={$this->ForceGUIDs}\n");
+        } else if ($this->User === NULL) {
             fwrite($f, "DRIVERNAME=\n");
             fwrite($f, "GUID=\n");
         } else {

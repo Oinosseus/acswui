@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace DbEntry;
 
 class ServerPreset extends DbEntry {
@@ -27,9 +28,12 @@ class ServerPreset extends DbEntry {
     //! @return TRUE if any of the weathers in the preset is using custom shader patch weather
     public function anyWeatherUsesCsp() {
         $ppc = $this->parameterCollection();
-        if (count($ppc->child("Weathers")->valueList()) > 0) {
+
+        if ($this->parameterCollection()->child("WeatherReal")->value() == TRUE) {
+            return TRUE;
+        }else if (count($ppc->child("Weathers")->valueList()) > 0) {
             foreach ($ppc->child("Weathers")->valueList() as $w_id) {
-                $weather = \DbEntry\Weather::fromId($w_id);
+                $weather = \DbEntry\Weather::fromId((int) $w_id);
                 if ($weather->parameterCollection()->child("Graphic")->csp()) return TRUE;
             }
         } else {
@@ -47,7 +51,7 @@ class ServerPreset extends DbEntry {
 
             $res = \Core\Database::fetch("ServerPresets", ['Id'], ['Parent'=>$this->id()], 'Name');
             foreach ($res as $row) {
-                $this->ChildPresets[] = ServerPreset::fromId($row['Id']);
+                $this->ChildPresets[] = ServerPreset::fromId((int) $row['Id']);
             }
         }
         return $this->ChildPresets;
@@ -84,7 +88,7 @@ class ServerPreset extends DbEntry {
      */
     public static function derive(ServerPreset $parent) {
         $new_id = \Core\Database::insert("ServerPresets", ['Name'=>"New Preset", 'Parent'=>$parent->id()]);
-        $new_preset = ServerPreset::fromId($new_id);
+        $new_preset = ServerPreset::fromId((int) $new_id);
         return $new_preset;
     }
 
@@ -106,8 +110,89 @@ class ServerPreset extends DbEntry {
     }
 
 
+    /**
+     * Returns the Weather that will be used at server run.
+     * This only works when real weather is used, oterhwise this will return NULL
+     *
+     * As time, the middle race session time will be used.
+     * If no race session is present, then longest session will be used (P or Q).
+     *
+     * @param $date Used to extract the date of the raceday
+     * @param $track_location The location where the race will take place
+     *
+     * @return A RealWeatherCondition at the race session
+     */
+    public function forecastWeather(\DateTime $date,
+                                   TrackLocation $track_location
+                                   ) : ?\Core\RealWeatherCondition {
+
+        if ($this->parameterCollection()->child("WeatherReal")->value() == FALSE) {
+            return NULL;
+        }
+
+        // get session duration
+        $duration_p = NULL;
+        $duration_q = NULL;
+        $duration_r = NULL;
+        foreach ($this->schedule() as [$interval, $uncertainty, $type, $name]) {
+            switch ($type) {
+                case Session::TypePractice:
+                    $duration_p = $interval->seconds();
+                    break;
+
+                case Session::TypeQualifying:
+                    $duration_q = $interval->seconds();
+                    break;
+
+                case Session::TypeRace:
+                    $duration_r = $interval->seconds();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        // determine virtual session duration
+        $virtual_duration = NULL;
+        if ($duration_r !== NULL) {
+            $virtual_duration = $duration_r;
+        } else if ($duration_q > $duration_p) {
+            $virtual_duration = $duration_q;
+        } else {
+            $virtual_duration = $duration_p;
+        }
+        $virtual_duration *= $this->parameterCollection()->child("AcServerTimeMultiplier")->value();
+
+        // get middle session time
+        $session_start_seconds = $this->parameterCollection()->child("SessionStartTime")->valueSeconds();
+        $session_middle_seconds = $session_start_seconds + $virtual_duration / 2.0;
+        $session_middle_minutes = round($session_middle_seconds / 60);
+
+        // get separate hours and minutes of mean session time
+        $session_middle_minute = $session_middle_minutes % 60;
+        $session_middle_minutes -= $session_middle_minute;
+        $session_middle_hour = round($session_middle_minutes / 60);
+
+        // create new local date time
+        $date_utc = $date->setTimeZone(new \DateTimeZone("UTC"));
+        $date_string = $date_utc->format("y-m-d");
+        $time_sting = sprintf("%02d:%02d:00", $session_middle_hour, $session_middle_minute);
+        $local_dt = new \DateTime("$date_string $time_sting", $track_location->geoLocation()->geoLocalTimeZone());
+
+//         // get unix timestamp of local session time
+//         $local_dt_utc = $local_dt->setTimeZone(new \DateTimeZone("UTC"));
+//         $local_unix_timestamp = (int) $local_dt_utc->format("U");
+
+        // get weather condition
+        $rwche = \Core\RealWeatherCache::fromTrackLocation($track_location);
+        $rwc = $rwche->getCondition($local_dt);
+        return $rwc;
+    }
+
+
     //! @return A ServerPreset object, retreived from database by ID ($id=0 will return a non editable default preset)
-    public static function fromId(int $id) {
+    public static function fromId(int $id) : ?ServerPreset {
 
         $sp = NULL;
 
@@ -148,7 +233,7 @@ class ServerPreset extends DbEntry {
         $presets = array();
 
         foreach (\Core\Database::fetch("ServerPresets", ['Id'], [], 'Name') as $row) {
-            $p = ServerPreset::fromId($row['Id']);
+            $p = ServerPreset::fromId((int) $row['Id']);
 
             if (!$allowed_only || $p->allowed()) {
                 $presets[] = $p;
@@ -243,6 +328,11 @@ class ServerPreset extends DbEntry {
                 // weather
                 $coll = new \Parameter\Collection(NULL, $coll_group, "WeatherGroup", _("Weather"), "");
                 $p = new \Parameter\ParamSpecialWeathers(NULL, $coll, "Weathers", _("Weathers"), _("Select which weathers shall be used on the server"));
+                $p = new \Parameter\ParamEnum(NULL, $coll, "WeatherRandomize", _("Randomize"), _("When multiple weather are selected, they are assigned randomly. By default, assetto corsa selects a random weather 'per Session'. Which means the qualifying may have completely different weather than the race. When selecting 'per Server Run' all sessions (P/Q/R) will have the same weather, but at next server run a new random weather is assigned."));
+                new \Parameter\EnumItem($p, "server_run", _("per Server Run"));
+                new \Parameter\EnumItem($p, "session", _("per Session"));
+                $p->setValue("server_run");
+                $p = new \Parameter\ParamBool(NULL, $coll, "WeatherReal", _("Real Weather"), _("If activate, the weather presets are ignored and real weather data is used (CSP weather)."), "", FALSE);
 
 
                 ////////////////////
@@ -548,23 +638,36 @@ class ServerPreset extends DbEntry {
                 // Speeding
                 $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsSpeeding", _("Speeding"), "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpPsGeneralSpeeding", _("Speeding"), "Set to true to enable pit lane speeding penalties.", "", TRUE);
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingPitLaneSpeed", _("Pit Lane Speed"), _("The speed, in kph, above which you will be deemed to be speeding in pits. Make this higher to give more leniency on pit lane entry."), "km/h", 82);
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingPitLaneSpeed", _("Speed Limit 1"), _("The speed, in kph, above which you will be deemed to be speeding in pits. Make this higher to give more leniency on pit lane entry."), "km/h", 82);
                 $p->setMin(0);
                 $p->setMax(299);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType0", _("Penalty Type 0"), _("Penalty type for speeding"), TRUE);
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit0", _("Speed Limit 0"), "", "km/h", 100);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType0", _("Penalty Type 1"), _("Penalty type for speeding"), TRUE);
+                $p->setValue("dt");
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit0", _("Speed Limit 2"), "", "km/h", 92);
                 $p->setMin(0);
                 $p->setMax(199);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType1", _("Penalty Type 1"), _("Penalty type for speeding"), TRUE);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType1", _("Penalty Type 2"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("sg10");
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit1", _("Speed Limit 1"), "", "km/h", 200);
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit1", _("Speed Limit 3"), "", "km/h", 102);
                 $p->setMin(0);
                 $p->setMax(599);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType2", _("Penalty Type 2"), _("Penalty type for speeding"), TRUE);
-                $p->setValue("dsq");
-                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit2", _("Speed Limit 2"), "", "km/h", 999);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType2", _("Penalty Type 3"), _("Penalty type for speeding"), TRUE);
+                $p->setValue("sg20");
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit2", _("Speed Limit 4"), "", "km/h", 112);
+                $p->setMin(0);
+                $p->setMax(599);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType3", _("Penalty Type 4"), _("Penalty type for speeding"), TRUE);
+                $p->setValue("sg30");
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit3", _("Speed Limit 5"), "", "km/h", 152);
                 $p->setMin(0);
                 $p->setMax(999);
+                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType4", _("Penalty Type 5"), _("Penalty type for speeding"), TRUE);
+                $p->setValue("dsq");
 
                 // Crossing
                 $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsCrossing", _("Crossing"), "");
@@ -633,7 +736,7 @@ class ServerPreset extends DbEntry {
     public function parent() {
         if ($this->id() === NULL) return NULL;
         else if ($this->id() === 0) return NULL;
-        else return ServerPreset::fromId($this->loadColumn("Parent"));
+        else return ServerPreset::fromId((int) $this->loadColumn("Parent"));
     }
 
 
@@ -794,16 +897,27 @@ class ServerPreset extends DbEntry {
 
 
     //! @return An array of Weather objects, which are used for this preset
-    public function weathers() {
+    public function weathers(TrackLocation $track_location) : array {
         $ppc = $this->parameterCollection();
         $weathers = array();
-        if (count($ppc->child("Weathers")->valueList()) > 0) {
-            foreach ($ppc->child("Weathers")->valueList() as $w_id) {
-                $weathers[] = \DbEntry\Weather::fromId($w_id);
+
+        if ($ppc->child("WeatherReal")->value() === TRUE) {
+            $dt_now = new \DateTime("now");
+            $rwc = $this->forecastWeather($dt_now, $track_location);
+            if ($rwc !== NULL) {
+                $weathers[] = $rwc->weather();
+            } else {
             }
+
         } else {
-            $weathers[] = \DbEntry\Weather::fromId(0);
+            foreach ($ppc->child("Weathers")->valueList() as $w_id) {
+                $weathers[] = \DbEntry\Weather::fromId((int) $w_id);
+            }
         }
+
+        // ensure at least one weather
+        if (count($weathers) == 0) $weathers[] = \DbEntry\Weather::fromId(0);
+
         return $weathers;
     }
 }

@@ -56,7 +56,7 @@ class Track extends \core\HtmlContent {
             // track records
             $html .= "<h1>" . _("Track Records") . "</h1>";
             $html .= "<button type=\"button\" trackId=\"" . $track->id() . "\" onclick=\"TrackLoadRecords(this)\">" . _("Load Track Records") . "</button>";
-            $html .= "<span id=\"TrackRecordsList\"></span>";
+            $html .= "<div id=\"TrackRecordsList\"></div>";
 
 
         } else {

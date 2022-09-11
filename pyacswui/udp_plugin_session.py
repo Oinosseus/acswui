@@ -71,7 +71,7 @@ class UdpPluginSession(object):
         elapsed_ms = packet.readInt32()
 
         # identify track
-        query = "SELECT Tracks.Id FROM `Tracks` INNER JOIN TrackLocations ON Tracks.Location = TrackLocations.Id WHERE Tracks.Config = '%s' AND TrackLocations.Track = '%s';" % (track_config, track_name)
+        query = "SELECT Tracks.Id FROM `Tracks` INNER JOIN TrackLocations ON Tracks.Location = TrackLocations.Id WHERE Tracks.Config = '%s' AND TrackLocations.Track = '%s'" % (track_config, track_name)
         res = self.__db.rawQuery(query, True)
         if len(res) > 0:
             track_id = res[0][0]
@@ -126,6 +126,85 @@ class UdpPluginSession(object):
         # save to db
         if is_new_session:
             self._db_id = self.__db.insertRow("Sessions", self.__db_field_cache)
+            self.__verbosity.print("New Session: Id =", self._db_id, ", name =", session_name)
         else:
             self.__db.updateRow("Sessions", self._db_id, self.__db_field_cache)
-        self.__verbosity.print("Update Session: Id =", self._db_id, ", name =", session_name)
+            Verbosity(self.__verbosity).print("Session-Id", self._db_id, ", elapsed %0.1fs" % (elapsed_ms * 1e-3))
+
+
+
+    def parse_result_json(self, result_json_file_path):
+
+        # ignore, if session is not in database (maybe empty session)
+        if self.Id is None:
+            self.__verbosity.print("For empty session, ignore result JSON '%s'" % result_json_file_path)
+            return
+        else:
+            self.__verbosity.print("For Session-Id", self.Id, "parsing result JSON '%s'" % result_json_file_path)
+
+        # decode result file
+        json_dict = {}
+        with open(result_json_file_path, "r") as f:
+            json_dict = json.load(f)
+
+        #check validity
+        if "Cars" not in json_dict:
+            print("ERROR: No 'Cars' found in '%s'!" % result_json_file_path)
+            return
+        if "Result" not in json_dict:
+            print("ERROR: No 'Result' found in '%s'!" % result_json_file_path)
+            return
+
+        # ensure to delete all previous results
+        query = "DELETE FROM SessionResults WHERE Session = $session_id"
+        self.__db.rawQuery("DELETE FROM SessionResults WHERE Session = " + str(self.Id))
+
+        # loop over all result entries
+        position = 0
+        already_listed_user_ids = []
+        for rslt in json_dict['Result']:
+            position += 1
+
+            # find user
+            steam64guid = rslt['DriverGuid']
+            if steam64guid.lower().find("kicked") >= 0:
+                continue
+            user_ids = self.__db.findIds("Users", {"Steam64GUID": steam64guid})
+            if len(user_ids) != 1:
+                print("ERROR: No excat match for Steam64GUID '%s'" % steam64guid)
+                continue
+            user = user_ids[0]
+            if user in already_listed_user_ids:
+                continue
+
+            # find car model
+            rslt_car_id = rslt['CarId']
+            rslt_car_model = json_dict['Cars'][rslt_car_id]['Model']
+            car_ids = self.__db.findIds("Cars", {"Car": rslt_car_model})
+            if len(car_ids) != 1:
+                print("ERROR: No excat match for car model '%s'" % rslt_car_model)
+                continue
+            car = car_ids[0]
+
+            # find car skin
+            rlst_car_skin = json_dict['Cars'][rslt_car_id]['Skin']
+            skin_ids = self.__db.findIds("CarSkins", {"Car": car, "Skin": rlst_car_skin})
+            if len(skin_ids) != 1:
+                print("ERROR: No excat match for car skin '%s' at car %i" % (rslt_car_model, car))
+                continue
+            skin = skin_ids[0]
+
+            # stroe result
+            fields = {}
+            fields['Position'] = position
+            fields['Session'] = self.Id
+            fields['User'] = user
+            fields['CarSkin'] = skin
+            fields['BestLap'] = rslt['BestLap']
+            fields['TotalTime'] = rslt['TotalTime']
+            fields['Ballast'] = rslt['BallastKG']
+            fields['Restrictor'] = rslt['Restrictor']
+            self.__db.insertRow("SessionResults", fields)
+
+            # ensure User is listed only once
+            already_listed_user_ids.append(user)

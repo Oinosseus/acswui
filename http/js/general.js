@@ -99,3 +99,26 @@ function toggleTableColumnDelete(input_element) {
         }
     }
 }
+
+
+// ----------------------------------------------------------------------------
+//                           LoadingInProgress
+// ----------------------------------------------------------------------------
+
+// element - This element will get the LoadingInProgress style applied (element-Id or element-Object)
+// in_progress - True if the style shall be applied, False if shall be removed
+function loadingInProgress(element, in_progress) {
+
+    var e;
+    if (typeof(element) == typeof("abc")) {
+        e = document.getElementById(element);
+    } else {
+        e = element;
+    }
+
+    if (in_progress) {
+        e.classList.add("LoadingInProgress");
+    } else {
+        e.classList.remove("LoadingInProgress");
+    }
+}

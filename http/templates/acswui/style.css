@@ -446,3 +446,7 @@ div.SvgChart svg g.Axes g.Grid polyline {
 .monospace {
     font-family: monospace;
 }
+
+iframe.OsmEmbed {
+  border: None;
+}

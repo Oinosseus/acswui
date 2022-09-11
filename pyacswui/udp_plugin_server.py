@@ -89,6 +89,7 @@ class UdpPluginServer(object):
     def kick(self, entry):
         """ Kick a user from a car entry
         """
+        self.__verbosity.print("kick", entry.DriverName, "[", entry.DriverGuid, "]", "from car", entry.Id)
         data = bytearray(100)
         data[0] = 206
         data[1] = entry.Id
@@ -140,7 +141,7 @@ class UdpPluginServer(object):
                 elif 'OTHER' in self.__ballasts:
                     ballast_requested = entry.BallastOriginal + self.__ballasts[entry.DriverGuid]
 
-                self.__verbosity.print("Apply OTHER ballast=" + str(ballast_requested)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
+                #self.__verbosity.print("Apply OTHER ballast=" + str(ballast_requested)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
                 self.send_admin_command("/ballast %i %i" % (entry.Id, ballast_requested))
                 entry.BallastCurrent = ballast_requested
 
@@ -151,7 +152,7 @@ class UdpPluginServer(object):
                 elif 'OTHER' in self.__restrictors:
                     restrictor_requested = entry.RestrictorOriginal + self.__restrictors[entry.DriverGuid]
 
-                self.__verbosity.print("Apply restrictor=" + str(restrictor_requested)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
+                #self.__verbosity.print("Apply restrictor=" + str(restrictor_requested)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
                 self.send_admin_command("/restrictor %i %i" % (entry.Id, restrictor_requested))
                 entry.RestrictorCurrent = restrictor_requested
 
@@ -164,6 +165,7 @@ class UdpPluginServer(object):
 
         # ACSP_NEW_SESSION
         if prot == 50:
+            self.__verbosity.print("ACSP_NEW_SESSION")
 
             # set new session object
             self.__session = UdpPluginSession(self.__server_slot,
@@ -181,6 +183,7 @@ class UdpPluginServer(object):
         # ACSP_SESSION_INFO
         elif prot == 59:
             if self.__session is None:
+                self.__verbosity.print("ACSP_SESSION_INFO")
                 self.__session = UdpPluginSession(self.__server_slot,
                                                   self.__server_preset,
                                                   self.__car_class,
@@ -194,17 +197,29 @@ class UdpPluginServer(object):
 
         # ACSP_NEW_CONNECTION
         elif prot == 51:
+            self.__verbosity.print("ACSP_NEW_CONNECTION")
+            v = Verbosity(self.__verbosity)
+
             driver_name = pkt.readStringW()
             driver_guid = pkt.readStringW()
             car_id = pkt.readByte()
             car_model = pkt.readString()
             car_skin = pkt.readString()
+
             entry = self.get_car_entry(car_id, car_model, car_skin)
             entry.occupy(driver_name, driver_guid, self.__session)
+
+            v.print("Name:", driver_name)
+            v.print("GUID:", driver_guid)
+            v.print("Car-ID:", car_id)
+            v.print("Car-Model:", car_model)
+            v.print("Car-Skin:", car_skin)
 
 
         # ACSP_CONNECTION_CLOSED
         elif prot == 52:
+            self.__verbosity.print("ACSP_CONNECTION_CLOSED")
+            v = Verbosity(self.__verbosity)
             driver_name = pkt.readStringW()
             driver_guid = pkt.readStringW()
             car_id = pkt.readByte()
@@ -214,9 +229,13 @@ class UdpPluginServer(object):
             entry = self.get_car_entry(car_id, car_model, car_skin)
             entry.release()
 
+            v.print("Name:", driver_name)
+            v.print("GUID:", driver_guid)
+
 
         # ACSP_CAR_UPDATE
         elif prot == 53:
+            #Verbosity(Verbosity(Verbosity(self.__verbosity))).print("ACSP_CAR_UPDATE")
             car_id = pkt.readByte()
             pos = pkt.readVector3f()
             velocity = pkt.readVector3f()
@@ -230,7 +249,8 @@ class UdpPluginServer(object):
 
         # ACSP_CAR_INFO
         elif prot == 54:
-            self.__verbosity.print("ACSP_CAR_INFO")
+            pass
+            #self.__verbosity.print("ACSP_CAR_INFO")
 
 
         # ACSP_END_SESSION
@@ -241,12 +261,15 @@ class UdpPluginServer(object):
             json_file_abspath = os.path.join(self.__ac_server_path, json_file_relpath)
 
             # remember result file
-            self.__database.updateRow("Sessions", self.__session.Id, {"ResultFile":json_file_relpath})
+            if self.__session is None:
+                print("ERROR: ACSP_END_SESSION received, but no active session existent!")
+            else:
+                self.__session.parse_result_json(json_file_abspath)
 
 
         # ACSP_LAP_COMPLETED
         elif prot == 73:
-            self.__verbosity.print("ACSP_LAP_COMPLETED")
+            #self.__verbosity.print("ACSP_LAP_COMPLETED")
             car_id = pkt.readByte()
             laptime = pkt.readUint32()
             cuts = pkt.readByte()
@@ -257,7 +280,7 @@ class UdpPluginServer(object):
                 rtime = pkt.readUint32()
                 rlaps = pkt.readUint16()
                 has_completed_flag = pkt.readByte()
-                self.__verbosity.print("rcar_id: ", rcar_id, ", rtime: ", rtime, ", rlaps: ", rlaps, ", has_completed_flag: ", has_completed_flag, sep="")
+                #self.__verbosity.print("rcar_id: ", rcar_id, ", rtime: ", rtime, ", rlaps: ", rlaps, ", has_completed_flag: ", has_completed_flag, sep="")
 
             grip = pkt.readSingle()
 
@@ -279,7 +302,7 @@ class UdpPluginServer(object):
 
         # ACSP_CLIENT_EVENT
         elif prot == 130:
-            self.__verbosity.print("ACSP_CLIENT_EVENT")
+            #self.__verbosity.print("ACSP_CLIENT_EVENT")
             ev_type = pkt.readByte()
             car_id = pkt.readByte()
             other_car_id = None

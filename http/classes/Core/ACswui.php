@@ -59,6 +59,23 @@ class ACswui  {
             $p->setMin(1);
             $p->setMax(3650);
 
+            // OpenWeatherMap
+            $pc3 = new \Parameter\Collection(NULL, $pc2, "OpenWeatherMap", "OpenWeatherMap", _("Settings for connection to openweathermap.com"));
+            $p = new \Parameter\ParamString(NULL, $pc3, "OpenWeatherMapApiKey", _("API Key"), _("The API key to retrieve weather data (leave empty for not using OpenWeatherMap)"), "", "");
+            $p = new \Parameter\ParamInt(NULL, $pc3, "OpenWeatherMapRPM", _("Requests Per Minute"), _("Depending on the account type, OpenWeatherMap allows only a maximum of requests per minute. This value limits the requests of the ACswui system."), "1/Min", 10);
+            $p->setMin(1);
+            $p->setMax(60);
+
+
+            /////////
+            // TV Car
+            $pc2 = new \Parameter\Collection(NULL, $pc, "TVCar", _("TV Car"), _("TV Car Settings"));
+
+            $p = new \Parameter\ParamBool(NULL, $pc2, "TVCarEna", _("Reserve Slot"), _("When activated, each session will get one car slot reserved for a TV Car. Attention: This occupies one available pit of the track."), "", FALSE);
+            $p = new \Parameter\ParamString(NULL, $pc2, "TVCarGuids", _("GUIDs"), _("List of the Steam GUIDs (seperated by a semicolon) that get presevred for the TV Car slot"), "", "");
+            $p = new \Parameter\ParamString(NULL, $pc2, "TVCarModel", _("Model"), _("The name of the subfolder under content/cars/"), "", "lotus_elise_sc");
+            $p = new \Parameter\ParamString(NULL, $pc2, "TVCarSkin", _("Skin"), _("The name of the subfolder under content/cars/*model*/skins/"), "", "solid_yellow");
+
 
             ////////////
             // Discord
@@ -102,18 +119,19 @@ class ACswui  {
 
             // success
             $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingSx", _("Success"), _("Settings how drivers earn points for their success"));
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxBt", _("Best Time"), _("Points for best times per track and car class (per leading position prior to another driver)"), "Points/Position", 0.1);
-            $p->setMin(0);
-            $p->setMax(9999);
-            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxRt", _("Race Time"), _("Points for fastest lap in a race"), "Points/Race", 2.0);
-            $p->setMin(0);
-            $p->setMax(9999);
             $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxQ", _("Qualifying"), _("Points for positions in qualifying sessions (per leading position prior to another driver)"), "Points/Position", 0.5);
             $p->setMin(0);
             $p->setMax(9999);
             $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxR", _("Race"), _("Points for positions in race sessions (per leading position prior to another driver)"), "Points/Position", 1.0);
             $p->setMin(0);
             $p->setMax(9999);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxRt", _("Race Time"), _("Points for fastest lap in a race"), "Points/Race", 2.0);
+            $p->setMin(0);
+            $p->setMax(9999);
+            $p = new \Parameter\ParamFloat(NULL, $coll, "DriverRankingSxBt", _("Best Time"), _("Points for best times per track and car class (per leading position prior to another driver)"), "Points/Position", 2.0);
+            $p->setMin(0);
+            $p->setMax(9999);
+            $p = new \Parameter\ParamBool(NULL, $coll, "DriverRankingSxBtAvrg", _("Best Time Average"), _("Since best times will never fade away, these will cummulate over time. New drivers may have a hard time to catch these up. With averaging, the best time points are devided by amount of record tables each driver tooks place. So new drivers can easily compare to older ones."), "", TRUE);
 
             // safety
             $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingSf", _("Safety"), _("Settings for penalty points that drivers get"));
@@ -258,6 +276,12 @@ class ACswui  {
             new \Parameter\EnumItem($p, 'hist',  _("Histogram"));
             new \Parameter\EnumItem($p, 'gauss',  _("Gaussian"));
             $p->setValue("gauss");
+
+            $coll = new \Parameter\Collection(NULL, $pc, "UserSessionPositionDia", _("Session Position Diagrams"), _("Options to adjust the session position diagrams"));
+            $p = new \Parameter\ParamEnum(NULL, $coll, "UserSessionPositionDiaType", _("Type"), _("The type of the y-axis (place or time-gap)."));
+            new \Parameter\EnumItem($p, 'place',  _("Place"));
+            new \Parameter\EnumItem($p, 'gap',  _("Gap"));
+            $p->setValue("place");
 
 
             // derive root collection

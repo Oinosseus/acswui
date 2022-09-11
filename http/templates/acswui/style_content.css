@@ -73,17 +73,16 @@ main.TrackLocation a.TrackLink {
     margin-bottom: 0.5em;
 }
 
-
-
-/******************************************************************************
-                                   TrackLocation
- ******************************************************************************/
-
-main.TrackLocation #TrackInfoGeneral {
-    display: block;
-    margin-bottom: 2em;
+main.TrackLocation #TrackInfoGeneral,
+main.TrackLocation #TrackInfoGeoLocation {
+    display: inline-block;
+    margin-right: 2em;
 }
 
+main.TrackLocation #RealWeaterData td>img {
+    float:left;
+    height: 5em;
+}
 
 
 /******************************************************************************
@@ -388,6 +387,7 @@ main.DriverRanking .TrendFalling {
 main.SessionSchedules div#SessionScheduleOverview {
     display: inline-grid;
     grid-template-columns: repeat(5, auto);
+    margin-top: 2em;
 }
 
 main.SessionSchedules div#SessionScheduleOverview div {
@@ -467,7 +467,7 @@ main.SessionSchedules form#RegistrationRoster table tr.Overbooked td {
 
 main.SessionSchedules div#SessionDetailsOverview {
     display: inline-grid;
-    grid-template-columns: repeat(3, auto);
+    grid-template-columns: repeat(4, auto);
     margin-bottom: 4em;
 }
 
@@ -483,6 +483,17 @@ main.SessionSchedules div#SessionDetailsOverview div div {
     background-color: transparent;
     margin: 0;
     padding: 0;
+}
+
+main.SessionSchedules div#SessionDetailsOverview div img.OWMWeatherIcon {
+    height: 5em;
+    float: left;
+}
+
+main.SessionSchedules div#SessionDetailsOverview div#SessionScheduleWeatherForecastData {
+    margin-top: 1em;
+    margin-left: 1em;
+    display: inline-block;
 }
 
 
@@ -571,6 +582,22 @@ main.Polls div.PollItem > input {
 
 main.Polls div.PollItem > div {
     background-color: transparent;
+}
+
+main.Polls td.TrackCell div,
+main.Polls td.CarClassCell div {
+    background-color: transparent;
+    margin: 0px;
+}
+
+main.Polls td.TrackCell,
+main.Polls td.CarClassCell {
+    padding: 0px;
+}
+
+main.Polls td.TrackCell img,
+main.Polls td.CarClassCell img {
+    height: 4em;
 }
 
 

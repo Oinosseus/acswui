@@ -60,6 +60,13 @@ class AboutDriverRanking extends \core\HtmlContent {
                 while beeing the only driver in a table gains no leading positions.\n
                 Additionally the driver with the best race time earns points.");
         $html .= nl2br(htmlentities($t));
+        if (\Core\ACswui::getParam("DriverRankingSxBtAvrg")) {
+            $html .= "<br>";
+            $t = _("Since points for best times will not automatically vanish over time, these will cummulate a lot.
+                    New drivers will have a hard time to follow drivers that took place in record tables of many car-class / track combinations.
+                    Thus, the best time points are averaged / relativized. This means the amount of best time points are divided by the amount of record tables each driver takes place in.");
+            $html .= nl2br(htmlentities($t));
+        }
         $html .= "<br><br>";
 
         $html .= _("Best Time") . ": <strong>" . sprintf("%0.2f", \Core\ACswui::getParam("DriverRankingSxBt")) . "</strong> Points / Position<br>";
