@@ -52,6 +52,13 @@ class ThirdParty extends \core\HtmlContent {
                   This makes it easier to integrate - hopefully only the diagrams are loaded from the foreign server.
                   </p>";
 
+        // ac-server-wrapper
+        $html .= "<h1>ac-server-wrapper</h1>";
+        $html .= "<p>The server wrapper is used to provide more detailed information to drivers that use the content manager to start AC.</p>";
+        $html .= "<p>Source: <a href=\"https://github.com/gro-ove/ac-server-wrapper\">github</a><br>
+                  License: MIT License, see submodules source directory for a copy of the license
+                  </p>";
+
 
         return $html;
     }
