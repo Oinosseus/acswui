@@ -273,7 +273,7 @@ class ServerSlot {
     private function pid() {
         global $acswuiConfig;
         $id = $this->id();
-        $pidfile = \Core\Config::AbsPathData . "/acserver/acServer$id.pid";
+        $pidfile = \Core\Config::AbsPathData . "/acserver/slot{$id}/acServer.pid";
         if (!file_exists($pidfile)) return NULL;
         $pid = (int) file_get_contents($pidfile);
         return $pid;
@@ -281,7 +281,7 @@ class ServerSlot {
 
 
 
-    //! Store settings to database
+    //! Store settings
     public function save() {
 
         // prepare data
@@ -337,7 +337,7 @@ class ServerSlot {
             $el = new \Core\EntryList();
             $el->fillSkins($car_class, $track);
         }
-        $el->writeToFile(\Core\Config::AbsPathData . "/acserver/cfg/entry_list_" . $this->id() . ".ini");
+        $el->writeToFile(\Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/entry_list.ini");
         $this->writeAcServerCfg($track, $car_class, $preset, $el, $map_ballast);
 
         // lunch server with plugins
@@ -489,7 +489,7 @@ class ServerSlot {
 
         $pc = $this->parameterCollection();
         $ppc = $preset->parameterCollection();
-        $file_path = \Core\Config::AbsPathData . "/acserver/cfg/server_cfg_" . $this->id() . ".ini";
+        $file_path = \Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/server_cfg.ini";
         $f = fopen($file_path, 'w');
         if ($f === FALSE) {
             \Core\Log::error("Cannot write to file '$file_path'!");
@@ -571,7 +571,7 @@ class ServerSlot {
         // create welcome message
         $welcome_message = trim($ppc->child("AcServerWelcomeMessage")->value());
         if (strlen($welcome_message) > 0) {
-            $file_path_wm = \Core\Config::AbsPathData . "/acserver/cfg/welcome_" . $this->id() . ".txt";
+            $file_path_wm = \Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/welcome.txt";
             $f_wm = fopen($file_path_wm, 'w');
             if ($f_wm === FALSE) {
                 \Core\Log::error("Cannot write to file '$file_path_wm'!");
@@ -871,10 +871,10 @@ class ServerSlot {
         // section General
         fwrite($f, "[General]\n");
         fwrite($f, "product_key = " . $pc->child("RPGeneralProductKey")->value() . "\n");
-        fwrite($f, "AC_SERVER_PATH = " . \Core\Config::AbsPathData . "/acserver\n");
-        fwrite($f, "AC_CFG_FILE = " . \Core\Config::AbsPathData . "/acserver/cfg/server_cfg_$id.ini\n");
-        fwrite($f, "AC_TRACKS_FOLDER = " . \Core\Config::AbsPathData . "/acserver/content/tracks\n");
-        fwrite($f, "AC_WEATHER_FOLDER = " . \Core\Config::AbsPathData . "/acserver/content/weather\n");
+        fwrite($f, "AC_SERVER_PATH = " . \Core\Config::AbsPathData . "/acserver/slot$id\n");
+        fwrite($f, "AC_CFG_FILE = " . \Core\Config::AbsPathData . "/acserver/slot$id/cfg/server_cfg.ini\n");
+        fwrite($f, "AC_TRACKS_FOLDER = " . \Core\Config::AbsPathData . "/acserver/slot$id/content/tracks\n");
+        fwrite($f, "AC_WEATHER_FOLDER = " . \Core\Config::AbsPathData . "/acserver/slot$id/content/weather\n");
         fwrite($f, "UDP_PORT = " . $pc->child("RPPortsPluginUdpL")->value() . "\n");
         fwrite($f, "UDP_RESPONSE = 127.0.0.1:" . $pc->child("AcServerPortsPluginUdpR")->value() . "\n");
         fwrite($f, "APP_TCP_PORT = " . (27 + $pc->child("AcServerPortsInetHttp")->value()) . "\n");

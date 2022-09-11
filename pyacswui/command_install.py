@@ -178,49 +178,56 @@ class CommandInstall(Command):
 
         Verbosity(verb).print("copy data")
 
-        # cfg
+        # acserver
         path_data = os.path.abspath(self.getGeneralArg("path-data"))
         path_data_acserver = os.path.join(path_data, "acserver")
-        path_data_acserver_cfg = os.path.join(path_data_acserver, "cfg")
-        if not os.path.isdir(path_data_acserver_cfg):
-            Verbosity(Verbosity(verb)).print("mkdirs " + path_data_acserver_cfg)
-            self.mkdirs(path_data_acserver_cfg)
+        for slot_nr in range(int(self.getGeneralArg('server-slot-amount'))):
+            slot_nr += 1
+            Verbosity(Verbosity(verb)).print("slot %i" % slot_nr)
 
-        # prepare cfg files (to save ownership)
-        slot_nr = 0
-        while True:
-            slot_dict = self.getIniSection("SERVER_SLOT_" + str(slot_nr))
-            if slot_dict is None:
-                break
+            # slot
+            path_data_acserver_slot = os.path.join(path_data_acserver, "slot%i" % slot_nr)
+            if not os.path.isdir(path_data_acserver_slot):
+                self.mkdirs(path_data_acserver_slot)
 
-            for filename in ["entry_list_%i.ini", "server_cfg_%i.ini", "welcome_%i.txt"]:
-                path_file = os.path.join(path_data_acserver_cfg, filename % slot_nr)
+            # cfg
+            path_data_acserver_slot_cfg = os.path.join(path_data_acserver_slot, "cfg")
+            if not os.path.isdir(path_data_acserver_slot_cfg):
+                self.mkdirs(path_data_acserver_slot_cfg)
+
+            # prepare cfg files (to save ownership)
+            for filename in ["entry_list.ini", "server_cfg.ini", "welcome.txt"]:
+                path_file = os.path.join(path_data_acserver_slot_cfg, filename)
                 with open(path_file, "w") as f:
                     f.write("\n")
 
-            slot_nr += 1
+            # results
+            path_data_acserver_slot_results = os.path.join(path_data_acserver_slot_cfg, "results")
+            if not os.path.isdir(path_data_acserver_slot_results):
+                self.mkdirs(path_data_acserver_slot_results)
 
-        # results
-        path_data_acserver_results = os.path.join(path_data_acserver, "results")
-        if not os.path.isdir(path_data_acserver_results):
-            Verbosity(Verbosity(verb)).print("mkdirs " + path_data_acserver_results)
-            self.mkdirs(path_data_acserver_results)
+            # copy system directory
+            path_srvpkg_acserver_system = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver", "system")
+            path_data_acserver_slot_system = os.path.join(path_data_acserver_slot, "system")
+            self.copytree(path_srvpkg_acserver_system, path_data_acserver_slot_system)
+
+            # copy content directory
+            path_srvpkg_acserver_content = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver", "content")
+            path_data_acserver_slot_content = os.path.join(path_data_acserver_slot, "content")
+            self.copytree(path_srvpkg_acserver_content, path_data_acserver_slot_content)
+
+            # acserver binaries
+            path_srvpkg_acserver = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver")
+            path_srvpkg_acserver_bin = os.path.join(path_srvpkg_acserver, "acServer")
+            #path_data_acserver_slot_binary = os.path.join(path_data_acserver_slot, "acServer%i" % slot_nr)
+            path_data_acserver_slot_binary = os.path.join(path_data_acserver_slot, "acServer")
+            shutil.copy(path_srvpkg_acserver_bin, path_data_acserver_slot_binary)
 
         # acswui_udp_plugin
         path_data_acswui_udpp = os.path.join(path_data, "acswui_udp_plugin")
         if not os.path.isdir(path_data_acswui_udpp):
             Verbosity(Verbosity(verb)).print("mkdirs " + path_data_acswui_udpp)
             self.mkdirs(path_data_acswui_udpp)
-
-        # copy system directory
-        path_srvpkg_acserver_system = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver", "system")
-        path_data_acserver_system = os.path.join(path_data_acserver, "system")
-        self.copytree(path_srvpkg_acserver_system, path_data_acserver_system)
-
-        # copy content directory
-        path_srvpkg_acserver_content = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver", "content")
-        path_data_acserver_content = os.path.join(path_data_acserver, "content")
-        self.copytree(path_srvpkg_acserver_content, path_data_acserver_content)
 
         # log dirs
         for logdir in ['logs_srvrun', 'logs_cron', 'logs_http']:
@@ -247,13 +254,6 @@ class CommandInstall(Command):
         if not os.path.isdir(path_htcache_rwc):
             Verbosity(Verbosity(verb)).print("mkdirs " + path_htcache_rwc)
             self.mkdirs(path_htcache_rwc)
-
-        # acserver binaries
-        path_srvpkg_acserver = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver")
-        for slot_nr in range(1, 1 + int(self.getGeneralArg('server-slot-amount'))):
-            path_srvpkg_acserver_bin = os.path.join(path_srvpkg_acserver, "acServer")
-            path_data_acserver_binslot = os.path.join(path_data_acserver, "acServer%i" % slot_nr)
-            shutil.copy(path_srvpkg_acserver_bin, path_data_acserver_binslot)
 
         # common config directory
         path_data_acswui_config = os.path.join(path_data, "acswui_config")
