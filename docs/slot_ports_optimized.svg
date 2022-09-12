@@ -1,137 +1,874 @@
-<svg id="ServerSlotPortsSvg" width="447.41mm" height="172.61mm" version="1.1" viewBox="0 0 447.41 172.61" xmlns="http://www.w3.org/2000/svg">
- <defs>
-  <marker id="Arrow2Lstart" overflow="visible" orient="auto">
-   <path transform="matrix(1.1,0,0,1.1,1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="Arrow2Lend" overflow="visible" orient="auto">
-   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="InfiniteLineStart" overflow="visible" orient="auto">
-   <g transform="translate(-13)" fill="context-stroke">
-    <circle cx="3" r=".8"/>
-    <circle cx="6.5" r=".8"/>
-    <circle cx="10" r=".8"/>
-   </g>
-  </marker>
-  <marker id="InfiniteLineStart-93" overflow="visible" orient="auto">
-   <g transform="translate(-13)" fill="context-stroke">
-    <circle cx="3" r=".8"/>
-    <circle cx="6.5" r=".8"/>
-    <circle cx="10" r=".8"/>
-   </g>
-  </marker>
-  <marker id="Arrow2Lend-8" overflow="visible" orient="auto">
-   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="InfiniteLineStart-93-4" overflow="visible" orient="auto">
-   <g transform="translate(-13)" fill="context-stroke">
-    <circle cx="3" r=".8"/>
-    <circle cx="6.5" r=".8"/>
-    <circle cx="10" r=".8"/>
-   </g>
-  </marker>
-  <marker id="Arrow2Lend-8-9" overflow="visible" orient="auto">
-   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="Arrow2Lstart-7" overflow="visible" orient="auto">
-   <path transform="matrix(1.1,0,0,1.1,1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="InfiniteLineStart-3" overflow="visible" orient="auto">
-   <g transform="translate(-13)" fill="context-stroke">
-    <circle cx="3" r=".8"/>
-    <circle cx="6.5" r=".8"/>
-    <circle cx="10" r=".8"/>
-   </g>
-  </marker>
-  <marker id="Arrow2Lend-89" overflow="visible" orient="auto">
-   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="Arrow2Lstart-7-3" overflow="visible" orient="auto">
-   <path transform="matrix(1.1,0,0,1.1,1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="InfiniteLineStart-3-3" overflow="visible" orient="auto">
-   <g transform="translate(-13)" fill="context-stroke">
-    <circle cx="3" r=".8"/>
-    <circle cx="6.5" r=".8"/>
-    <circle cx="10" r=".8"/>
-   </g>
-  </marker>
-  <marker id="Arrow2Lend-89-8" overflow="visible" orient="auto">
-   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="Arrow2Lstart-7-7" overflow="visible" orient="auto">
-   <path transform="matrix(1.1,0,0,1.1,1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="InfiniteLineStart-3-4" overflow="visible" orient="auto">
-   <g transform="translate(-13)" fill="context-stroke">
-    <circle cx="3" r=".8"/>
-    <circle cx="6.5" r=".8"/>
-    <circle cx="10" r=".8"/>
-   </g>
-  </marker>
-  <marker id="Arrow2Lend-89-9" overflow="visible" orient="auto">
-   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="Arrow2Lstart-7-7-4" overflow="visible" orient="auto">
-   <path transform="matrix(1.1,0,0,1.1,1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="InfiniteLineStart-3-4-5" overflow="visible" orient="auto">
-   <g transform="translate(-13)" fill="context-stroke">
-    <circle cx="3" r=".8"/>
-    <circle cx="6.5" r=".8"/>
-    <circle cx="10" r=".8"/>
-   </g>
-  </marker>
-  <marker id="Arrow2Lend-89-9-2" overflow="visible" orient="auto">
-   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="Arrow2Lstart-7-7-4-7" overflow="visible" orient="auto">
-   <path transform="matrix(1.1,0,0,1.1,1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="InfiniteLineStart-3-4-5-5" overflow="visible" orient="auto">
-   <g transform="translate(-13)" fill="context-stroke">
-    <circle cx="3" r=".8"/>
-    <circle cx="6.5" r=".8"/>
-    <circle cx="10" r=".8"/>
-   </g>
-  </marker>
-  <marker id="Arrow2Lend-89-9-2-8" overflow="visible" orient="auto">
-   <path transform="matrix(-1.1,0,0,-1.1,-1.1,0)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
- </defs>
- <g id="Base" transform="translate(-27.162 -82.586)">
-  <rect x="27.293" y="82.717" width="52.917" height="52.917" fill="#dcddd8" stroke="#3b7112" stroke-linejoin="round" stroke-width=".26213"/>
-  <text x="32.982712" y="112.93775" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="32.982712" y="112.93775" stroke-width=".26458">acServer</tspan></text>
-  <rect x="421.52" y="82.717" width="52.917" height="52.917" fill="#dcddd8" stroke="#3b7112" stroke-linejoin="round" stroke-width=".26213"/>
-  <text x="430.48038" y="105.27157" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="430.48038" y="105.27157">ACswui</tspan><tspan x="430.48038" y="118.50069">plugin</tspan></text>
-  <text transform="translate(21.874 82.59)" x="391.71075" y="21.294067" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" text-align="end" text-anchor="end" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsAcswuiUdpL" x="391.71075" y="21.294067" stroke-width=".26458" text-align="end" text-anchor="end">UDP_L = 88888</tspan></text>
-  <text transform="translate(21.874 82.59)" x="63.627403" y="39.814899" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsAcServerUdpR" x="63.627403" y="39.814899" stroke-width=".26458">UDP_R = 88888</tspan></text>
-  <g fill="none" stroke="#000" stroke-miterlimit="2">
-   <path d="m146.36 207.07-66.146-66.146" marker-end="url(#Arrow2Lend-89-9)" marker-mid="url(#InfiniteLineStart-3-4)" marker-start="url(#Arrow2Lstart-7-7)"/>
-   <path d="m127.83 209.72-68.792-68.792" marker-end="url(#Arrow2Lend-89-9-2)" marker-mid="url(#InfiniteLineStart-3-4-5)" marker-start="url(#Arrow2Lstart-7-7-4)"/>
-   <path d="m109.31 212.36-71.437-71.438" marker-end="url(#Arrow2Lend-89-9-2-8)" marker-mid="url(#InfiniteLineStart-3-4-5-5)" marker-start="url(#Arrow2Lstart-7-7-4-7)"/>
+<svg
+   width="585.37384mm"
+   height="172.61024mm"
+   viewBox="0 0 585.37388 172.61025"
+   version="1.1"
+   id="ServerSlotPortsSvg"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   sodipodi:docname="slot_ports.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1389"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="false"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="0.45405208"
+     inkscape:cx="1353.369"
+     inkscape:cy="150.86375"
+     inkscape:window-width="2560"
+     inkscape:window-height="1358"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Base"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:lockguides="false"
+     units="mm"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     showborder="true"
+     borderlayer="false"
+     inkscape:showpageshadow="true"
+     inkscape:snap-text-baseline="true"
+     inkscape:deskcolor="#505050">
+    <inkscape:grid
+       type="xygrid"
+       id="grid7128"
+       dotted="true"
+       originx="132.80533"
+       originy="0.13107647" />
+    <sodipodi:guide
+       position="188.36782,172.47917"
+       orientation="0,-1"
+       id="guide14264"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="323.30534,98.395839"
+       orientation="0.70710678,-0.70710678"
+       id="guide44857"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="228.05532,77.229173"
+       orientation="-0.70710678,-0.70710678"
+       id="guide44861"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="191.01366,71.937507"
+       orientation="-0.70710678,-0.70710678"
+       id="guide44863"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="217.47199,66.645839"
+       orientation="-0.70710678,-0.70710678"
+       id="guide44865"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="344.47201,103.68751"
+       orientation="0.70710678,-0.70710678"
+       id="guide44947"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="349.76368,93.104173"
+       orientation="0.70710678,-0.70710678"
+       id="guide44949"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1384">
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lstart"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(1.1,0,0,1.1,1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14606" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14609" />
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="InfiniteLineStart"
+       inkscape:stockid="InfiniteLineStart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <g
+         transform="translate(-13)"
+         style="fill:context-stroke"
+         id="g14838">
+        <circle
+           cx="3"
+           cy="0"
+           r="0.80000001"
+           id="circle14832" />
+        <circle
+           cx="6.5"
+           cy="0"
+           r="0.80000001"
+           id="circle14834" />
+        <circle
+           cx="10"
+           cy="0"
+           r="0.80000001"
+           id="circle14836" />
+      </g>
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="InfiniteLineStart-93"
+       inkscape:stockid="InfiniteLineStart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <g
+         transform="translate(-13)"
+         style="fill:context-stroke"
+         id="g14838-1">
+        <circle
+           cx="3"
+           cy="0"
+           r="0.80000001"
+           id="circle14832-9" />
+        <circle
+           cx="6.5"
+           cy="0"
+           r="0.80000001"
+           id="circle14834-4" />
+        <circle
+           cx="10"
+           cy="0"
+           r="0.80000001"
+           id="circle14836-7" />
+      </g>
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lend-8"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14609-4" />
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="InfiniteLineStart-93-4"
+       inkscape:stockid="InfiniteLineStart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <g
+         transform="translate(-13)"
+         style="fill:context-stroke"
+         id="g14838-1-7">
+        <circle
+           cx="3"
+           cy="0"
+           r="0.80000001"
+           id="circle14832-9-6" />
+        <circle
+           cx="6.5"
+           cy="0"
+           r="0.80000001"
+           id="circle14834-4-5" />
+        <circle
+           cx="10"
+           cy="0"
+           r="0.80000001"
+           id="circle14836-7-6" />
+      </g>
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lend-8-9"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14609-4-3" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lstart-7"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(1.1,0,0,1.1,1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14606-5" />
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="InfiniteLineStart-3"
+       inkscape:stockid="InfiniteLineStart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <g
+         transform="translate(-13)"
+         style="fill:context-stroke"
+         id="g14838-8">
+        <circle
+           cx="3"
+           cy="0"
+           r="0.80000001"
+           id="circle14832-8" />
+        <circle
+           cx="6.5"
+           cy="0"
+           r="0.80000001"
+           id="circle14834-3" />
+        <circle
+           cx="10"
+           cy="0"
+           r="0.80000001"
+           id="circle14836-1" />
+      </g>
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lend-89"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14609-6" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lstart-7-3"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(1.1,0,0,1.1,1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14606-5-3" />
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="InfiniteLineStart-3-3"
+       inkscape:stockid="InfiniteLineStart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <g
+         transform="translate(-13)"
+         style="fill:context-stroke"
+         id="g14838-8-8">
+        <circle
+           cx="3"
+           cy="0"
+           r="0.80000001"
+           id="circle14832-8-6" />
+        <circle
+           cx="6.5"
+           cy="0"
+           r="0.80000001"
+           id="circle14834-3-0" />
+        <circle
+           cx="10"
+           cy="0"
+           r="0.80000001"
+           id="circle14836-1-4" />
+      </g>
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lend-89-8"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14609-6-8" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lstart-7-7"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(1.1,0,0,1.1,1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14606-5-6" />
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="InfiniteLineStart-3-4"
+       inkscape:stockid="InfiniteLineStart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <g
+         transform="translate(-13)"
+         style="fill:context-stroke"
+         id="g14838-8-3">
+        <circle
+           cx="3"
+           cy="0"
+           r="0.80000001"
+           id="circle14832-8-0" />
+        <circle
+           cx="6.5"
+           cy="0"
+           r="0.80000001"
+           id="circle14834-3-3" />
+        <circle
+           cx="10"
+           cy="0"
+           r="0.80000001"
+           id="circle14836-1-0" />
+      </g>
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lend-89-9"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14609-6-2" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lstart-7-7-4"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(1.1,0,0,1.1,1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14606-5-6-0" />
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="InfiniteLineStart-3-4-5"
+       inkscape:stockid="InfiniteLineStart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <g
+         transform="translate(-13)"
+         style="fill:context-stroke"
+         id="g14838-8-3-9">
+        <circle
+           cx="3"
+           cy="0"
+           r="0.80000001"
+           id="circle14832-8-0-4" />
+        <circle
+           cx="6.5"
+           cy="0"
+           r="0.80000001"
+           id="circle14834-3-3-6" />
+        <circle
+           cx="10"
+           cy="0"
+           r="0.80000001"
+           id="circle14836-1-0-9" />
+      </g>
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lend-89-9-2"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14609-6-2-2" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lstart-7-7-4-7"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(1.1,0,0,1.1,1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14606-5-6-0-7" />
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="InfiniteLineStart-3-4-5-5"
+       inkscape:stockid="InfiniteLineStart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <g
+         transform="translate(-13)"
+         style="fill:context-stroke"
+         id="g14838-8-3-9-4">
+        <circle
+           cx="3"
+           cy="0"
+           r="0.80000001"
+           id="circle14832-8-0-4-8" />
+        <circle
+           cx="6.5"
+           cy="0"
+           r="0.80000001"
+           id="circle14834-3-3-6-1" />
+        <circle
+           cx="10"
+           cy="0"
+           r="0.80000001"
+           id="circle14836-1-0-9-2" />
+      </g>
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lend-89-9-2-8"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14609-6-2-2-9" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lstart-7-7-4-7-3"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(1.1,0,0,1.1,1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14606-5-6-0-7-5" />
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="InfiniteLineStart-3-4-5-5-6"
+       inkscape:stockid="InfiniteLineStart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <g
+         transform="translate(-13)"
+         style="fill:context-stroke"
+         id="g14838-8-3-9-4-2">
+        <circle
+           cx="3"
+           cy="0"
+           r="0.80000001"
+           id="circle14832-8-0-4-8-9" />
+        <circle
+           cx="6.5"
+           cy="0"
+           r="0.80000001"
+           id="circle14834-3-3-6-1-1" />
+        <circle
+           cx="10"
+           cy="0"
+           r="0.80000001"
+           id="circle14836-1-0-9-2-2" />
+      </g>
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lend-89-9-2-8-7"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14609-6-2-2-9-0" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Base"
+     inkscape:groupmode="layer"
+     id="Base"
+     transform="translate(110.80392,-82.586311)">
+    <g
+       id="g37221">
+      <rect
+         style="fill:#dcddd8;stroke:#3b7112;stroke-width:0.262131;stroke-linejoin:round"
+         id="rect1493"
+         width="52.916668"
+         height="52.916664"
+         x="27.293068"
+         y="82.717384" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="32.982712"
+         y="112.93775"
+         id="text32564"><tspan
+           sodipodi:role="line"
+           id="tspan32562"
+           style="stroke-width:0.264583"
+           x="32.982712"
+           y="112.93775">acServer</tspan></text>
+    </g>
+    <g
+       id="g39151">
+      <rect
+         style="fill:#dcddd8;stroke:#3b7112;stroke-width:0.262131;stroke-linejoin:round"
+         id="rect1493-3-3"
+         width="52.916668"
+         height="52.916664"
+         x="421.52222"
+         y="82.717377" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="430.48038"
+         y="105.27157"
+         id="text37789"><tspan
+           sodipodi:role="line"
+           id="tspan37787"
+           style="stroke-width:0.264583"
+           x="430.48038"
+           y="105.27157">ACswui</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="430.48038"
+           y="118.50069"
+           id="tspan37793">plugin</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="391.71075"
+       y="21.294067"
+       id="text9488-2-5"
+       transform="translate(21.873996,82.589989)"><tspan
+         sodipodi:role="line"
+         id="ServerSlotPortsAcswuiUdpL"
+         style="text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="391.71075"
+         y="21.294067">UDP_L = 88888</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;direction:ltr;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="63.627403"
+       y="39.814899"
+       transform="translate(21.873996,82.589989)"
+       id="text6926"><tspan
+         sodipodi:role="line"
+         id="ServerSlotPortsAcServerUdpR"
+         style="writing-mode:lr-tb;direction:ltr;stroke-width:0.264583"
+         x="63.627403"
+         y="39.814899">UDP_R = 88888</tspan></text>
+    <path
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart-7-7);marker-mid:url(#InfiniteLineStart-3-4);marker-end:url(#Arrow2Lend-89-9)"
+       d="M 146.35557,207.07156 80.209733,140.92572"
+       id="path14094-4-5"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart-7-7-4);marker-mid:url(#InfiniteLineStart-3-4-5);marker-end:url(#Arrow2Lend-89-9-2)"
+       d="M 127.83473,209.71739 59.043067,140.92572"
+       id="path14094-4-5-4"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart-7-7-4-7);marker-mid:url(#InfiniteLineStart-3-4-5-5);marker-end:url(#Arrow2Lend-89-9-2-8)"
+       d="M 109.3139,212.36322 37.876402,140.92572"
+       id="path14094-4-5-4-3"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
+       x="233.07274"
+       y="41.061802"
+       id="text76515"
+       transform="rotate(45)"><tspan
+         sodipodi:role="line"
+         id="ServerSlotPortsAcserverUdp"
+         style="stroke-width:0.264583"
+         x="233.07274"
+         y="41.061802">UDP = 88888</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
+       x="218.10564"
+       y="56.028896"
+       id="text76515-6"
+       transform="rotate(45)"><tspan
+         sodipodi:role="line"
+         id="ServerSlotPortsAcserverTcp"
+         style="stroke-width:0.264583"
+         x="218.10564"
+         y="56.028896">TCP = 88888</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
+       x="206.88033"
+       y="70.995987"
+       id="text76515-6-0"
+       transform="rotate(45)"><tspan
+         sodipodi:role="line"
+         id="ServerSlotPortsAcserverHttp"
+         style="stroke-width:0.264583"
+         x="206.88033"
+         y="70.995987">HTTP = 88888</tspan></text>
+    <g
+       id="g81486">
+      <ellipse
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path45165"
+         ry="21.16667"
+         rx="58.208332"
+         cy="233.52989"
+         cx="151.64723" />
+      <text
+         xml:space="preserve"
+         style="font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
+         x="169.50914"
+         y="237.24025"
+         id="text80881"><tspan
+           sodipodi:role="line"
+           id="tspan80879"
+           style="stroke-width:0.264583"
+           x="169.50914"
+           y="237.24025">Internet</tspan></text>
+    </g>
+    <g
+       id="gAcServerWrapper">
+      <g
+         id="g37221-3"
+         transform="translate(-137.96592,119.06251)">
+        <rect
+           style="fill:#dcddd8;stroke:#3b7112;stroke-width:0.347124;stroke-linejoin:round"
+           id="rect1493-6"
+           width="92.944252"
+           height="52.831673"
+           x="27.335564"
+           y="82.75988" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+           x="32.982712"
+           y="112.93775"
+           id="text32564-7"><tspan
+             sodipodi:role="line"
+             id="tspan32562-5"
+             style="stroke-width:0.264583"
+             x="32.982712"
+             y="112.93775">ac-server-wrapper</tspan></text>
+      </g>
+      <path
+         style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart-7-7-4-7-3);marker-mid:url(#InfiniteLineStart-3-4-5-5-6);marker-end:url(#Arrow2Lend-89-9-2-8-7)"
+         d="M 88.63344,233.52989 H -12.394437"
+         id="path14094-4-5-4-3-9"
+         sodipodi:nodetypes="cc" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="71.47541"
+         y="228.83835"
+         id="text9488-0"><tspan
+           sodipodi:role="line"
+           id="ServerSlotPortsAcServerWrapper"
+           style="text-align:end;text-anchor:end;stroke-width:0.264583"
+           x="71.47541"
+           y="228.83835">HTTP = 88888</tspan></text>
+    </g>
   </g>
-  <g font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" text-anchor="end" word-spacing="0px">
-   <text transform="rotate(45)" x="233.07274" y="41.061802" text-align="end" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsAcserverUdp" x="233.07274" y="41.061802" stroke-width=".26458">UDP = 88888</tspan></text>
-   <text transform="rotate(45)" x="218.10564" y="56.028896" text-align="end" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsAcserverTcp" x="218.10564" y="56.028896" stroke-width=".26458">TCP = 88888</tspan></text>
-   <text transform="rotate(45)" x="206.88033" y="70.995987" text-align="end" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsAcserverHttp" x="206.88033" y="70.995987" stroke-width=".26458">HTTP = 88888</tspan></text>
+  <g
+     inkscape:groupmode="layer"
+     id="WithoutRP"
+     inkscape:label="WithoutRP"
+     style="display:inline"
+     transform="translate(132.67791,0.00367695)">
+    <path
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-mid:url(#InfiniteLineStart-93-4);marker-end:url(#Arrow2Lend-8-9)"
+       d="M 63.621286,26.585733 H 391.71074"
+       id="path14094-5-7" />
   </g>
-  <ellipse cx="151.65" cy="233.53" rx="58.208" ry="21.167" fill="#fff" stroke="#000" stroke-linejoin="round"/>
-  <text x="169.50914" y="237.24025" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" text-align="end" text-anchor="end" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="169.50914" y="237.24025" stroke-width=".26458">Internet</tspan></text>
- </g>
- <g id="WithoutRP" transform="translate(-5.288 .0036776)">
-  <path d="m63.621 26.586h328.09" fill="none" marker-end="url(#Arrow2Lend-8-9)" marker-mid="url(#InfiniteLineStart-93-4)" marker-start="url(#Arrow2Lstart)" stroke="#000" stroke-miterlimit="2"/>
- </g>
- <g id="WithRP" transform="translate(-5.288 .0036776)">
-  <text x="193.27324" y="21.294067" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" text-align="end" text-anchor="end" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsRpUdpL" x="193.27324" y="21.294067" stroke-width=".26458" text-align="end" text-anchor="end">UDP_L = 88888</tspan></text>
-  <path d="m63.627 26.586h132.29" fill="none" marker-end="url(#Arrow2Lend)" marker-mid="url(#InfiniteLineStart)" marker-start="url(#Arrow2Lstart)" stroke="#000" stroke-miterlimit="2"/>
-  <text x="259.41907" y="39.814899" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsRpUdpR" x="259.41907" y="39.814899" stroke-width=".26458">UDP_R = 88888</tspan></text>
-  <path d="m259.42 26.586h132.29" fill="none" marker-end="url(#Arrow2Lend-8)" marker-mid="url(#InfiniteLineStart-93)" marker-start="url(#Arrow2Lstart)" stroke="#000" stroke-miterlimit="2"/>
-  <rect transform="translate(-21.874 -82.59)" x="223.08" y="82.717" width="52.917" height="52.917" fill="#dcddd8" stroke="#3b7112" stroke-linejoin="round" stroke-width=".26213"/>
-  <text x="209.86403" y="22.810776" fill="#000000" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="209.86403" y="22.810776">Real</tspan><tspan x="209.86403" y="36.039902">Penalty</tspan></text>
-  <path d="m140.36 124.48 66.146-66.146" fill="none" marker-end="url(#Arrow2Lend-89)" marker-mid="url(#InfiniteLineStart-3)" marker-start="url(#Arrow2Lstart-7)" stroke="#000" stroke-miterlimit="2"/>
-  <path d="m166.81 129.77 71.438-71.437" fill="none" marker-end="url(#Arrow2Lend-89-8)" marker-mid="url(#InfiniteLineStart-3-3)" marker-start="url(#Arrow2Lstart-7-3)" stroke="#000" stroke-miterlimit="2"/>
-  <text transform="rotate(-45)" x="106.64055" y="207.8486" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" text-align="end" text-anchor="end" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsRpUdp" x="106.64055" y="207.8486" stroke-width=".26458">UDP = 88888</tspan></text>
-  <text transform="rotate(-45)" x="87.931679" y="185.39796" font-family="sans-serif" font-size="10.583px" letter-spacing="0px" stroke-width=".26458" text-align="end" text-anchor="end" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan id="ServerSlotPortsRpTcp" x="87.931679" y="185.39796" stroke-width=".26458">TCP = 88888</tspan></text>
- </g>
+  <g
+     inkscape:groupmode="layer"
+     id="WithRP"
+     inkscape:label="WithRP"
+     style="display:inline"
+     transform="translate(132.67791,0.00367695)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="193.27324"
+       y="21.294067"
+       id="text9488"><tspan
+         sodipodi:role="line"
+         id="ServerSlotPortsRpUdpL"
+         style="text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="193.27324"
+         y="21.294067">UDP_L = 88888</tspan></text>
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-mid:url(#InfiniteLineStart);marker-end:url(#Arrow2Lend)"
+       d="M 63.627403,26.585733 H 195.91907"
+       id="path14094" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="259.41907"
+       y="39.814899"
+       id="text9488-1-6"><tspan
+         sodipodi:role="line"
+         id="ServerSlotPortsRpUdpR"
+         style="stroke-width:0.264583"
+         x="259.41907"
+         y="39.814899">UDP_R = 88888</tspan></text>
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-mid:url(#InfiniteLineStart-93);marker-end:url(#Arrow2Lend-8)"
+       d="M 259.41907,26.585733 H 391.71074"
+       id="path14094-5" />
+    <g
+       id="g37216">
+      <rect
+         style="fill:#dcddd8;stroke:#3b7112;stroke-width:0.262131;stroke-linejoin:round"
+         id="rect1493-3"
+         width="52.916668"
+         height="52.916664"
+         x="223.08475"
+         y="82.717384"
+         transform="translate(-21.873996,-82.58999)" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="209.86403"
+         y="22.810776"
+         id="text36080"><tspan
+           sodipodi:role="line"
+           id="tspan36078"
+           style="stroke-width:0.264583"
+           x="209.86403"
+           y="22.810776">Real</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="209.86403"
+           y="36.039902"
+           id="tspan36082">Penalty</tspan></text>
+    </g>
+    <path
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart-7);marker-mid:url(#InfiniteLineStart-3);marker-end:url(#Arrow2Lend-89)"
+       d="M 140.35658,124.48157 206.50241,58.335734"
+       id="path14094-4"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart-7-3);marker-mid:url(#InfiniteLineStart-3-3);marker-end:url(#Arrow2Lend-89-8)"
+       d="m 166.81491,129.77323 71.4375,-71.437487"
+       id="path14094-4-8"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
+       x="106.64055"
+       y="207.8486"
+       id="text73132"
+       transform="rotate(-45)"><tspan
+         sodipodi:role="line"
+         id="ServerSlotPortsRpUdp"
+         style="stroke-width:0.264583"
+         x="106.64055"
+         y="207.8486">UDP = 88888</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;display:inline;stroke-width:0.264583"
+       x="87.931679"
+       y="185.39796"
+       id="text73132-9"
+       transform="rotate(-45)"><tspan
+         sodipodi:role="line"
+         id="ServerSlotPortsRpTcp"
+         style="stroke-width:0.264583"
+         x="87.931679"
+         y="185.39796">TCP = 88888</tspan></text>
+  </g>
 </svg>

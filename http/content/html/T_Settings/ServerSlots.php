@@ -70,6 +70,7 @@ class ServerSlots extends \core\HtmlContent {
             $html .= "  document.getElementById('ServerSlotPortsAcserverUdp').innerHTML = 'UDP=" . $this->CurrentSlot->parameterCollection()->child('AcServerPortsInetUdp')->valueLabel() . "';\n";
             $html .= "  document.getElementById('ServerSlotPortsAcserverTcp').innerHTML = 'TCP=" . $this->CurrentSlot->parameterCollection()->child('AcServerPortsInetTcp')->valueLabel() . "';\n";
             $html .= "  document.getElementById('ServerSlotPortsAcserverHttp').innerHTML = 'HTTP=" . $this->CurrentSlot->parameterCollection()->child('AcServerPortsInetHttp')->valueLabel() . "';\n";
+            $html .= "  document.getElementById('ServerSlotPortsAcServerWrapper').innerHTML = 'HTTP=" . $this->CurrentSlot->parameterCollection()->child('AcServerWrapperHttpPort')->valueLabel() . "';\n";
 
             if ($this->CurrentSlot->parameterCollection()->child('RPGeneralEnable')->value()) {
                 $html .= "  document.getElementById('ServerSlotPortsRpUdpL').innerHTML = 'UDP_L=" . $this->CurrentSlot->parameterCollection()->child('RPPortsPluginUdpL')->valueLabel() . "';\n";
@@ -79,6 +80,12 @@ class ServerSlots extends \core\HtmlContent {
                 $html .= "  document.getElementById('WithoutRP').style.display = 'none';\n";
             } else {
                 $html .= "  document.getElementById('WithRP').style.display = 'none';\n";
+            }
+
+            if ($this->CurrentSlot->parameterCollection()->child("AcServerWrapperEnable")->value()) {
+                $html .= "  document.getElementById('gAcServerWrapper').style.display = 'visible';\n";
+            } else {
+                $html .= "  document.getElementById('gAcServerWrapper').style.display = 'none';\n";
             }
 
             $html .= "})";

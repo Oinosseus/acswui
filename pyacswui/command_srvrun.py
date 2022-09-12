@@ -17,6 +17,7 @@ class CommandSrvrun(Command):
         Command.__init__(self, argparser, "srvrun", "run the ac server")
         self.add_argument('--slot', help="Server slot number")
         self.add_argument('--real-penalty', action='store_true', help="Set this flag to lunch the real penalty plugin")
+        self.add_argument('--ac-server-wrapper', action='store_true', help="Set this flag to lunch AC by ac-server-wrapper")
         self.add_argument('-v', action='count', default=0, help="each 'v' increases the verbosity level")
 
 
@@ -40,7 +41,7 @@ class CommandSrvrun(Command):
         self._verbosity.print("starting ACswui plugin")
         path_acswui = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         path_acswui_udpp_ini = os.path.abspath(os.path.join(self.getGeneralArg("path-data"), "acswui_udp_plugin", "acswui_udp_plugin_" + slot_str + ".ini"))
-        path_log_acswuiudpp = os.path.join(self.getGeneralArg("path-data"), "logs_srvrun", "slot_" + slot_str + ".acswui_udp_plugin." + iso8601_str + ".log")
+        path_log_acswuiudpp = os.path.join(self.getGeneralArg("path-data"), "logs_srvrun", "slot" + slot_str + ".acswui_udp_plugin." + iso8601_str + ".log")
         acswui_udpp_cmd = []
         acswui_udpp_cmd.append(os.path.join(path_acswui, "acswui.py"))
         acswui_udpp_cmd.append("udpplugin")
@@ -53,23 +54,31 @@ class CommandSrvrun(Command):
 
 
         # prepare ac server as separate process
-        self._verbosity.print("Start AC server")
         path_data_acserver = os.path.join(self.getGeneralArg("path-data"), "acserver", "slot" + slot_str)
-        path_entry_list = os.path.join(path_data_acserver, "cfg", "entry_list.ini")
-        path_server_cfg = os.path.join(path_data_acserver, "cfg", "server_cfg.ini")
+        path_data_acserver_cfg = os.path.join(path_data_acserver, "cfg")
         path_log_acserver = os.path.join(self.getGeneralArg("path-data"), "logs_srvrun", "slot" + slot_str + ".acServer." + iso8601_str + ".log")
         acserver_cmd = []
-        acserver_cmd.append(os.path.join(path_data_acserver, "acServer"))
-        acserver_cmd.append("-c")
-        acserver_cmd.append(path_server_cfg)
-        acserver_cmd.append("-e")
-        acserver_cmd.append(path_entry_list)
-        acserver_cmd.append(">")
+        if self.getArg("ac-server-wrapper"):
+            self._verbosity.print("Start AC server wrapper")
+            acserver_cmd.append("node")
+            acserver_cmd.append(os.path.join(path_acswui, "submodules", "ac-server-wrapper", "ac-server-wrapper.js"))
+            acserver_cmd.append("--executable=" + os.path.join(path_data_acserver, "acServer"))
+            acserver_cmd.append(path_data_acserver_cfg)
+        else:
+            self._verbosity.print("Start AC server")
+            path_entry_list = os.path.join(path_data_acserver_cfg, "entry_list.ini")
+            path_server_cfg = os.path.join(path_data_acserver_cfg, "server_cfg.ini")
+            acserver_cmd.append(os.path.join(path_data_acserver, "acServer"))
+            acserver_cmd.append("-c")
+            acserver_cmd.append(path_server_cfg)
+            acserver_cmd.append("-e")
+            acserver_cmd.append(path_entry_list)
+            #acserver_cmd.append(">")
+            #acserver_cmd.append("&")
         try:
             stdout_log_acserver = open(path_log_acserver, "w")
         except ArgumentException as e:
             stdout_log_acserver = DEVNULL
-        acserver_cmd.append("&")
 
 
         # lunch processes

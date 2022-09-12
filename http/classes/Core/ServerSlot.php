@@ -172,6 +172,25 @@ class ServerSlot {
                 $p->setMin(1);
                 $p->setMax(999);
 
+                /////////////////////
+                // ac-server-wrapper
+
+                $pc = new \Parameter\Collection(NULL, $root_collection, "AcServerWrapper", _("AC Server Wrapper"), _("Settings for the actual acServer"));
+
+                $p = new \Parameter\ParamBool(NULL, $pc, "AcServerWrapperEnable", _("Enable"), _("Use ac-server-wrapper to start AC sevrer (enables enhanced information when clients use content manager)"), "", TRUE);
+
+                $p = new \Parameter\ParamInt(NULL, $pc, "AcServerWrapperHttpPort", "TCP", _("HTTP port for AC Server Wrapper"), "", 9102);
+                $p->setMin(1024);
+                $p->setMax(65535);
+
+                $p = new \Parameter\ParamInt(NULL, $pc, "AcServerWrapperDwnldSpdLim", _("Download Limit"), _("Limit download speed to keep online smooth. Set to 0 to avoid limiting. Just in case."), "kB", 512);
+                $p->setMin(1);
+                $p->setMax(10000);
+
+                $p = new \Parameter\ParamBool(NULL, $pc, "AcServerWrapperDwnldPassOnly", _("Download Password"), _("Do not allow to download content without a password (if set)."), "", TRUE);
+
+                $p = new \Parameter\ParamText(NULL, $pc, "AcServerWrapperWelcomeMsg", _("Welcome Message"), _("The introduction message that shall be shown at first (BBCode supported)"), "", "[center][b]Welcome[/b][/center]");
+
 
                 ////////////////
                 // Real Penalty
@@ -249,7 +268,7 @@ class ServerSlot {
                     }
                 }
             } else {
-                \Core\Log::warning("Server Slot Config file '$file_path' does not exist.");
+                \Core\Log::debug("Server Slot Config file '$file_path' does not exist.");
             }
         }
 
@@ -340,6 +359,9 @@ class ServerSlot {
         $el->writeToFile(\Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/entry_list.ini");
         $this->writeAcServerCfg($track, $car_class, $preset, $el, $map_ballast);
 
+        // configure ac-server-wrapper
+        $this->writeAcServerWrapperParams($preset);
+
         // lunch server with plugins
         $ac_server = \Core\Config::AbsPathData . "/acserver/acServer$id";
         $server_cfg = \Core\Config::AbsPathData . "/acserver/cfg/server_cfg_$id.ini";
@@ -356,7 +378,10 @@ class ServerSlot {
         if ($this->parameterCollection()->child("RPGeneralEnable")->value()) {
             $cmd .= " --real-penalty";
         }
-        $cmd .= " >" . \Core\Config::AbsPathData . "/logs_srvrun//slot_$id.srvrun.{$datetime_str}.log 2>&1 &";
+        if ($this->parameterCollection()->child("AcServerWrapperEnable")->value()) {
+            $cmd .= " --ac-server-wrapper";
+        }
+        $cmd .= " >" . \Core\Config::AbsPathData . "/logs_srvrun/slot$id.srvrun.{$datetime_str}.log 2>&1 &";
         $cmd_retstr = array();
         exec($cmd, $cmd_retstr, $cmd_ret);
         foreach ($cmd_retstr as $line) echo "$line<br>";
@@ -680,6 +705,31 @@ class ServerSlot {
         $s .= "WIND_VARIATION_DIRECTION=" . $wpc->child("WindDirectionVar")->value() . "\n";
 
         return $s;
+    }
+
+
+
+    private function writeAcServerWrapperParams(\DbEntry\ServerPreset $preset) {
+        $pc = $this->parameterCollection();
+
+        $data_array = array();
+        $data_array['description'] = $pc->child("AcServerWrapperWelcomeMsg")->value();
+        $data_array['port'] = $pc->child("AcServerWrapperHttpPort")->value();
+        $data_array['verboseLog'] = TRUE;
+        $data_array['downloadSpeedLimit'] = $pc->child("AcServerWrapperDwnldSpdLim")->value() * 1e3;
+        $data_array['downloadPasswordOnly'] = $pc->child("AcServerWrapperDwnldPassOnly")->value();
+        $data_array['publishPasswordChecksum'] = TRUE;
+
+        // write to file
+        $data_json = json_encode($data_array);
+        $file_path = \Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/cm_wrapper_params.json";
+        $f = fopen($file_path, 'w');
+        if ($f === FALSE) {
+            \Core\Log::error("Cannot write to file '$file_path'!");
+            return;
+        }
+        fwrite($f, $data_json);
+        fclose($f);
     }
 
 
