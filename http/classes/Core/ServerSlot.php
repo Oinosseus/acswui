@@ -172,6 +172,25 @@ class ServerSlot {
                 $p->setMin(1);
                 $p->setMax(999);
 
+                /////////////////////
+                // ac-server-wrapper
+
+                $pc = new \Parameter\Collection(NULL, $root_collection, "AcServerWrapper", _("AC Server Wrapper"), _("Settings for the actual acServer"));
+
+                $p = new \Parameter\ParamBool(NULL, $pc, "AcServerWrapperEnable", _("Enable"), _("Use ac-server-wrapper to start AC sevrer (enables enhanced information when clients use content manager)"), "", TRUE);
+
+                $p = new \Parameter\ParamInt(NULL, $pc, "AcServerWrapperHttpPort", "TCP", _("HTTP port for AC Server Wrapper"), "", 9102);
+                $p->setMin(1024);
+                $p->setMax(65535);
+
+                $p = new \Parameter\ParamInt(NULL, $pc, "AcServerWrapperDwnldSpdLim", _("Download Limit"), _("Limit download speed to keep online smooth. Set to 0 to avoid limiting. Just in case."), "kB", 512);
+                $p->setMin(1);
+                $p->setMax(10000);
+
+                $p = new \Parameter\ParamBool(NULL, $pc, "AcServerWrapperDwnldPassOnly", _("Download Password"), _("Do not allow to download content without a password (if set)."), "", TRUE);
+
+                $p = new \Parameter\ParamText(NULL, $pc, "AcServerWrapperWelcomeMsg", _("Welcome Message"), _("The introduction message that shall be shown at first (BBCode supported)"), "", "[center][b]Welcome[/b][/center]");
+
 
                 ////////////////
                 // Real Penalty
@@ -249,7 +268,7 @@ class ServerSlot {
                     }
                 }
             } else {
-                \Core\Log::warning("Server Slot Config file '$file_path' does not exist.");
+                \Core\Log::debug("Server Slot Config file '$file_path' does not exist.");
             }
         }
 
@@ -273,7 +292,7 @@ class ServerSlot {
     private function pid() {
         global $acswuiConfig;
         $id = $this->id();
-        $pidfile = \Core\Config::AbsPathData . "/acserver/acServer$id.pid";
+        $pidfile = \Core\Config::AbsPathData . "/acserver/slot{$id}/acServer.pid";
         if (!file_exists($pidfile)) return NULL;
         $pid = (int) file_get_contents($pidfile);
         return $pid;
@@ -281,7 +300,7 @@ class ServerSlot {
 
 
 
-    //! Store settings to database
+    //! Store settings
     public function save() {
 
         // prepare data
@@ -337,8 +356,11 @@ class ServerSlot {
             $el = new \Core\EntryList();
             $el->fillSkins($car_class, $track);
         }
-        $el->writeToFile(\Core\Config::AbsPathData . "/acserver/cfg/entry_list_" . $this->id() . ".ini");
+        $el->writeToFile(\Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/entry_list.ini");
         $this->writeAcServerCfg($track, $car_class, $preset, $el, $map_ballast);
+
+        // configure ac-server-wrapper
+        $this->writeAcServerWrapperParams($preset);
 
         // lunch server with plugins
         $ac_server = \Core\Config::AbsPathData . "/acserver/acServer$id";
@@ -356,7 +378,10 @@ class ServerSlot {
         if ($this->parameterCollection()->child("RPGeneralEnable")->value()) {
             $cmd .= " --real-penalty";
         }
-        $cmd .= " >" . \Core\Config::AbsPathData . "/logs_srvrun//slot_$id.srvrun.{$datetime_str}.log 2>&1 &";
+        if ($this->parameterCollection()->child("AcServerWrapperEnable")->value()) {
+            $cmd .= " --ac-server-wrapper";
+        }
+        $cmd .= " >" . \Core\Config::AbsPathData . "/logs_srvrun/slot$id.srvrun.{$datetime_str}.log 2>&1 &";
         $cmd_retstr = array();
         exec($cmd, $cmd_retstr, $cmd_ret);
         foreach ($cmd_retstr as $line) echo "$line<br>";
@@ -489,7 +514,7 @@ class ServerSlot {
 
         $pc = $this->parameterCollection();
         $ppc = $preset->parameterCollection();
-        $file_path = \Core\Config::AbsPathData . "/acserver/cfg/server_cfg_" . $this->id() . ".ini";
+        $file_path = \Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/server_cfg.ini";
         $f = fopen($file_path, 'w');
         if ($f === FALSE) {
             \Core\Log::error("Cannot write to file '$file_path'!");
@@ -571,7 +596,7 @@ class ServerSlot {
         // create welcome message
         $welcome_message = trim($ppc->child("AcServerWelcomeMessage")->value());
         if (strlen($welcome_message) > 0) {
-            $file_path_wm = \Core\Config::AbsPathData . "/acserver/cfg/welcome_" . $this->id() . ".txt";
+            $file_path_wm = \Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/welcome.txt";
             $f_wm = fopen($file_path_wm, 'w');
             if ($f_wm === FALSE) {
                 \Core\Log::error("Cannot write to file '$file_path_wm'!");
@@ -680,6 +705,31 @@ class ServerSlot {
         $s .= "WIND_VARIATION_DIRECTION=" . $wpc->child("WindDirectionVar")->value() . "\n";
 
         return $s;
+    }
+
+
+
+    private function writeAcServerWrapperParams(\DbEntry\ServerPreset $preset) {
+        $pc = $this->parameterCollection();
+
+        $data_array = array();
+        $data_array['description'] = $pc->child("AcServerWrapperWelcomeMsg")->value();
+        $data_array['port'] = $pc->child("AcServerWrapperHttpPort")->value();
+        $data_array['verboseLog'] = TRUE;
+        $data_array['downloadSpeedLimit'] = $pc->child("AcServerWrapperDwnldSpdLim")->value() * 1e3;
+        $data_array['downloadPasswordOnly'] = $pc->child("AcServerWrapperDwnldPassOnly")->value();
+        $data_array['publishPasswordChecksum'] = TRUE;
+
+        // write to file
+        $data_json = json_encode($data_array);
+        $file_path = \Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/cm_wrapper_params.json";
+        $f = fopen($file_path, 'w');
+        if ($f === FALSE) {
+            \Core\Log::error("Cannot write to file '$file_path'!");
+            return;
+        }
+        fwrite($f, $data_json);
+        fclose($f);
     }
 
 
@@ -871,10 +921,10 @@ class ServerSlot {
         // section General
         fwrite($f, "[General]\n");
         fwrite($f, "product_key = " . $pc->child("RPGeneralProductKey")->value() . "\n");
-        fwrite($f, "AC_SERVER_PATH = " . \Core\Config::AbsPathData . "/acserver\n");
-        fwrite($f, "AC_CFG_FILE = " . \Core\Config::AbsPathData . "/acserver/cfg/server_cfg_$id.ini\n");
-        fwrite($f, "AC_TRACKS_FOLDER = " . \Core\Config::AbsPathData . "/acserver/content/tracks\n");
-        fwrite($f, "AC_WEATHER_FOLDER = " . \Core\Config::AbsPathData . "/acserver/content/weather\n");
+        fwrite($f, "AC_SERVER_PATH = " . \Core\Config::AbsPathData . "/acserver/slot$id\n");
+        fwrite($f, "AC_CFG_FILE = " . \Core\Config::AbsPathData . "/acserver/slot$id/cfg/server_cfg.ini\n");
+        fwrite($f, "AC_TRACKS_FOLDER = " . \Core\Config::AbsPathData . "/acserver/slot$id/content/tracks\n");
+        fwrite($f, "AC_WEATHER_FOLDER = " . \Core\Config::AbsPathData . "/acserver/slot$id/content/weather\n");
         fwrite($f, "UDP_PORT = " . $pc->child("RPPortsPluginUdpL")->value() . "\n");
         fwrite($f, "UDP_RESPONSE = 127.0.0.1:" . $pc->child("AcServerPortsPluginUdpR")->value() . "\n");
         fwrite($f, "APP_TCP_PORT = " . (27 + $pc->child("AcServerPortsInetHttp")->value()) . "\n");
