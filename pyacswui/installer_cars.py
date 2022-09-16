@@ -31,7 +31,6 @@ class InstallerCars(object) :
         # set all current cars and skins to 'deprecated'
         self.__db.rawQuery("UPDATE Cars SET Deprecated=1 WHERE Deprecated=0")
         self.__db.rawQuery("UPDATE CarSkins SET Deprecated=1 WHERE Deprecated=0")
-        self.__db.rawQuery("UPDATE CarSkins SET Steam64GUID=''")
 
         path_cars = os.path.join(abspath_data, "htdata", "content", "cars")
         for car in sorted(os.listdir(path_cars)):
@@ -127,12 +126,11 @@ class InstallerCars(object) :
         # read ui_skin.json
         ui_skin_json_path = os.path.join(path_car_skins, skin, "ui_skin.json")
         if os.path.isfile(ui_skin_json_path):
-            ui_skin_dict = parse_json(ui_skin_json_path, ['skinname', 'Steam64GUID', 'number'])
+            ui_skin_dict = parse_json(ui_skin_json_path, ['skinname', 'number'])
         else:
-            ui_skin_dict = {'skinname':"", 'Steam64GUID':"", 'number':""}
+            ui_skin_dict = {'skinname':"", 'number':""}
         ui_skin_db_fields = {}
         ui_skin_db_fields['Name'] = ui_skin_dict['skinname']
-        ui_skin_db_fields['Steam64GUID'] = ui_skin_dict['Steam64GUID']
         ui_skin_db_fields['Number'] = str(ui_skin_dict['number'])[:20]
 
         # update database

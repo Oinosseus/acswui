@@ -181,7 +181,6 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt("CarSkins", "Car")
         self.__db.appendColumnString("CarSkins", "Skin", 50)
         self.__db.appendColumnTinyInt("CarSkins", "Deprecated")
-        self.__db.appendColumnString("CarSkins", "Steam64GUID", 50)
         self.__db.appendColumnString("CarSkins", "Number", 20)
         self.__db.appendColumnString("CarSkins", "Name", 80)
 

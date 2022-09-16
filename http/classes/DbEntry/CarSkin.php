@@ -134,12 +134,4 @@ class CarSkin extends DbEntry {
         if ($this->Skin === NULL) $this->Skin = $this->loadColumn("Skin");
         return $this->Skin;
     }
-
-
-
-    //! @return If this skin is prevered this returns for which Steam64GUID it is preserved (otherwise "")
-    public function steam64GUID() {
-        if ($this->Steam64GUID === NULL) $this->Steam64GUID = $this->loadColumn("Steam64GUID");
-        return $this->Steam64GUID;
-    }
 }

@@ -33,9 +33,6 @@ class CarSkin extends \core\HtmlContent {
             $html .= "<tr><th>" . _("Car") . "</th><td><a href=\"?HtmlContent=CarModel&Id=" . $skin->car()->id() . "\">" . $skin->car()->name() . "</a></td></tr>";
             $html .= "<tr><th>" . _("Name") . "</th><td>" . $skin->name() . "</td></tr>";
             $html .= "<tr><th>" . _("Number") . "</th><td>" . $skin->number() . "</td></tr>";
-            $html .= "<tr><th><span title=\"" . _("From 'Steam64GUID' attribute in ui_skin.json") . "\">" . _("Reservation") . "</span></th><td>";
-            if ($skin->steam64GUID()) $html .= \DbEntry\User::fromSteam64GUID($skin->steam64GUID())->html();
-            $html .= "</td></tr>";
             $html .= "</table>";
 
             $html .= "<table id=\"CarSkinRevision\">";

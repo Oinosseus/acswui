@@ -247,15 +247,12 @@ class SessionSchedules extends \core\HtmlContent {
             $html .= "<h2>{$car->name()}</h2>";
             foreach ($car->skins() as $skin) {
 
-                // skip skins wich are preserved
-                if ($skin->steam64GUID() && $skin->steam64GUID() != \Core\UserManager::currentUser()->steam64GUID()) continue;
-
                 // skip already occupied skins
                 if ($ss->carSkinOccupied($skin)) continue;
 
                 // offer skin as radio button
                 $skin_img = $skin->html(FALSE, TRUE, TRUE);
-                $checked = $skin->steam64GUID() && $skin->steam64GUID() == \Core\UserManager::currentUser()->steam64GUID();
+                $checked = FALSE;
                 $disabled = FALSE;
                 $html .= $this->newHtmlContentRadio("RegistrationCarSkin", $skin->id(), $skin_img, $checked, $disabled);
             }
