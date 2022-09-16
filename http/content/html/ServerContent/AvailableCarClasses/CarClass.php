@@ -191,17 +191,6 @@ class CarClass extends \core\HtmlContent {
         }
 
 
-        $html .= "<h2>" . _("Teams") . "</h2>";
-        $html .= "<ul>";
-        foreach ($this->CarClass->teams() as $team) {
-            $html .= "<li>" . $team->htmlName() . "</li>";
-        }
-        $html .= "</ul>";
-        if (count($this->CarClass->teams()) == 0) {
-            $html .= _("No teams in this car class");
-        }
-
-
         $html .= "<h2>" . _("Cars Overview") . "</h2>";
         foreach ($this->CarClass->cars() as $car) {
             $html .= $car->html($this->CarClass);

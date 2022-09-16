@@ -106,13 +106,6 @@ class B_User extends \core\HtmlContent {
             $html .= "<strong>" . _("Country") . "</strong>: " . $this->ProfileUser->nationalFlag() . "<br>";
             $html .= "<strong>" . _("Driven Laps") . "</strong>: " . $this->ProfileUser->countLaps() . "<br>";
 
-            $html .= "<h1>" . _("Teams") . "</h1>";
-            $html .= "<ul>";
-            foreach ($this->ProfileUser->teams() as $team) {
-                $html .= "<li>" . $team->htmlName() . "</li>";
-            }
-            $html .= "</ul>";
-
         } else {
             $html .= _("Privacy settings of the user does not allow to show any information.");
         }

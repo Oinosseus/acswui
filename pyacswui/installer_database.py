@@ -36,15 +36,6 @@ class InstallerDatabase(object):
         self.__db.appendColumnString("installer", "version", 10)
         self.__db.appendColumnText("installer", "info")
 
-        ## check table CronJobs
-        #Verbosity(verb).print("check database table `CronJobs`")
-        #self.__db.appendTable("CronJobs")
-        #self.__db.appendColumnString("CronJobs", "Name", 60)
-        #self.__db.appendColumnCurrentTimestamp("CronJobs", "LastStart")
-        #self.__db.appendColumnUInt("CronJobs", "LastDuration")
-        #self.__db.appendColumnString("CronJobs", "Status", 50)
-        #self.__db.appendColumnUInt("CronJobs", "LastSession")
-
         # check table ServerPresets
         Verbosity(verb).print("check database table `ServerPresets`")
         self.__db.appendTable("ServerPresets")
@@ -193,7 +184,6 @@ class InstallerDatabase(object):
         self.__db.appendColumnString("CarSkins", "Steam64GUID", 50)
         self.__db.appendColumnString("CarSkins", "Number", 20)
         self.__db.appendColumnString("CarSkins", "Name", 80)
-        self.__db.appendColumnString("CarSkins", "Team", 80)
 
 
 

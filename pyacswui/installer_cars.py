@@ -127,13 +127,12 @@ class InstallerCars(object) :
         # read ui_skin.json
         ui_skin_json_path = os.path.join(path_car_skins, skin, "ui_skin.json")
         if os.path.isfile(ui_skin_json_path):
-            ui_skin_dict = parse_json(ui_skin_json_path, ['skinname', 'Steam64GUID', 'number', 'team'])
+            ui_skin_dict = parse_json(ui_skin_json_path, ['skinname', 'Steam64GUID', 'number'])
         else:
-            ui_skin_dict = {'skinname':"", 'Steam64GUID':"", 'number':"", 'team':""}
+            ui_skin_dict = {'skinname':"", 'Steam64GUID':"", 'number':""}
         ui_skin_db_fields = {}
         ui_skin_db_fields['Name'] = ui_skin_dict['skinname']
         ui_skin_db_fields['Steam64GUID'] = ui_skin_dict['Steam64GUID']
-        ui_skin_db_fields['Team'] = ui_skin_dict['team']
         ui_skin_db_fields['Number'] = str(ui_skin_dict['number'])[:20]
 
         # update database

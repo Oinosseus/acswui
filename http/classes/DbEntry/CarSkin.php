@@ -142,11 +142,4 @@ class CarSkin extends DbEntry {
         if ($this->Steam64GUID === NULL) $this->Steam64GUID = $this->loadColumn("Steam64GUID");
         return $this->Steam64GUID;
     }
-
-
-    //! @return Team name of the skin
-    public function team() {
-        return Team::fromId($this->loadColumn("Team"));
-    }
-
 }

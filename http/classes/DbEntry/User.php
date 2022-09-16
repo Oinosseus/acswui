@@ -16,7 +16,6 @@ class User extends DbEntry { #implements JsonSerializable {
     private $LastLap = NULL;
     private $DaysSinceLastLap = NULL;
     private $DaysSinceLastLogin = NULL;
-    private $Teams = NULL;
 
     private static $CommunityList = NULL;
     private static $DriverList = NULL;
@@ -677,20 +676,6 @@ class User extends DbEntry { #implements JsonSerializable {
         if ($this->isRoot()) return 0;
         if ($this->Steam64GUID === NULL) $this->Steam64GUID = $this->loadColumn('Steam64GUID');
         return $this->Steam64GUID;
-    }
-
-
-    //! @return A list of Team objects
-    public function teams() {
-        if ($this->Teams === NULL) {
-            $this->Teams = array();
-            $sid = \Core\Database::escape($this->steam64GUID());
-            $query = "SELECT DISTINCT Team FROM `CarSkins` WHERE Steam64GUID = '$sid';";
-            foreach (\Core\Database::fetchRaw($query) as $row) {
-                $this->Teams[] = Team::fromId($row['Team']);
-            }
-        }
-        return $this->Teams;
     }
 
 }
