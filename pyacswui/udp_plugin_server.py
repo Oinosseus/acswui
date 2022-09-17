@@ -352,13 +352,13 @@ class UdpPluginServer(object):
                 # sanity check
                 if car_model is not None and e.Model != car_model:
                     msg = "Unexpected connection on car ID '%i': " % car_id
-                    msg += " for driver '%s'!\n" % driver_name
+                    msg += " for driver '%s'!\n" % e.DriverName
                     msg += "Car model in entry_list.ini='%s'" % e.Model
                     msg += ", car model in connection='%s'!" % car_model
                     raise ValueError(msg)
                 if car_skin is not None and e.Skin != car_skin:
                     msg = "Unexpected connection on car ID '%i': " % car_id
-                    msg += " for driver '%s'!\n" % driver_name
+                    msg += " for driver '%s'!\n" % e.DriverName
                     msg += "Car model in entry_list.ini='%s'" % e.Skin
                     msg += ", car model in connection='%s'!" % car_skin
                     raise ValueError(msg)
