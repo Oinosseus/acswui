@@ -524,8 +524,10 @@ class CommandInstall(Command):
         paths.append(os.path.join(abspath_data, "logs_srvrun"))
         paths.append(os.path.join(abspath_data, "htcache"))
         paths.append(os.path.join(abspath_data, "acserver"))
-        paths.append(os.path.join(abspath_data, "acserver", "cfg"))
-        paths.append(os.path.join(abspath_data, "acserver", "results"))
+        for slot_nr in range(int(self.getGeneralArg('server-slot-amount'))):
+            slot_nr += 1
+            paths.append(os.path.join(abspath_data, "acserver", "slot%i" % slot_nr, "cfg"))
+            paths.append(os.path.join(abspath_data, "acserver", "slot%i" % slot_nr, "results"))
         paths.append(os.path.join(abspath_data, "acswui_config"))
         paths.append(os.path.join(abspath_data, "real_penalty"))
         paths.append(os.path.join(abspath_data, "acswui_udp_plugin"))

@@ -45,10 +45,10 @@ class CommandUdpPlugin(Command):
 
         # paths
         slot_string = self.getIniSection('PLUGIN')['slot']
-        path_data_acserver = os.path.join(self.getGeneralArg("path-data"), "acserver")
+        path_data_acserver = os.path.join(self.getGeneralArg("path-data"), "acserver", "slot" + slot_string)
         path_realtime_json = os.path.join(self.getGeneralArg("path-htdata"), "realtime", slot_string + ".json")
-        path_entry_list = os.path.join(path_data_acserver, "slot" + slot_string, "cfg", "entry_list.ini")
-        path_server_cfg = os.path.join(path_data_acserver, "slot" + slot_string, "cfg", "server_cfg.ini")
+        path_entry_list = os.path.join(path_data_acserver, "cfg", "entry_list.ini")
+        path_server_cfg = os.path.join(path_data_acserver, "cfg", "server_cfg.ini")
 
         # read server config
         self._verbosity.print("Read config files")
