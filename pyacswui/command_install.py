@@ -202,7 +202,7 @@ class CommandInstall(Command):
                     f.write("\n")
 
             # results
-            path_data_acserver_slot_results = os.path.join(path_data_acserver_slot_cfg, "results")
+            path_data_acserver_slot_results = os.path.join(path_data_acserver_slot, "results")
             if not os.path.isdir(path_data_acserver_slot_results):
                 self.mkdirs(path_data_acserver_slot_results)
 
