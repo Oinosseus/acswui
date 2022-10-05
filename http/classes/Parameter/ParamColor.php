@@ -18,7 +18,7 @@ class ParamColor extends Parameter {
 
 
     public function formatValue($value) {
-        if (strlen($value) < 7) return NULL;
+        if ($value === NULL || strlen($value) < 7) return NULL;
         return sprintf("#%06x", hexdec(substr($value, 1, 7)));
     }
 

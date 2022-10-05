@@ -63,7 +63,7 @@ class DriverRanking extends DbEntry implements \JsonSerializable {
     }
 
 
-    public function jsonSerialize() {
+    public function jsonSerialize() : mixed {
         $a = array();
 
         $a['UserId'] = $this->User->id();
