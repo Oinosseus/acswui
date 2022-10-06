@@ -79,16 +79,16 @@ class TimeInterval {
 
     //! An original php DateInterval object
     public function toDateInterval() {
-        $remaining_seconds = $this->Secs;
+        $remaining_seconds = (int) $this->Secs;
 
         $seconds = $remaining_seconds % 60;
-        $remaining_minutes = $remaining_seconds / 60;
+        $remaining_minutes = intdiv($remaining_seconds, 60);
 
         $minutes = $remaining_minutes % 60;
-        $remaining_hours = $remaining_minutes / 60;
+        $remaining_hours = intdiv($remaining_minutes, 60);
 
         $hours = $remaining_hours % 24;
-        $remaining_days = $remaining_hours / 24;
+        $remaining_days = intdiv($remaining_hours, 24);
 
         $duration = sprintf("P%dDT%dH%dM%dS", $remaining_days, $hours, $minutes, $seconds);
         return new \DateInterval($duration);

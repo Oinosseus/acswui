@@ -83,7 +83,7 @@ class GeoLocation {
 
         // restrict to [-180, +180]
         $lon += 180;
-        $lon = $lon % 360;
+        $lon = fmod($lon, 360);
         $lon -= 180;
 
         // calculate geo-UTC offset in minutes
