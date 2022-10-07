@@ -34,6 +34,26 @@ class CarSkin extends DbEntry {
     }
 
 
+    /**
+     * Creates a new car skin that is owned by a certain user
+     * @param $car The car model the new skin shall be assigned to
+     * @param $owner The User, that owns this car (skin)
+     * @return The new created CarSkin object
+     */
+    public static function createNew(\DbEntry\Car $car,
+                                      \DbEntry\User $owner) {
+        $columns = array();
+        $columns['Car'] = $car->id();
+        // $columns['Skin'] = "???";
+        $columns['Deprecated'] = 0;
+        $columns['Number'] = 9999;
+        $columns['Name'] = $owner->name();
+        $columns['Owner'] = $owner->id();
+        $id = \Core\Database::insert("CarSkins", $columns);
+        return CarSkin::fromId($id);
+    }
+
+
     //! @return TRUE when this skin is deprecated
     public function deprecated() {
         if ($this->Deprecated === NULL)

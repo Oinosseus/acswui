@@ -6,6 +6,7 @@ class CarModel extends \core\HtmlContent {
 
     private $CurrentBrand = NULL;
     private $CurrentCar = NULL;
+    private $CanCreateSkin = FALSE;
 
     public function __construct() {
         parent::__construct(_("Car Model"),  _("Car Model"));
@@ -13,6 +14,11 @@ class CarModel extends \core\HtmlContent {
     }
 
     public function getHtml() {
+
+        // check permissions
+        if (\Core\UserManager::currentUser()->permitted("Skins_Create"))
+            $this->CanCreateSkin = TRUE;
+
         $html  = '';
 
         // retrieve requests
@@ -72,9 +78,16 @@ class CarModel extends \core\HtmlContent {
                 $html .= "<li>" . $carclass->htmlName() . "</li>";
             }
             $html .= "</ul>";
-        if (count($car->classes()) == 0) {
-            $html .= _("This car is not used in any car class");
-        }
+            if (count($car->classes()) == 0) {
+                $html .= _("This car is not used in any car class");
+            }
+
+
+            // create new skin
+            if ($this->CanCreateSkin) {
+                $url = $this->url(['CreateNewCarSkin'=>TRUE, 'CarModel'=>$car->id()], "CarSkin");
+                $html .= "<a href=\"$url\">" . _("Create new Skin/Livery") . "</a>";
+            }
 
 
 

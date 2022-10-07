@@ -183,6 +183,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnTinyInt("CarSkins", "Deprecated")
         self.__db.appendColumnString("CarSkins", "Number", 20)
         self.__db.appendColumnString("CarSkins", "Name", 80)
+        self.__db.appendColumnUInt("CarSkins", "Owner")
 
 
 
