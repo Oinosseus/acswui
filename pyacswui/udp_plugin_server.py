@@ -255,6 +255,7 @@ class UdpPluginServer(object):
 
         # ACSP_END_SESSION
         elif prot == 55:
+            print("ACSP_END_SESSION")
             self.__verbosity.print("ACSP_END_SESSION")
 
             json_file_relpath = pkt.readStringW()

@@ -162,9 +162,9 @@ class User extends DbEntry { #implements JsonSerializable {
      */
     public function formatLaptime(int $laptime) {
         $milliseconds = $laptime % 1000;
-        $laptime /= 1000;
+        $laptime = intdiv($laptime, 1000);
         $seconds = $laptime % 60;
-        $minutes = $laptime / 60;
+        $minutes = intdiv($laptime, 60);
         return sprintf("%0d:%02d.%03d" , $minutes, $seconds, $milliseconds);
     }
 
@@ -178,15 +178,15 @@ class User extends DbEntry { #implements JsonSerializable {
         if ($laptime_delta < 1000) {
             return sprintf("%d ms", $laptime_delta);
         } else if ($laptime_delta < 60000) {
-            $laptime_delta /= 10;
+            $laptime_delta = intdiv($laptime_delta, 10);
             $centi_seconds = $laptime_delta % 100;
-            $laptime_delta /= 100;
+            $laptime_delta = intdiv($laptime_delta, 100);
             $seconds = $laptime_delta % 60;
             return sprintf("%d.%02d s", $seconds, $centi_seconds);
         } else {
-            $laptime_delta /= 1000;
+            $laptime_delta = intdiv($laptime_delta, 1000);
             $seconds = $laptime_delta % 60;
-            $minutes = $laptime_delta / 60;
+            $minutes = intdiv($laptime_delta, 60);
             return sprintf("%d:%02d", $minutes, $seconds);
         }
     }

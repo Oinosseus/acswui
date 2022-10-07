@@ -388,7 +388,7 @@ class ServerSlot {
 //         echo "Server started: $cmd_ret<br>";
 //         echo htmlentities($cmd) ."<br>";
 
-        sleep(0.1);
+        usleep(100e3);
 
         if ($cmd_ret !== 0) {
             $msg = "Could not start server!\n";
@@ -430,7 +430,7 @@ class ServerSlot {
 
 
         exec("kill $pid");
-        sleep(0.1);
+        usleep(100e3);
     }
 
 
