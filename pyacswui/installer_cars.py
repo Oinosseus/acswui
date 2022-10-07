@@ -28,9 +28,9 @@ class InstallerCars(object) :
         # paths
         abspath_data = os.path.abspath(self.__path_srvpkg)
 
-        # set all current cars and skins to 'deprecated'
+        # set all current cars and un-ownded skins to 'deprecated'
         self.__db.rawQuery("UPDATE Cars SET Deprecated=1 WHERE Deprecated=0")
-        self.__db.rawQuery("UPDATE CarSkins SET Deprecated=1 WHERE Deprecated=0")
+        self.__db.rawQuery("UPDATE CarSkins SET Deprecated=1 WHERE Deprecated=0 AND Owner=0")
 
         path_cars = os.path.join(abspath_data, "htdata", "content", "cars")
         for car in sorted(os.listdir(path_cars)):
