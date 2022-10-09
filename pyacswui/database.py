@@ -231,7 +231,7 @@ class Database(object):
         self.__appendColumn(tblname, colname, "text", "")
 
     def appendColumnDateTime(self, tblname, colname):
-        self.__appendColumn(tblname, colname, "DATETIME")
+        self.__appendColumn(tblname, colname, "DATETIME", "'0000-00-00 00:00'")
 
     def appendColumnTimestamp(self, tblname, colname):
         self.__appendColumn(tblname, colname, "TIMESTAMP", "'0000-00-00 00:00'")
