@@ -50,6 +50,11 @@ class CarSkin extends DbEntry {
         $columns['Name'] = $owner->name();
         $columns['Owner'] = $owner->id();
         $id = \Core\Database::insert("CarSkins", $columns);
+
+        // update skin path name
+        $skin_path_name = "acswui_{$owner->id()}_$id";
+        \Core\Database::update("CarSkins", $id, ["Skin"=>$skin_path_name]);
+
         return CarSkin::fromId($id);
     }
 
@@ -139,6 +144,14 @@ class CarSkin extends DbEntry {
     }
 
 
+    //! @return The owner of this CarSkin (can be NULL if not owned)
+    public function owner() : ?\DbEntry\User {
+        $uid = (int) $this->loadColumn("Owner");
+        if ($uid <= 0) return NULL;  // user-0 is an invalid owner
+        return \DbEntry\User::fromId($uid);
+    }
+
+
     //! @return the path of the preview image
     public function previewPath() {
         $skin_skin = $this->skin();
@@ -146,6 +159,30 @@ class CarSkin extends DbEntry {
         $car_model = $car->model();
         $path = \Core\Config::RelPathHtdata . "/content/cars/$car_model/skins/$skin_skin/preview.jpg";
         return $path;
+    }
+
+
+    //! @param $new_name Saves $new_name as new name of the carskin into the database
+    public function saveName(string $new_name) {
+
+        // sanitize
+        $new_name = trim($new_name);
+        $new_name = \Core\Database::escape($new_name);
+
+        // save
+        $this->storeColumns(['Name'=>$new_name]);
+    }
+
+
+    //! @param $new_number Saves $new_number as new number of the carskin into the database
+    public function saveNumber(string $new_number) {
+
+        // sanitize
+        $new_number = trim($new_number);
+        $new_number = \Core\Database::escape($new_number);
+
+        // save
+        $this->storeColumns(['Number'=>$new_number]);
     }
 
 
