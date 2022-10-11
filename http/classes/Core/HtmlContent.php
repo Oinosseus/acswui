@@ -287,19 +287,22 @@ abstract class HtmlContent {
      * The generated element will contain all necessary variables to allow navigation to current content
      * @param $method GET or POST
      * @param $id Used as id atribute (if not empty string)
-     * @param HTML code with a new <form> element
+     * @param $file_upload If set to TRUE, the form gets following attribute: enctype="multipart/form-data"
+     * @return HTML code with a new <form> element
      */
-    public function newHtmlForm($method="GET", string $id = "") {
+    public function newHtmlForm($method="GET", string $id = "", bool $file_upload=FALSE) {
         $method = strtoupper($method);
 
         $html = "";
         $id = (strlen($id) > 0) ? "id=\"$id\"" : "";
 
+        $enctype = "enctype=\"multipart/form-data\"";
+
         if ($method == "GET") {
-            $html .= "<form method=\"GET\" action=\"" . HtmlContent::BASESCRIPT . "\" $id>";
+            $html .= "<form method=\"GET\" action=\"" . HtmlContent::BASESCRIPT . "\" $id $enctype>";
             $html .= "<input type=\"hidden\" name=\"HtmlContent\" value=\"" . $this->id() . "\">";
         } else if ($method == "POST") {
-            $html .= "<form method=\"POST\" action=\"" . $this->url($_GET) . "\" $id>";
+            $html .= "<form method=\"POST\" action=\"" . $this->url($_GET) . "\" $id $enctype>";
         } else {
             \Core\Log::error("Undefined method '$method'!");
         }

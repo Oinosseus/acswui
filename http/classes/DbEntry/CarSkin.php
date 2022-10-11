@@ -24,6 +24,62 @@ class CarSkin extends DbEntry {
     }
 
 
+    /**
+     * Copies a file from the temporary upload directory into the htcache/owned_skins directory.
+     *
+     * Only '*.dds' files, 'livery.png' and 'preview.jpg' are accepted.
+     *
+     * @param $upload_path Path of the temporary upload location eg. $_FILES["xxx"]["tmp_name"]
+     * @param $target_name The target filename eg. $_FILES["xxx"]["name"]
+     * @return True on success
+     */
+    public function addUploadedFile(string $upload_path, string $target_name) : bool {
+
+        // check for valid uploaded file (attack prevention)
+        if (!is_uploaded_file($upload_path)) {
+            \Core\Log::warning("Ignore not uploaded file '" . $target_name . "'!");
+            return False;
+        }
+
+        // check filename
+        $valid_filename = (bool) ((preg_match("`^[-0-9a-zA-Z_\.]+$`i", $target_name)) ? true : false);
+        $valid_filename |= (bool) ((strlen($target_name) <= 225) ? true : false);
+        if (!$valid_filename) {
+            \Core\Log::warning("Ignore illegal filename '" . $target_name . "'!");
+            return False;
+        }
+
+        // check file type
+        $filetype_dds = (bool) ((preg_match("`^.*\.dds$`i", $target_name)) ? true : false);
+        $filetype_livery = (bool) ($target_name == "livery.png") ? true : false;
+        $filetype_preview = (bool) ($target_name == "preview.jpg") ? true : false;
+        if (!$filetype_dds && !$filetype_livery && !$filetype_preview) {
+            \Core\Log::warning("Ignore illegal filetype '" . $target_name . "'!");
+            return False;
+        }
+
+        // create target directory
+        $dst_dir = \Core\Config::AbsPathData . "/htcache/owned_skins/" . $this->skin();
+        if (!is_dir($dst_dir)) {
+            if (!mkdir($dst_dir, 0775)) {
+                \Core\Log::error("Cannot create directory '{$dst_dir}'!");
+                return False;
+            }
+        }
+
+        // move uploaded file
+        $src = $_FILES["CarSkinFile"]["tmp_name"];
+        $dst = $dst_dir . "/" . $target_name;
+        if (!move_uploaded_file($src, $dst)) {
+            \Core\Log::warning("File move-upload failed '" . $target_name . "'!");
+            return False;
+        }
+
+        // if reached here, upload was successfull
+        return True;
+    }
+
+
     //! @return The according Car object
     public function car() {
         if ($this->Car === NULL) {
@@ -44,7 +100,6 @@ class CarSkin extends DbEntry {
                                       \DbEntry\User $owner) {
         $columns = array();
         $columns['Car'] = $car->id();
-        // $columns['Skin'] = "???";
         $columns['Deprecated'] = 0;
         $columns['Number'] = 9999;
         $columns['Name'] = $owner->name();
@@ -52,7 +107,7 @@ class CarSkin extends DbEntry {
         $id = \Core\Database::insert("CarSkins", $columns);
 
         // update skin path name
-        $skin_path_name = "acswui_{$owner->id()}_$id";
+        $skin_path_name = "acswui_{$owner->id()}_{$id}_" . bin2hex(random_bytes(2));
         \Core\Database::update("CarSkins", $id, ["Skin"=>$skin_path_name]);
 
         return CarSkin::fromId($id);
@@ -64,6 +119,20 @@ class CarSkin extends DbEntry {
         if ($this->Deprecated === NULL)
             $this->Deprecated = ($this->loadColumn('Deprecated') == 0) ? FALSE : TRUE;
         return $this->Deprecated;
+    }
+
+
+    //! @return An array with all filenames for owned skins
+    public function files() : array {
+        $files = array();
+        $dir = \Core\Config::AbsPathData . "/htcache/owned_skins/" . $this->skin();
+        if (is_dir($dir)) {
+            foreach (scandir($dir) as $f) {
+                if (substr($f, 0, 1) == ".") continue;
+                $files[] = $f;
+            }
+        }
+        return $files;
     }
 
 

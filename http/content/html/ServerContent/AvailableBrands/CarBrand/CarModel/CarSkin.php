@@ -42,6 +42,11 @@ class CarSkin extends \core\HtmlContent {
                 $this->CurrentCarSkin->saveName($skin_name);
                 $this->CurrentCarSkin->saveNumber($skin_number);
                 $html .= $this->getHtmlCarSkin();
+
+                // upload file
+                if (array_key_exists("CarSkinFile", $_FILES) && strlen($_FILES['CarSkinFile']['name']) > 0) {
+                    $this->CurrentCarSkin->addUploadedFile($_FILES['CarSkinFile']['tmp_name'], $_FILES['CarSkinFile']['name']);
+                }
             }
 
         // create new carskin
@@ -85,7 +90,7 @@ class CarSkin extends \core\HtmlContent {
         $html .= "<h1>" . $s->name() . "</h1>";
 
         if ($this->CanEditSkin) {
-            $html .= $this->newHtmlForm("POST");
+            $html .= $this->newHtmlForm("POST", "", TRUE);
             $html .= "<input type=\"hidden\" name=\"Id\" value=\"{$this->CurrentCarSkin->id()}\">";
         }
 
@@ -136,12 +141,29 @@ class CarSkin extends \core\HtmlContent {
         if ($this->CurrentCarSkin->owner() !== NULL) {
             $html .= "<h1>" . _("Files") . "</h1>";
 
-            //! @todo: Not needed to upload ui_skin.json!
+            // list existing files
+            $html .= "<table>";
+            $html .= "<tr>";
+            $html .= "<th>" . _("File") . "</th>";
+            $html .= "</tr>";
+            foreach ($this->CurrentCarSkin->files() as $f) {
+                $html .= "<tr>";
+                $html .= "<td>{$f}</td>";
+                $html .= "</tr>";
+            }
+            $html .= "</table>";
+
+            // upload new file
+            $html .= "<p>";
+            $html .= _("For upload only *.dds files, 'livery.png' and 'preview.jpg' are allowed. The 'ui_skin.json' is not automatically generated.");
+            $html .= "</p>";
+            $html .= "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"52428800\" />";
+            $html .= "<input type=\"file\" name=\"CarSkinFile\"><br>";
         }
 
 
         if ($this->CanEditSkin) {
-            $html .= "<button type=\"submit\" name=\"Action\" value=\"Save\">" . _("Save Skin") . "</button>";
+            $html .= "<br><button type=\"submit\" name=\"Action\" value=\"Save\">" . _("Save Skin") . "</button>";
             $html .= "</form>";
         }
 

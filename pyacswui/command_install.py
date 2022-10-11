@@ -255,6 +255,12 @@ class CommandInstall(Command):
             Verbosity(Verbosity(verb)).print("mkdirs " + path_htcache_rwc)
             self.mkdirs(path_htcache_rwc)
 
+        # htcache/owned_skins
+        path_htcache_owned_skins = os.path.join(path_data, "htcache", "owned_skins")
+        if not os.path.isdir(path_htcache_owned_skins):
+            Verbosity(Verbosity(verb)).print("mkdirs " + path_htcache_owned_skins)
+            self.mkdirs(path_htcache_owned_skins)
+
         # common config directory
         path_data_acswui_config = os.path.join(path_data, "acswui_config")
         self.mkdirs(path_data_acswui_config)
