@@ -114,6 +114,33 @@ class CarSkin extends DbEntry {
     }
 
 
+    /**
+     * Deletes a previously uploadedfile from the skin
+     * @param $file_name The target filename eg. "preview.png"
+     * @return True on success
+     */
+    public function deleteUploadedFile(string $file_name) : bool {
+
+        // security check
+        $file_name = trim($file_name);
+        $file_exists = False;
+        foreach ($this->files() as $f) {
+            if ($f === $file_name) {
+                $file_exists = True;
+                break;
+            }
+        }
+        if (!$file_exists) {
+            \Core\Log::warning("Prevent deleting non-existing file '$file_name'!");
+            return False;
+        }
+
+        // delete
+        $file_path = \Core\Config::AbsPathData . "/htcache/owned_skins/{$this->skin()}/$file_name";
+        return unlink($file_path);
+    }
+
+
     //! @return TRUE when this skin is deprecated
     public function deprecated() {
         if ($this->Deprecated === NULL)

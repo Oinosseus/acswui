@@ -41,12 +41,22 @@ class CarSkin extends \core\HtmlContent {
                 // save values
                 $this->CurrentCarSkin->saveName($skin_name);
                 $this->CurrentCarSkin->saveNumber($skin_number);
-                $html .= $this->getHtmlCarSkin();
+
+                // delete files
+                $file_count = count($this->CurrentCarSkin->files());
+                for ($i=0; $i<$file_count; ++$i) {
+                    if (array_key_exists("CarkSkinDeleteFileNr$i", $_POST)) {
+                        $this->CurrentCarSkin->deleteUploadedFile($_POST["CarkSkinDeleteFileName$i"]);
+                    }
+                }
 
                 // upload file
                 if (array_key_exists("CarSkinFile", $_FILES) && strlen($_FILES['CarSkinFile']['name']) > 0) {
                     $this->CurrentCarSkin->addUploadedFile($_FILES['CarSkinFile']['tmp_name'], $_FILES['CarSkinFile']['name']);
                 }
+
+                // show carskin
+                $html .= $this->getHtmlCarSkin();
             }
 
         // create new carskin
@@ -146,10 +156,13 @@ class CarSkin extends \core\HtmlContent {
             $html .= "<tr>";
             $html .= "<th>" . _("File") . "</th>";
             $html .= "</tr>";
+            $file_delete_index = 0;
             foreach ($this->CurrentCarSkin->files() as $f) {
                 $html .= "<tr>";
                 $html .= "<td>{$f}</td>";
-                $html .= "</tr>";
+                $html .= "<td>" . $this->newHtmlTableRowDeleteCheckbox("CarkSkinDeleteFileNr$file_delete_index") . "</td>";;
+                $html .= "<input type=\"hidden\" name=\"CarkSkinDeleteFileName$file_delete_index\" value=\"$f\">";
+                ++$file_delete_index;
             }
             $html .= "</table>";
 
