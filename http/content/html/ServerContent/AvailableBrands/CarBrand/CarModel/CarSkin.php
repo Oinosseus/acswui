@@ -70,8 +70,7 @@ class CarSkin extends \core\HtmlContent {
                     \Core\Log::warning("User ID '" . \Core\UserManager::currentUser()->id() . "' prevented from creating skin for non-exisiting car ID '$car_id'!");
                 } else {
                     $this->CurrentCarSkin = \DbEntry\CarSkin::createNew($car, \Core\UserManager::currentUser());
-                    $this->CanEditSkin = $this->CanCreateSkin && $this->CurrentCarSkin->owner() == \Core\UserManager::currentUser();
-                    $html .= $this->getHtmlCarSkin();
+                    $this->reload(['Id'=>$this->CurrentCarSkin->id()]);  // reload page to prevent resubmission of form
                 }
             }
 

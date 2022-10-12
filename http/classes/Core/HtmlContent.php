@@ -392,6 +392,17 @@ abstract class HtmlContent {
 
 
     /**
+     * Causes a reload of the page with optional GET parameters
+     * This can be used after executing a submitted form to prevent re-submission when user refreshes the page.
+     */
+    public function reload(array $get_vars = array()) {
+        header('Location: ' . $this->url($get_vars));
+        exit();
+    }
+
+
+
+    /**
      * Require for the content that the current user has a certain permission.
      * If the user does not have the permission, a 403 page is shown
      * @param $permission The required permission
