@@ -537,9 +537,11 @@ class CarClass extends DbEntry {
         if ($this->Teams === NULL) {
             $this->Teams = array();
             $car_ids = implode(" OR Car = ", $this->validCarIds());
-            $query = "SELECT DISTINCT Team FROM CarSkins WHERE Steam64GUID !='' AND Deprecated = 0 AND (Car = $car_ids)";
-            foreach (\Core\Database::fetchRaw($query) as $row) {
-                $this->Teams[] = Team::fromId($row['Team']);
+            if (strlen($car_ids) > 0) {
+                $query = "SELECT DISTINCT Team FROM CarSkins WHERE Steam64GUID !='' AND Deprecated = 0 AND (Car = $car_ids)";
+                foreach (\Core\Database::fetchRaw($query) as $row) {
+                    $this->Teams[] = Team::fromId($row['Team']);
+                }
             }
         }
         return $this->Teams;
