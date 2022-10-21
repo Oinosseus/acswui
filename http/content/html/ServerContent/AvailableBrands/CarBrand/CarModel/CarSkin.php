@@ -28,7 +28,7 @@ class CarSkin extends \core\HtmlContent {
         }
 
         // save car skin changes
-        if (array_key_exists("Action", $_POST) && $_POST['Action'] == "Save") {
+        if (array_key_exists("Action", $_POST) && ($_POST['Action'] == "Save" || $_POST['Action'] == "SaveAndRegister")) {
             if ($this->CurrentCarSkin === NULL) {
                 \Core\Log::warning("Cannot edit undefined CarSkin by user" . \Core\UserManager::currentUser()->id() . "!");
             } else if (!$this->CanEditSkin) {
@@ -54,13 +54,16 @@ class CarSkin extends \core\HtmlContent {
                 if (array_key_exists("CarSkinFile", $_FILES) && strlen($_FILES['CarSkinFile']['name']) > 0) {
                     $this->CurrentCarSkin->addUploadedFile($_FILES['CarSkinFile']['tmp_name'], $_FILES['CarSkinFile']['name']);
                 }
-
-                // show carskin
-                $html .= $this->getHtmlCarSkin();
             }
+        }
+
+        // request registration
+        if (array_key_exists("Action", $_POST) && $_POST['Action'] == "SaveAndRegister") {
+            if ($this->CurrentCarSkin) $this->CurrentCarSkin->requestRegistration();
+        }
 
         // create new carskin
-        } else if (array_key_exists("CreateNewCarSkin", $_REQUEST)) {
+        if (array_key_exists("CreateNewCarSkin", $_REQUEST)) {
             if ($this->CanCreateSkin !== TRUE) {
                 \Core\Log::warning("User ID '" . \Core\UserManager::currentUser()->id() . "' is not permitted to create new car skins!");
             } else {
@@ -73,10 +76,11 @@ class CarSkin extends \core\HtmlContent {
                     $this->reload(['Id'=>$this->CurrentCarSkin->id()]);  // reload page to prevent resubmission of form
                 }
             }
+        }
 
-        } else if ($this->CurrentCarSkin !== NULL) {
+        // show carskin
+        if ($this->CurrentCarSkin !== NULL) {
             $html .= $this->getHtmlCarSkin();
-
         } else {
             \Core\Log::warning("No Id parameter given!");
         }
@@ -138,6 +142,7 @@ class CarSkin extends \core\HtmlContent {
         $path = "content/cars/" . $s->car()->model() . "/skins/" . $s->skin();
         $html .= "<tr><th>AC-Directory</th><td>$path</td></tr>";
         $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($s->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
+        $html .= "<tr><th>" . _("Registration Info") . "</th><td>" . $s->registrationInfo() . "</td></tr>";
         $html .= "</table>";
 
         $html .= "<br id=\"CarSkinImageBreak\">";
@@ -167,7 +172,7 @@ class CarSkin extends \core\HtmlContent {
 
             // upload new file
             $html .= "<p>";
-            $html .= _("For upload only *.dds files, 'livery.png' and 'preview.jpg' are allowed. The 'ui_skin.json' is not automatically generated.");
+            $html .= _("For upload only '*.dds' files, 'livery.png' and 'preview.jpg' are allowed. The 'ui_skin.json' is automatically generated.");
             $html .= "</p>";
             $html .= "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"52428800\" />";
             $html .= "<input type=\"file\" name=\"CarSkinFile\"><br>";
@@ -175,7 +180,15 @@ class CarSkin extends \core\HtmlContent {
 
 
         if ($this->CanEditSkin) {
-            $html .= "<br><button type=\"submit\" name=\"Action\" value=\"Save\">" . _("Save Skin") . "</button>";
+            $html .= "<br><button type=\"submit\" name=\"Action\" value=\"Save\">" . _("Save") . "</button>";
+
+            $files = $this->CurrentCarSkin->files();
+            if (count($files)>=3 &&
+                in_array("preview.jpg", $files) &&
+                in_array("livery.png", $files) &&
+                $this->CurrentCarSkin->registrationStatus() != \Enums\CarSkinRegistrationStatus::Pending) {
+                $html .= "<br><br><button type=\"submit\" name=\"Action\" value=\"SaveAndRegister\">" . _("Save and Request Car Registration") . "</button>";
+            }
             $html .= "</form>";
         }
 
