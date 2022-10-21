@@ -44,6 +44,18 @@ setlocale(LC_ALL, $lang);
 bindtextdomain("acswui", "./locale");
 textdomain("acswui");
 
+// check for requested page before login
+if (\Core\UserManager::loggedUser() === NULL) {
+    $url = ($_SERVER['HTTPS'] == "on") ? "https://" : "http://";
+    $url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $_SESSION['ACswuiUnloggedUrlRequest'] = $url;
+} else if (array_key_exists("ACswuiUnloggedUrlRequest", $_SESSION)) {
+    // forward to original requested URL before login
+    $url = $_SESSION['ACswuiUnloggedUrlRequest'];
+    unset($_SESSION['ACswuiUnloggedUrlRequest']);
+    header("Location: $url");
+}
+
 // Setup template
 if (array_key_exists("JsonContent", $_GET)) {
     echo \Core\JsonContent::getContent();

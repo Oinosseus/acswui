@@ -130,7 +130,19 @@ abstract class HtmlContent {
             $html .= $this->getHtml();
 
         if (!$this->permitted()) {
-            $html = "403 Not Permitted!";
+
+            // user is not permitted
+            if (\Core\UserManager::loggedUser() !== NULL) {
+                $u = \Core\UserManager::loggedUser();
+                \Core\Log::warning("User '{$u->id()}' navigated unpermitted content '{$_SERVER['REQUEST_URI']}'");
+                $html = "Not Permitted!";
+
+            // user is maybe permitted but not logged in
+            } else {
+                $html .= _("You need to login to view this page.") . "<br>";
+                $html .= _("Login via Steam") . "<br>";
+                $html .= \Core\UserManager::htmlLogInOut();
+            }
         }
 
         return $html;
