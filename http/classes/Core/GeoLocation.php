@@ -26,16 +26,18 @@ class GeoLocation {
      */
     public static function float2string(float $value) : string {
 
-        $degree = $value % 60;
+        $degree = ((int) $value) % 90;
         $value -= $degree;
 
         $value *= 60;
-        $minutes = $value % 60;
+        $minutes = ((int) $value) % 60;
         $value -= $minutes;
 
-        $seconds = $value;
+        $value *= 60;
+        $seconds = round($value);
+        //! @todo This calculation needs to be checked again!
 
-        return sprintf("%d°%d'%0.1f\"", $degree, $minutes, $seconds);
+        return sprintf("%d°%d'%d\"", $degree, $minutes, $seconds);
     }
 
 
