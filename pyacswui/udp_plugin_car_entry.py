@@ -274,6 +274,13 @@ class UdpPluginCarEntry(object):
             fields['Speed'] = speed
             self.__db.insertRow("CollisionEnv", fields)
 
+
+        # catch situation where AC inform about a collision
+        # but the driver has disconnected before
+        # (this has happened: two seconds after a driver has disconnected, AC informed about a crash with this driver :-(
+        elif other_car_entry.DriverId is None:
+            pass
+
         # collision with other car
         else:
             #self.__verbosity2.print("Collision of car ", self.__id,
