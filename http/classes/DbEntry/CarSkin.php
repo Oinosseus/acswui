@@ -101,14 +101,14 @@ class CarSkin extends DbEntry {
                                       \DbEntry\User $owner) {
         $columns = array();
         $columns['Car'] = $car->id();
-        $columns['Deprecated'] = 0;
+        $columns['Deprecated'] = 1;
         $columns['Number'] = 9999;
         $columns['Name'] = $owner->name();
         $columns['Owner'] = $owner->id();
         $id = \Core\Database::insert("CarSkins", $columns);
 
         // update skin path name
-        $skin_path_name = "acswui_{$owner->id()}_{$id}_" . bin2hex(random_bytes(2)) . "_v0";
+        $skin_path_name = "acswui_{$owner->id()}_{$id}_" . bin2hex(random_bytes(2));
         \Core\Database::update("CarSkins", $id, ["Skin"=>$skin_path_name]);
 
         return CarSkin::fromId($id);
@@ -266,18 +266,6 @@ class CarSkin extends DbEntry {
         } else {
             return $this->loadColumn("RegistrationInfo");
         }
-    }
-
-
-    //! @return The current status of the carskin registration
-    public function registrationStatus() : \Enums\CarSkinRegistrationStatus {
-        return \Enums\CarSkinRegistrationStatus::from($this->loadColumn('RegistrationStatus'));
-    }
-
-
-    //! Request to (re)-register this carskin
-    public function requestRegistration() {
-        $this->storeColumns(['RegistrationStatus'=>\Enums\CarSkinRegistrationStatus::Pending->value]);
     }
 
 

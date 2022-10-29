@@ -50,6 +50,14 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt("Weathers", "Parent")
         self.__db.appendColumnText("Weathers", "ParameterData")
 
+        # check table CarSkinRegistrations
+        Verbosity(verb).print("check database table `CarSkinRegistrations`")
+        self.__db.appendTable("CarSkinRegistrations")
+        self.__db.appendColumnUInt("CarSkinRegistrations", "CarSkin")
+        self.__db.appendColumnCurrentTimestamp("CarSkinRegistrations", "Requested")
+        self.__db.appendColumnTimestamp("CarSkinRegistrations", "Processed")
+        self.__db.appendColumnText("CarSkinRegistrations", "Info")
+
 
 
     def _tables_mustard(self):
@@ -184,8 +192,6 @@ class InstallerDatabase(object):
         self.__db.appendColumnString("CarSkins", "Number", 20)
         self.__db.appendColumnString("CarSkins", "Name", 80)
         self.__db.appendColumnUInt("CarSkins", "Owner")
-        self.__db.appendColumnInt("CarSkins", "RegistrationStatus")
-        self.__db.appendColumnText("CarSkins", "RegistrationInfo")
 
 
 

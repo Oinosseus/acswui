@@ -538,6 +538,8 @@ class CommandInstall(Command):
         paths.append(os.path.join(abspath_data, "real_penalty"))
         paths.append(os.path.join(abspath_data, "acswui_udp_plugin"))
         paths.append(os.path.join(abspath_htdata, "realtime"))
+        paths.append(os.path.join(abspath_htdata, "content"))
+        paths.append(os.path.join(abspath_htdata, "htmlimg", "car_skins"))
         for path in paths:
             cmd = ["chmod", "-R", "g+w", path]
             Verbosity(verb).print(" ".join(cmd))

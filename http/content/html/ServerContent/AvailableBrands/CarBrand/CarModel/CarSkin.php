@@ -59,7 +59,10 @@ class CarSkin extends \core\HtmlContent {
 
         // request registration
         if (array_key_exists("Action", $_POST) && $_POST['Action'] == "SaveAndRegister") {
-            if ($this->CurrentCarSkin) $this->CurrentCarSkin->requestRegistration();
+            if ($this->CurrentCarSkin) {
+                \DbEntry\CarSkinRegistration::create($this->CurrentCarSkin);
+                $this->reload(['Id'=>$this->CurrentCarSkin->id()]);  // reload page to prevent resubmission of form
+            }
         }
 
         // create new carskin
@@ -142,7 +145,6 @@ class CarSkin extends \core\HtmlContent {
         $path = "content/cars/" . $s->car()->model() . "/skins/" . $s->skin();
         $html .= "<tr><th>AC-Directory</th><td>$path</td></tr>";
         $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($s->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
-        $html .= "<tr><th>" . _("Registration Info") . "</th><td>" . $s->registrationInfo() . "</td></tr>";
         $html .= "</table>";
 
         $html .= "<br id=\"CarSkinImageBreak\">";
@@ -186,7 +188,7 @@ class CarSkin extends \core\HtmlContent {
             if (count($files)>=3 &&
                 in_array("preview.jpg", $files) &&
                 in_array("livery.png", $files) &&
-                $this->CurrentCarSkin->registrationStatus() != \Enums\CarSkinRegistrationStatus::Pending) {
+                \DbEntry\CarSkinRegistration::fromCarSkinPending($this->CurrentCarSkin) === NULL) {
                 $html .= "<br><br><button type=\"submit\" name=\"Action\" value=\"SaveAndRegister\">" . _("Save and Request Car Registration") . "</button>";
             }
             $html .= "</form>";

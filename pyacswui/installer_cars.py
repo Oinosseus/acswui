@@ -38,7 +38,7 @@ class InstallerCars(object) :
 
         # generate preview images for \DbEntry\ClarSkin::htmlImg()
         self._verbosity.print("generate htmlImg's")
-        query = "SELECT CarSkins.Id, CarSkins.Skin, Cars.Car FROM `CarSkins` JOIN Cars ON Cars.Id = CarSkins.Car ORDER BY CarSkins.Id DESC"
+        query = "SELECT CarSkins.Id, CarSkins.Skin, Cars.Car FROM `CarSkins` JOIN Cars ON Cars.Id = CarSkins.Car WHERE Owner=0 ORDER BY CarSkins.Id DESC"
         res = self.__db.rawQuery(query, return_result=True)
         for skin_id, skin_name, car_model in res:
             self._generateHtmlImgs(skin_id, skin_name, car_model)
