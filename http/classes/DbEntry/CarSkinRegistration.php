@@ -138,6 +138,23 @@ class CarSkinRegistration extends DbEntry {
     }
 
 
+    //! @return The name of the skin package
+    public function packagedFileName() : string {
+        return "{$this->carSkin()->skin()}_{$this->id()}.7z";
+    }
+
+
+    /**
+     * @param $existing_only If TRUE (default) NULL will be returned, if the packaged file does not exist.
+     * @return The full qualified file path to the packaged skin
+     */
+    public function packagedFilePath($existing_only = TRUE) {
+        $path = \Core\Config::AbsPathHtdata . "/owned_carskin_packages/{$this->packagedFileName()}";
+        if (!$existing_only) return $path;
+        return (is_file($path)) ? $path : NULL;
+    }
+
+
     //! @return A DateTime object of when the registration has been processed
     public function processed() : \DateTime {
         $t = $this->loadColumn("Processed");
@@ -312,7 +329,7 @@ class CarSkinRegistration extends DbEntry {
         }
 
         // pack
-        $package_file_name = "{$cs->skin()}_{$this->id()}.7z";
+        $package_file_name = $this->packagedFileName();
         $cmd = "7z a \"$package_temp_dir/$package_file_name\" \"$package_temp_dir/*\"";
         $cmd_output = array();
         $cmd_return = 0;
@@ -324,7 +341,7 @@ class CarSkinRegistration extends DbEntry {
 
         // move packaged file
         $src = $package_temp_dir . "/" . $package_file_name;
-        $dst = \Core\Config::AbsPathHtdata . "/owned_carskin_packages/$package_file_name";
+        $dst = $this->packagedFilePath(FALSE);
         if (rename($src, $dst) !== TRUE) {
             \Core\Log::error("Could not move '$src' to '$dst'");
             $this->processRegistrationAddInfo(_("Registration failed because of internal error") . "\n");

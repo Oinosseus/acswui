@@ -67,11 +67,7 @@ class EntryListItem {
             fwrite($f, "GUID={$this->User->steam64GUID()}\n");
         }
 
-        if ($this->CarSkin->steam64GUID() == "") {
-            fwrite($f, "TEAM=\n");
-        } else {
-            fwrite($f, "TEAM={$this->CarSkin->team()->id()}\n");
-        }
+        fwrite($f, "TEAM=\n");
 
         fwrite($f, "BALLAST={$this->Ballast}\n");
         fwrite($f, "RESTRICTOR={$this->Restrictor}\n");

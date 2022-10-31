@@ -360,7 +360,8 @@ class ServerSlot {
         $this->writeAcServerCfg($track, $car_class, $preset, $el, $map_ballast);
 
         // configure ac-server-wrapper
-        $this->writeAcServerWrapperParams($preset);
+        $this->writeAcServerWrapperParams();
+        $this->writeAcServerWrapperCmContent($el);
 
         // lunch server with plugins
         $ac_server = \Core\Config::AbsPathData . "/acserver/acServer$id";
@@ -709,7 +710,7 @@ class ServerSlot {
 
 
 
-    private function writeAcServerWrapperParams(\DbEntry\ServerPreset $preset) {
+    private function writeAcServerWrapperParams() {
         $pc = $this->parameterCollection();
 
         $data_array = array();
@@ -718,11 +719,66 @@ class ServerSlot {
         $data_array['verboseLog'] = TRUE;
         $data_array['downloadSpeedLimit'] = $pc->child("AcServerWrapperDwnldSpdLim")->value() * 1e3;
         $data_array['downloadPasswordOnly'] = $pc->child("AcServerWrapperDwnldPassOnly")->value();
-        $data_array['publishPasswordChecksum'] = TRUE;
+        $data_array['publishPasswordChecksum'] = $pc->child("AcServerWrapperDwnldPassOnly")->value();
 
         // write to file
-        $data_json = json_encode($data_array);
+        $data_json = json_encode($data_array,  JSON_PRETTY_PRINT);
         $file_path = \Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/cm_wrapper_params.json";
+        $f = fopen($file_path, 'w');
+        if ($f === FALSE) {
+            \Core\Log::error("Cannot write to file '$file_path'!");
+            return;
+        }
+        fwrite($f, $data_json);
+        fclose($f);
+    }
+
+
+    private function writeAcServerWrapperCmContent(\Core\EntryList $el) {
+        $cm_content_dir = \Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/cm_content";
+
+        // clear old content
+        \Core\Helper::cleandir($cm_content_dir);
+
+        // prepare data for content.json
+        $data_array = array();
+        $data_array['cars'] = array();
+        foreach ($el->entries() as $eli) {
+
+
+            // add car
+            $car_model = $eli->carSkin()->car()->model();
+            if (!array_key_exists($car_model, $data_array['cars'])) {
+                $data_array['cars'][$car_model] = array();
+                $data_array['cars'][$car_model]['skins'] = array();
+            }
+
+            // add skin
+            $skin = $eli->carSkin()->skin();
+            if (!array_key_exists($car_model, $data_array['cars'][$car_model]['skins'])) {
+                $data_array['cars'][$car_model]['skins'][$skin] = array();
+            }
+
+            // check if skin is packaged
+            $csr = \DbEntry\CarSkinRegistration::fromCarSkinLatest($eli->CarSkin());
+            if ($csr) {
+                $package_path = $csr->packagedFilePath();
+                if ($package_path) {
+                    $dst = "$cm_content_dir/{$csr->packagedFileName()}";
+                    $succ = copy($package_path, $dst);
+                    if ($succ === FALSE) {
+                        \Core\Log::error("Failed to copy '$package_path' to '$dst'");
+                    } else {
+                        $data_array['cars'][$car_model]['skins'][$skin]['file'] = $csr->packagedFileName();
+                        $data_array['cars'][$car_model]['skins'][$skin]['version'] = $csr->id();
+                    }
+                }
+            }
+        }
+
+        // write content.json to file
+        $data_json = json_encode($data_array,  JSON_PRETTY_PRINT);
+        $file_path = "$cm_content_dir/content.json";
         $f = fopen($file_path, 'w');
         if ($f === FALSE) {
             \Core\Log::error("Cannot write to file '$file_path'!");
@@ -942,4 +998,17 @@ class ServerSlot {
 
         fclose($f);
     }
+
+
+    // private function writeCmWrapperParams() {
+    //     $id = $this->id();
+    //     // $pc = $this->parameterCollection();
+    //
+    //     $file_path = \Core\Config::AbsPathData . "/acserver/slot{$id}/cm_wrapper_params.json";
+    //     $f = fopen($file_path, 'w');
+    //     if ($f === FALSE) {
+    //         \Core\Log::error("Cannot write to file '$file_path'!");
+    //         return;
+    //     }
+    // }
 }
