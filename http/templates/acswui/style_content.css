@@ -45,26 +45,6 @@ main.CarModel div#CarModelTorquePowerChart {
 
 
 /******************************************************************************
-                                   CarSkin
- ******************************************************************************/
-
-main.CarSkin #BrandInfo {
-    display: block;
-    text-align: center;
-    margin-bottom: 2em;
-}
-
-main.CarSkin #BrandInfo > label {
-    font-weight: bold;
-    font-size: 5em;
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 0.5em;
-}
-
-
-
-/******************************************************************************
                                    TrackLocation
  ******************************************************************************/
 
@@ -109,8 +89,24 @@ main.CarModel #CarModelDescription {
                                    CarSkin
  ******************************************************************************/
 
+main.CarSkin #BrandInfo {
+    display: block;
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+main.CarSkin #BrandInfo > label {
+    font-weight: bold;
+    font-size: 5em;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 0.5em;
+}
+
+
 main.CarSkin #CarSkinInformation,
-main.CarSkin #CarSkinRevision {
+main.CarSkin #CarSkinRevision,
+main.CarSkin #CarSkinRegistrationInformation {
     display: inline-block;
     margin-right: 2em;
 }

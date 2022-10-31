@@ -261,6 +261,12 @@ class CommandInstall(Command):
             Verbosity(Verbosity(verb)).print("mkdirs " + path_htcache_owned_skins)
             self.mkdirs(path_htcache_owned_skins)
 
+        # htcache/owned_skin_registration_temp
+        path_htcache_owned_skin_registration_temp = os.path.join(path_data, "htcache", "owned_skin_registration_temp")
+        if not os.path.isdir(path_htcache_owned_skin_registration_temp):
+            Verbosity(Verbosity(verb)).print("mkdirs " + path_htcache_owned_skin_registration_temp)
+            self.mkdirs(path_htcache_owned_skin_registration_temp)
+
         # common config directory
         path_data_acswui_config = os.path.join(path_data, "acswui_config")
         self.mkdirs(path_data_acswui_config)
@@ -332,6 +338,12 @@ class CommandInstall(Command):
         if not os.path.isdir(path_flagpedia):
             Verbosity(Verbosity(verb)).print("mkdirs " + path_flagpedia)
             self.mkdirs(path_flagpedia)
+
+        # owned_carskin_packages
+        path_owned_carskin_packages = os.path.join(path_htdata, "owned_carskin_packages")
+        if not os.path.isdir(path_owned_carskin_packages):
+            Verbosity(Verbosity(verb)).print("mkdirs " + path_owned_carskin_packages)
+            self.mkdirs(path_owned_carskin_packages)
 
         verb = None
 
@@ -540,6 +552,7 @@ class CommandInstall(Command):
         paths.append(os.path.join(abspath_htdata, "realtime"))
         paths.append(os.path.join(abspath_htdata, "content"))
         paths.append(os.path.join(abspath_htdata, "htmlimg", "car_skins"))
+        paths.append(os.path.join(abspath_htdata, "owned_carskin_packages"))
         for path in paths:
             cmd = ["chmod", "-R", "g+w", path]
             Verbosity(verb).print(" ".join(cmd))

@@ -19,9 +19,40 @@ class CarSkinRegistration extends DbEntry {
 
 
 
+    /**
+     * Calculates a factor whcih can be applied to width and height to fit into a maximum width/heigt
+     *
+     * @param $width
+     * @param $height
+     * @param $max_width
+     * @param $max_height
+     * @param $overlap Set to FALSE (default) if the image shall fit completely, TRUE to fit shortest edge
+     * @return The factor to multiply width and height so that they fit into max width/height (can be greater than 1.0)
+     */
+    private function calculateImageRescaleFactor(int $width, int $height,
+                                                 int $max_width, int $max_height,
+                                                 bool $overlap = FALSE) : float {
+        $width_factor = $max_width / $width;
+        $height_factor = $max_height / $height;
+        $compare = ($overlap) ? ($width_factor > $height_factor) : ($width_factor < $height_factor);
+        $factor = ($compare) ? $width_factor : $height_factor;
+        return $factor;
+    }
+
+
     //! @return The according CarSkin object
     public function carSkin() : CarSkin {
         return CarSkin::fromId($this->loadColumn('CarSkin'));
+    }
+
+
+    /**
+     * Clears the registration temp directory and returns the path to the directory
+     * This directory is intended for preparing to package the skin
+     * @return The path to the registration temp directory
+     */
+    private function cleanRegistrationTemp() : string {
+
     }
 
 
@@ -67,6 +98,19 @@ class CarSkinRegistration extends DbEntry {
 
 
     /**
+     * Get the last available registration for a certain CarSkin
+     * @return A CarSkinRegistration object or NULL
+     */
+    public static function fromCarSkinLatest(CarSkin $carskin) : ?CarSkinRegistration {
+        $query = "SELECT Id FROM CarSkinRegistrations WHERE CarSkin = {$carskin->id()} ORDER BY Id DESC LIMIT 1;";
+        $res = \Core\Database::fetchRaw($query);
+        if (count($res) == 0) return NULL;
+        else return CarSkinRegistration::fromId($res[0]['Id']);
+    }
+
+
+
+    /**
      * Find current pending registration for a certain carskin
      * @param $carskin The requested CarSkin
      * @return A CarSkinRegistration object or NULL if no registration is pending
@@ -79,11 +123,25 @@ class CarSkinRegistration extends DbEntry {
     }
 
 
+
+    //! @return Information about the registration processing
+    public function info() : string {
+        return $this->loadColumn("Info");
+    }
+
+
     //! @return The CarSkinRegistration object that should be processed next (can be NULL)
     public static function nextRegistration2BProcessed() : ?CarSkinRegistration {
         $res = \Core\Database::fetchRaw("SELECT Id FROM CarSkinRegistrations WHERE Processed < Requested ORDER BY Id ASC LIMIT 1;");
         if (count($res) == 0) return NULL;
         return CarSkinRegistration::fromId($res[0]['Id']);
+    }
+
+
+    //! @return A DateTime object of when the registration has been processed
+    public function processed() : \DateTime {
+        $t = $this->loadColumn("Processed");
+        return new \DateTime($t);
     }
 
 
@@ -94,8 +152,7 @@ class CarSkinRegistration extends DbEntry {
     public function processRegistration() : bool {
 
         // define registration as processed
-        //! @todo: uncomment this
-        // $this->storeColumns(['Processed'=>\Core\Database::timestamp(new \DateTime("now"))]);
+        $this->storeColumns(['Processed'=>\Core\Database::timestamp(new \DateTime("now"))]);
         $this->storeColumns(['Info'=>""]);
 
         // check CarSkin
@@ -132,8 +189,32 @@ class CarSkinRegistration extends DbEntry {
             return FALSE;
         }
 
+        // clean temp dir
+        // clear before operation, this enables debugging afterwards
+        if ($this->processRegistrationClearTempDir() !== TRUE) {
+            return FALSE;
+        }
 
-        $this->processRegistrationAddInfo(_("Car Registered\n"));
+        // delete existing packages
+        $package_html_dir = \Core\Config::AbsPathHtdata . "/owned_carskin_packages";
+        $regex_pattern = "#{$this->carSkin()->skin()}.*\.7z#";
+        foreach (scandir($package_html_dir) as $f) {
+            if (preg_match($regex_pattern, $f) !== 1) continue;
+            if (unlink("$package_html_dir/$f") !== TRUE) {
+                \Core\Log::error("Cannot delete '$package_html_dir/$f'!");
+                $this->processRegistrationAddInfo(_("Registration failed because of internal error.") . "\n");
+                return FALSE;
+            }
+        }
+
+        // create package
+        if ($this->processRegistrationCreatePackage() !== TRUE) {
+            return FALSE;
+        }
+
+
+
+        $this->processRegistrationAddInfo(_("Car successfully registered\n"));
         return TRUE;
     }
 
@@ -142,6 +223,13 @@ class CarSkinRegistration extends DbEntry {
         $current_info = $this->loadColumn("Info");
         $current_info .= $info;
         $this->storeColumns(['Info'=>$current_info]);
+    }
+
+
+    private function processRegistrationClearTempDir() : bool {
+        $package_temp_dir = \Core\Config::AbsPathData . "/htcache/owned_skin_registration_temp";
+        \Core\Helper::cleandir($package_temp_dir);
+        return TRUE;
     }
 
 
@@ -177,25 +265,76 @@ class CarSkinRegistration extends DbEntry {
     }
 
 
-    /**
-     * Calculates a factor whcih can be applied to width and height to fit into a maximum width/heigt
-     *
-     * @param $width
-     * @param $height
-     * @param $max_width
-     * @param $max_height
-     * @param $overlap Set to FALSE (default) if the image shall fit completely, TRUE to fit shortest edge
-     * @return The factor to multiply width and height so that they fit into max width/height (can be greater than 1.0)
-     */
-    private function calculateImageRescaleFactor(int $width, int $height,
-                                                 int $max_width, int $max_height,
-                                                 bool $overlap = FALSE) : float {
-        $width_factor = $max_width / $width;
-        $height_factor = $max_height / $height;
-        $compare = ($overlap) ? ($width_factor > $height_factor) : ($width_factor < $height_factor);
-        $factor = ($compare) ? $width_factor : $height_factor;
-        return $factor;
+
+    private function processRegistrationCreatePackage() : bool {
+        $cs = $this->carSkin();
+
+        // create directories
+        $package_temp_dir = \Core\Config::AbsPathData . "/htcache/owned_skin_registration_temp";
+        $package_temp_dir_skin = $package_temp_dir . "/content/cars/{$cs->car()->model()}/skins/{$cs->skin()}";
+        if (mkdir($package_temp_dir_skin, 0775, TRUE) !== TRUE) {
+            \Core\Log::error("Could not create directory '$package_temp_dir_skin'!");
+            $this->processRegistrationAddInfo(_("Registration failed because of internal error") . "\n");
+            return FALSE;
+        }
+
+        // create ui_skin.json
+        $ui_skin = array();
+        $ui_skin['skinname'] = $cs->name();
+        if ($cs->owner() === NULL) {
+            \Core\Log::error("Owner is NULL for {$cs}");
+            $this->processRegistrationAddInfo(_("Registration failed because of internal error") . "\n");
+            return FALSE;
+        }
+        $ui_skin['drivername'] = $cs->owner()->name();
+        $country_key = $cs->owner()->getParam("UserCountry");
+        try {
+            $country_name = \Core\Config::Countries[$country_key];
+        } catch (\Exception $e) {
+            \Core\Log::warning("Country key '$country_key' is not known");
+            $country_name = "";
+        }
+        $ui_skin['country'] = $country_name;
+        //! @todo Retrieve tem name here, when new teams system is implemented
+        $ui_skin['team'] = "";
+        $ui_skin['number'] = $cs->number();
+        $fd = fopen($package_temp_dir_skin . "/ui_skin.json", "w");
+        fwrite($fd, json_encode($ui_skin, JSON_PRETTY_PRINT));
+        fwrite($fd, "\n");
+        fclose($fd);
+
+        // copy files
+        $skin_source_dir = \Core\Config::AbsPathData . "/htcache/owned_skins/{$cs->id()}";
+        foreach ($cs->files() as $f) {
+            $src = "{$skin_source_dir}/{$f}";
+            $dst = "{$package_temp_dir_skin}/{$f}";
+            copy($src, $dst);
+        }
+
+        // pack
+        $package_file_name = "{$cs->skin()}_{$this->id()}.7z";
+        $cmd = "7z a \"$package_temp_dir/$package_file_name\" \"$package_temp_dir/*\"";
+        $cmd_output = array();
+        $cmd_return = 0;
+        if (exec($cmd, $cmd_output, $cmd_return) === FALSE) {
+            \Core\Log::error("Could not execute '$cmd' return:\n" . implode("\n", $cmd_output));
+            $this->processRegistrationAddInfo(_("Registration failed because of internal error") . "\n");
+            return FALSE;
+        }
+
+        // move packaged file
+        $src = $package_temp_dir . "/" . $package_file_name;
+        $dst = \Core\Config::AbsPathHtdata . "/owned_carskin_packages/$package_file_name";
+        if (rename($src, $dst) !== TRUE) {
+            \Core\Log::error("Could not move '$src' to '$dst'");
+            $this->processRegistrationAddInfo(_("Registration failed because of internal error") . "\n");
+            return FALSE;
+        }
+
+
+        return TRUE;
     }
+
 
 
     private function processRegistrationHtmlImgs($skin_preview_src_file) : bool {
@@ -282,5 +421,12 @@ class CarSkinRegistration extends DbEntry {
 
 
         return TRUE;
+    }
+
+
+    //! @return A DateTime object of when the registration has been requested
+    public function requested() : \DateTime {
+        $t = $this->loadColumn("Requested");
+        return new \DateTime($t);
     }
 }

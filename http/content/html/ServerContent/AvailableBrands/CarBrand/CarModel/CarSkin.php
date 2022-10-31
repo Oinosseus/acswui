@@ -147,6 +147,29 @@ class CarSkin extends \core\HtmlContent {
         $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($s->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
         $html .= "</table>";
 
+
+        // registration information
+        $csr = \DbEntry\CarSkinRegistration::fromCarSkinLatest($this->CurrentCarSkin);
+        if ($csr !== NULL) {
+            $html .= "<table id=\"CarSkinRegistrationInformation\">";
+            $html .= "<caption>" . _("Registration Info") . "</caption>";
+
+            $html .= "<tr><th>" . _("Requested") . "</th><td>";
+            $html .= \Core\UserManager::currentUser()->formatDateTime($csr->requested());
+            $html .= "</td></tr>";
+
+            $html .= "<tr><th>" . _("Processed") . "</th><td>";
+            $html .= \Core\UserManager::currentUser()->formatDateTime($csr->processed());
+            $html .= "</td></tr>";
+
+            $html .= "<tr><th>" . _("Info") . "</th><td>";
+            $html .= $csr->info();
+            $html .= "</td></tr>";
+
+            $html .= "</table>";
+        }
+
+
         $html .= "<br id=\"CarSkinImageBreak\">";
 
         $html .= "<a id=\"SkinImgPreview\" href=\"" . $s->previewPath() . "\">";
