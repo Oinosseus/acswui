@@ -9,7 +9,6 @@ namespace DbEntry;
 class CarSkin extends DbEntry {
 
     private $Car = NULL;
-    private $Skin = NULL;
     private $Name = NULL;
     private $Number = NULL;
     private $Steam64GUID = NULL;
@@ -293,9 +292,18 @@ class CarSkin extends DbEntry {
     }
 
 
+
+    /**
+     * Change the skin direcotry name.
+     * This is intended to be used by CarSkinRegistration when registering owned carskins
+     */
+    public function setSkin(string $new_skin_identifier) {
+        $this->storeColumns(['Skin'=>$new_skin_identifier]);
+    }
+
+
     //! @return Name of the skin
     public function skin() {
-        if ($this->Skin === NULL) $this->Skin = $this->loadColumn("Skin");
-        return $this->Skin;
+        return $this->loadColumn("Skin");
     }
 }

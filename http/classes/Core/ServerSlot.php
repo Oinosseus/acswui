@@ -743,20 +743,13 @@ class ServerSlot {
         // prepare data for content.json
         $data_array = array();
         $data_array['cars'] = array();
+        $processed_car_skin_ids = array();
         foreach ($el->entries() as $eli) {
 
-
-            // add car
-            $car_model = $eli->carSkin()->car()->model();
-            if (!array_key_exists($car_model, $data_array['cars'])) {
-                $data_array['cars'][$car_model] = array();
-                $data_array['cars'][$car_model]['skins'] = array();
-            }
-
-            // add skin
-            $skin = $eli->carSkin()->skin();
-            if (!array_key_exists($car_model, $data_array['cars'][$car_model]['skins'])) {
-                $data_array['cars'][$car_model]['skins'][$skin] = array();
+            if (in_array($eli->CarSkin()->id(), $processed_car_skin_ids)) {
+                continue;
+            } else {
+                $processed_car_skin_ids[] = $eli->CarSkin()->id();
             }
 
             // check if skin is packaged
@@ -769,6 +762,20 @@ class ServerSlot {
                     if ($succ === FALSE) {
                         \Core\Log::error("Failed to copy '$package_path' to '$dst'");
                     } else {
+
+                        // add car
+                        $car_model = $eli->carSkin()->car()->model();
+                        if (!array_key_exists($car_model, $data_array['cars'])) {
+                            $data_array['cars'][$car_model] = array();
+                            $data_array['cars'][$car_model]['skins'] = array();
+                        }
+
+                        // add skin
+                        $skin = $eli->carSkin()->skin();
+                        if (!array_key_exists($car_model, $data_array['cars'][$car_model]['skins'])) {
+                            $data_array['cars'][$car_model]['skins'][$skin] = array();
+                        }
+
                         $data_array['cars'][$car_model]['skins'][$skin]['file'] = $csr->packagedFileName();
                         $data_array['cars'][$car_model]['skins'][$skin]['version'] = $csr->id();
                     }

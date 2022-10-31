@@ -168,6 +168,14 @@ class CarSkinRegistration extends DbEntry {
      */
     public function processRegistration() : bool {
 
+        // delete old data
+        $old_skin_dir = \Core\Config::AbsPathHtdata . "/content/cars/" . $this->carSkin()->car()->model() . "/skins/" . $this->carSkin()->skin();
+        \Core\Helper::rmdirs($old_skin_dir);
+
+        // update skin name (for ac-server-wrapper, to recognize updated skins)
+        $new_skin_name = "acswui_{$this->carSkin()->owner()->id()}_{$this->carSkin()->id()}_{$this->id()}";
+        $this->carSkin()->setSkin($new_skin_name);
+
         // define registration as processed
         $this->storeColumns(['Processed'=>\Core\Database::timestamp(new \DateTime("now"))]);
         $this->storeColumns(['Info'=>""]);
