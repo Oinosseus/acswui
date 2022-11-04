@@ -378,8 +378,6 @@ class Car extends DbEntry {
         if ($inculde_deprecated !== TRUE) $query .= " AND Deprecated = 0";
         if ($owner !== NULL) $query .= " AND Owner = {$owner->id()}";
 
-        echo "HERE $query<br>";
-
         $res = \core\Database::fetchRaw($query);
 
         // extract values

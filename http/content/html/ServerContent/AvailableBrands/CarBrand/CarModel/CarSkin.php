@@ -54,13 +54,16 @@ class CarSkin extends \core\HtmlContent {
                 if (array_key_exists("CarSkinFile", $_FILES) && strlen($_FILES['CarSkinFile']['name']) > 0) {
                     $this->CurrentCarSkin->addUploadedFile($_FILES['CarSkinFile']['tmp_name'], $_FILES['CarSkinFile']['name']);
                 }
-            }
-        }
 
-        // request registration
-        if (array_key_exists("Action", $_POST) && $_POST['Action'] == "SaveAndRegister") {
-            if ($this->CurrentCarSkin) {
-                \DbEntry\CarSkinRegistration::create($this->CurrentCarSkin);
+                // define skin as deprecated
+                $this->CurrentCarSkin->setDeprecated(True);
+
+                // request registration
+                if ($_POST['Action'] == "SaveAndRegister") {
+                    \DbEntry\CarSkinRegistration::create($this->CurrentCarSkin);
+                }
+
+                // refresh page
                 $this->reload(['Id'=>$this->CurrentCarSkin->id()]);  // reload page to prevent resubmission of form
             }
         }
