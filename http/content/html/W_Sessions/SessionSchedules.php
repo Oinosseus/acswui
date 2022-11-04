@@ -250,6 +250,9 @@ class SessionSchedules extends \core\HtmlContent {
                 // skip already occupied skins
                 if ($ss->carSkinOccupied($skin)) continue;
 
+                // skip owned skins
+                if ($skin->owner() && $skin->owner()->id() != \Core\UserManager::currentUser()->id()) continue;
+
                 // offer skin as radio button
                 $skin_img = $skin->html(FALSE, TRUE, TRUE);
                 $checked = FALSE;

@@ -127,6 +127,10 @@ class EntryList {
         foreach ($cc->cars() as $car) {
             $available_skins = array();
             foreach ($car->skins() as $cskin) {
+
+                // skip owned skins
+                if ($cskin->owner() !== NULL) continue;
+
                 if (!$this->containsCarSKin($cskin)) {
                     $available_skins[] = $cskin;
                 }
