@@ -11,7 +11,6 @@ class Car extends DbEntry {
     private $Model = NULL;
     private $Name = NULL;
     private $Brand = NULL;
-    private $Skins = NULL;
     private $Deprecated = NULL;
     private $Torque = NULL;
     private $TorqueCurve = NULL;
@@ -370,27 +369,27 @@ class Car extends DbEntry {
 
     /**
      * @param $inculde_deprecated If set to TRUE, also deprectaed skins are listed (Default: False)
+     * @param $owner If set, only cars which are owned by this user will be listed
      * @return A List of according CarSkin objects
      */
-    public function skins($inculde_deprecated=FALSE) {
+    public function skins($inculde_deprecated=FALSE, User $owner = NULL) {
 
-        // update cache
-        if ($this->Skins == NULL) {
+        $query = "SELECT Id FROM CarSkins WHERE Car = " . $this->id();
+        if ($inculde_deprecated !== TRUE) $query .= " AND Deprecated = 0";
+        if ($owner !== NULL) $query .= " AND Owner = {$owner->id()}";
 
-            $query = "SELECT Id FROM CarSkins WHERE Car = " . $this->id();
-            if ($inculde_deprecated !== TRUE) $query .= " AND Deprecated = 0";
+        echo "HERE $query<br>";
 
-            $res = \core\Database::fetchRaw($query);
+        $res = \core\Database::fetchRaw($query);
 
-            // extract values
-            $this->Skins = array();
-            foreach ($res as $row) {
-                $id = (int) $row['Id'];
-                $this->Skins[] = CarSkin::fromId($id);
-            }
+        // extract values
+        $skin_list = array();
+        foreach ($res as $row) {
+            $id = (int) $row['Id'];
+            $skin_list[] = CarSkin::fromId($id);
         }
 
-        return $this->Skins;
+        return $skin_list;
     }
 
 

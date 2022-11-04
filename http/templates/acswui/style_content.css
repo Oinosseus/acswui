@@ -20,6 +20,28 @@ main.CarBrand #BrandInfo > label {
 
 
 /******************************************************************************
+                                   TrackLocation
+ ******************************************************************************/
+
+main.TrackLocation a.TrackLink {
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+main.TrackLocation #TrackInfoGeneral,
+main.TrackLocation #TrackInfoGeoLocation {
+    display: inline-block;
+    margin-right: 2em;
+}
+
+main.TrackLocation #RealWeaterData td>img {
+    float:left;
+    height: 5em;
+}
+
+
+
+/******************************************************************************
                                    CarModel
  ******************************************************************************/
 
@@ -42,32 +64,6 @@ main.CarModel div#CarModelTorquePowerChart {
     display: inline-block;
 }
 
-
-
-/******************************************************************************
-                                   TrackLocation
- ******************************************************************************/
-
-main.TrackLocation a.TrackLink {
-    margin-right: 0.5em;
-    margin-bottom: 0.5em;
-}
-
-main.TrackLocation #TrackInfoGeneral,
-main.TrackLocation #TrackInfoGeoLocation {
-    display: inline-block;
-    margin-right: 2em;
-}
-
-main.TrackLocation #RealWeaterData td>img {
-    float:left;
-    height: 5em;
-}
-
-
-/******************************************************************************
-                                   CarModel
- ******************************************************************************/
 
 main.CarModel #CarModelInformation,
 main.CarModel #CarModelRevision,
