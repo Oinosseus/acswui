@@ -12,7 +12,6 @@ class CarSkin extends DbEntry {
     private $Name = NULL;
     private $Number = NULL;
     private $Steam64GUID = NULL;
-    private $Deprecated = NULL;
 
 
     /**
@@ -143,9 +142,7 @@ class CarSkin extends DbEntry {
 
     //! @return TRUE when this skin is deprecated
     public function deprecated() {
-        if ($this->Deprecated === NULL)
-            $this->Deprecated = ($this->loadColumn('Deprecated') == 0) ? FALSE : TRUE;
-        return $this->Deprecated;
+        return ($this->loadColumn('Deprecated') == 0) ? FALSE : TRUE;
     }
 
 
@@ -289,6 +286,16 @@ class CarSkin extends DbEntry {
 
         // save
         $this->storeColumns(['Number'=>$new_number]);
+    }
+
+
+    /**
+     * Declare this CarSKin as (not) deprecated.
+     * @param $deprecated If TRUE, this skin is set to deprecated (else to not-deprecated)
+     */
+    public function setDeprecated(bool $deprecated) {
+        $val = ($deprecated === TRUE) ? 1 : 0;
+        $this->storeColumns(['Deprecated'=>$val]);
     }
 
 

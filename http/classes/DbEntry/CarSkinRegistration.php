@@ -238,6 +238,9 @@ class CarSkinRegistration extends DbEntry {
         }
 
 
+        // set to not-deprecated
+        $this->carSkin()->setDeprecated(FALSE);
+
 
         $this->processRegistrationAddInfo(_("Car successfully registered\n"));
         return TRUE;
