@@ -177,7 +177,7 @@ class CarSkin extends \core\HtmlContent {
         $html .= "</a></div>";
 
         // files of the skin
-        if ($this->CurrentCarSkin->owner() !== NULL) {
+        if ($this->CanEditSkin) {
             $html .= "<h1>" . _("Files") . "</h1>";
 
             // list existing files
