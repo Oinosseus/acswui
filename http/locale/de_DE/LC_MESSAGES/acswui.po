@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-12 02:18+0200\n"
-"PO-Revision-Date: 2022-06-12 02:20+0200\n"
+"POT-Creation-Date: 2022-11-04 18:20+0100\n"
+"PO-Revision-Date: 2022-11-04 18:47+0100\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 22.04.1\n"
+"X-Generator: Lokalize 22.08.2\n"
 
 #: http/classes/Core/ACswui.php:33
 msgid "ACswui Settings"
@@ -494,11 +494,11 @@ msgstr "Einstellungen für die Fahrerwertung"
 #: http/classes/DbEntry/ServerPreset.php:363
 #: http/classes/DbEntry/ServerPreset.php:377
 #: http/classes/DbEntry/Weather.php:148
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:34
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:38
-#: http/content/html/B_User/Polls.php:173
-#: http/content/html/B_User/Polls.php:433
-#: http/content/html/T_Settings/ServerSlots.php:101
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:126
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:44
+#: http/content/html/B_User/Polls.php:216
+#: http/content/html/B_User/Polls.php:490
+#: http/content/html/T_Settings/ServerSlots.php:108
 #: http/content/html/W_Sessions/SessionLoops.php:154
 #: http/content/html/B_User.php:79
 msgid "Name"
@@ -544,7 +544,7 @@ msgstr "Ein beliebiger name für das Zeitplanelement"
 #: http/classes/Core/ACswui.php:191 http/classes/Core/Discord.php:55
 #: http/content/json/ListPopularCarClasses.php:21
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:14
-#: http/content/html/B_User/Polls.php:374
+#: http/content/html/B_User/Polls.php:424
 #: http/content/html/W_Sessions/SessionLoops.php:157
 #: http/content/html/W_Sessions.php:59
 msgid "Car Class"
@@ -557,7 +557,7 @@ msgstr "Die Fahrzeugklasse mit der gefahren wird"
 #: http/classes/Core/ACswui.php:192 http/classes/Core/Discord.php:56
 #: http/content/json/ListPopularTracks.php:21
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:8
-#: http/content/html/B_User/Polls.php:336
+#: http/content/html/B_User/Polls.php:379
 #: http/content/html/W_Sessions/SessionLoops.php:158
 msgid "Track"
 msgstr "Strecke"
@@ -608,7 +608,7 @@ msgstr "Wähle das Server-Preset für die Veranstaltung"
 
 #: http/classes/Core/ACswui.php:199 http/classes/Core/Discord.php:53
 #: http/classes/Core/ServerSlot.php:131
-#: http/content/html/T_Settings/ServerSlots.php:100
+#: http/content/html/T_Settings/ServerSlots.php:107
 #: http/content/html/W_Sessions/SessionOverview.php:254
 msgid "Server Slot"
 msgstr "Server Slot"
@@ -625,7 +625,8 @@ msgstr "Trainingsschleife"
 msgid "Setup a session loop for practice"
 msgstr "Eine Trainingsschleife aufsetzen"
 
-#: http/classes/Core/ACswui.php:202 http/classes/DbEntry/ServerPreset.php:555
+#: http/classes/Core/ACswui.php:202 http/classes/Core/ServerSlot.php:180
+#: http/classes/DbEntry/ServerPreset.php:555
 #: http/classes/DbEntry/ServerPreset.php:606
 #: http/content/html/W_Sessions/SessionLoops.php:153
 msgid "Enable"
@@ -811,20 +812,20 @@ msgstr "Einheiten"
 msgid "Setup preferred units for values"
 msgstr "Einstellungen für bevorzugte Einheiten"
 
-#: http/classes/Core/ACswui.php:261 http/classes/DbEntry/Car.php:256
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:41
+#: http/classes/Core/ACswui.php:261 http/classes/DbEntry/Car.php:255
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:47
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:149
 msgid "Power"
 msgstr "Leistung"
 
 #: http/classes/Core/ACswui.php:262
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:42
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:48
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:153
 msgid "Specific Power"
 msgstr "Spezifische Leistung"
 
 #: http/classes/Core/ACswui.php:263
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:39
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:45
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:150
 msgid "Weight"
 msgstr "Gewicht"
@@ -930,7 +931,8 @@ msgstr "Abstand"
 msgid "Logout"
 msgstr "Abmelden"
 
-#: http/classes/Core/UserManager.php:68 http/content/html/B_User.php:47
+#: http/classes/Core/UserManager.php:68 http/classes/Core/HtmlContent.php:143
+#: http/content/html/B_User.php:47
 msgid "Login via Steam"
 msgstr "Mit Steam einloggen"
 
@@ -966,16 +968,16 @@ msgstr "Sammlung von Server-Slot Einstellungen"
 msgid "acServer"
 msgstr "AC-Server"
 
-#: http/classes/Core/ServerSlot.php:137
+#: http/classes/Core/ServerSlot.php:137 http/classes/Core/ServerSlot.php:178
 msgid "Settings for the actual acServer"
 msgstr "Einstellungen für den eigentlichen Assetto-Corsa-Server"
 
-#: http/classes/Core/ServerSlot.php:140 http/classes/Core/ServerSlot.php:182
-#: http/content/html/B_User/Polls.php:430
+#: http/classes/Core/ServerSlot.php:140 http/classes/Core/ServerSlot.php:201
+#: http/content/html/B_User/Polls.php:487
 msgid "General Settings"
 msgstr "Allgemeine Einstellungen"
 
-#: http/classes/Core/ServerSlot.php:140 http/classes/Core/ServerSlot.php:182
+#: http/classes/Core/ServerSlot.php:140 http/classes/Core/ServerSlot.php:201
 msgid "General settings for Real Penalty"
 msgstr "Allgemeine Einstellungen für Real-Penalty"
 
@@ -983,7 +985,7 @@ msgstr "Allgemeine Einstellungen für Real-Penalty"
 msgid "An arbitrary name for the server (shown in lobby)"
 msgstr "Ein beliebiger Name für den Server (wird in der Lobby angezeigt)"
 
-#: http/classes/Core/ServerSlot.php:142 http/classes/Core/ServerSlot.php:188
+#: http/classes/Core/ServerSlot.php:142 http/classes/Core/ServerSlot.php:207
 msgid "Admin Passwort"
 msgstr "Administrator Passwort"
 
@@ -991,7 +993,7 @@ msgstr "Administrator Passwort"
 msgid "acServer admin passwort"
 msgstr "Assetto Corsa Server Administrator Passwort"
 
-#: http/classes/Core/ServerSlot.php:145 http/classes/Core/ServerSlot.php:210
+#: http/classes/Core/ServerSlot.php:145 http/classes/Core/ServerSlot.php:229
 msgid "Internet Ports"
 msgstr "Internet Ports"
 
@@ -1013,13 +1015,13 @@ msgid ""
 "firewall"
 msgstr "Lobby Port: Öffne beide (TCP/UDP) in deiner Server Firewall"
 
-#: http/classes/Core/ServerSlot.php:157 http/classes/Core/ServerSlot.php:199
-#: http/classes/Core/ServerSlot.php:223
+#: http/classes/Core/ServerSlot.php:157 http/classes/Core/ServerSlot.php:218
+#: http/classes/Core/ServerSlot.php:242
 msgid "Plugin Ports"
 msgstr "Plugin Ports"
 
-#: http/classes/Core/ServerSlot.php:157 http/classes/Core/ServerSlot.php:199
-#: http/classes/Core/ServerSlot.php:223
+#: http/classes/Core/ServerSlot.php:157 http/classes/Core/ServerSlot.php:218
+#: http/classes/Core/ServerSlot.php:242
 msgid "UDP plugin port settings"
 msgstr "UDP Plugin Port Einstellungen"
 
@@ -1065,27 +1067,73 @@ msgstr "Maximale Spieler"
 msgid "Max number of clients"
 msgstr "Maximale Anzahl an Spielern"
 
-#: http/classes/Core/ServerSlot.php:179
+#: http/classes/Core/ServerSlot.php:178
+msgid "AC Server Wrapper"
+msgstr "AC Server Wrapper"
+
+#: http/classes/Core/ServerSlot.php:180
+msgid ""
+"Use ac-server-wrapper to start AC sevrer (enables enhanced information when "
+"clients use content manager)"
+msgstr ""
+"Den AC-Server-Wrapper nutzen um den AC server zu starten (ermöglicht die"
+" Anzeige von zusätzlichen Information bei Benutzung des Content Managers)"
+
+#: http/classes/Core/ServerSlot.php:182
+msgid "HTTP port for AC Server Wrapper"
+msgstr "HTTP Port für den AC Server Wrapper"
+
+#: http/classes/Core/ServerSlot.php:186
+msgid "Download Limit"
+msgstr "Download Begrenzung"
+
+#: http/classes/Core/ServerSlot.php:186
+msgid ""
+"Limit download speed to keep online smooth. Set to 0 to avoid limiting. Just "
+"in case."
+msgstr ""
+"Download Geschwindigkeit begrenzen um den Server nicht zu stark zu belasten. "
+"Der Wert '0' deaktiviert die Begrenzung."
+
+#: http/classes/Core/ServerSlot.php:190
+msgid "Download Password"
+msgstr "Download Passwort"
+
+#: http/classes/Core/ServerSlot.php:190
+msgid "Do not allow to download content without a password (if set)."
+msgstr "Download von Inhalten ohne Password verbieten (wenn gesetzt)."
+
+#: http/classes/Core/ServerSlot.php:192
+#: http/classes/DbEntry/ServerPreset.php:301
+msgid "Welcome Message"
+msgstr "Willkommen-Nachricht"
+
+#: http/classes/Core/ServerSlot.php:192
+msgid ""
+"The introduction message that shall be shown at first (BBCode supported)"
+msgstr "Die Wilkommensnachricht, die zuerst angezeigt wird (BBCode support)"
+
+#: http/classes/Core/ServerSlot.php:198
 msgid "Real Penalty Plugin"
 msgstr "Real-Penalty Plugin"
 
-#: http/classes/Core/ServerSlot.php:179
+#: http/classes/Core/ServerSlot.php:198
 msgid "Settings for the Real Penalty plugin"
 msgstr "Einstellungen für das Real-Penalty-Plugin"
 
-#: http/classes/Core/ServerSlot.php:184
+#: http/classes/Core/ServerSlot.php:203
 msgid "Enable RP"
 msgstr "Aktiviere RP"
 
-#: http/classes/Core/ServerSlot.php:184
+#: http/classes/Core/ServerSlot.php:203
 msgid "Wheather to use Real Penalty for this slot or not"
 msgstr "Ob Real-Penalty für diesen Server-Slot verwendet werden soll."
 
-#: http/classes/Core/ServerSlot.php:186
+#: http/classes/Core/ServerSlot.php:205
 msgid "Product Key"
 msgstr "Produkt Schlüssel"
 
-#: http/classes/Core/ServerSlot.php:186
+#: http/classes/Core/ServerSlot.php:205
 msgid ""
 "Personal key, received after the Patreon subscription: https://www.patreon."
 "com/DavideBolognesi"
@@ -1093,15 +1141,15 @@ msgstr ""
 "Persönlicher Schlüssel, der nach Patreon Abbonnement erhalten wird: https://"
 "www.patreon.com/DavideBolognesi"
 
-#: http/classes/Core/ServerSlot.php:188
+#: http/classes/Core/ServerSlot.php:207
 msgid "Password only for app 'Real Penalty - admin'"
 msgstr "Passwort, nur für die 'Real Penalty - admin' App"
 
-#: http/classes/Core/ServerSlot.php:190
+#: http/classes/Core/ServerSlot.php:209
 msgid "First Check"
 msgstr "Erste Prüfung"
 
-#: http/classes/Core/ServerSlot.php:190
+#: http/classes/Core/ServerSlot.php:209
 msgid ""
 "Delay (seconds) after connection of new driver for the first check (app + "
 "sol). Default 5"
@@ -1109,51 +1157,55 @@ msgstr ""
 "Verzögerung (Sekunden) nachder bei neuen Fahrer:innen die App und SOL das "
 "erste mal geprüft wird."
 
-#: http/classes/Core/ServerSlot.php:194
+#: http/classes/Core/ServerSlot.php:213
 msgid "Check Frequency"
 msgstr "Überprüfungsfrequenz"
 
-#: http/classes/Core/ServerSlot.php:194
+#: http/classes/Core/ServerSlot.php:213
 msgid "Frequency (second) for APP, SOL and CSP check. Default 60"
 msgstr "Überprüfungsfrequenz (Sekunden) für die App, SOL und CSP."
 
-#: http/classes/Core/ServerSlot.php:201 http/classes/Core/ServerSlot.php:225
+#: http/classes/Core/ServerSlot.php:220 http/classes/Core/ServerSlot.php:244
 msgid "Local UDP port to communicate with the acServer"
 msgstr "Lokaler UDP Port um mit dem AC-Server zu kommunizieren"
 
-#: http/classes/Core/ServerSlot.php:205
+#: http/classes/Core/ServerSlot.php:224
 msgid "Remote UDP port for additional plugins"
 msgstr "Entfernter UDP Port für zusätzliche Plugins"
 
-#: http/classes/Core/ServerSlot.php:210
+#: http/classes/Core/ServerSlot.php:229
 msgid "Port settings open to the internet"
 msgstr "Einstellungen für offen Internet-Ports"
 
-#: http/classes/Core/ServerSlot.php:212
+#: http/classes/Core/ServerSlot.php:231
 msgid "UDP to communicate with RP client app"
 msgstr "UDP Port zur Kommunikation mit der RP Spieler-App"
 
-#: http/classes/Core/ServerSlot.php:220
+#: http/classes/Core/ServerSlot.php:239
 msgid "ACswui Plugin"
 msgstr "ACswui Plugin"
 
-#: http/classes/Core/ServerSlot.php:220
+#: http/classes/Core/ServerSlot.php:239
 msgid "Settings for the ACswui plugin"
 msgstr "Einstellungen für das ACswui Plugin"
 
-#: http/classes/Core/HtmlContent.php:321
+#: http/classes/Core/HtmlContent.php:142
+msgid "You need to login to view this page."
+msgstr "Du musst dich anmelden um diese Seite einzusehen."
+
+#: http/classes/Core/HtmlContent.php:336
 msgid "Delete Column Entry"
 msgstr "Spalte Löschen"
 
-#: http/classes/Core/HtmlContent.php:322
+#: http/classes/Core/HtmlContent.php:337
 msgid "Not Delete Column Entry"
 msgstr "Spalte nicht Löschen"
 
-#: http/classes/Core/HtmlContent.php:340
+#: http/classes/Core/HtmlContent.php:355
 msgid "Delete Row Entry"
 msgstr "Zeile Löschen"
 
-#: http/classes/Core/HtmlContent.php:341
+#: http/classes/Core/HtmlContent.php:356
 msgid "Not Delete Row Entry"
 msgstr "Zeile nicht Löschen"
 
@@ -1344,12 +1396,12 @@ msgid "Private"
 msgstr "Privat"
 
 #: http/classes/Parameter/ParamSpecialUserPowerSpecific.php:10
-msgid "SI-System [kg/W]"
-msgstr "SI-System [kg/W]"
-
-#: http/classes/Parameter/ParamSpecialUserPowerSpecific.php:11
 msgid "SI-System [W/kg]"
 msgstr "SI-System [W/kg]"
+
+#: http/classes/Parameter/ParamSpecialUserPowerSpecific.php:11
+msgid "SI-System [kg/W]"
+msgstr "SI-System [kg/W]"
 
 #: http/classes/Parameter/ParamSpecialUserPowerSpecific.php:12
 msgid "Old-Stylish [kg/PS]"
@@ -1880,10 +1932,6 @@ msgid "seconds of result screen between racing sessions."
 msgstr "Zeit (Sekunden) zwischen den Sessions um die Ergebnisse anzuzeigen."
 
 #: http/classes/DbEntry/ServerPreset.php:301
-msgid "Welcome Message"
-msgstr "Willkommen-Nachricht"
-
-#: http/classes/DbEntry/ServerPreset.php:301
 msgid "A textual message that is displayed to drivers when joining the server"
 msgstr ""
 "Eine Nachricht, die jedem Fahrer angezeigt wird, wenn er den Server betritt."
@@ -2011,8 +2059,8 @@ msgid ""
 "If activate, the weather presets are ignored and real weather data is used "
 "(CSP weather)."
 msgstr ""
-"Wenn aktiv, werden die Wetter Presets ignoriert und das tatsächliche Wetter"
-" wird verwendet (CSP Wetter)."
+"Wenn aktiv, werden die Wetter Presets ignoriert und das tatsächliche Wetter "
+"wird verwendet (CSP Wetter)."
 
 #: http/classes/DbEntry/ServerPreset.php:341
 #: http/content/html/W_Sessions.php:10
@@ -2176,6 +2224,7 @@ msgstr ""
 
 #: http/classes/DbEntry/ServerPreset.php:402
 #: http/classes/DbEntry/ServerPreset.php:450
+#: http/content/html/B_User/Polls.php:110
 msgid "No"
 msgstr "Nein"
 
@@ -2344,6 +2393,7 @@ msgstr ""
 "Wenn aktiv, haben die Reifen beim Start bereits die optimale Temperatur"
 
 #: http/classes/DbEntry/ServerPreset.php:451
+#: http/content/html/B_User/Polls.php:109
 msgid "Yes"
 msgstr "Ja"
 
@@ -2476,7 +2526,7 @@ msgid "Safety Car"
 msgstr "Safety Car"
 
 #: http/classes/DbEntry/ServerPreset.php:507
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:11
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:12
 msgid "Car Model"
 msgstr "Fahrzeugmodell"
 
@@ -2783,6 +2833,12 @@ msgid ""
 "it but receive time penalty! (Drive through = PENALTY_SECONDS, Stop & GO 10 "
 "= PENALTY_SECONDS + 10, .......)."
 msgstr ""
+"Wenn ein Fahrer eine Strafe in den letzten N Runden bekommt (N ="
+" LAPS_TO_TAKE_PENALTY + LAST_LAPS_WITHOUT_PENALTY), "
+"kann er weiterfahren ohne die Strafe zu verbüßen. Aber er bekommt eine"
+" Zeitstrafe angerechnet."
+"(Drive through = PENALTY_SECONDS, Stop & GO 10 = PENALTY_SECONDS + 10,"
+" .......)."
 
 #: http/classes/DbEntry/ServerPreset.php:605
 msgid "Cutting"
@@ -2837,7 +2893,7 @@ msgstr ""
 
 #: http/classes/DbEntry/ServerPreset.php:621
 msgid "Min Slowdown Ratio"
-msgstr ""
+msgstr "Minimales Entschleunigungsverhältnis"
 
 #: http/classes/DbEntry/ServerPreset.php:621
 #, php-format
@@ -2874,6 +2930,10 @@ msgid ""
 "last corner. Default 150 \n"
 "IMPORTAN! Adjust this value in according to the track and the cars!!!!!!!!!"
 msgstr ""
+"Geschwindigkeit auf der Sart- / Ziellinie in der Qualifikation, nachdem der"
+" Fahrer die letzte Kurve geschnitten hatte."
+"Standard: 150 (ACHTUNG: Der Wert muss an die Strecke und Fahrzeuge angepasst"
+" werden!)"
 
 #: http/classes/DbEntry/ServerPreset.php:630
 msgid "Qual Slowdown Ratio"
@@ -2898,6 +2958,11 @@ msgid ""
 "Set to 0 to have cutting checks similar to PLP (no check after re-entering "
 "the track)"
 msgstr ""
+"Bonus-Zeit nach Rückkehr auf die Strecke. Wenn die Geschwindig innerhalb"
+" dieser Zeit reduziert wird, wird kein Cut gewertet. "
+"Standardeinstellung ist '2'. \n"
+"Auf '0' setzen um Cuts ähnlich wie bei PLP zu prüfen (keine Prüfung nach"
+" Rückkehr auf die Strecke)."
 
 #: http/classes/DbEntry/ServerPreset.php:636
 #: http/classes/DbEntry/ServerPreset.php:675
@@ -3090,6 +3155,10 @@ msgstr "Ergebnis Anzeige"
 msgid "End"
 msgstr "Ende"
 
+#: http/classes/DbEntry/CarSkin.php:261
+msgid "waiting for registration ..."
+msgstr "Warte auf Anmeldung ..."
+
 #: http/classes/DbEntry/Weather.php:146
 msgid "Collection of weather settings"
 msgstr "Sammlung von Wettereinstellungen"
@@ -3194,19 +3263,53 @@ msgstr "Richtung Variation"
 msgid "variation (+ or -) of the base direction"
 msgstr "Variation der Windrichtung (+-) zur nominalen Windrichtung"
 
-#: http/classes/DbEntry/User.php:569
+#: http/classes/DbEntry/User.php:568
 msgid "Guest"
 msgstr "Gast"
 
-#: http/classes/DbEntry/Car.php:241
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:40
+#: http/classes/DbEntry/Car.php:240
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:46
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:148
 msgid "Torque"
 msgstr "Drehmoment"
 
-#: http/classes/DbEntry/Car.php:270
+#: http/classes/DbEntry/Car.php:269
 msgid "Revolutions"
 msgstr "Umdrehungen"
+
+#: http/classes/DbEntry/CarSkinRegistration.php:187
+#: http/classes/DbEntry/CarSkinRegistration.php:201
+#: http/classes/DbEntry/CarSkinRegistration.php:230
+msgid "Registration failed because of internal error."
+msgstr "Anmeldung schlug fehl, aufgrund eines internen Fehlers :-("
+
+#: http/classes/DbEntry/CarSkinRegistration.php:245
+msgid "Car successfully registered\n"
+msgstr "Fahrzeug erfolgreich angemeldet."
+
+#: http/classes/DbEntry/CarSkinRegistration.php:269
+msgid "Registration failed because 'preview.jpg' not found."
+msgstr "Anmeldung schlug fehl,  weil 'preview.jpg' nicht gefunden wurde."
+
+#: http/classes/DbEntry/CarSkinRegistration.php:275
+msgid "Registration failed because 'preview.jpg' cannot be read."
+msgstr ""
+"Anmeldung schlug fehl,  weil 'preview.jpg' nicht gelesen werden konnte."
+
+#: http/classes/DbEntry/CarSkinRegistration.php:281
+msgid "Registration failed because size of 'preview.jpg' is greater than 1MiB"
+msgstr "Anmeldung schlug fehl, weil 'preview.jpg' größer als 1MiB ist."
+
+#: http/classes/DbEntry/CarSkinRegistration.php:288
+#: http/classes/DbEntry/CarSkinRegistration.php:305
+#: http/classes/DbEntry/CarSkinRegistration.php:314
+#: http/classes/DbEntry/CarSkinRegistration.php:349
+#: http/classes/DbEntry/CarSkinRegistration.php:358
+#: http/classes/DbEntry/CarSkinRegistration.php:379
+#: http/classes/DbEntry/CarSkinRegistration.php:403
+#: http/classes/DbEntry/CarSkinRegistration.php:412
+msgid "Registration failed because of internal error"
+msgstr "Anmeldung schlug fehl, aufgrund eines internen Fehlers :-("
 
 #: http/content/json/SessionData.php:80
 msgid "Timestamp"
@@ -3265,7 +3368,7 @@ msgstr "Fahrer"
 
 #: http/content/json/SessionData.php:129 http/content/json/TrackRecords.php:43
 #: http/content/json/CarClassRecords.php:43
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:33
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:119
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:147
 #: http/content/html/W_Sessions/SessionOverview.php:85
 #: http/content/html/W_Sessions/SessionOverview.php:182
@@ -3586,8 +3689,8 @@ msgid "Settings"
 msgstr "Einstellungen"
 
 #: http/content/html/ServerContent/AvailableCarClasses.php:10
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:69
-#: http/content/html/B_User/Polls.php:497
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:92
+#: http/content/html/B_User/Polls.php:551
 msgid "Car Classes"
 msgstr "Fahrzeugklassen"
 
@@ -3601,7 +3704,7 @@ msgid "New Car Class"
 msgstr "Neue Fahrzeugklasse"
 
 #: http/content/html/ServerContent/AvailableTrackLocations.php:8
-#: http/content/html/B_User/Polls.php:460
+#: http/content/html/B_User/Polls.php:518
 msgid "Tracks"
 msgstr "Strecken"
 
@@ -3617,81 +3720,127 @@ msgstr "Länder"
 msgid "Letters"
 msgstr "Buchstaben"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:11
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:12
 #: http/content/html/W_Sessions/SessionSchedules.php:363
 msgid "Car Skin"
 msgstr "Lackierung"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:31
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:36
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:117
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:42
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:25
 msgid "General Info"
 msgstr "Allgemeine Info"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:32
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:37
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:118
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:43
 msgid "Brand"
 msgstr "Hersteller"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:35
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:123
+msgid "Owner"
+msgstr "Eigentümer"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:135
 msgid "Number"
 msgstr "Nummer"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:36
-msgid "From 'team' attribute in ui_skin.json"
-msgstr "Vom 'team' Attribut in ui_skin.json"
-
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:36
-msgid "Team"
-msgstr "Team"
-
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:39
-msgid "From 'Steam64GUID' attribute in ui_skin.json"
-msgstr "Vom 'Steam64GUID' Attribute in ui_skin.json"
-
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:39
-msgid "Reservation"
-msgstr "Reservierung"
-
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:45
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:47
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:146
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:53
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:35
 msgid "Revision Info"
 msgstr "Revisionsinformation"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:46
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:48
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:147
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:54
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:38
 msgid "Database Id"
 msgstr "Datenbank ID"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:49
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:50
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:150
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:56
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:40
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:48
 msgid "Deprecated"
 msgstr "Obsolet"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:49
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:50
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:150
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:56
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:40
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:41
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:48
 msgid "yes"
 msgstr "Ja"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:43
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:158
+msgid "Registration Info"
+msgstr "Informationen zur Anmeldung"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:160
+msgid "Requested"
+msgstr "Angefordert"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:164
+msgid "Processed"
+msgstr "Prozessiert"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:168
+msgid "Info"
+msgstr "Info"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:184
+msgid "Files"
+msgstr "Dateien"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:189
+msgid "File"
+msgstr "Datei"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:203
+msgid ""
+"For upload only '*.dds' files, 'livery.png' and 'preview.jpg' are allowed. "
+"The 'ui_skin.json' is automatically generated."
+msgstr ""
+"Für den Upload sind nur '*.dds' Dateien, 'livery.png' und 'preview.jpg'"
+" erlaubt. "
+"Die 'ui_skin.json' Datei wird automatisch erstellt."
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:211
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:66
+#: http/content/html/B_User/Polls.php:131
+#: http/content/html/B_User/Polls.php:157
+#: http/content/html/B_User/Polls.php:177
+#: http/content/html/B_User/Polls.php:202
+#: http/content/html/B_User/GroupManagement.php:109
+#: http/content/html/B_User/UserSettings.php:26
+#: http/content/html/T_Settings/ACswui.php:38
+#: http/content/html/W_Sessions/SessionSchedules.php:141
+msgid "Save"
+msgstr "Speichern"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:218
+msgid "Save and Request Car Registration"
+msgstr "Speichern und Fahrzeug anmelden"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:49
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:154
 msgid "Harmonized Power"
 msgstr "Harmonisierte Leistung"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:61
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:68
 msgid "Car Skins"
 msgstr "Lackierungen"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:76
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:81
+msgid "My Skins"
+msgstr "Meine Fahrzeuge (Skins)"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:99
 msgid "This car is not used in any car class"
 msgstr "Dieses Fahrzeug wird in keiner Klasse verwendet"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:106
+msgid "Create new Skin/Livery"
+msgstr "Neues Fahrzeug erstellen (Skin)."
 
 #: http/content/html/ServerContent/AvailableBrands/CarBrand.php:9
 msgid "Car Brand"
@@ -3706,7 +3855,7 @@ msgid "Car Class Deleted"
 msgstr "Fahrzeugklasse Gelöscht"
 
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:109
-#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:214
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:203
 msgid "Add Cars"
 msgstr "Fahrzeuge Hinzufügen"
 
@@ -3719,59 +3868,24 @@ msgid "Save Car Class"
 msgstr "Fahrzeugklasse Speichern"
 
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:194
-#: http/content/html/ServerContent/Teams.php:10
-#: http/content/html/B_User.php:109
-msgid "Teams"
-msgstr "Teams"
-
-#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:201
-msgid "No teams in this car class"
-msgstr "Keine Teams in dieser Fahrzeugklasse"
-
-#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:205
 msgid "Cars Overview"
 msgstr "Fahrzeugübersicht"
 
-#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:223
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:212
 msgid "Delete Car Class"
 msgstr "Fahrzeugklasse Löschen"
 
-#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:234
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:223
 msgid "CarClass Records"
 msgstr "Klassenrekorde"
 
-#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:235
+#: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:224
 msgid "Load CarClass Records"
 msgstr "Lade Klassenrekorde"
 
-#: http/content/html/ServerContent/Teams.php:18
-msgid ""
-"Teams are identified by the 'team' attribute in ui_skin.json of each car "
-"skin.\n"
-"                    To avoid presenting community unrelevant skins,\n"
-"                    only teams are respected where the 'Steam64GUID' "
-"attribute is given in the ui_skin.json.\n"
-"                    This 'Steam64GUID' attribute is specific for the ACswui "
-"system and identifies the preserved driver of the car skin.\n"
-"                   "
-msgstr ""
-"Teams werden anhand des 'team' Attributs in ui_skin.json identifiziert.\n"
-"Um irrelevante Teams auszublenden, werden nur Teams berücksichtigt, wo das "
-"'Steam64GUID' Attribut in ui_skin.json gesetzt ist.Dieses 'Steam64GUID' "
-"Attribut ist speziell für das ACswui System und reserviert so, diesen Skin "
-"für bestimmte Fahrer:innen"
-
-#: http/content/html/ServerContent/Teams.php:57
-msgid "Tem Members"
-msgstr "Team Mitglieder"
-
-#: http/content/html/ServerContent/Teams.php:64
-msgid "Team Cars"
-msgstr "Team Fahrzeuge"
-
-#: http/content/html/ServerContent/Teams.php:72
-msgid "Unclassed Cars"
-msgstr "Nicht Klassifizierte Fahrzeuge"
+#: http/content/html/ServerContent/Teams.php:8
+msgid "Teams"
+msgstr "Teams"
 
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:26
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:45
@@ -3831,14 +3945,6 @@ msgstr "Html-URL"
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:61
 msgid "Geo URL"
 msgstr "Geo-URL"
-
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:66
-#: http/content/html/B_User/GroupManagement.php:109
-#: http/content/html/B_User/UserSettings.php:26
-#: http/content/html/T_Settings/ACswui.php:38
-#: http/content/html/W_Sessions/SessionSchedules.php:141
-msgid "Save"
-msgstr "Speichern"
 
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:70
 msgid "Available Track Variants"
@@ -3907,117 +4013,133 @@ msgstr "Beliebte Fahrzeugklassen Laden"
 msgid "Polls"
 msgstr "Umfragen"
 
-#: http/content/html/B_User/Polls.php:172
+#: http/content/html/B_User/Polls.php:105
+msgid "Do you really want to delete the Poll?"
+msgstr "Willst du die Umfrage wirklich löschen?"
+
+#: http/content/html/B_User/Polls.php:215
 #: http/content/html/B_User/UserManagement.php:81
 msgid "Id"
 msgstr "ID"
 
-#: http/content/html/B_User/Polls.php:175
+#: http/content/html/B_User/Polls.php:218
 msgid "Votes"
 msgstr "Stimmen"
 
-#: http/content/html/B_User/Polls.php:176
+#: http/content/html/B_User/Polls.php:219
 msgid "Closing Date"
 msgstr "Enddatum"
 
-#: http/content/html/B_User/Polls.php:212
+#: http/content/html/B_User/Polls.php:255
 msgid "Create New Poll"
 msgstr "Neue Umfrage Erstellen"
 
-#: http/content/html/B_User/Polls.php:240
-#: http/content/html/B_User/Polls.php:421
+#: http/content/html/B_User/Polls.php:283
+#: http/content/html/B_User/Polls.php:478
 msgid "Save Poll"
 msgstr "Abstimmung Speichern"
 
-#: http/content/html/B_User/Polls.php:250
+#: http/content/html/B_User/Polls.php:293
 msgid "Vote Tracks"
 msgstr "Strecke Abstimmen"
 
-#: http/content/html/B_User/Polls.php:253
+#: http/content/html/B_User/Polls.php:296
 msgid "Points per track"
 msgstr "Punkte pro Strecke"
 
-#: http/content/html/B_User/Polls.php:254
-#: http/content/html/B_User/Polls.php:293
+#: http/content/html/B_User/Polls.php:297
+#: http/content/html/B_User/Polls.php:336
 msgid "Points in sum"
 msgstr "Punkte in Summe"
 
-#: http/content/html/B_User/Polls.php:255
-#: http/content/html/B_User/Polls.php:294
+#: http/content/html/B_User/Polls.php:298
+#: http/content/html/B_User/Polls.php:337
 msgid "Points left to vote"
 msgstr "Verbleibende Punkte zum Abstimmen"
 
-#: http/content/html/B_User/Polls.php:289
+#: http/content/html/B_User/Polls.php:332
 msgid "Vote Car Classes"
 msgstr "Fahrzeugklasse Abstimmen "
 
-#: http/content/html/B_User/Polls.php:292
+#: http/content/html/B_User/Polls.php:335
 msgid "Points per car class"
 msgstr "Punkte pro Fahrzeugklasse"
 
-#: http/content/html/B_User/Polls.php:331
+#: http/content/html/B_User/Polls.php:374
 msgid "Result Tracks"
 msgstr "Ergebnis Strecken"
 
-#: http/content/html/B_User/Polls.php:334
-#: http/content/html/B_User/Polls.php:372
+#: http/content/html/B_User/Polls.php:377
+#: http/content/html/B_User/Polls.php:422
 msgid "Pos"
 msgstr "Pos"
 
-#: http/content/html/B_User/Polls.php:335
-#: http/content/html/B_User/Polls.php:373
+#: http/content/html/B_User/Polls.php:378
+#: http/content/html/B_User/Polls.php:423
 msgid "Sum Points"
 msgstr "Summe Punkte"
 
-#: http/content/html/B_User/Polls.php:337
-#: http/content/html/B_User/Polls.php:375
+#: http/content/html/B_User/Polls.php:380
+#: http/content/html/B_User/Polls.php:425
 msgid "Users Voted"
 msgstr "Abgestimmte Nutzer"
 
-#: http/content/html/B_User/Polls.php:338
-#: http/content/html/B_User/Polls.php:376
+#: http/content/html/B_User/Polls.php:381
+#: http/content/html/B_User/Polls.php:426
 msgid "My Points"
 msgstr "Meine Punkte"
 
-#: http/content/html/B_User/Polls.php:369
+#: http/content/html/B_User/Polls.php:409
+msgid "invalid track"
+msgstr "Ungültige Strecke"
+
+#: http/content/html/B_User/Polls.php:419
 msgid "Result CarClasses"
 msgstr "Ergebnis Fahrzeugklassen"
 
-#: http/content/html/B_User/Polls.php:436
+#: http/content/html/B_User/Polls.php:454
+msgid "invalid car class"
+msgstr "Ungültige Fahrzeugklasse"
+
+#: http/content/html/B_User/Polls.php:493
 msgid "Secret Poll"
 msgstr "Geheime Umfrage"
 
-#: http/content/html/B_User/Polls.php:440
+#: http/content/html/B_User/Polls.php:497
 msgid "Poll Closing"
 msgstr "Umfrage Schließung"
 
-#: http/content/html/B_User/Polls.php:446
+#: http/content/html/B_User/Polls.php:504
 msgid "Description"
 msgstr "Beschreibung"
 
-#: http/content/html/B_User/Polls.php:463
+#: http/content/html/B_User/Polls.php:521
 msgid "Points for all Tracks"
 msgstr "Punkte für alle Strecken"
 
-#: http/content/html/B_User/Polls.php:466
+#: http/content/html/B_User/Polls.php:524
 msgid "Points per Track"
 msgstr "Punkte pro Strecke"
 
-#: http/content/html/B_User/Polls.php:487
-msgid "Add Tracks"
-msgstr "Strecke Hinzufügen"
+#: http/content/html/B_User/Polls.php:541
+msgid "Edit Tracks"
+msgstr "Strecke Bearbeiten"
 
-#: http/content/html/B_User/Polls.php:500
+#: http/content/html/B_User/Polls.php:554
 msgid "Points for all Car Classes"
 msgstr "Punkte für alle Fahrzeugklassen zusammen"
 
-#: http/content/html/B_User/Polls.php:503
+#: http/content/html/B_User/Polls.php:557
 msgid "Points per Car Class"
 msgstr "Punkte pro Fahrzeugklasse"
 
-#: http/content/html/B_User/Polls.php:524
-msgid "Add Car Class"
-msgstr "Fahrzeugklasse Hinzufügen"
+#: http/content/html/B_User/Polls.php:574
+msgid "Edit Car Classes"
+msgstr "Fahrzeugklasse Bearbeiten"
+
+#: http/content/html/B_User/Polls.php:586
+msgid "Delete Poll"
+msgstr "Umfrage Löschen"
 
 #: http/content/html/B_User/UserManagement.php:8
 msgid "User Management"
@@ -4117,7 +4239,7 @@ msgstr ""
 "Achte darauf, dass der Internet TCP-Port von Real Penalty automatisch "
 "definiert wird als AC-Server HTTP Port plus 27!"
 
-#: http/content/html/T_Settings/ServerSlots.php:96
+#: http/content/html/T_Settings/ServerSlots.php:103
 msgid "Slot Management"
 msgstr "Slot Verwaltung"
 
@@ -4511,11 +4633,54 @@ msgstr "Aktive Fahrer"
 msgid "inactive"
 msgstr "Inaktiv"
 
-#: http/content/html/B_User.php:117
+#: http/content/html/B_User.php:110
 msgid "Privacy settings of the user does not allow to show any information."
 msgstr ""
 "Privatsphäreneinstellung des Benutzers erlaubt keine Darstellung von "
 "Informationen."
+
+#~ msgid "From 'team' attribute in ui_skin.json"
+#~ msgstr "Vom 'team' Attribut in ui_skin.json"
+
+#~ msgid "Team"
+#~ msgstr "Team"
+
+#~ msgid "From 'Steam64GUID' attribute in ui_skin.json"
+#~ msgstr "Vom 'Steam64GUID' Attribute in ui_skin.json"
+
+#~ msgid "Reservation"
+#~ msgstr "Reservierung"
+
+#~ msgid "No teams in this car class"
+#~ msgstr "Keine Teams in dieser Fahrzeugklasse"
+
+#~ msgid ""
+#~ "Teams are identified by the 'team' attribute in ui_skin.json of each car "
+#~ "skin.\n"
+#~ "                    To avoid presenting community unrelevant skins,\n"
+#~ "                    only teams are respected where the 'Steam64GUID' "
+#~ "attribute is given in the ui_skin.json.\n"
+#~ "                    This 'Steam64GUID' attribute is specific for the "
+#~ "ACswui system and identifies the preserved driver of the car skin.\n"
+#~ "                   "
+#~ msgstr ""
+#~ "Teams werden anhand des 'team' Attributs in ui_skin.json identifiziert.\n"
+#~ "Um irrelevante Teams auszublenden, werden nur Teams berücksichtigt, wo "
+#~ "das 'Steam64GUID' Attribut in ui_skin.json gesetzt ist.Dieses "
+#~ "'Steam64GUID' Attribut ist speziell für das ACswui System und reserviert "
+#~ "so, diesen Skin für bestimmte Fahrer:innen"
+
+#~ msgid "Tem Members"
+#~ msgstr "Team Mitglieder"
+
+#~ msgid "Team Cars"
+#~ msgstr "Team Fahrzeuge"
+
+#~ msgid "Unclassed Cars"
+#~ msgstr "Nicht Klassifizierte Fahrzeuge"
+
+#~ msgid "Add Car Class"
+#~ msgstr "Fahrzeugklasse Hinzufügen"
 
 #~ msgid "Pit Lane Speed"
 #~ msgstr "Geschwindigkeit Boxenlinie"
@@ -4559,9 +4724,6 @@ msgstr ""
 
 #~ msgid "Select on which server slot the practice shall be driven"
 #~ msgstr "Wähle auf welchem Server-Slot das Training gefahren werden soll"
-
-#~ msgid "Settings for Driver Registrations"
-#~ msgstr "Einstellungen für die Fahreranmeldung"
 
 #~ msgid "Penalty Ballast"
 #~ msgstr "Zusatzgewicht"
@@ -4625,9 +4787,6 @@ msgstr ""
 
 #~ msgid "Creator"
 #~ msgstr "Ersteller"
-
-#~ msgid "Change Password"
-#~ msgstr "Passwort Ändern"
 
 #~ msgid "qumu"
 #~ msgstr "uqmu"
