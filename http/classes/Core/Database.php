@@ -202,7 +202,7 @@ class Database {
                     $insert_values  .= ", ";
                 }
                 $insert_columns .= "`$col`";
-                $insert_values  .= "'" . $field_list[$col] . "'";
+                $insert_values  .= "'" . Database::escape($field_list[$col]) . "'";
             }
         }
 
