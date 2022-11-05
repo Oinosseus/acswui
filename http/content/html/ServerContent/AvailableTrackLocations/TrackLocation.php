@@ -4,7 +4,7 @@ namespace Content\Html;
 
 class TrackLocation extends \core\HtmlContent {
 
-    private bool $CanEditGeoLocation = False;
+    private bool $CanEdit = False;
 
     public function __construct() {
         parent::__construct(_("Track Location"),  _("Track Location"));
@@ -12,7 +12,7 @@ class TrackLocation extends \core\HtmlContent {
     }
 
     public function getHtml() {
-        $this->CanEditGeoLocation = \Core\UserManager::currentUser()->permitted("ServerContent_Tracks_UpdateGeoLocation");
+        $this->CanEdit = \Core\UserManager::currentUser()->permitted("ServerContent_Tracks_Edit");
         $html = "";
 
 
@@ -27,11 +27,12 @@ class TrackLocation extends \core\HtmlContent {
 
 
         # save new geo location
-        if ($this->CanEditGeoLocation) {
-            if (array_key_exists("Action", $_POST) && $_POST['Action'] == "SaveGeoLocation") {
+        if ($this->CanEdit) {
+            if (array_key_exists("Action", $_POST) && $_POST['Action'] == "Save") {
                 $loc = \Core\GeoLocation::fromGeoUrl($_POST['GeoUrl']);
                 $track_location->setGeoLocation($loc);
-//                 $track_location->save();
+                $track_location->setDownloadUrl($_POST['DownloadUrl']);
+                $this->reload(["Id"=>$track_location->id()]);
             }
         }
 
@@ -39,31 +40,43 @@ class TrackLocation extends \core\HtmlContent {
         $track_location = \DbEntry\TrackLocation::fromId($_REQUEST['Id']);
 
         $html .= "<h1>" . $track_location->name() . "</h1>";
+        $html .= $this->newHtmlForm("post");
 
         $html .= "<table id=\"TrackInfoGeneral\">";
         $html .= "<caption>" . _("Track Location Info") . "</caption>";
         $html .= "<tr><th>" . _("Location Name") . "</th><td>" . $track_location->name() . "</td></tr>";
         $html .= "<tr><th>AC-Directory</th><td>content/tracks/" . $track_location->track() . "</td></tr>";
         $html .= "<tr><th>" . _("Country") . "</th><td>". $track_location->country() . "</td></tr>";
+        $html .= "<tr><th>" . _("Download") . "</th><td>";
+        if ($this->CanEdit) {
+            $html .= "<input type=\"text\" name=\"DownloadUrl\" value=\"{$track_location->downloadUrl()}\" />";
+        } else {
+            $link_label = $track_location->downloadUrl();
+            $link_label = str_replace("https://", "", $link_label);
+            $link_label = str_replace("http://", "", $link_label);
+            $link_label = str_replace("www.", "", $link_label);
+            $link_label = substr($link_label, 0, 25);
+            $html .= "<a href=\"{$track_location->downloadUrl()}\">{$link_label}...</a>";
+        }
+        $html .= "</td></tr>";
         $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($track_location->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
         $html .= "</table>";
 
-        $html .= $this->newHtmlForm("post", "TrackInfoGeoLocation");
-        $html .= "<table>";
+        $html .= "<table id =\"TrackInfoGeoLocation\">";
         $html .= "<caption>" . _("Geographic Location") . "</caption>";
         $html .= "<tr><th>" . _("HTML URL") . "</th><td>". $track_location->geoLocation()->htmlLink() . "</td></tr>";
         $html .= "<tr><td colspan=\"2\">". $track_location->geoLocation()->htmlOsmEmbed() . "</td></tr>";
 
         $geourl = sprintf("geo:%0.F,%0.F", $track_location->geoLocation()->latitude(), $track_location->geoLocation()->longitude());
-        if ($this->CanEditGeoLocation) {
+        if ($this->CanEdit) {
             $html .= "<tr><th>" . _("Geo URL") . "</th><td><input type=\"text\" name=\"GeoUrl\" value=\"$geourl\"></td></tr>";
         } else {
             $html .= "<tr><th>" . _("Geo URL") . "</th><td><a href=\"$geourl\">$geourl</a></td></tr>";
         }
 
         $html .= "</table>";
-        if ($this->CanEditGeoLocation) {
-            $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveGeoLocation\">" . _("Save") . "</button>";
+        if ($this->CanEdit) {
+            $html .= "<button type=\"submit\" name=\"Action\" value=\"Save\">" . _("Save") . "</button>";
         }
         $html .= "</form>";
 

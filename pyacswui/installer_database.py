@@ -149,6 +149,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnString("TrackLocations", "Country", 80)
         self.__db.appendColumnFloat("TrackLocations", "Latitude")
         self.__db.appendColumnFloat("TrackLocations", "Longitude")
+        self.__db.appendColumnText("TrackLocations", "DownloadUrl")
 
         # check table Tracks
         Verbosity(verb).print("check database table `Tracks`")

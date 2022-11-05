@@ -39,6 +39,12 @@ class TrackLocation extends DbEntry {
     }
 
 
+    //! @return The URL where to download
+    public function downloadUrl() : string {
+        return $this->loadColumn("DownloadUrl");
+    }
+
+
     /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.
@@ -177,6 +183,12 @@ class TrackLocation extends DbEntry {
     public function name() {
         if ($this->Name === NULL) $this->Name = $this->loadColumn("Name");
         return $this->Name;
+    }
+
+
+    //! @param $url The new URL where to download
+    public function setDownloadUrl(string $url) {
+        $this->storeColumns(["DownloadUrl"=>$url]);
     }
 
 
