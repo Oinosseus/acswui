@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-04 18:20+0100\n"
-"PO-Revision-Date: 2022-11-04 18:47+0100\n"
+"POT-Creation-Date: 2022-11-06 15:38+0100\n"
+"PO-Revision-Date: 2022-11-06 15:40+0100\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -495,7 +495,7 @@ msgstr "Einstellungen für die Fahrerwertung"
 #: http/classes/DbEntry/ServerPreset.php:377
 #: http/classes/DbEntry/Weather.php:148
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:126
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:44
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:57
 #: http/content/html/B_User/Polls.php:216
 #: http/content/html/B_User/Polls.php:490
 #: http/content/html/T_Settings/ServerSlots.php:108
@@ -517,7 +517,7 @@ msgid "The ranking threshold a driver needs to pass to enter this group"
 msgstr "Die minimale Punkteschwelle für diese Gruppe"
 
 #: http/classes/Core/ACswui.php:173
-#: http/content/html/B_User/GroupManagement.php:67
+#: http/content/html/B_User/GroupManagement.php:69
 msgid "Group"
 msgstr "Gruppe"
 
@@ -779,7 +779,7 @@ msgid "Options for localization and internationalization"
 msgstr "Optionen zur lokalen/internationalen Anpassung"
 
 #: http/classes/Core/ACswui.php:256
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:47
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:49
 #: http/content/html/B_User.php:106
 msgid "Country"
 msgstr "Land"
@@ -812,20 +812,20 @@ msgstr "Einheiten"
 msgid "Setup preferred units for values"
 msgstr "Einstellungen für bevorzugte Einheiten"
 
-#: http/classes/Core/ACswui.php:261 http/classes/DbEntry/Car.php:255
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:47
+#: http/classes/Core/ACswui.php:261 http/classes/DbEntry/Car.php:262
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:60
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:149
 msgid "Power"
 msgstr "Leistung"
 
 #: http/classes/Core/ACswui.php:262
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:48
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:61
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:153
 msgid "Specific Power"
 msgstr "Spezifische Leistung"
 
 #: http/classes/Core/ACswui.php:263
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:45
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:58
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:150
 msgid "Weight"
 msgstr "Gewicht"
@@ -936,19 +936,19 @@ msgstr "Abmelden"
 msgid "Login via Steam"
 msgstr "Mit Steam einloggen"
 
-#: http/classes/Core/Cronjob.php:200
+#: http/classes/Core/Cronjob.php:201
 msgid "Always"
 msgstr "Immer"
 
-#: http/classes/Core/Cronjob.php:204
+#: http/classes/Core/Cronjob.php:205
 msgid "After each Lap"
 msgstr "Nach jeder Runde"
 
-#: http/classes/Core/Cronjob.php:208
+#: http/classes/Core/Cronjob.php:209
 msgid "After each Session"
 msgstr "Nach jeder Session"
 
-#: http/classes/Core/Cronjob.php:212
+#: http/classes/Core/Cronjob.php:213
 msgid "Once a Day"
 msgstr "Täglich"
 
@@ -1076,8 +1076,8 @@ msgid ""
 "Use ac-server-wrapper to start AC sevrer (enables enhanced information when "
 "clients use content manager)"
 msgstr ""
-"Den AC-Server-Wrapper nutzen um den AC server zu starten (ermöglicht die"
-" Anzeige von zusätzlichen Information bei Benutzung des Content Managers)"
+"Den AC-Server-Wrapper nutzen um den AC server zu starten (ermöglicht die "
+"Anzeige von zusätzlichen Information bei Benutzung des Content Managers)"
 
 #: http/classes/Core/ServerSlot.php:182
 msgid "HTTP port for AC Server Wrapper"
@@ -1215,7 +1215,7 @@ msgstr "Fahrer "
 
 #: http/classes/Core/RealWeatherCondition.php:245
 #: http/classes/DbEntry/ServerPreset.php:335
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:80
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:94
 msgid "Real Weather"
 msgstr "Tatsächliches Wetter"
 
@@ -2090,7 +2090,7 @@ msgstr "Name der Session"
 #: http/classes/DbEntry/ServerPreset.php:353
 #: http/classes/DbEntry/ServerPreset.php:364
 #: http/classes/DbEntry/ServerPreset.php:381
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:86
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:100
 msgid "Time"
 msgstr "Zeit"
 
@@ -2833,12 +2833,10 @@ msgid ""
 "it but receive time penalty! (Drive through = PENALTY_SECONDS, Stop & GO 10 "
 "= PENALTY_SECONDS + 10, .......)."
 msgstr ""
-"Wenn ein Fahrer eine Strafe in den letzten N Runden bekommt (N ="
-" LAPS_TO_TAKE_PENALTY + LAST_LAPS_WITHOUT_PENALTY), "
-"kann er weiterfahren ohne die Strafe zu verbüßen. Aber er bekommt eine"
-" Zeitstrafe angerechnet."
-"(Drive through = PENALTY_SECONDS, Stop & GO 10 = PENALTY_SECONDS + 10,"
-" .......)."
+"Wenn ein Fahrer eine Strafe in den letzten N Runden bekommt (N = "
+"LAPS_TO_TAKE_PENALTY + LAST_LAPS_WITHOUT_PENALTY), kann er weiterfahren ohne "
+"die Strafe zu verbüßen. Aber er bekommt eine Zeitstrafe angerechnet.(Drive "
+"through = PENALTY_SECONDS, Stop & GO 10 = PENALTY_SECONDS + 10, .......)."
 
 #: http/classes/DbEntry/ServerPreset.php:605
 msgid "Cutting"
@@ -2930,10 +2928,9 @@ msgid ""
 "last corner. Default 150 \n"
 "IMPORTAN! Adjust this value in according to the track and the cars!!!!!!!!!"
 msgstr ""
-"Geschwindigkeit auf der Sart- / Ziellinie in der Qualifikation, nachdem der"
-" Fahrer die letzte Kurve geschnitten hatte."
-"Standard: 150 (ACHTUNG: Der Wert muss an die Strecke und Fahrzeuge angepasst"
-" werden!)"
+"Geschwindigkeit auf der Sart- / Ziellinie in der Qualifikation, nachdem der "
+"Fahrer die letzte Kurve geschnitten hatte.Standard: 150 (ACHTUNG: Der Wert "
+"muss an die Strecke und Fahrzeuge angepasst werden!)"
 
 #: http/classes/DbEntry/ServerPreset.php:630
 msgid "Qual Slowdown Ratio"
@@ -2958,11 +2955,11 @@ msgid ""
 "Set to 0 to have cutting checks similar to PLP (no check after re-entering "
 "the track)"
 msgstr ""
-"Bonus-Zeit nach Rückkehr auf die Strecke. Wenn die Geschwindig innerhalb"
-" dieser Zeit reduziert wird, wird kein Cut gewertet. "
-"Standardeinstellung ist '2'. \n"
-"Auf '0' setzen um Cuts ähnlich wie bei PLP zu prüfen (keine Prüfung nach"
-" Rückkehr auf die Strecke)."
+"Bonus-Zeit nach Rückkehr auf die Strecke. Wenn die Geschwindig innerhalb "
+"dieser Zeit reduziert wird, wird kein Cut gewertet. Standardeinstellung ist "
+"'2'. \n"
+"Auf '0' setzen um Cuts ähnlich wie bei PLP zu prüfen (keine Prüfung nach "
+"Rückkehr auf die Strecke)."
 
 #: http/classes/DbEntry/ServerPreset.php:636
 #: http/classes/DbEntry/ServerPreset.php:675
@@ -3224,7 +3221,7 @@ msgid "variation of the road's temperature. Like the ambient one"
 msgstr "Variation der relativen Straßentemperatur"
 
 #: http/classes/DbEntry/Weather.php:167
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:119
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:133
 #: http/content/html/W_Sessions/SessionSchedules.php:322
 #: http/content/html/W_Sessions/SessionSchedules.php:329
 msgid "Wind"
@@ -3263,17 +3260,17 @@ msgstr "Richtung Variation"
 msgid "variation (+ or -) of the base direction"
 msgstr "Variation der Windrichtung (+-) zur nominalen Windrichtung"
 
-#: http/classes/DbEntry/User.php:568
+#: http/classes/DbEntry/User.php:569
 msgid "Guest"
 msgstr "Gast"
 
-#: http/classes/DbEntry/Car.php:240
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:46
+#: http/classes/DbEntry/Car.php:247
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:59
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:148
 msgid "Torque"
 msgstr "Drehmoment"
 
-#: http/classes/DbEntry/Car.php:269
+#: http/classes/DbEntry/Car.php:276
 msgid "Revolutions"
 msgstr "Umdrehungen"
 
@@ -3303,11 +3300,11 @@ msgstr "Anmeldung schlug fehl, weil 'preview.jpg' größer als 1MiB ist."
 #: http/classes/DbEntry/CarSkinRegistration.php:288
 #: http/classes/DbEntry/CarSkinRegistration.php:305
 #: http/classes/DbEntry/CarSkinRegistration.php:314
-#: http/classes/DbEntry/CarSkinRegistration.php:349
-#: http/classes/DbEntry/CarSkinRegistration.php:358
-#: http/classes/DbEntry/CarSkinRegistration.php:379
-#: http/classes/DbEntry/CarSkinRegistration.php:403
-#: http/classes/DbEntry/CarSkinRegistration.php:412
+#: http/classes/DbEntry/CarSkinRegistration.php:350
+#: http/classes/DbEntry/CarSkinRegistration.php:359
+#: http/classes/DbEntry/CarSkinRegistration.php:380
+#: http/classes/DbEntry/CarSkinRegistration.php:404
+#: http/classes/DbEntry/CarSkinRegistration.php:413
 msgid "Registration failed because of internal error"
 msgstr "Anmeldung schlug fehl, aufgrund eines internen Fehlers :-("
 
@@ -3689,7 +3686,7 @@ msgid "Settings"
 msgstr "Einstellungen"
 
 #: http/content/html/ServerContent/AvailableCarClasses.php:10
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:92
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:123
 #: http/content/html/B_User/Polls.php:551
 msgid "Car Classes"
 msgstr "Fahrzeugklassen"
@@ -3726,13 +3723,13 @@ msgid "Car Skin"
 msgstr "Lackierung"
 
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:117
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:42
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:55
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:25
 msgid "General Info"
 msgstr "Allgemeine Info"
 
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:118
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:43
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:56
 msgid "Brand"
 msgstr "Hersteller"
 
@@ -3745,29 +3742,31 @@ msgid "Number"
 msgstr "Nummer"
 
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:146
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:53
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:66
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:35
 msgid "Revision Info"
 msgstr "Revisionsinformation"
 
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:147
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:54
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:67
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:38
 msgid "Database Id"
 msgstr "Datenbank ID"
 
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:150
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:56
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:70
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:40
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:48
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:62
 msgid "Deprecated"
 msgstr "Obsolet"
 
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:150
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:56
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:69
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:70
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:40
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:41
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:48
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:62
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:63
 msgid "yes"
 msgstr "Ja"
 
@@ -3800,17 +3799,17 @@ msgid ""
 "For upload only '*.dds' files, 'livery.png' and 'preview.jpg' are allowed. "
 "The 'ui_skin.json' is automatically generated."
 msgstr ""
-"Für den Upload sind nur '*.dds' Dateien, 'livery.png' und 'preview.jpg'"
-" erlaubt. "
-"Die 'ui_skin.json' Datei wird automatisch erstellt."
+"Für den Upload sind nur '*.dds' Dateien, 'livery.png' und 'preview.jpg' "
+"erlaubt. Die 'ui_skin.json' Datei wird automatisch erstellt."
 
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:211
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:66
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:94
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:80
 #: http/content/html/B_User/Polls.php:131
 #: http/content/html/B_User/Polls.php:157
 #: http/content/html/B_User/Polls.php:177
 #: http/content/html/B_User/Polls.php:202
-#: http/content/html/B_User/GroupManagement.php:109
+#: http/content/html/B_User/GroupManagement.php:111
 #: http/content/html/B_User/UserSettings.php:26
 #: http/content/html/T_Settings/ACswui.php:38
 #: http/content/html/W_Sessions/SessionSchedules.php:141
@@ -3821,24 +3820,34 @@ msgstr "Speichern"
 msgid "Save and Request Car Registration"
 msgstr "Speichern und Fahrzeug anmelden"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:49
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:62
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:154
 msgid "Harmonized Power"
 msgstr "Harmonisierte Leistung"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:68
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:69
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:63
+msgid "Kunos Original"
+msgstr "Kunos Original"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:71
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:50
+msgid "Download"
+msgstr "Download"
+
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:99
 msgid "Car Skins"
 msgstr "Lackierungen"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:81
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:112
 msgid "My Skins"
 msgstr "Meine Fahrzeuge (Skins)"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:99
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:130
 msgid "This car is not used in any car class"
 msgstr "Dieses Fahrzeug wird in keiner Klasse verwendet"
 
-#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:106
+#: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:137
 msgid "Create new Skin/Livery"
 msgstr "Neues Fahrzeug erstellen (Skin)."
 
@@ -3888,7 +3897,7 @@ msgid "Teams"
 msgstr "Teams"
 
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:26
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:45
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:47
 msgid "Location Name"
 msgstr "Standort Name"
 
@@ -3929,48 +3938,48 @@ msgstr "Lade Streckenrekorde"
 msgid "Track Location"
 msgstr "Streckenstandort"
 
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:44
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:46
 msgid "Track Location Info"
 msgstr "Standort Information"
 
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:53
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:67
 msgid "Geographic Location"
 msgstr "Geographische Lage"
 
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:54
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:68
 msgid "HTML URL"
 msgstr "Html-URL"
 
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:59
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:61
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:73
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:75
 msgid "Geo URL"
 msgstr "Geo-URL"
 
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:70
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:84
 msgid "Available Track Variants"
 msgstr "Verfügbare Streckenvarianten"
 
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:87
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:101
 #: http/content/html/W_Sessions/SessionSchedules.php:313
 msgid "Weather Forecast"
 msgstr "Wetterbericht"
 
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:88
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:102
 msgid "AC Weather"
 msgstr "AC Wetter"
 
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:96
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:110
 msgid "Geo Time"
 msgstr "Geo Zeit"
 
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:116
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:130
 #: http/content/html/W_Sessions/SessionSchedules.php:319
 #: http/content/html/W_Sessions/SessionSchedules.php:327
 #: http/content/html/W_Sessions/SessionOverview.php:270
 msgid "Ambient"
 msgstr "Umgebung"
 
-#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:118
+#: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:132
 #: http/content/html/W_Sessions/SessionSchedules.php:320
 #: http/content/html/W_Sessions/SessionSchedules.php:328
 #: http/content/html/W_Sessions/SessionOverview.php:271
@@ -4165,11 +4174,11 @@ msgstr "Benutzer"
 msgid "Group Management"
 msgstr "Gruppenverwaltung"
 
-#: http/content/html/B_User/GroupManagement.php:78
+#: http/content/html/B_User/GroupManagement.php:80
 msgid "New Group Name"
 msgstr "Name der neuen Gruppe"
 
-#: http/content/html/B_User/GroupManagement.php:97
+#: http/content/html/B_User/GroupManagement.php:99
 msgid "Delete Group"
 msgstr "Gruppe Löschen"
 
@@ -4569,11 +4578,27 @@ msgstr "Startseite"
 msgid "Please login with your steam account"
 msgstr "Bitte melde dich mit deinem Steam Account an"
 
-#: http/content/html/A_Home.php:40
+#: http/content/html/A_Home.php:104
+msgid "Suspects of Maladministrations"
+msgstr "Verdacht auf Fehlkonfigurationen"
+
+#: http/content/html/A_Home.php:107
+msgid "Tracks with suspicious Geo-Location"
+msgstr "Strecken ohne Geo-Koordinaten"
+
+#: http/content/html/A_Home.php:114
+msgid "Tracks with no download url"
+msgstr "Strecken ohne Download-URL"
+
+#: http/content/html/A_Home.php:121
+msgid "Cars with no download url"
+msgstr "Fahrzeuge ohne Download-URL"
+
+#: http/content/html/A_Home.php:142
 msgid "Open Registrations"
 msgstr "Ausstehende Anmeldungen"
 
-#: http/content/html/A_Home.php:51
+#: http/content/html/A_Home.php:153
 msgid "All Events"
 msgstr "Alle Veranstaltungen"
 
