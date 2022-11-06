@@ -19,7 +19,105 @@ class A_Home extends \core\HtmlContent {
             $html .= \Core\UserManager::htmlLogInOut();
 
         } else {
+
+            if (\Core\UserManager::currentUser()->permitted("Notify_Maladministration")) {
+                $html .= $this->malAdministrations();
+            }
+
             $html .= $this->openRegistrations();
+        }
+
+        return $html;
+    }
+
+
+    private function malAdministrations() : string {
+        $html = "";
+
+        // search for currently used tracks and cars
+        // $currently_used_tracks = array();
+        // $currently_used_cars = array();
+        $tracklocationss_with_no_download = array();
+        $tracklocationss_with_no_geolocation = array();
+        $cars_with_no_download = array();
+
+        // search session loops
+        foreach (\DbEntry\SessionLoop::listLoops() as $sl) {
+            if ($sl->enabled()) {
+
+                // tracks
+                $tloc = $sl->track()->location();
+                if (strlen($tloc->downloadUrl()) == 0) {
+                    if (!in_array($tloc, $tracklocationss_with_no_download)) {
+                        $tracklocationss_with_no_download[] = $tloc;
+                    }
+                }
+                if ($tloc->geoLocation()->latitude() == 0.0 && $tloc->geoLocation()->longitude() == 0.0) {
+                    if (!in_array($tloc, $tracklocationss_with_no_geolocation)) {
+                        $tracklocationss_with_no_geolocation[] = $tloc;
+                    }
+                }
+
+                // cars
+                foreach ($sl->carClass()->cars() as $car) {
+                    if (strlen($car->downloadUrl()) == 0) {
+                        if (!in_array($car, $cars_with_no_download)) {
+                            $cars_with_no_download[] = $car;
+                        }
+                    }
+                }
+            }
+        }
+
+        // search in session schedules
+        foreach (\DbEntry\SessionSchedule::listSchedules() as $ss) {
+
+
+            // tracks
+            $tloc = $ss->track()->location();
+            if (strlen($tloc->downloadUrl()) == 0) {
+                if (!in_array($tloc, $tracklocationss_with_no_download)) {
+                    $tracklocationss_with_no_download[] = $tloc;
+                }
+            }
+            if ($tloc->geoLocation()->latitude() == 0.0 && $tloc->geoLocation()->longitude() == 0.0) {
+                if (!in_array($tloc, $tracklocationss_with_no_geolocation)) {
+                    $tracklocationss_with_no_geolocation[] = $tloc;
+                }
+            }
+
+            // cars
+            foreach ($ss->carClass()->cars() as $car) {
+                if (strlen($car->downloadUrl()) == 0) {
+                    if (!in_array($car, $cars_with_no_download)) {
+                        $cars_with_no_download[] = $car;
+                    }
+                }
+            }
+        }
+
+        // show suspicious items
+        $html .= "<h1>" . _("Suspects of Maladministrations") . "</h1>";
+
+        if (count($tracklocationss_with_no_geolocation) > 0) {
+            $html .= "<h2>" . _("Tracks with suspicious Geo-Location") . "</h2>";
+            foreach ($tracklocationss_with_no_geolocation as $t) {
+                $html .= $t->html();
+            }
+        }
+
+        if (count($tracklocationss_with_no_download) > 0) {
+            $html .= "<h2>" . _("Tracks with no download url") . "</h2>";
+            foreach ($tracklocationss_with_no_download as $t) {
+                $html .= $t->html();
+            }
+        }
+
+        if (count($cars_with_no_download) > 0) {
+            $html .= "<h2>" . _("Cars with no download url") . "</h2>";
+            foreach ($cars_with_no_download as $c) {
+                $html .= $c->html();
+            }
         }
 
         return $html;

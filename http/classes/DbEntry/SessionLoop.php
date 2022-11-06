@@ -55,7 +55,7 @@ class SessionLoop extends DbEntry {
 
 
     //! @return TRUE if enabled, else FALSE
-    public function enabled() {
+    public function enabled() : bool {
         return ($this->loadColumn("Enabled") == 0) ? FALSE : TRUE;
     }
 
