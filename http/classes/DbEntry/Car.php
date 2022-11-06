@@ -67,6 +67,12 @@ class Car extends DbEntry {
     }
 
 
+    //! @return The URL where to download
+    public function downloadUrl() : string {
+        return $this->loadColumn("DownloadUrl");
+    }
+
+
     /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.
@@ -364,6 +370,12 @@ class Car extends DbEntry {
         }
 
         return $this->PowerCurve[$restrictor];
+    }
+
+
+    //! @param $url The new URL where to download
+    public function setDownloadUrl(string $url) {
+        $this->storeColumns(["DownloadUrl"=>trim($url)]);
     }
 
 

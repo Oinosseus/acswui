@@ -4,9 +4,9 @@ namespace Content\Html;
 
 class CarModel extends \core\HtmlContent {
 
-    private $CurrentBrand = NULL;
     private $CurrentCar = NULL;
     private $CanCreateSkin = FALSE;
+    private $CanEdit = FALSE;
 
     public function __construct() {
         parent::__construct(_("Car Model"),  _("Car Model"));
@@ -14,16 +14,28 @@ class CarModel extends \core\HtmlContent {
     }
 
     public function getHtml() {
+        // get car
+        if (array_key_exists("Id", $_REQUEST) && $_REQUEST['Id'] != "") {
+            $this->CurrentCar = \DbEntry\Car::fromId($_REQUEST['Id']);
+        }
 
         // check permissions
-        if (\Core\UserManager::currentUser()->permitted("Skins_Create"))
-            $this->CanCreateSkin = TRUE;
+        $this->CanEdit = \Core\UserManager::currentUser()->permitted("ServerContent_Cars_Edit");
+        $this->CanCreateSkin = \Core\UserManager::currentUser()->permitted("Skins_Create");
+
+        # save
+        if ($this->CanEdit) {
+            if (array_key_exists("Action", $_POST) && $_POST['Action'] == "Save") {
+                $this->CurrentCar->setDownloadUrl($_POST['DownloadUrl']);
+                $this->reload(["Id"=>$this->CurrentCar->id()]);
+            }
+        }
 
         $html  = '';
 
         // retrieve requests
-        if (array_key_exists("Id", $_REQUEST) && $_REQUEST['Id'] != "") {
-            $car = \DbEntry\Car::fromId($_REQUEST['Id']);
+        if ($this->CurrentCar !== NULL) {
+            $car = $this->CurrentCar;
 
             $restrictor = 0;
             if (array_key_exists("Restrictor", $_REQUEST) && $_REQUEST['Restrictor'] != "") {
@@ -37,6 +49,7 @@ class CarModel extends \core\HtmlContent {
             $html .= "</div>";
 
             $html .= "<h1>" . $car->name() . "</h1>";
+            $html .= $this->newHtmlForm("post");
 
             $html .= "<table id=\"CarModelInformation\">";
             $html .= "<caption>" . _("General Info") . "</caption>";
@@ -54,6 +67,18 @@ class CarModel extends \core\HtmlContent {
             $html .= "<tr><th>" . _("Database Id") . "</th><td>". $car->id() . "</td></tr>";
             $html .= "<tr><th>AC-Directory</th><td>content/cars/" . $car->model() . "</td></tr>";
             $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($car->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
+            $html .= "<tr><th>" . _("Download") . "</th><td>";
+            if ($this->CanEdit) {
+                $html .= "<input type=\"text\" name=\"DownloadUrl\" value=\"{$car->downloadUrl()}\" />";
+            } else if (strlen($car->downloadUrl()) > 0) {
+                $link_label = $car->downloadUrl();
+                $link_label = str_replace("https://", "", $link_label);
+                $link_label = str_replace("http://", "", $link_label);
+                $link_label = str_replace("www.", "", $link_label);
+                $link_label = substr($link_label, 0, 25);
+                $html .= "<a href=\"{$car->downloadUrl()}\">{$link_label}...</a>";
+            }
+            $html .= "</td></tr>";
             $html .= "</table>";
 
             $html .= "<div id=\"CarModelTorquePowerChart\">";
@@ -63,6 +88,11 @@ class CarModel extends \core\HtmlContent {
             $html .= "<div id=\"CarModelDescription\">";
             $html .= $car->description();
             $html .= "</div>";
+
+            if ($this->CanEdit) {
+                $html .= "<button type=\"submit\" name=\"Action\" value=\"Save\">" . _("Save") . "</button>";
+            }
+            $html .= "</form>";
 
             // list skins
             $html .= "<h2>" . _("Car Skins") . "</h2>";

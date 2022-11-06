@@ -50,7 +50,7 @@ class TrackLocation extends \core\HtmlContent {
         $html .= "<tr><th>" . _("Download") . "</th><td>";
         if ($this->CanEdit) {
             $html .= "<input type=\"text\" name=\"DownloadUrl\" value=\"{$track_location->downloadUrl()}\" />";
-        } else {
+        } else if (strlen($track_location->downloadUrl()) > 0) {
             $link_label = $track_location->downloadUrl();
             $link_label = str_replace("https://", "", $link_label);
             $link_label = str_replace("http://", "", $link_label);

@@ -54,6 +54,8 @@ class GroupManagement extends \core\HtmlContent {
                     $g->delete();
                 }
             }
+
+            $this->reload();
         }
 
 

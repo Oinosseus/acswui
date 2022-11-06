@@ -188,7 +188,7 @@ class TrackLocation extends DbEntry {
 
     //! @param $url The new URL where to download
     public function setDownloadUrl(string $url) {
-        $this->storeColumns(["DownloadUrl"=>$url]);
+        $this->storeColumns(["DownloadUrl"=>trim($url)]);
     }
 
 

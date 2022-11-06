@@ -183,6 +183,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnText("Cars", "TorqueCurve")
         self.__db.appendColumnText("Cars", "PowerCurve")
         self.__db.appendColumnUInt("Cars", "Weight")
+        self.__db.appendColumnText("Cars", "DownloadUrl")
 
         # check table CarSkins
         Verbosity(verb).print("check database table `CarSkins`")

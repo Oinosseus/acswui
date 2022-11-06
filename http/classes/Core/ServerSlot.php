@@ -745,19 +745,33 @@ class ServerSlot {
         $data_array['cars'] = array();
         $data_array['track'] = array();
 
-        // add track info
+        // add track
         if (strlen($track->location()->downloadUrl()) > 0) {
             $data_array['track']['url'] = $track->location()->downloadUrl();
         }
 
-        // add car skins
+        // add cars and skins
         $processed_car_skin_ids = array();
         foreach ($el->entries() as $eli) {
 
+            // do not process skins twice
             if (in_array($eli->CarSkin()->id(), $processed_car_skin_ids)) {
                 continue;
             } else {
                 $processed_car_skin_ids[] = $eli->CarSkin()->id();
+            }
+
+            // check if car download exists
+            if (strlen($eli->carSkin()->car()->downloadUrl()) > 0) {
+
+                // add car
+                $car_model = $eli->carSkin()->car()->model();
+                if (!array_key_exists($car_model, $data_array['cars'])) {
+                    $data_array['cars'][$car_model] = array();
+                }
+
+                // add url
+                $data_array['cars'][$car_model]['url'] = $eli->carSkin()->car()->downloadUrl();
             }
 
             // check if skin is packaged
