@@ -129,6 +129,7 @@ abstract class Cronjob {
                 $f = fopen($this->StatusFilePath, "w");
                 fwrite($f, json_encode($data, JSON_PRETTY_PRINT));
                 fclose($f);
+                chmod($this->StatusFilePath, 0660);
             }
         }
 

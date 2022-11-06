@@ -466,6 +466,7 @@ class DriverRanking extends DbEntry implements \JsonSerializable {
         $f = fopen($filepath, "w");
         fwrite($f, json_encode($driver_rankings, JSON_PRETTY_PRINT));
         fclose($f);
+        chmod($filepath, 0660);
     }
 
 

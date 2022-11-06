@@ -316,6 +316,7 @@ class ServerSlot {
         }
         fwrite($f, $data_json);
         fclose($f);
+        chmod($file_path, 0660);
     }
 
 
@@ -489,6 +490,7 @@ class ServerSlot {
         }
 
         fclose($f);
+        chmod($file_path, 0660);
     }
 
 
@@ -604,6 +606,7 @@ class ServerSlot {
             } else {
                 fwrite($f_wm, $welcome_message);
                 fclose($f_wm);
+                chmod($file_path_wm, 0660);
             }
             fwrite($f, "WELCOME_MESSAGE=$file_path_wm\n");
         }
@@ -674,6 +677,7 @@ class ServerSlot {
         }
 
         fclose($f);
+        chmod($file_path, 0660);
     }
 
 
@@ -731,6 +735,7 @@ class ServerSlot {
         }
         fwrite($f, $data_json);
         fclose($f);
+        chmod($file_path, 0660);
     }
 
 
@@ -815,6 +820,7 @@ class ServerSlot {
         }
         fwrite($f, $data_json);
         fclose($f);
+        chmod($file_path, 0660);
     }
 
 
@@ -903,6 +909,7 @@ class ServerSlot {
         fwrite($f, "race_enable = " . (($ppc->child("RPAcsTeleportEnaRace")->value()) ? 1:0) . "\n");
 
         fclose($f);
+        chmod($file_path, 0660);
     }
 
 
@@ -987,8 +994,8 @@ class ServerSlot {
         fwrite($f, "QUALIFY_TIME_THRESHOLD = " . $ppc->child("RpPsBfQual")->value() . "\n");
         fwrite($f, "RACE_TIME_THRESHOLD = " . $ppc->child("RpPsBfRace")->value() . "\n");
 
-
         fclose($f);
+        chmod($file_path, 0660);
     }
 
 
@@ -1026,18 +1033,6 @@ class ServerSlot {
         fwrite($f, "OTHER_UDP_PLUGIN = 127.0.0.1:" . $pc->child("ACswuiPortsPluginUdpL")->value() . "\n");
 
         fclose($f);
+        chmod($file_path, 0660);
     }
-
-
-    // private function writeCmWrapperParams() {
-    //     $id = $this->id();
-    //     // $pc = $this->parameterCollection();
-    //
-    //     $file_path = \Core\Config::AbsPathData . "/acserver/slot{$id}/cm_wrapper_params.json";
-    //     $f = fopen($file_path, 'w');
-    //     if ($f === FALSE) {
-    //         \Core\Log::error("Cannot write to file '$file_path'!");
-    //         return;
-    //     }
-    // }
 }

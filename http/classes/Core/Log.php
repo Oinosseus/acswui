@@ -65,6 +65,7 @@ class Log {
         if (Log::$FileHandleError != 0) {
             fflush(Log::$FileHandleError);
             fclose(Log::$FileHandleError);
+            chmod(Log::$FilePathError, 0660);
         }
 
         // write warning file
@@ -74,6 +75,7 @@ class Log {
                 fwrite(Log::$FileHandleWarning, Log::$FileBufferWarning);
             }
             fclose(Log::$FileHandleWarning);
+            chmod(Log::$FilePathWarning, 0660);
         }
     }
 

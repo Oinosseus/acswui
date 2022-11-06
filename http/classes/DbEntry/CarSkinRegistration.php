@@ -330,6 +330,7 @@ class CarSkinRegistration extends DbEntry {
         fwrite($fd, json_encode($ui_skin, JSON_PRETTY_PRINT));
         fwrite($fd, "\n");
         fclose($fd);
+        chmod($package_temp_dir_skin . "/ui_skin.json", 0660);
 
         // copy files
         $skin_source_dir = \Core\Config::AbsPathData . "/htcache/owned_skins/{$cs->id()}";
