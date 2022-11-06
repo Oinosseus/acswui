@@ -606,7 +606,7 @@ class ServerSlot {
             } else {
                 fwrite($f_wm, $welcome_message);
                 fclose($f_wm);
-                chmod($file_path_wm, 0660);
+                @chmod($file_path_wm, 0660);
             }
             fwrite($f, "WELCOME_MESSAGE=$file_path_wm\n");
         }
@@ -677,7 +677,7 @@ class ServerSlot {
         }
 
         fclose($f);
-        chmod($file_path, 0660);
+        @chmod($file_path, 0660);
     }
 
 
@@ -747,11 +747,10 @@ class ServerSlot {
 
         // prepare data for content.json
         $data_array = array();
-        $data_array['cars'] = array();
-        $data_array['track'] = array();
 
         // add track
         if (strlen($track->location()->downloadUrl()) > 0) {
+            if (!array_key_exists("track", $data_array)) $data_array['track'] = array();
             $data_array['track']['url'] = $track->location()->downloadUrl();
         }
 
@@ -768,6 +767,8 @@ class ServerSlot {
 
             // check if car download exists
             if (strlen($eli->carSkin()->car()->downloadUrl()) > 0) {
+
+                if (!array_key_exists("cars", $data_array)) $data_array['cars'] = array();
 
                 // add car
                 $car_model = $eli->carSkin()->car()->model();
@@ -909,7 +910,7 @@ class ServerSlot {
         fwrite($f, "race_enable = " . (($ppc->child("RPAcsTeleportEnaRace")->value()) ? 1:0) . "\n");
 
         fclose($f);
-        chmod($file_path, 0660);
+        @chmod($file_path, 0660);
     }
 
 
@@ -995,7 +996,7 @@ class ServerSlot {
         fwrite($f, "RACE_TIME_THRESHOLD = " . $ppc->child("RpPsBfRace")->value() . "\n");
 
         fclose($f);
-        chmod($file_path, 0660);
+        @chmod($file_path, 0660);
     }
 
 
@@ -1033,6 +1034,6 @@ class ServerSlot {
         fwrite($f, "OTHER_UDP_PLUGIN = 127.0.0.1:" . $pc->child("ACswuiPortsPluginUdpL")->value() . "\n");
 
         fclose($f);
-        chmod($file_path, 0660);
+        @chmod($file_path, 0660);
     }
 }

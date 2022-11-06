@@ -150,6 +150,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnFloat("TrackLocations", "Latitude")
         self.__db.appendColumnFloat("TrackLocations", "Longitude")
         self.__db.appendColumnText("TrackLocations", "DownloadUrl")
+        self.__db.appendColumnTinyInt("TrackLocations", "KunosOriginal")
 
         # check table Tracks
         Verbosity(verb).print("check database table `Tracks`")
@@ -184,6 +185,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnText("Cars", "PowerCurve")
         self.__db.appendColumnUInt("Cars", "Weight")
         self.__db.appendColumnText("Cars", "DownloadUrl")
+        self.__db.appendColumnTinyInt("Cars", "KunosOriginal")
 
         # check table CarSkins
         Verbosity(verb).print("check database table `CarSkins`")

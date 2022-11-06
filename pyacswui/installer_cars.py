@@ -43,6 +43,9 @@ class InstallerCars(object) :
         for skin_id, skin_name, car_model in res:
             self._generateHtmlImgs(skin_id, skin_name, car_model)
 
+        # identify original content
+        self._scan_original_content()
+
 
 
     def _scan_car(self, path_cars, car):
@@ -144,6 +147,19 @@ class InstallerCars(object) :
                 fields = {"Deprecated":0}
                 fields.update(ui_skin_db_fields)
                 self.__db.updateRow("CarSkins", skin_id, fields)
+
+
+
+    def _scan_original_content(self):
+        query = "UPDATE Cars SET KunosOriginal = 0;"
+        self.__db.rawQuery(query)
+
+        with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "original_content.json"), "r") as f:
+            original_content = json.load(f)
+
+        for car in original_content['cars']:
+            query = "UPDATE Cars SET KunosOriginal = 1 WHERE Car = '" + car + "';"
+            self.__db.rawQuery(query)
 
 
 

@@ -69,6 +69,7 @@ class Car extends DbEntry {
 
     //! @return The URL where to download
     public function downloadUrl() : string {
+        if ($this->kunosOriginal()) return "";
         return $this->loadColumn("DownloadUrl");
     }
 
@@ -280,6 +281,12 @@ class Car extends DbEntry {
     }
 
 
+    //! @return TRUE, if this is original content from Kunos
+    public function kunosOriginal() : bool {
+        return $this->loadColumn("KunosOriginal") != 0;
+    }
+
+
     /**
      * @param $inculde_deprecated If set to TRUE, also deprectaed items are listed (Default: False)
      * @return An array of all available Car objects, ordered by name
@@ -375,6 +382,10 @@ class Car extends DbEntry {
 
     //! @param $url The new URL where to download
     public function setDownloadUrl(string $url) {
+        if ($this->kunosOriginal()) {
+            \Core\Log::debug("Ignore setting download-url for original track '{$this->name()}'");
+            return;
+        }
         $this->storeColumns(["DownloadUrl"=>trim($url)]);
     }
 

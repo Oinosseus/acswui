@@ -66,9 +66,10 @@ class CarModel extends \core\HtmlContent {
             $html .= "<caption>" . _("Revision Info") . "</caption>";
             $html .= "<tr><th>" . _("Database Id") . "</th><td>". $car->id() . "</td></tr>";
             $html .= "<tr><th>AC-Directory</th><td>content/cars/" . $car->model() . "</td></tr>";
+            $html .= "<tr><th>" . _("Kunos Original") . "</th><td>". (($car->kunosOriginal()) ? _("yes") : ("no")) . "</td></tr>";
             $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($car->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
             $html .= "<tr><th>" . _("Download") . "</th><td>";
-            if ($this->CanEdit) {
+            if ($this->CanEdit && !$car->kunosOriginal()) {
                 $html .= "<input type=\"text\" name=\"DownloadUrl\" value=\"{$car->downloadUrl()}\" />";
             } else if (strlen($car->downloadUrl()) > 0) {
                 $link_label = $car->downloadUrl();

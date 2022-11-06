@@ -190,6 +190,6 @@ class EntryList {
         }
 
         fclose($f);
-        chmod($entry_list_ini_path, 0660);
+        @chmod($entry_list_ini_path, 0660);
     }
 }

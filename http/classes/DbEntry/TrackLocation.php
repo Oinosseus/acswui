@@ -41,6 +41,7 @@ class TrackLocation extends DbEntry {
 
     //! @return The URL where to download
     public function downloadUrl() : string {
+        if ($this->kunosOriginal()) return "";
         return $this->loadColumn("DownloadUrl");
     }
 
@@ -99,6 +100,12 @@ class TrackLocation extends DbEntry {
 
         $html = "<div class=\"DbEntryHtml\">$html</div>";
         return $html;
+    }
+
+
+    //! @return TRUE, if this is original content from Kunos
+    public function kunosOriginal() : bool {
+        return $this->loadColumn("KunosOriginal") != 0;
     }
 
 
@@ -188,6 +195,10 @@ class TrackLocation extends DbEntry {
 
     //! @param $url The new URL where to download
     public function setDownloadUrl(string $url) {
+        if ($this->kunosOriginal()) {
+            \Core\Log::debug("Ignore setting download-url for original car '{$this->name()}'");
+            return;
+        }
         $this->storeColumns(["DownloadUrl"=>trim($url)]);
     }
 

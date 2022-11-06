@@ -59,6 +59,9 @@ class InstallerTracks(object):
 
             self.__db.updateRow("Tracks", id, {"RpTrackfile": rp_trackfile_exists})
 
+        # identify original content
+        self._scan_original_content()
+
 
 
     def _scan_track(self, path_tracks, track):
@@ -242,6 +245,19 @@ class InstallerTracks(object):
             #track_country = "USA"
 
         self.__db.updateRow("TrackLocations", track_location_id, {"Name": track_location_name, "Country": track_country, "Deprecated": 0})
+
+
+    def _scan_original_content(self):
+        query = "UPDATE TrackLocations SET KunosOriginal = 0;"
+        self.__db.rawQuery(query)
+
+        with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "original_content.json"), "r") as f:
+            original_content = json.load(f)
+
+        for track in original_content['tracks']:
+            query = "UPDATE TrackLocations SET KunosOriginal = 1 WHERE Track = '" + track + "';"
+            self.__db.rawQuery(query)
+
 
 
     def _interpret_geotags(selparse_geocoordinatef, geotags):

@@ -48,7 +48,7 @@ class TrackLocation extends \core\HtmlContent {
         $html .= "<tr><th>AC-Directory</th><td>content/tracks/" . $track_location->track() . "</td></tr>";
         $html .= "<tr><th>" . _("Country") . "</th><td>". $track_location->country() . "</td></tr>";
         $html .= "<tr><th>" . _("Download") . "</th><td>";
-        if ($this->CanEdit) {
+        if ($this->CanEdit && !$track_location->kunosOriginal()) {
             $html .= "<input type=\"text\" name=\"DownloadUrl\" value=\"{$track_location->downloadUrl()}\" />";
         } else if (strlen($track_location->downloadUrl()) > 0) {
             $link_label = $track_location->downloadUrl();
@@ -60,6 +60,7 @@ class TrackLocation extends \core\HtmlContent {
         }
         $html .= "</td></tr>";
         $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($track_location->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
+        $html .= "<tr><th>" . _("Kunos Original") . "</th><td>". (($track_location->kunosOriginal()) ? _("yes") : ("no")) . "</td></tr>";
         $html .= "</table>";
 
         $html .= "<table id =\"TrackInfoGeoLocation\">";

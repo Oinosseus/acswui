@@ -242,6 +242,7 @@ class User extends DbEntry { #implements JsonSerializable {
      * @return The power formatted for the User
      */
     public function formatPowerSpecific(float $power) {
+        if ($power == 0.0) return "-";
         $unit = \Core\UserManager::currentUser()->getParam("UserUnitPowerSpecific");
         switch ($unit) {
             case "SI1":
