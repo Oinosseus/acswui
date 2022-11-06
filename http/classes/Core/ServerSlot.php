@@ -361,7 +361,7 @@ class ServerSlot {
 
         // configure ac-server-wrapper
         $this->writeAcServerWrapperParams();
-        $this->writeAcServerWrapperCmContent($el);
+        $this->writeAcServerWrapperCmContent($el, $track);
 
         // lunch server with plugins
         $ac_server = \Core\Config::AbsPathData . "/acserver/acServer$id";
@@ -734,7 +734,7 @@ class ServerSlot {
     }
 
 
-    private function writeAcServerWrapperCmContent(\Core\EntryList $el) {
+    private function writeAcServerWrapperCmContent(\Core\EntryList $el, \DbEntry\Track $track) {
         $cm_content_dir = \Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/cm_content";
 
         // clear old content
@@ -743,6 +743,14 @@ class ServerSlot {
         // prepare data for content.json
         $data_array = array();
         $data_array['cars'] = array();
+        $data_array['track'] = array();
+
+        // add track info
+        if (strlen($track->location()->downloadUrl()) > 0) {
+            $data_array['track']['url'] = $track->location()->downloadUrl();
+        }
+
+        // add car skins
         $processed_car_skin_ids = array();
         foreach ($el->entries() as $eli) {
 
