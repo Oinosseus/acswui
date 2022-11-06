@@ -33,7 +33,6 @@ class CarSkin extends DbEntry {
      * @return True on success
      */
     public function addUploadedFile(string $upload_path, string $target_name) : bool {
-
         // check for valid uploaded file (attack prevention)
         if (!is_uploaded_file($upload_path)) {
             \Core\Log::warning("Ignore not uploaded file '" . $target_name . "'!");
@@ -42,17 +41,20 @@ class CarSkin extends DbEntry {
 
         // check filename
         $valid_filename = (bool) ((preg_match("`^[-0-9a-zA-Z_\.]+$`i", $target_name)) ? true : false);
-        $valid_filename |= (bool) ((strlen($target_name) <= 225) ? true : false);
+        $valid_filename &= (bool) ((strlen($target_name) <= 225) ? true : false);
         if (!$valid_filename) {
             \Core\Log::warning("Ignore illegal filename '" . $target_name . "'!");
             return False;
         }
 
         // check file type
-        $filetype_dds = (bool) ((preg_match("`^.*\.dds$`i", $target_name)) ? true : false);
-        $filetype_livery = (bool) ($target_name == "livery.png") ? true : false;
-        $filetype_preview = (bool) ($target_name == "preview.jpg") ? true : false;
-        if (!$filetype_dds && !$filetype_livery && !$filetype_preview) {
+        $valid_filetype = (bool) ((preg_match("`^.*\.dds$`i", $target_name)) ? true : false);
+        $valid_filetype |= (bool) ($target_name == "livery.png") ? true : false;
+        $valid_filetype |= (bool) ($target_name == "preview.jpg") ? true : false;
+        $valid_filetype |= (bool) ($target_name == "preview.jpg") ? true : false;
+        $valid_filetype |= (bool) ($target_name == "cm_skin.json") ? true : false;
+        $valid_filetype |= (bool) ($target_name == "skin.ini") ? true : false;
+        if (!$valid_filetype) {
             \Core\Log::warning("Ignore illegal filetype '" . $target_name . "'!");
             return False;
         }
