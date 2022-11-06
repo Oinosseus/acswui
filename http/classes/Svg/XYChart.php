@@ -82,7 +82,9 @@ class XYChart {
         foreach (array_reverse($this->YAxes) as $ax) {
             [$min, $max] = $ax->yrange();
 
-            $xml_yaxes .= $ax->drawXmlAxes($xax_xtick, $scale_x, $scale_y * $yax_max_y / $max);
+            $max_non_zero = $max;
+            if ($max_non_zero == 0) $max_non_zero = 1;
+            $xml_yaxes .= $ax->drawXmlAxes($xax_xtick, $scale_x, $scale_y * $yax_max_y / $max_non_zero);
         }
 
 /*
@@ -122,7 +124,9 @@ class XYChart {
         foreach (array_reverse($this->YAxes) as $ax) {
 //             $xml_plots .= "<g id=\"" . $ax->id() . "\">";
             [$min, $max] = $ax->yrange();
-            $xml_plots .= $ax->drawXmlPlots($scale_x, $scale_y * $yax_max_y / $max);
+            $max_non_zero = $max;
+            if ($max_non_zero == 0) $max_non_zero = 1;
+            $xml_plots .= $ax->drawXmlPlots($scale_x, $scale_y * $yax_max_y / $max_non_zero);
 //             $xml_plots .= "</g>";
         }
 

@@ -58,8 +58,16 @@ class CarModel extends \core\HtmlContent {
             $html .= "<tr><th>" . _("Weight") . "</th><td>" . \Core\UserManager::currentUser()->formatWeight($car->weight()) . "</td></tr>";
             $html .= "<tr><th>" . _("Torque") . "</th><td>" . (new \Core\SiPrefix($car->torque()))->humanValue("N m") . "</td></tr>";
             $html .= "<tr><th>" . _("Power") . "</th><td>" . \Core\UserManager::currentUser()->formatPower($car->power()) . "</td></tr>";
-            $html .= "<tr><th>" . _("Specific Power") . "</th><td>" . \Core\UserManager::currentUser()->formatPowerSpecific(1e3 * $car->weight() / $car->power()) . "</td></tr>";
-            $html .= "<tr><th>" . _("Harmonized Power") . "</th><td>" . \Core\UserManager::currentUser()->formatPowerSpecific(1e3 * $car->weight() / $car->harmonizedPower()) . "</td></tr>";
+            if ($car->power() != 0.0) {
+                $html .= "<tr><th>" . _("Specific Power") . "</th><td>" . \Core\UserManager::currentUser()->formatPowerSpecific(1e3 * $car->weight() / $car->power()) . "</td></tr>";
+            } else {
+                $html .= "<tr><th>" . _("Specific Power") . "</th><td>-</td></tr>";
+            }
+            if ($car->harmonizedPower() != 0.0) {
+                $html .= "<tr><th>" . _("Harmonized Power") . "</th><td>" . \Core\UserManager::currentUser()->formatPowerSpecific(1e3 * $car->weight() / $car->harmonizedPower()) . "</td></tr>";
+            } else {
+                $html .= "<tr><th>" . _("Harmonized Power") . "</th><td>-</td></tr>";
+            }
             $html .= "</table>";
 
             $html .= "<table id=\"CarModelRevision\">";
