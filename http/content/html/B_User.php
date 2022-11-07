@@ -9,6 +9,7 @@ class B_User extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("User"),  _("User Overview"));
+        $this->addScript("user.js");
     }
 
     public function getHtml() {
@@ -31,7 +32,19 @@ class B_User extends \core\HtmlContent {
 
         if ($this->ProfileUser) {
             $html .= $this->showProfile();
+            $html .= $this->showGarage();
         }
+
+        return $html;
+    }
+
+
+    private function showGarage() : string {
+        $html = "";
+
+        $html .= "<h1>" . _("Garage") . "</h1>";
+        $html .= "<button type=\"button\" onclick=\"LoadGarage(this)\" userId=\"{$this->ProfileUser->id()}\">" . _("Load Cars") . "</button>";
+        $html .= "<div id=\"GarageCars\"></div>";
 
         return $html;
     }
@@ -47,8 +60,6 @@ class B_User extends \core\HtmlContent {
             $html .= _("Login via Steam");
             $html .= "<br>";
             $html .= \Core\UserManager::htmlLogInOut();
-
-
 
             // root login
             $html .= "<h1>" . _("Root Login") . "</h1>";

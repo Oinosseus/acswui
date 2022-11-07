@@ -92,7 +92,7 @@ class A_Home extends \core\HtmlContent {
 
             // cars
             foreach ($ss->carClass()->cars() as $car) {
-                if (!$car->kunosOriginal() && ($car->downloadUrl()) == 0) {
+                if (!$car->kunosOriginal() && strlen($car->downloadUrl()) == 0) {
                     if (!in_array($car, $cars_with_no_download)) {
                         $cars_with_no_download[] = $car;
                     }
