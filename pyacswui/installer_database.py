@@ -23,6 +23,8 @@ class InstallerDatabase(object):
         self._tables_green()
         self._tables_cyan()
 
+        self._tables_teams()
+
 
 
     def _tables_grey(self):
@@ -350,3 +352,35 @@ class InstallerDatabase(object):
         self.__db.appendColumnFloat("DriverRanking", 'SF_CE')
         self.__db.appendColumnFloat("DriverRanking", 'SF_CC')
         self.__db.appendColumnUInt("DriverRanking", 'RankingGroup')
+
+
+
+    def _tables_teams(self):
+        verb = Verbosity(self._verbosity)
+        verb.print("teams tables")
+
+        table_name = "Teams"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, 'Owner')
+        self.__db.appendColumnString(table_name, 'Name', 50)
+        self.__db.appendColumnString(table_name, 'Abbreviation', 5)
+
+        table_name = "TeamMembers"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, 'Team')
+        self.__db.appendColumnUInt(table_name, 'User')
+        self.__db.appendColumnCurrentTimestamp(table_name, 'Hiring')
+        self.__db.appendColumnBool(table_name, 'PermissionManage')
+        self.__db.appendColumnBool(table_name, 'PermissionSponsor')
+        self.__db.appendColumnBool(table_name, 'PermissionRegister')
+        self.__db.appendColumnBool(table_name, 'PermissionDrive')
+
+        table_name = "TeamCars"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, 'Team')
+        self.__db.appendColumnUInt(table_name, 'CarSkin')
+
+        table_name = "TeamCarOccupationss"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, 'Member')
+        self.__db.appendColumnUInt(table_name, 'Car')

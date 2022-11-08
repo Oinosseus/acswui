@@ -612,6 +612,7 @@ class CommandInstall(Command):
         permissions.append("ServerContent_Cars_View")
         permissions.append("ServerContent_Cars_Edit")
         permissions.append("ServerContent_Teams_View")
+        permissions.append("ServerContent_Teams_Found")
         permissions.append("ServerContent_Tracks_View")
         permissions.append("ServerContent_Tracks_Edit")
         permissions.append("ServerContent_View")
