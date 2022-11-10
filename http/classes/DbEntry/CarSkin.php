@@ -225,6 +225,22 @@ class CarSkin extends DbEntry {
     }
 
 
+    /**
+     * Find all CarSkin objects that are owned by a certain user
+     * @param $owner The User object of the requested CarSkin owner
+     * @return A list of CarSkin objects
+     */
+    public static function listOwnedSkins(User $owner) : array {
+        $carskins = array();
+        $query = "SELECT CarSkins.Id FROM CarSkins INNER JOIN Cars ON CarSkins.Car=Cars.Id WHERE CarSkins.Owner={$owner->id()} ORDER BY Cars.Id ASC;";
+        $res = \Core\Database::fetchRaw($query);
+        foreach ($res as $row) {
+            $carskins[] = CarSkin::fromId((int) $row['Id']);
+        }
+        return $carskins;
+    }
+
+
     //! @return The display name of the skin
     public function name() {
         if ($this->Name === NULL) $this->Name = $this->loadColumn("Name");

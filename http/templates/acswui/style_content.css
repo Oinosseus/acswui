@@ -616,3 +616,19 @@ main.ServerContent table td.TrackImage div img,
 main.ServerContent table td.CarClassImage div img {
     max-height: 3em;
 }
+
+
+/*****************************************************************************
+                                    Teams
+ *****************************************************************************/
+
+main.Teams table.TeamCar {
+    display: inline-block;
+    margin-left: 2em;
+    margin-bottom: 2em;
+}
+
+main.Teams table.TeamCar div.DbEntryHtml {
+    background-color: transparent;
+    margin: 0;
+}

@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace DbEntry;
 
 //! Wrapper for database table element
@@ -38,6 +39,12 @@ class Team extends DbEntry {
     }
 
 
+    //! @return A list of TeamCarClass objects
+    public function carClasses() : array {
+        return TeamCarClass::listTeamCarClasses($this);
+    }
+
+
     /**
      * Creates a new Team that is owned by a certain user
      * @param $owner The User, that owns this Team
@@ -62,7 +69,7 @@ class Team extends DbEntry {
     public function findMember(User $user) : ?TeamMember {
         $query = "SELECT Id FROM TeamMembers WHERE Team={$this->id()} AND User={$user->id()} LIMIT 1;";
         $res = \Core\Database::fetchRaw($query);
-        if (count($res) > 0) return TeamMember::fromId($res[0]['Id']);
+        if (count($res) > 0) return TeamMember::fromId((int) $res[0]['Id']);
         else return NULL;
     }
 
@@ -115,7 +122,7 @@ class Team extends DbEntry {
         $query = "SELECT Id FROM Teams ORDER BY Id ASC;";
         $res = \Core\Database::fetchRaw($query);
         foreach ($res as $row) {
-            $teams[] = Team::fromId($row['Id']);
+            $teams[] = Team::fromId((int) $row['Id']);
         }
         return $teams;
     }
@@ -127,7 +134,7 @@ class Team extends DbEntry {
         $query = "SELECT Id FROM TeamMembers WHERE Team={$this->id()} ORDER BY User ASC;";
         $res = \Core\Database::fetchRaw($query);
         foreach ($res as  $row) {
-            $u = TeamMember::fromId($row['Id']);
+            $u = TeamMember::fromId((int) $row['Id']);
             if ($u) $members[] = $u;
         }
         return $members;
@@ -142,7 +149,7 @@ class Team extends DbEntry {
 
     //! @return The owner of the team (an User object)
     public function owner() : User {
-        $uid = $this->loadColumn("Owner");
+        $uid = (int) $this->loadColumn("Owner");
         $u = User::fromId($uid);
         return $u;
     }

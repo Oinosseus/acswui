@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace DbEntry;
 
 //! Wrapper for database table element
@@ -33,13 +34,13 @@ class TeamMember extends DbEntry {
 
     //! Calling this function, will delete the team membership
     public function leaveTeam() {
+
+        // delete car occupations
+        $query = "DELETE FROM TeamCarOccupations WHERE Member={$this->id()}";
+        \Core\Database::query($query);
+
+        // delete this item
         $this->deleteFromDb();
-    }
-
-
-    //! @return TRUE if the team member can drive events
-    public function permissionDrive() : bool {
-        return ($this->loadColumn("PermissionDrive") == 1) ? TRUE : FALSE;
     }
 
 
@@ -49,10 +50,10 @@ class TeamMember extends DbEntry {
     }
 
 
-    //! @return TRUE if the team member can register for events
-    public function permissionRegister() : bool {
-        return ($this->loadColumn("PermissionRegister") == 1) ? TRUE : FALSE;
-    }
+    // //! @return TRUE if the team member can register for events
+    // public function permissionRegister() : bool {
+    //     return ($this->loadColumn("PermissionRegister") == 1) ? TRUE : FALSE;
+    // }
 
 
     //! @return TRUE if the team member is sponsor
@@ -62,21 +63,15 @@ class TeamMember extends DbEntry {
 
 
     //! @param $permitted If TRUE, the permision is set to be granted
-    public function setPermissionDrive(bool $permitted) {
-        $this->storeColumns(["PermissionDrive"=> ($permitted) ? 1:0]);
-    }
-
-
-    //! @param $permitted If TRUE, the permision is set to be granted
     public function setPermissionManage(bool $permitted) {
         $this->storeColumns(["PermissionManage"=> ($permitted) ? 1:0]);
     }
 
 
-    //! @param $permitted If TRUE, the permision is set to be granted
-    public function setPermissionRegister(bool $permitted) {
-        $this->storeColumns(["PermissionRegister"=> ($permitted) ? 1:0]);
-    }
+    // //! @param $permitted If TRUE, the permision is set to be granted
+    // public function setPermissionRegister(bool $permitted) {
+    //     $this->storeColumns(["PermissionRegister"=> ($permitted) ? 1:0]);
+    // }
 
 
     //! @param $permitted If TRUE, the permision is set to be granted
@@ -87,7 +82,7 @@ class TeamMember extends DbEntry {
 
     //! @return The according User object of the team member
     public function user() : User {
-        return User::fromId($this->loadColumn("User"));
+        return User::fromId((int) $this->loadColumn("User"));
     }
 
 }
