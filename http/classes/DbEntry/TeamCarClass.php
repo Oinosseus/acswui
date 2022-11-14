@@ -15,6 +15,12 @@ class TeamCarClass extends DbEntry {
     }
 
 
+    //! @return TRUE if this is an active item, else FALSE
+    public function active() : bool {
+        return ($this->loadColumn("Active") == 0) ? FALSE : TRUE;
+    }
+
+
     //! @return The according CarClass object
     public function carClass() : CarClass{
         return CarClass::fromId((int) $this->loadColumn("CarClass"));
@@ -23,45 +29,32 @@ class TeamCarClass extends DbEntry {
 
     /**
      * Creates a new TeamCarClass
-     * When the car class already is assinged, NULL will be returned
+     *
+     * When the car-class/team-combination exists, the according object will be returned.
+     * If the existing object is not active, it will be reactivated.
+     *
      * @param $team The which the car shall be assigned to
      * @param $car_class The CarClass
-     * @return The new created TeamCarClass object (or NULL)
+     * @return The new created TeamCarClass object
      */
-    public static function createNew(Team $team, CarClass $car_class) : ?TeamCarClass {
+    public static function createNew(Team $team, CarClass $car_class) : TeamCarClass {
 
         // check if class already exists
         $query = "SELECT Id FROM TeamCarClasses WHERE Team={$team->id()} AND CarClass={$car_class->id()};";
         $res = \Core\Database::fetchRaw($query);
-        if (count($res) > 0) return NULL;
+        if (count($res) > 0) {
+            $tcc = TeamCarClass::fromId((int) $res[0]['Id']);
+            $tcc->setActive(TRUE);
+            return $tcc;
+        }
 
         // add class
         $columns = array();
         $columns['Team'] = $team->id();
         $columns['CarClass'] = $car_class->id();
+        $columns['Active'] = 1;
         $id = (int) \Core\Database::insert("TeamCarClasses", $columns);
         return TeamCarClass::fromId($id);
-    }
-
-
-    //! Calling this function, will delete the team car class
-    public function delete() {
-
-        // delete car occupations
-        $query = "DELETE TeamCarOccupations FROM TeamCarOccupations ";
-        $query .= "INNER JOIN TeamCars ON TeamCars.Id=TeamCarOccupations.Car ";
-        $query .= "INNER JOIN TeamCarClasses ON TeamCarClasses.Id=TeamCars.TeamCarClass ";
-        $query .= "WHERE TeamCarClasses.Id={$this->id()}";
-        \Core\Database::query($query);
-
-        // delete cars
-        $query = "DELETE TeamCars FROM TeamCars ";
-        $query .= "INNER JOIN TeamCarClasses ON TeamCarClasses.Id=TeamCars.TeamCarClass ";
-        $query .= "WHERE TeamCarClasses.Id={$this->id()}";
-        \Core\Database::query($query);
-
-        // delete this item
-        $this->deleteFromDb();
     }
 
 
@@ -88,7 +81,7 @@ class TeamCarClass extends DbEntry {
      */
     public static function listTeamCarClasses(Team $team) : array {
         $list = array();
-        $query = "SELECT Id FROM TeamCarClasses WHERE Team={$team->id()} ORDER By Id ASC;";
+        $query = "SELECT Id FROM TeamCarClasses WHERE Team={$team->id()} AND Active=1 ORDER By Id ASC;";
         $res = \Core\Database::fetchRaw($query);
         foreach ($res as $row) {
             $list[] = TeamCarClass::fromId((int) $row['Id']);
@@ -100,5 +93,22 @@ class TeamCarClass extends DbEntry {
     //! @return The according Team object
     public function team() : Team {
         return Team::fromId((int) $this->loadColumn("Team"));
+    }
+
+
+    //! @param $active TRUE if this object shall be active, else FALSE
+    public function setActive(bool $active) {
+
+        // inactivate TeamCars
+        if (!$active) {
+            foreach ($this->listCars() as $tc) {
+                $tc->setActive(FALSE);
+            }
+        }
+
+        // set this (in)active
+        $columns = array();
+        $columns['Active'] = ($active) ? 1:0;
+        $this->storeColumns($columns);
     }
 }

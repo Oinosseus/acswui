@@ -373,18 +373,22 @@ class InstallerDatabase(object):
         self.__db.appendColumnBool(table_name, 'PermissionManage')
         self.__db.appendColumnBool(table_name, 'PermissionSponsor')
         # self.__db.appendColumnBool(table_name, 'PermissionRegister')
+        self.__db.appendColumnBool(table_name, 'Active')
 
         table_name = "TeamCarClasses"
         self.__db.appendTable(table_name)
         self.__db.appendColumnUInt(table_name, 'Team')
         self.__db.appendColumnUInt(table_name, 'CarClass')
+        self.__db.appendColumnBool(table_name, 'Active')
 
         table_name = "TeamCars"
         self.__db.appendTable(table_name)
         self.__db.appendColumnUInt(table_name, 'TeamCarClass')
         self.__db.appendColumnUInt(table_name, 'CarSkin')
+        self.__db.appendColumnBool(table_name, 'Active')
 
         table_name = "TeamCarOccupations"
         self.__db.appendTable(table_name)
         self.__db.appendColumnUInt(table_name, 'Member')
         self.__db.appendColumnUInt(table_name, 'Car')
+        self.__db.appendColumnBool(table_name, 'Active')

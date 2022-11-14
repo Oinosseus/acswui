@@ -67,7 +67,7 @@ class Teams extends \core\HtmlContent {
 
                     // delete car classes
                     foreach ($this->CurrentTeam->carClasses() as $tcc) {
-                        if (array_key_exists("DeleteClass{$tcc->id()}", $_POST)) $tcc->delete();
+                        if (array_key_exists("DeleteClass{$tcc->id()}", $_POST)) $tcc->setActive(FALSE);
                     }
 
                     // upload logo
@@ -138,7 +138,7 @@ class Teams extends \core\HtmlContent {
                 $tc = \DbEntry\TeamCar::fromId($_POST['TeamCarId']);
                 if ($tc) {
                     if ($this->IsManager || $this->canDelete($tc)) {
-                        $tc->delete();
+                        $tc->setActive(FALSE);
                     }
                 }
                 unset($_GET['AskDeleteTeamCar']);

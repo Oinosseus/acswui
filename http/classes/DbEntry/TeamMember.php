@@ -32,15 +32,9 @@ class TeamMember extends DbEntry {
     }
 
 
-    //! Calling this function, will delete the team membership
+    //! same as setActive(FALSE)
     public function leaveTeam() {
-
-        // delete car occupations
-        $query = "DELETE FROM TeamCarOccupations WHERE Member={$this->id()}";
-        \Core\Database::query($query);
-
-        // delete this item
-        $this->deleteFromDb();
+        $this->setActive(FALSE);
     }
 
 
@@ -74,9 +68,34 @@ class TeamMember extends DbEntry {
     // }
 
 
+    //! @param $active TRUE if this object shall be active, else FALSE
+    public function setActive(bool $active) {
+
+        // inactivate TeamCarOccupations
+        if (!$active) {
+            foreach ($this->team()->carClasses() as $tcc) {
+                foreach ($tcc->listCars() as $tc) {
+                    $tc->removeDriver($this);
+                }
+            }
+        }
+
+        // set this (in)active
+        $columns = array();
+        $columns['Active'] = ($active) ? 1:0;
+        $this->storeColumns($columns);
+    }
+
+
     //! @param $permitted If TRUE, the permision is set to be granted
     public function setPermissionSponsor(bool $permitted) {
         $this->storeColumns(["PermissionSponsor"=> ($permitted) ? 1:0]);
+    }
+
+
+    //! @return The joined Team object
+    public function team() : Team {
+        return Team::fromId((int) $this->loadColumn("Team"));
     }
 
 

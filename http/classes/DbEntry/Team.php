@@ -23,19 +23,25 @@ class Team extends DbEntry {
 
     /**
      * Adding new team member.
-     * Will be ignorediIf already existent.
+     * Will reactive TeamMembers if existent in the past.
      */
-    public function addMember(User $user) {
+    public function addMember(User $user) : TeamMember {
         // check if already existent
         $query = "SELECT Id FROM TeamMembers WHERE Team={$this->id()} AND User={$user->id()};";
         $res = \Core\Database::fetchRaw($query);
-        if (count($res) > 0) return;
+        if (count($res) > 0) {
+            $tmm = TeamMember::fromId((int) $res[0]['Id']);
+            $tmm->setActive(TRUE);
+            return $tmm;
+        }
 
         // add member
         $columns = array();
         $columns['User'] = $user->id();
         $columns['Team'] = $this->id();
-        \Core\Database::insert("TeamMembers", $columns);
+        $columns['Active'] = 1;
+        $id = \Core\Database::insert("TeamMembers", $columns);
+        return TeamMember::fromId($id);
     }
 
 
@@ -67,7 +73,7 @@ class Team extends DbEntry {
      * @return The according TeamMember object or NULL
      */
     public function findMember(User $user) : ?TeamMember {
-        $query = "SELECT Id FROM TeamMembers WHERE Team={$this->id()} AND User={$user->id()} LIMIT 1;";
+        $query = "SELECT Id FROM TeamMembers WHERE Team={$this->id()} AND User={$user->id()} AND Active=1 LIMIT 1;";
         $res = \Core\Database::fetchRaw($query);
         if (count($res) > 0) return TeamMember::fromId((int) $res[0]['Id']);
         else return NULL;
@@ -139,7 +145,7 @@ class Team extends DbEntry {
     //! @return A list of TemMember objects that are team members
     public function members() : array {
         $members = array();
-        $query = "SELECT Id FROM TeamMembers WHERE Team={$this->id()} ORDER BY User ASC;";
+        $query = "SELECT Id FROM TeamMembers WHERE Team={$this->id()} AND Active=1 ORDER BY User ASC;";
         $res = \Core\Database::fetchRaw($query);
         foreach ($res as  $row) {
             $u = TeamMember::fromId((int) $row['Id']);
