@@ -350,6 +350,12 @@ class CommandInstall(Command):
             Verbosity(Verbosity(verb)).print("mkdirs " + path_owned_carskin_packages)
             self.mkdirs(path_owned_carskin_packages)
 
+        # htmlimg/team_logos
+        path_htmlimg_teamlogos = os.path.join(path_htdata, "htmlimg", "team_logos")
+        if not os.path.isdir(path_htmlimg_teamlogos):
+            Verbosity(Verbosity(verb)).print("mkdirs " + path_htmlimg_teamlogos)
+            self.mkdirs(path_htmlimg_teamlogos)
+
         verb = None
 
 
@@ -557,6 +563,7 @@ class CommandInstall(Command):
         paths.append(os.path.join(abspath_htdata, "realtime"))
         paths.append(os.path.join(abspath_htdata, "content"))
         paths.append(os.path.join(abspath_htdata, "htmlimg", "car_skins"))
+        paths.append(os.path.join(abspath_htdata, "htmlimg", "team_logos"))
         paths.append(os.path.join(abspath_htdata, "owned_carskin_packages"))
         for path in paths:
             cmd = ["chmod", "-R", "g+w", path]

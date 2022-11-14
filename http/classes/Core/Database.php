@@ -173,7 +173,7 @@ class Database {
      *
      * @return Id of the new inserted table row
      */
-    public static function insert(string $table, array $field_list) {
+    public static function insert(string $table, array $field_list) : int {
         global $acswuiConfig;
         global $acswuiLog;
 
@@ -216,7 +216,7 @@ class Database {
         if ($result === False) {
             Log::error("Failed SQL query: " . Database::$DbHandle->error);
         }
-        return $result->fetch_array()[0];
+        return (int) $result->fetch_array()[0];
     }
 
 

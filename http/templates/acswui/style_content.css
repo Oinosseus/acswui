@@ -400,6 +400,7 @@ main.SessionSchedules div#SessionScheduleOverview div div {
     background-color: transparent;
     margin: 0;
     padding: 0;
+    border: None;
 }
 
 main.SessionSchedules div#SessionScheduleOverview div div img {
@@ -631,4 +632,5 @@ main.Teams table.TeamCar {
 main.Teams table.TeamCar div.DbEntryHtml {
     background-color: transparent;
     margin: 0;
+    border: None;
 }

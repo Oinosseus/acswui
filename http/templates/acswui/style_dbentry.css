@@ -3,6 +3,7 @@ div.DbEntryHtml {
     display: inline-block;
     margin: 0.5em 0.5em;
     background-color: var(--color-bg-elements);
+    border: 1px solid #0002;
 }
 
 div.DbEntryHtml label {
@@ -120,4 +121,30 @@ div.CarTorquePowerChart svg g.Axes g.YAxisPower text.YAxisLabel {
 div.UserHiddenName {
     font-weight: normal;
     font-style: italic;
+}
+
+
+
+/* -----------------------------------------------------------------------------
+ *                                  Team
+ * -----------------------------------------------------------------------------
+ */
+
+div.DbEntryHtmlTeam {
+    display: inline-block;
+    margin-legt: 10em;
+    margin-bottom: 2em;
+}
+
+div.DbEntryHtmlTeam img.TeamLogoImage {
+    height: 3em;
+    float: left;
+    margin-right: 1em;
+}
+
+div.DbEntryHtmlTeam a,
+div.DbEntryHtmlTeam label {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
 }

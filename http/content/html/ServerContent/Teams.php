@@ -69,6 +69,11 @@ class Teams extends \core\HtmlContent {
                     foreach ($this->CurrentTeam->carClasses() as $tcc) {
                         if (array_key_exists("DeleteClass{$tcc->id()}", $_POST)) $tcc->delete();
                     }
+
+                    // upload logo
+                    if (array_key_exists("TeamLogoFile", $_FILES) && strlen($_FILES['TeamLogoFile']['name']) > 0) {
+                        $this->CurrentTeam->uploadLogoFile($_FILES['TeamLogoFile']['tmp_name'], $_FILES['TeamLogoFile']['name']);
+                    }
                 }
 
                 if ($this->IsManager || $this->IsOwner) {
@@ -211,15 +216,21 @@ class Teams extends \core\HtmlContent {
         // ====================================================================
 
         $html .= "<h1>{$tm->name()}</h1>";
-        $html .= $this->newHtmlForm("POST");
+        $html .= $this->newHtmlForm("POST", "", TRUE);
         $html .= "<input type=\"hidden\" name=\"Id\" value=\"{$tm->id()}\">";
 
         $html .= "<table id=\"TeamInformation\">";
         $html .= "<caption>" . _("Team Information") . "</caption>";
-        $html .= "<tr><th>" . _("Owner") . "</th><td>{$tm->owner()->html()}</td></tr>";
+        $html .= "<tr>";
+        $html .= "<td rowspan=\"4\"><img src=\"{$tm->logoPath()}\"></td>";
+        $html .= "<th>" . _("Owner") . "</th><td>{$tm->owner()->html()}</td></tr>";
         if ($this->IsOwner) {
             $html .= "<tr><th>" . _("Name") . "</th><td><input type=\"text\" name=\"TeamName\" value=\"{$tm->name()}\" /></td></tr>";
-            $html .= "<tr><th>" . _("Abbreviation") . "</th><td><input type=\"text\" name=\"TeamAbbreviation\" value=\"{$tm->abbreviation()}\" /></td></tr>";
+            $html .= "<tr><th>" . _("Abbreviation") . "</th><td><input type=\"text\" name=\"TeamAbbreviation\" value=\"{$tm->abbreviation()}\" maxlength=\"5\" /></td></tr>";
+            $html .= "<tr><th>" . _("Logo") . "</th><td>";
+            $html .= "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"524288\" />";
+            $html .= "<input type=\"file\" name=\"TeamLogoFile\"><br>";
+            $html .= "</td></tr>";
         } else {
             $html .= "<tr><th>" . _("Name") . "</th><td>{$tm->name()}</td></tr>";
             $html .= "<tr><th>" . _("Abbreviation") . "</th><td>{$tm->abbreviation()}</td></tr>";

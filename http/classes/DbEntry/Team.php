@@ -95,7 +95,7 @@ class Team extends DbEntry {
 
         $html = "";
 
-        // if ($show_img) $html .= "<img class=\"HoverPreviewImage\" src=\"$preview_path\" id=\"Team{$this->id()}\" alt=\"$skin_name\" title=\"{$this->car()->name()}\n$skin_name\">";
+        if ($show_img) $html .= "<img class=\"TeamLogoImage\" src=\"{$this->logoPath()}\" id=\"Team{$this->id()}\" alt=\"{$this->abbreviation()}\" title=\"{$this->name()}\">";
 
         // label
         $html .= "<label for=\"Team{$this->id()}\">";
@@ -111,7 +111,7 @@ class Team extends DbEntry {
             $html = "<a href=\"index.php?HtmlContent=Teams&Id={$this->id()}\">$html</a>";
         }
 
-        $html = "<div class=\"DbEntryHtml\">$html</div>";
+        $html = "<div class=\"DbEntryHtml DbEntryHtmlTeam\">$html</div>";
         return $html;
     }
 
@@ -125,6 +125,14 @@ class Team extends DbEntry {
             $teams[] = Team::fromId((int) $row['Id']);
         }
         return $teams;
+    }
+
+
+    //! @return The path to the team logo image
+    public function logoPath($html_relative = TRUE) {
+        $path = ($html_relative) ? \Core\Config::RelPathHtdata : \Core\Config::AbsPathHtdata;
+        $path .= "/htmlimg/team_logos/{$this->id()}.png";
+        return $path;
     }
 
 
@@ -160,6 +168,7 @@ class Team extends DbEntry {
      * @param $new_abbreviation The new team abbreviation (will be trimmed)
      */
     public function setAbbreviation(string $new_abbreviation) {
+        $new_abbreviation = substr(trim($new_abbreviation), 0, 5);
         $this->storeColumns(["Abbreviation"=>trim($new_abbreviation)]);
     }
 
@@ -170,5 +179,37 @@ class Team extends DbEntry {
      */
     public function setName(string $new_name) {
         $this->storeColumns(["Name"=>trim($new_name)]);
+    }
+
+
+    /**
+     * Copies a TEAM LOGO from the temporary upload directory into the htdata/htmlimg/team_logos directory.
+     *
+     * @param $upload_path Path of the temporary upload location eg. $_FILES["xxx"]["tmp_name"]
+     * @param $target_name The target filename (to identify image format) eg. $_FILES["xxx"]["name"]
+     * @return True on success
+     */
+    public function uploadLogoFile(string $upload_path, string $target_name) : bool {
+
+        // check for valid uploaded file (attack prevention)
+        if (!is_uploaded_file($upload_path)) {
+            \Core\Log::warning("Ignore not uploaded file '" . $upload_path . "'!");
+            return False;
+        }
+
+        // identify format
+        $format = NULL;
+        $suffix = strtolower(substr($target_name, -4, 4));
+        if (in_array($suffix, [".jpg", "jpeg"])) $format = "jpg";
+        else if ($suffix == ".png") $format = "png";
+        else \Core\Log::error("Cannot identify format from '{$target_name}'!");
+
+        // load new logo
+        $img = new \Core\ImageMerger(300, 200);
+        $img->merge($upload_path, TRUE, 1.0, $format);
+        $img->save($this->logoPath(FALSE));
+
+        // if reached here, upload was successfull
+        return True;
     }
 }
