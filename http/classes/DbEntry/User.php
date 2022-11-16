@@ -98,7 +98,7 @@ class User extends DbEntry { #implements JsonSerializable {
 
     //! @return A User object that represents the guest user (virtual, not existing in database)
     public static function guestUser() {
-        $u = new USer(NULL);
+        $u = new User(NULL);
         return $u;
     }
 

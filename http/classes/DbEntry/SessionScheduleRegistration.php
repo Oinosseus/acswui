@@ -32,8 +32,8 @@ class SessionScheduleRegistration extends DbEntry {
 
     /**
      * Add/Update a registration item.
-     * If §car_skin is NULL, the registration will set as not active.
-     * If the schedule/user combination already exists, it will be updated
+     *
+     * If the schedule/user or schedule/teamcar combination already exists, it will be updated
      *
      * @param $schedule The related SessionSchedule object
      * @param $user The User object to be registered (can be NULL if $team_car is given)
@@ -44,7 +44,7 @@ class SessionScheduleRegistration extends DbEntry {
     public static function register(SessionSchedule $schedule,
                                     User $user=NULL,
                                     CarSkin $car_skin=NULL,
-                                    TeamCar $team_car=NULL) {
+                                    TeamCar $team_car=NULL) : ?SessionScheduleRegistration {
         $ret = NULL;
 
         // use CarSKin object from TeamCar (if given)
@@ -56,36 +56,35 @@ class SessionScheduleRegistration extends DbEntry {
         }
 
         // check if schedule is obsolete
-        if ($schedule->obsolete() && $car_skin !== NULL) {
-            \Core\Log::warning("Deny register User $user_id for obsolete schedule $schedule");
+        if ($schedule->obsolete()) {
+            \Core\Log::warning("Deny registration for obsolete schedule $schedule");
             return NULL;
         }
 
-        // check if CarSkin is occupied
-        if ($car_skin !== NULL) {
-            $query = "SELECT Id FROM SessionScheduleRegistrations WHERE SessionSchedule = {$schedule->id()} AND User != $user_id AND Active != 0 AND CarSkin = {$car_skin->id()}";
-            $res = \Core\Database::fetchRaw($query);
-            if (count($res) > 0) {
-                \Core\Log::error("Deny registration for User $user_id because duplicated CarSkin {$car_skin->id()} at SessionSchedule {$schedule->id()}!");
-                return NULL;
-            }
+        // check if CarSkin is already occupied
+        $query = "SELECT Id FROM SessionScheduleRegistrations WHERE SessionSchedule = {$schedule->id()} AND Active != 0 AND CarSkin = {$car_skin->id()}";
+        $res = \Core\Database::fetchRaw($query);
+        if (count($res) > 0) {
+            \Core\Log::error("Deny registration for User $user_id because duplicated CarSkin {$car_skin->id()} at SessionSchedule {$schedule->id()}!");
+            return NULL;
         }
 
         // unregister users from other cars than TeamCar
-        if($team_car) {
+        if ($team_car) {
             foreach ($team_car->drivers() as $tmm) {
                 $query = "UPDATE SessionScheduleRegistrations SET Active=0 WHERE SessionSchedule={$schedule->id()} AND User={$tmm->user()->id()}";
                 \Core\Database::query($query);
             }
         }
 
+        // prepare columns for database
         $columns = array();
         $columns['User'] = $user_id;
         $columns['SessionSchedule'] = $schedule->id();
-        $columns['CarSkin'] = ($car_skin === NULL) ? 0 : $car_skin->id();
-        $columns['Active'] = ($car_skin === NULL) ? 0 : 1;
+        $columns['CarSkin'] = $car_skin->id();
         $columns['TeamCar'] = ($team_car === NULL) ? 0 : $team_car->id();
-        if ($car_skin !== NULL) $columns['Activated'] = (new \DateTime("now"))->format("Y-m-d H:i:s");
+        $columns['Active'] = 1;
+        $columns['Activated'] = (new \DateTime("now"))->format("Y-m-d H:i:s");
 
         // check if combination exists
         if ($team_car) {
@@ -131,16 +130,33 @@ class SessionScheduleRegistration extends DbEntry {
 
 
     /**
-     * List a registration for a certain user/schedule combination
+     * List all active registrations for a certain user/schedule combination
+     * Multiple registrations can exist because of team registrations
      * @param $schedule The related SessionSchedule object
      * @param $user The requested User object
-     * @return A SessionScheduleRegistration object or NULL
+     * @return A list of SessionScheduleRegistration objects
      */
-    public static function getRegistration(SessionSchedule $schedule, User $user) {
-        $query = "SELECT Id FROM SessionScheduleRegistrations WHERE SessionSchedule = {$schedule->id()} AND User = {$user->id()}";
-        $res = \Core\Database::fetchRaw($query);
-        if (count($res) == 0) return NULL;
-        return SessionScheduleRegistration::fromId($res[0]['Id']);
+    public static function getRegistrations(SessionSchedule $schedule, User $user) : array {
+        $registrations = array();
+
+        // find driver registrations
+        $query = "SELECT Id FROM SessionScheduleRegistrations WHERE SessionSchedule={$schedule->id()} AND User={$user->id()} AND Active=1 AND TeamCar=0";
+        foreach(\Core\Database::fetchRaw($query) as $row) {
+            $registrations[] = SessionScheduleRegistration::fromId($row['Id']);
+        }
+
+        // find team registrations
+        $query = "SELECT Id, TeamCar FROM SessionScheduleRegistrations WHERE SessionSchedule={$schedule->id()} AND User=0 AND Active=1 AND TeamCar!=0";
+        foreach(\Core\Database::fetchRaw($query) as $row) {
+            $sr = SessionScheduleRegistration::fromId($row['Id']);
+            if (in_array($sr, $registrations)) continue;
+            $tcar = TeamCar::fromId($row['TeamCar']);
+            foreach ($tcar->drivers() as $tmm) {
+                if ($tmm->user()->id() == $user->id()) $registrations[] = $sr;
+            }
+        }
+
+        return $registrations;
     }
 
 
@@ -177,6 +193,7 @@ class SessionScheduleRegistration extends DbEntry {
     }
 
 
+
     //! @param $ballast The new ballast for this registration
     public function setBallast(int $ballast) {
         if ($ballast < 0 || $ballast > 999) {
@@ -201,6 +218,12 @@ class SessionScheduleRegistration extends DbEntry {
     public function teamCar() : ?TeamCar {
         $id = (int) $this->loadColumn("TeamCar");
         return ($id == 0) ? NULL : TeamCar::fromId($id);
+    }
+
+
+    //! Unregister (set in-active)
+    public function unregister() {
+        $this->storeColumns(['Active'=>0]);
     }
 
 

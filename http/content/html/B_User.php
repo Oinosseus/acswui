@@ -9,6 +9,7 @@ class B_User extends \core\HtmlContent {
 
     public function __construct() {
         parent::__construct(_("User"),  _("User Overview"));
+        $this->requirePermission("User_View");
         $this->addScript("user.js");
     }
 

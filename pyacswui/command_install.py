@@ -655,7 +655,8 @@ class CommandInstall(Command):
         permissions.append("Cronjobs_View")
         permissions.append("Cronjobs_Force")
         permissions.append("Skins_Create")
-        permissions.append("Notify_Maladministration")
+        permissions.append("Home_Notify_Maladministration")
+        permissions.append("Home_UpCommingRaces")
 
         # delete obsolete permissions
         for column in self.__db.columns("Groups"):

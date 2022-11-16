@@ -1,5 +1,54 @@
 
 /******************************************************************************
+                                   A_Home
+ ******************************************************************************/
+
+main.A_Home div#UpcommingRacesOverview {
+    display: inline-grid;
+    grid-template-columns: repeat(4, auto);
+    margin-top: 2em;
+}
+
+main.A_Home div#UpcommingRacesOverview div {
+    border-radius: 1em;
+    background-color: var(--color-bg-elements);
+    padding: 0.5em 1em;
+    margin-bottom: 1.2em;
+    margin-right: 0.5em;
+}
+
+main.A_Home div#UpcommingRacesOverview div.Obsolete {
+    background-color: var(--color-functional-bg-fail);
+    color: var(--color-disabled);
+    font-style: italic;
+}
+
+main.A_Home div#UpcommingRacesOverview div.DbEntryHtml {
+    border-radius: 0;
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+main.A_Home div#UpcommingRacesOverview span.RegistrationsFull {
+    color: var(--color-functional-fail);
+}
+
+main.A_Home div#UpcommingRacesOverview span.RegistrationsAvailable {
+    color: var(--color-functional-success);
+}
+
+main.A_Home .NotRegistered {
+    color: var(--color-functional-fail);
+}
+
+main.A_Home .Registered {
+    color: var(--color-functional-success);
+}
+
+
+/******************************************************************************
                                    CarBrand
  ******************************************************************************/
 
@@ -378,7 +427,7 @@ main.DriverRanking .TrendFalling {
 
 main.SessionSchedules div#SessionScheduleOverview {
     display: inline-grid;
-    grid-template-columns: repeat(6, auto);
+    grid-template-columns: repeat(4, auto);
     margin-top: 2em;
 }
 
@@ -390,12 +439,7 @@ main.SessionSchedules div#SessionScheduleOverview div {
     margin-right: 0.5em;
 }
 
-main.SessionSchedules div#SessionScheduleOverview div.track {
-    padding-top: 0;
-    padding-bottom: 0;
-}
-
-main.SessionSchedules div#SessionScheduleOverview div div {
+main.SessionSchedules div#SessionScheduleOverview div.DbEntryHtml {
     border-radius: 0;
     background-color: transparent;
     margin: 0;
@@ -479,7 +523,7 @@ main.SessionSchedules form#RegistrationRoster table tr.Overbooked td {
 
 main.SessionSchedules div#SessionDetailsOverview {
     display: inline-grid;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(5, auto);
     margin-bottom: 4em;
 }
 

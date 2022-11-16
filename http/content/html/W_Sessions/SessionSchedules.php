@@ -11,7 +11,6 @@ class SessionSchedules extends \core\HtmlContent {
     public function __construct() {
         parent::__construct(_("Schedule"),  "Session Schedule");
         $this->requirePermission("Sessions_Schedule_View");
-        $this->addScript("session_schedule.js");
     }
 
 
@@ -33,31 +32,31 @@ class SessionSchedules extends \core\HtmlContent {
 
                     // register driver
                     if ($_POST['RegistrationType'] == "Driver") {
-                        $car_skin = \DbEntry\CarSkin::fromId($_POST["RegistrationCarSkin"]);
-                        \DbEntry\SessionScheduleRegistration::register(schedule:$this->CurrentSchedule,
-                                                                       user:$user,
-                                                                       car_skin:$car_skin);
+                        if (array_key_exists("RegistrationCarSkin", $_POST)) {
+                            $car_skin = \DbEntry\CarSkin::fromId($_POST["RegistrationCarSkin"]);
+                            \DbEntry\SessionScheduleRegistration::register(schedule:$this->CurrentSchedule,
+                                                                        user:$user,
+                                                                        car_skin:$car_skin);
+                        }
 
                     // register team
                     } else if ($_POST['RegistrationType'] == "Team" && $this->CurrentSchedule->getParamValue("AllowTeams")) {
-                        $team_car = \DbEntry\TeamCar::fromId($_POST["RegistrationTeamCar"]);
-                        \DbEntry\SessionScheduleRegistration::register(schedule:$this->CurrentSchedule,
-                                                                       team_car:$team_car);
+                        if (array_key_exists('RegistrationTeamCar', $_POST)) {
+                            $team_car = \DbEntry\TeamCar::fromId($_POST["RegistrationTeamCar"]);
+                            \DbEntry\SessionScheduleRegistration::register(schedule:$this->CurrentSchedule,
+                                                                        team_car:$team_car);
+                        }
                     }
                 }
                 $this->reload(['SessionSchedule'=>$this->CurrentSchedule->id(), "Action"=>"ShowRoster"]);
             }
 
-            if ($this->CurrentSchedule && $_REQUEST['Action'] == "Register") {
-                $html .= $this->showRegistration();
+            if ($this->CurrentSchedule && $_REQUEST['Action'] == "RegisterDriver") {
+                $html .= $this->showRegistrationDriver();
             }
 
-            if ($_REQUEST['Action'] == "UnRegister") {
-                if ($this->CurrentSchedule && !$this->CurrentSchedule->obsolete()) {
-                    $user = \Core\UserManager::currentUser();
-                    \DbEntry\SessionScheduleRegistration::register($this->CurrentSchedule, $user);
-                }
-                $this->reload();
+            if ($this->CurrentSchedule && $_REQUEST['Action'] == "RegisterTeam") {
+                $html .= $this->showRegistrationTeam();
             }
 
             if ($_REQUEST['Action'] == "AskDeleteItem" && $this->CanEdit) {
@@ -88,16 +87,32 @@ class SessionSchedules extends \core\HtmlContent {
                 $this->reload();
             }
 
-            if ($_REQUEST['Action'] == "SaveRoster" && $this->CanEdit) {
+            if ($_REQUEST['Action'] == "SaveRoster") {
                 if ($this->CurrentSchedule && !$this->CurrentSchedule->obsolete()) {
-                    foreach (\DbEntry\SessionScheduleRegistration::listRegistrations($this->CurrentSchedule, FALSE) as $sr) {
-                        $sr->setBallast($_POST["Ballast{$sr->id()}"]);
-                        $sr->setRestrictor($_POST["Restrictor{$sr->id()}"]);
+
+                    // admin tasks
+                    if ($this->CanEdit) {
+
+                        // save Ballast and Restrictor
+                        foreach ($this->CurrentSchedule->registrations(only_active:FALSE) as $sr) {
+                            $sr->setBallast($_POST["Ballast{$sr->id()}"]);
+                            $sr->setRestrictor($_POST["Restrictor{$sr->id()}"]);
+                        }
+
+                        // add drivers
+                        $add_driver_id = $_REQUEST['AddDriverId'];
+                        if ($add_driver_id) {
+                            $user = \DbEntry\User::fromId($add_driver_id);
+                            \DbEntry\SessionScheduleRegistration::register($this->CurrentSchedule, $user);
+                        }
                     }
-                    $add_driver_id = $_REQUEST['AddDriverId'];
-                    if ($add_driver_id) {
-                        $user = \DbEntry\User::fromId($add_driver_id);
-                        \DbEntry\SessionScheduleRegistration::register($this->CurrentSchedule, $user);
+
+                    // user tasks / unregister
+                    $cuser = \Core\UserManager::currentUser();
+                    foreach ($this->CurrentSchedule->registrations(only_active:TRUE) as $sr) {
+                        if (array_key_exists("Unregister{$sr->id()}", $_POST)) {
+                            if ($this->currentUserCanUnregister($sr)) $sr->unregister();
+                        }
                     }
                 }
                 $this->reload(['SessionSchedule'=>$this->CurrentSchedule->id(), 'Action'=>'ShowRoster']);
@@ -114,6 +129,29 @@ class SessionSchedules extends \core\HtmlContent {
 
 
         return $html;
+    }
+
+
+    private function currentUserCanUnregister(\DbEntry\SessionScheduleRegistration $sr) : bool {
+        $cuser = \Core\UserManager::currentUser();
+
+        // directly fail if registration is not active
+        if (!$sr->active()) return FALSE;
+
+        // directly fail if session schedule is obsolete
+        if ($sr->sessionSchedule()->obsolete()) return FALSE;
+
+        // check if current user is directly registered
+        if ($sr->user() && $sr->user()->id() == $cuser->id()) return TRUE;
+
+        // check if user is manager of a team regfistration
+        if ($sr->teamCar()) {
+            $tmm = $sr->teamCar()->team()->findMember($cuser);
+            if ($tmm && $tmm->permissionManage()) return TRUE;
+        }
+
+        // if no permission found, then fail
+        return FALSE;
     }
 
 
@@ -135,6 +173,8 @@ class SessionSchedules extends \core\HtmlContent {
         $html .= " ";
 
         $html .= $this->newHtmlForm("GET");
+        $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$this->CurrentSchedule->id()}\">";
+        $html .= "<input type=\"hidden\" name=\"Action\" value=\"ShowRoster\">";
         $html .= "<button type=\"submit\">" . _("Cancel") . "</button>";
         $html .= "</form>";
 
@@ -154,6 +194,8 @@ class SessionSchedules extends \core\HtmlContent {
         $html .= "</form>";
 
         $html .= $this->newHtmlForm("GET");
+        $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$this->CurrentSchedule->id()}\">";
+        $html .= "<input type=\"hidden\" name=\"Action\" value=\"ShowRoster\">";
         $html .= "<button type=\"submit\">" . _("Cancel") . "</button>";
         $html .= "</form>";
 
@@ -173,61 +215,38 @@ class SessionSchedules extends \core\HtmlContent {
         foreach (\DbEntry\SessionSchedule::listSchedules($a_week_ago) as $ss) {
 
             $class_obsolete = ($ss->obsolete()) ? "Obsolete" : "";
-
-            $html .= "<div class=\"$class_obsolete\">";
-            $html .= "<strong>" . $ss->name() . "</strong><br>";
-            $html .= \Core\UserManager::currentUser()->formatDateTimeNoSeconds($ss->start()) . "<br>";
-            $html .= "</div>";
-
-            $html .= "<div class=\"track $class_obsolete\">";
-            $html .= $ss->track()->html(TRUE, FALSE, TRUE);
-            $html .= "</div>";
-
-            $html .= "<div class=\"CarClass $class_obsolete\">";
-            $html .= $ss->carClass()->html(TRUE, FALSE, TRUE);
-            $html .= "</div>";
-
-            $html .= "<div class=\"$class_obsolete\">";
-            $html .= "<small>{$ss->serverSlot()->name()}</small></br>";;
-            $html .= $ss->track()->html(TRUE, TRUE, FALSE) . "<br>";
-            $html .= $ss->carClass()->htmlName() . "<br>";
             $count_registrations = count($ss->registrations());
             $count_pits = $ss->track()->pitboxes();
             $registration_css_class = ($count_registrations > $count_pits) ? "RegistrationsFull" : "RegistrationsAvailable";
-            $html .= _("Registrations") . ": <span class=\"$registration_css_class\">$count_registrations / $count_pits</span>";
-            $html .= "</div>";
 
             $html .= "<div class=\"$class_obsolete\">";
-            if ($ss->obsolete()) {
-                // $html .= _("Registrations") . ": $count_registrations / $count_pits";
-                if ($ss->sessionLast() !== NULL) {
-                    $url = "index.php?HtmlContent=SessionOverview&SessionId=";
-                    $url .= $ss->sessionLast()->id();
-                    $html .= "<a href=\"$url\">" . _("Results") . "</a>";
-                }
+            $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"ShowRoster"]) . "\">{$ss->name()}</a><br>";
+            $html .= \Core\UserManager::currentUser()->formatDateTimeNoSeconds($ss->start()) . "<br>";
+            $srs = \DbEntry\SessionScheduleRegistration::getRegistrations($ss, \Core\UserManager::currentUser());
+            if (count($srs) > 0) {
+                $html .= "<span class=\"Registered\">" . _("Registered") . "</span>";
             } else {
-                $sr = \DbEntry\SessionScheduleRegistration::getRegistration($ss, \Core\UserManager::currentUser());
-                if ($sr !== NULL && $sr->active()) {
-                    $html .= "<span class=\"Registered\">" . _("Registered") . "</span><br>";
-                    $html .= $this->newHtmlForm("POST");
-                    $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$ss->id()}\">";
-                    $html .= "<button type=\"submit\" name=\"Action\" value=\"UnRegister\">" . _("Unregister") . "</button>";
-                    $html .= "</form>";
-                } else {
-                    $html .= "<span class=\"NotRegistered\">" . _("Not Registered") . "</span><br>";
-                    $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"Register"]) . "\">". _("Register") . "</a>";
-                }
-                // $html .= "<br><br>" . _("Registrations") . ": <span class=\"$registration_css_class\">$count_registrations / $count_pits</span>";
+                    $html .= "<span class=\"NotRegistered\">" . _("Not Registered") . "</span>";
             }
+            // $html .= " (<span class=\"$registration_css_class\">$count_registrations / $count_pits</span>)<br>";
             $html .= "</div>";
 
+            $html .= "<div class=\"track $class_obsolete\">";
+            $html .= $ss->track()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
+            $html .= "</div>";
+
+            $html .= "<div class=\"CarClass $class_obsolete\">";
+            $html .= $ss->carClass()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
+            $html .= "</div>";
 
             $html .= "<div class=\"$class_obsolete\">";
+            $html .= "{$ss->serverSlot()->name()}<br>";;
+            $html .= _("Registrations") . ": <span class=\"$registration_css_class\">$count_registrations / $count_pits</span><br>";
             if ($this->CanEdit) {
-                $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"EditItem"]) . "\">" . _("Edit") . "</a><br>";
+                $html .= "</br>";
+                $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"EditItem"]) . "\">" . _("Edit") . "</a>, ";
                 $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"AskDeleteItem"]) . "\">" . _("Delete") . "</a><br>";
             }
-            $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"ShowRoster"]) . "\">" . _("Registration Roster") . "</a><br>";
             $html .= "</div>";
 
         }
@@ -245,7 +264,7 @@ class SessionSchedules extends \core\HtmlContent {
     }
 
 
-    private function showRegistration() {
+    private function showRegistrationDriver() {
         $html = "";
         $ss = $this->CurrentSchedule;
         if (!$ss) return "";
@@ -259,23 +278,13 @@ class SessionSchedules extends \core\HtmlContent {
         // create new form
         $html .= $this->newHtmlForm("POST", "DriverRegistrationForm");
         $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$ss->id()}\">";
-
-        // select registration type
-        $html .= _("Registration Type") . ":&nbsp;";
-        $html .= "<select name=\"RegistrationType\" id=\"RegistrationType\">";
-        $html .= "<option value=\"Driver\" selected=\"yes\">" . _("Driver") . "</option>";
-        if ($ss->getParamValue("AllowTeams")) {
-            $html .= "<option value=\"Team\">" . _("Team") . "</option>";
-        }
-        $html .= "</select>";
-        $html .= "<br><br>";
+        $html .= "<input type=\"hidden\" name=\"RegistrationType\" value=\"Driver\">";
 
         // save button
         $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveRgistration\">" . _("Save Registration") . "</button>";
         $html .= "<br>";
 
         // cars for driver registration
-        $html .= "<div id=\"RegistrationTypeDriverCars\">";
         foreach ($ss->carClass()->cars() as $car) {
 
             $html .= "<h2>{$car->name()}</h2>";
@@ -294,21 +303,6 @@ class SessionSchedules extends \core\HtmlContent {
                 $html .= $this->newHtmlContentRadio("RegistrationCarSkin", $skin->id(), $skin_img, $checked, $disabled);
             }
         }
-        $html .= "</div>";
-
-        // cars for team registration
-        $html .= "<div id=\"RegistrationTypeTeamCars\">";
-        foreach (\DbEntry\Team::listTeams(manager:$cu, carclass:$ss->carClass()) as $tm) {
-            $html .= "<h1>{$tm->name()}</h1>";
-
-            foreach ($tm->cars() as $tc) {
-                $skin_img = $tc->html();
-                $checked = FALSE;
-                $disabled = FALSE;
-                $html .= $this->newHtmlContentRadio("RegistrationTeamCar", $tc->id(), $skin_img, $checked, $disabled);
-            }
-        }
-        $html .= "</div>";
 
         // save button
         $html .= "<br>";
@@ -319,9 +313,63 @@ class SessionSchedules extends \core\HtmlContent {
     }
 
 
+    private function showRegistrationTeam() {
+        $html = "";
+        $ss = $this->CurrentSchedule;
+        if (!$ss) return "";
+        if ($ss->obsolete()) return "";
+        $cu = \Core\UserManager::currentUser();
+
+        $html .= \Core\UserManager::currentUser()->formatDateTimeNoSeconds($ss->start()) . " ";
+        $html .= "<strong>{$ss->name()}</strong>";
+        $html .= "<br><br>";
+
+        // create new form
+        $html .= $this->newHtmlForm("POST", "DriverRegistrationForm");
+        $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$ss->id()}\">";
+        $html .= "<input type=\"hidden\" name=\"RegistrationType\" value=\"Team\">";
+
+        // save button
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveRgistration\">" . _("Save Registration") . "</button>";
+        $html .= "<br>";
+
+        // cars for team registration
+        $html .= "<div id=\"RegistrationTypeTeamCars\">";
+        $any_team_car_found = FALSE;
+        foreach (\DbEntry\Team::listTeams(manager:$cu, carclass:$ss->carClass()) as $tm) {
+            $html .= "<h1>{$tm->name()}</h1>";
+
+            foreach ($tm->cars() as $tc) {
+                $skin_img = $tc->html();
+                $checked = FALSE;
+                $disabled = FALSE;
+                $html .= $this->newHtmlContentRadio("RegistrationTeamCar", $tc->id(), $skin_img, $checked, $disabled);
+                $any_team_car_found |= TRUE;
+            }
+        }
+        $html .= "</div>";
+
+        if (!$any_team_car_found) {
+            $html .= "<br><br>";
+            $html .= _("You either have no permission to manage a team or none of your teams has a car in the correct class");
+            $html .= "<br><br>";
+        }
+
+        // save button
+        if ($any_team_car_found) {
+            $html .= "<br>";
+            $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveRgistration\">" . _("Save Registration") . "</button>";
+        }
+        $html .= "</form>";
+
+        return $html;
+    }
+
+
     private function showRoster() {
         $html = "";
         $ss = \DbEntry\SessionSchedule::fromId($_REQUEST['SessionSchedule']);
+        $cuser = \Core\UserManager::currentUser();
         if (!$ss) return "";
 
         /////////////////////
@@ -330,14 +378,23 @@ class SessionSchedules extends \core\HtmlContent {
 
         // general
         $html .= "<div>";
-        $html .= \Core\UserManager::currentUser()->formatDateTimeNoSeconds($ss->start()) . "<br>";
-        $html .= "<strong>{$ss->name()}</strong><br><br>";
-        $html .= $ss->carClass()->htmlName() . "<br>";
+        $html .= $cuser->formatDateTimeNoSeconds($ss->start()) . "<br>";
+        $html .= "<strong>{$ss->name()}</strong>";
+        if ($this->CanEdit) {
+            $html .= "<br><br>";
+            $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"EditItem"]) . "\">" . _("Edit") . "</a>, ";
+            $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"AskDeleteItem"]) . "\">" . _("Delete") . "</a><br>";
+        }
         $html .= "</div>";
 
         // track
         $html .= "<div>";
         $html .= $ss->track()->html() . "<br>";
+        $html .= "</div>";
+
+        // carclass
+        $html .= "<div>";
+        $html .= $ss->carClass()->html() . "<br>";
         $html .= "</div>";
 
         // time schedule
@@ -349,9 +406,9 @@ class SessionSchedules extends \core\HtmlContent {
             [$interval, $uncertainty, $type, $name] = $schedules[$i];
             if ($type == \DbEntry\Session::TypeInvalid && ($i+1) < count($schedules)) continue; // do not care for intermediate break
             $html .= "<tr>";
-            $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeNoSeconds($time) . "</td>";
+            $html .= "<td>" . $cuser->formatTimeNoSeconds($time) . "</td>";
             $html .= "<td>$name</td>";
-            $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeInterval($interval) . "</td>";
+            $html .= "<td>" . $cuser->formatTimeInterval($interval) . "</td>";
             $html .= "</tr>";
             $time->add($interval->toDateInterval());
         }
@@ -388,17 +445,21 @@ class SessionSchedules extends \core\HtmlContent {
         // User Registration
 
         if (!$ss->obsolete()) {
-            $sr = \DbEntry\SessionScheduleRegistration::getRegistration($ss, \Core\UserManager::currentUser());
-            if ($sr !== NULL && $sr->active()) {
-                $html .= "<span class=\"Registered\">" . _("Registered") . "</span> ";
-                $html .= $this->newHtmlForm("POST");
-                $html .= "<input type=\"hidden\" name=\"SessionSchedule\" value=\"{$ss->id()}\">";
-                $html .= "<button type=\"submit\" name=\"Action\" value=\"UnRegister\">" . _("Unregister") . "</button>";
-                $html .= "</form>";
-            } else {
-                $html .= "<span class=\"NotRegistered\">" . _("Not Registered") . "</span> ";
-                $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"Register"]) . "\">". _("Register") . "</a>";
-            }
+
+            // show registration status
+            $srs = \DbEntry\SessionScheduleRegistration::getRegistrations($ss, $cuser);
+            if (count($srs) > 0) $html .= "<span class=\"Registered\">" . _("Registered") . "</span> ";
+            else $html .= "<span class=\"NotRegistered\">" . _("Not Registered") . "</span> ";
+
+            // offer registration buttons
+            $can_register_driver = count($srs) == 0;
+            $can_register_team = $ss->getParamValue("AllowTeams");
+            if ($can_register_driver)
+                $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"RegisterDriver"]) . "\">". _("Register Driver") . "</a>";
+            if ($can_register_driver && $can_register_team)
+                $html .= ", ";
+            if ($can_register_team)
+                $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"RegisterTeam"]) . "\">". _("Register Team") . "</a>";
             $html .= "<br><br>";
         }
 
@@ -410,7 +471,7 @@ class SessionSchedules extends \core\HtmlContent {
         $html .= "<table>";
         $html .= "<tr>";
         $html .= "<th colspan=\"2\">" . _("Driver") . "</th>";
-        $html .= "<th>" . _("Car Skin") . "</th>";
+        $html .= "<th>" . _("Car") . "</th>";
         $html .= "<th>" . _("Ballast") . "</th>";
         $html .= "<th>" . _("Restrictor") . "</th>";
         $html .= "<th>" . _("Registration") . "</th>";
@@ -451,9 +512,16 @@ class SessionSchedules extends \core\HtmlContent {
             }
 
             if ($sr->active()) {
-                $html .= "<td>" . \Core\UserManager::currentUser()->formatDateTime($sr->activated()) . "</td>";
+                $html .= "<td>" . $cuser->formatDateTime($sr->activated()) . "</td>";
             } else {
-                $html .= "<td></td>";
+                $html .= "<td><span class=\"NotRegistered\">" . _("Not Registered") . "</span></td>";
+            }
+
+            // check if unregister is possible
+            if ($this->currentUserCanUnregister($sr)) {
+                $html .= "<td>";
+                $html .= $this->newHtmlTableRowDeleteCheckbox("Unregister{$sr->id()}");
+                $html .= "</td>";
             }
 
             $html .= "</tr>";
@@ -473,8 +541,8 @@ class SessionSchedules extends \core\HtmlContent {
             $html .= "</select>";
         }
 
-
-        if ($this->CanEdit && !$ss->obsolete()) {
+        // save roster
+        if (!$ss->obsolete()) {
             $html .= "<br>";
             $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveRoster\">" . _("Save Registration Roster") . "</button>";
         }

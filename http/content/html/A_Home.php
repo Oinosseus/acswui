@@ -17,14 +17,15 @@ class A_Home extends \core\HtmlContent {
             $html .= _("Please login with your steam account");
             $html .= "<br>";
             $html .= \Core\UserManager::htmlLogInOut();
+        }
 
-        } else {
 
-            if (\Core\UserManager::currentUser()->permitted("Notify_Maladministration")) {
-                $html .= $this->malAdministrations();
-            }
+        if (\Core\UserManager::currentUser()->permitted("Home_Notify_Maladministration")) {
+            $html .= $this->malAdministrations();
+        }
 
-            $html .= $this->openRegistrations();
+        if (\Core\UserManager::currentUser()->permitted("Home_UpCommingRaces")) {
+            $html .= $this->upcommingRaces();
         }
 
         return $html;
@@ -128,29 +129,53 @@ class A_Home extends \core\HtmlContent {
     }
 
 
-    private function openRegistrations() {
+    private function upcommingRaces() {
+        $luser = \Core\UserManager::loggedUser();
+        $cuser = \Core\UserManager::currentUser();
+
         $html = "";
+        $html .= "<h1>" . _("Upcomming Races") . "</h1>";
+        $html .= "<div id=\"UpcommingRacesOverview\">";
 
-        // list events;
-        $events = array();
-        foreach (\DbEntry\SessionSchedule::listSchedules() as $ss) {
-            $sr = \DbEntry\SessionScheduleRegistration::getRegistration($ss, \Core\UserManager::currentUser());
-            if (!$sr || !$sr->active()) $events[] = $ss;
+        $a_week_ago = (new \DateTime("now"))->sub(new \DateInterval("P7D"));
+        foreach (\DbEntry\SessionSchedule::listSchedules($a_week_ago) as $ss) {
+
+            $class_obsolete = ($ss->obsolete()) ? "Obsolete" : "";
+            $count_registrations = count($ss->registrations());
+            $count_pits = $ss->track()->pitboxes();
+            $registration_css_class = ($count_registrations > $count_pits) ? "RegistrationsFull" : "RegistrationsAvailable";
+
+            $html .= "<div class=\"$class_obsolete\">";
+            $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"ShowRoster"], "SessionSchedules") . "\">{$ss->name()}</a><br>";
+            $html .= $cuser->formatDateTimeNoSeconds($ss->start()) . "<br>";
+            if ($luser) {
+                $srs = \DbEntry\SessionScheduleRegistration::getRegistrations($ss, $cuser);
+                if (count($srs) > 0) {
+                    $html .= "<span class=\"Registered\">" . _("Registered") . "</span>";
+                } else {
+                        $html .= "<span class=\"NotRegistered\">" . _("Not Registered") . "</span>";
+                }
+            }
+            // $html .= " (<span class=\"$registration_css_class\">$count_registrations / $count_pits</span>)<br>";
+            $html .= "</div>";
+
+            $html .= "<div class=\"$class_obsolete\">";
+            $html .= $ss->track()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
+            $html .= "</div>";
+
+            $html .= "<div class=\"$class_obsolete\">";
+            $html .= $ss->carClass()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
+            $html .= "</div>";
+
+            $html .= "<div class=\"$class_obsolete\">";
+            $html .= "{$ss->serverSlot()->name()}<br>";;
+            $html .= _("Registrations") . ": <span class=\"$registration_css_class\">$count_registrations / $count_pits</span><br>";
+            $html .= "</div>";
+
         }
-        if (count($events) == 0) return $html;
 
-        $html .= "<h1>" . _("Open Registrations") . "</h1>";
-        $html .= ("The following events are scheduled where your are not registered.");
 
-        $html .= "<ul>";
-        foreach ($events as $e) {
-            $html .= "<li>";
-            $html .= $e->htmlName();
-            $html .= "</li>";
-        }
-        $html .= "</ul>";
-
-        $html .= "<a href=\"" . $this->url([], "SessionSchedules") . "\">" . _("All Events") . "</a>";
+        $html .= "</div>";
 
         return $html;
     }
