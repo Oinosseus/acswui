@@ -552,16 +552,18 @@ class SessionSchedules extends \core\HtmlContent {
             $html .= "</select><br>";
 
             // add Team
-            $html .= _("Add Team Car") . ": ";
-            $html .= "<select name=\"AddTeamCar\">";
-            $html .= "<option value=\"\" selected=\"yes\"> </option>";
-            foreach (\DbEntry\Team::listTeams() as $tm) {
-                $team_cars = \DbEntry\TeamCar::listTeamCars(team:$tm, carclass:$this->CurrentSchedule->carClass());
-                foreach ($team_cars as $tmc) {
-                    $html .= "<option value=\"{$tmc->id()}\">{$tm->name()} - {$tmc->carSkin()->name()}</option>";
+            if ($this->CurrentSchedule->getParamValue("AllowTeams")) {
+                $html .= _("Add Team Car") . ": ";
+                $html .= "<select name=\"AddTeamCar\">";
+                $html .= "<option value=\"\" selected=\"yes\"> </option>";
+                foreach (\DbEntry\Team::listTeams() as $tm) {
+                    $team_cars = \DbEntry\TeamCar::listTeamCars(team:$tm, carclass:$this->CurrentSchedule->carClass());
+                    foreach ($team_cars as $tmc) {
+                        $html .= "<option value=\"{$tmc->id()}\">{$tm->name()} - {$tmc->carSkin()->name()}</option>";
+                    }
                 }
+                $html .= "</select><br>";
             }
-            $html .= "</select><br>";
         }
 
         // save roster
