@@ -258,7 +258,7 @@ class RealWeatherCondition {
     }
 
 
-    //! @return Tghe value for \Parameter\ParamSpecialWeatherGraphic
+    //! @return The value for \ParameterSpecial\WeatherGraphic
     private function weatherGraphicValue() : string {
         // deterimine weather graphic
         $weather_graphic_value = "";

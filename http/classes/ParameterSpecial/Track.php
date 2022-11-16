@@ -1,19 +1,23 @@
 <?php
 
-namespace Parameter;
+namespace ParameterSpecial;
 
 /**
  * Select a track
  * The available Tracks are automatically detected
  */
-final class ParamSpecialTrack extends ParamEnum {
+final class Track extends \Parameter\ParamEnum {
 
-    public function __construct(?Deriveable $base, ?Collection $parent, string $key = "", string $label = "", string $description = "") {
+    public function __construct(?\Parameter\Deriveable $base,
+                                ?\Parameter\Collection $parent,
+                                string $key = "",
+                                string $label = "",
+                                string $description = "") {
         parent::__construct($base, $parent, $key, $label, $description);
 
 
         foreach (\DbEntry\Track::listTracks() as $t) {
-            new EnumItem($this, $t->id(), $t->name());
+            new \Parameter\EnumItem($this, $t->id(), $t->name());
         }
 
         // set to empty by default

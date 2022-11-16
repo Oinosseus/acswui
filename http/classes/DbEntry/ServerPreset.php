@@ -275,7 +275,7 @@ class ServerPreset extends DbEntry {
                 $coll_general = new \Parameter\Collection(NULL, $this->ParameterCollection, "ACswui1", _("ACswui"), _("General settings for the preset"));
                 $p = new \Parameter\ParamString(NULL, $coll_general, "ACswuiPresetName", _("Name"), _("Name of the preset"), "", "");
                 $p = new \Parameter\ParamBool(NULL, $coll_general, "ACswuiPreservedKick", _("Preseved Kick"), _("Kick drivers if they join with a car from the entry list that is preserved for other drivers."), "", TRUE);
-                $p = new \Parameter\ParamSpecialGroups(NULL, $coll_general, "ACswuiPresetUsers", _("Users"), _("Which user groups are allowed to use this preset"), "", "");
+                $p = new \ParameterSpecial\Groups(NULL, $coll_general, "ACswuiPresetUsers", _("Users"), _("Which user groups are allowed to use this preset"), "", "");
 
 
                 // ------------------------------------------------------------
@@ -327,7 +327,7 @@ class ServerPreset extends DbEntry {
 
                 // weather
                 $coll = new \Parameter\Collection(NULL, $coll_group, "WeatherGroup", _("Weather"), "");
-                $p = new \Parameter\ParamSpecialWeathers(NULL, $coll, "Weathers", _("Weathers"), _("Select which weathers shall be used on the server"));
+                $p = new \ParameterSpecial\Weathers(NULL, $coll, "Weathers", _("Weathers"), _("Select which weathers shall be used on the server"));
                 $p = new \Parameter\ParamEnum(NULL, $coll, "WeatherRandomize", _("Randomize"), _("When multiple weather are selected, they are assigned randomly. By default, assetto corsa selects a random weather 'per Session'. Which means the qualifying may have completely different weather than the race. When selecting 'per Server Run' all sessions (P/Q/R) will have the same weather, but at next server run a new random weather is assigned."));
                 new \Parameter\EnumItem($p, "server_run", _("per Server Run"));
                 new \Parameter\EnumItem($p, "session", _("per Session"));
@@ -633,7 +633,7 @@ class ServerPreset extends DbEntry {
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpPsCuttingPostCtTime", _("Post Cutting Time"), _("Bonus time after reentering on the track. If speed decreses in this time --> No cutting! Default 2.\nSet to 0 to have cutting checks similar to PLP (no check after re-entering the track)"), "s", 2);
                 $p->setMin(0);
                 $p->setMax(99);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsCuttingPenType", _("Penalty Type"), _("Penalty type for cutting."), TRUE);
+                $p = new \ParameterSpecial\PenaltyType(NULL, $coll, "RpPsCuttingPenType", _("Penalty Type"), _("Penalty type for cutting."), TRUE);
 
                 // Speeding
                 $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsSpeeding", _("Speeding"), "");
@@ -642,50 +642,50 @@ class ServerPreset extends DbEntry {
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingPitLaneSpeed", _("Speed Limit 1"), _("The speed, in kph, above which you will be deemed to be speeding in pits. Make this higher to give more leniency on pit lane entry."), "km/h", 82);
                 $p->setMin(0);
                 $p->setMax(299);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType0", _("Penalty Type 1"), _("Penalty type for speeding"), TRUE);
+                $p = new \ParameterSpecial\PenaltyType(NULL, $coll, "RpPsSpeedingPenType0", _("Penalty Type 1"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("dt");
 
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit0", _("Speed Limit 2"), "", "km/h", 92);
                 $p->setMin(0);
                 $p->setMax(199);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType1", _("Penalty Type 2"), _("Penalty type for speeding"), TRUE);
+                $p = new \ParameterSpecial\PenaltyType(NULL, $coll, "RpPsSpeedingPenType1", _("Penalty Type 2"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("sg10");
 
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit1", _("Speed Limit 3"), "", "km/h", 102);
                 $p->setMin(0);
                 $p->setMax(599);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType2", _("Penalty Type 3"), _("Penalty type for speeding"), TRUE);
+                $p = new \ParameterSpecial\PenaltyType(NULL, $coll, "RpPsSpeedingPenType2", _("Penalty Type 3"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("sg20");
 
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit2", _("Speed Limit 4"), "", "km/h", 112);
                 $p->setMin(0);
                 $p->setMax(599);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType3", _("Penalty Type 4"), _("Penalty type for speeding"), TRUE);
+                $p = new \ParameterSpecial\PenaltyType(NULL, $coll, "RpPsSpeedingPenType3", _("Penalty Type 4"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("sg30");
 
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpPsSpeedingSpeedLimit3", _("Speed Limit 5"), "", "km/h", 152);
                 $p->setMin(0);
                 $p->setMax(999);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsSpeedingPenType4", _("Penalty Type 5"), _("Penalty type for speeding"), TRUE);
+                $p = new \ParameterSpecial\PenaltyType(NULL, $coll, "RpPsSpeedingPenType4", _("Penalty Type 5"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("dsq");
 
                 // Crossing
                 $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsCrossing", _("Crossing"), "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpPsGeneralCrossing", _("Crossing"), "Set to true to enable exit pit lane crossing line penalty.", "", TRUE);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsCrossingPenType", _("Penalty Type"), _("Penalty type for speeding"), TRUE);
+                $p = new \ParameterSpecial\PenaltyType(NULL, $coll, "RpPsCrossingPenType", _("Penalty Type"), _("Penalty type for speeding"), TRUE);
 
                 // Jump Start
                 $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsJumpStart", _("Jump Start"), "");
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsJumpStartPenType0", _("Penalty Type 0"), _("Penalty type for speeding"), TRUE);
+                $p = new \ParameterSpecial\PenaltyType(NULL, $coll, "RpPsJumpStartPenType0", _("Penalty Type 0"), _("Penalty type for speeding"), TRUE);
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpPsJumpStartSpeedLimit0", _("Speed Limit 0"), "", "km/h", 50);
                 $p->setMin(0);
                 $p->setMax(199);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsJumpStartPenType1", _("Penalty Type 1"), _("Penalty type for speeding"), TRUE);
+                $p = new \ParameterSpecial\PenaltyType(NULL, $coll, "RpPsJumpStartPenType1", _("Penalty Type 1"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("sg10");
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpPsJumpStartSpeedLimit1", _("Speed Limit 1"), "", "km/h", 100);
                 $p->setMin(0);
                 $p->setMax(599);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsJumpStartPenType2", _("Penalty Type 2"), _("Penalty type for speeding"), TRUE);
+                $p = new \ParameterSpecial\PenaltyType(NULL, $coll, "RpPsJumpStartPenType2", _("Penalty Type 2"), _("Penalty type for speeding"), TRUE);
                 $p->setValue("dsq");
                 $p = new \Parameter\ParamInt(NULL, $coll, "RpPsJumpStartSpeedLimit2", _("Speed Limit 2"), "", "km/h", 200);
                 $p->setMin(0);
@@ -694,7 +694,7 @@ class ServerPreset extends DbEntry {
                 // DRS
                 $coll = new \Parameter\Collection(NULL, $coll_group, "RpPsDRS", _("DRS"), "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "RpPsGeneralDrs", _("Drs"), "Set to true to enable DRS penalty (only for car wiht DRS).", "", TRUE);
-                $p = new \Parameter\ParamSpecialPenaltyType(NULL, $coll, "RpPsDRSPenType", _("Penalty Type"), _("Penalty type for speeding"), TRUE);
+                $p = new \ParameterSpecial\PenaltyType(NULL, $coll, "RpPsDRSPenType", _("Penalty Type"), _("Penalty type for speeding"), TRUE);
                 $p = new \Parameter\ParamFloat(NULL, $coll, "RpPsDRSGap", _("Gap"), _("Max gap in seconds from front car."), "", 1.0);
                 $p->setMin(0);
                 $p->setMax(29);

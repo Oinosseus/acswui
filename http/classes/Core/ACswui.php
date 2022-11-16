@@ -188,19 +188,19 @@ class ACswui  {
             $pc1 = new \Parameter\Collection(NULL, $pc, "Basics", _("Basics"), _("Basic settings"));
 
             $p = new \Parameter\ParamString(NULL, $pc1, "Name", _("Name"), _("An arbitrary name for this schedule item"), "", "New Schedule Item");
-            $p = new \Parameter\ParamSpecialCarClass(NULL, $pc1, "CarClass", _("Car Class"), _("The car class to race with"));
-            $p = new \Parameter\ParamSpecialTrack(NULL, $pc1, "Track", _("Track"), _("The track to be raced"));
+            $p = new \ParameterSpecial\CarClass(NULL, $pc1, "CarClass", _("Car Class"), _("The car class to race with"));
+            $p = new \ParameterSpecial\Track(NULL, $pc1, "Track", _("Track"), _("The track to be raced"));
 
             $pc2 = new \Parameter\Collection(NULL, $pc1, "Event", _("Event"), _("Settings for the main event"));
             $p = new \Parameter\ParamDateTime(NULL, $pc2, "EventStart", _("Date"), _("Date when the session shall start"));
             $p->setValue((new \DateTime("now"))->add(new \DateInterval("P7D"))->format("Y-m-d H:i")); //set to next week to prevent accidental start of new items
             $p = new \Parameter\ParamInt(NULL, $pc2, "SessionEntryList", _("EntryList Session"), _("Use the result of this session as entry list, if zero, the order of registration will be used"), "Session-Id", 0);
-            $p = new \Parameter\ParamSpecialServerPreset(NULL, $pc2, "ServerPreset", _("Server Preset"), _("Select the server preset for the event"));
-            $p = new \Parameter\ParamSpecialServerSlot(NULL, $pc2, "ServerSlot", _("Server Slot"), _("Select on which server slot the session shall be driven"));
+            $p = new \ParameterSpecial\ServerPreset(NULL, $pc2, "ServerPreset", _("Server Preset"), _("Select the server preset for the event"));
+            $p = new \ParameterSpecial\ServerSlot(NULL, $pc2, "ServerSlot", _("Server Slot"), _("Select on which server slot the session shall be driven"));
 
             $pc2 = new \Parameter\Collection(NULL, $pc1, "Practice", _("Practice Loop"), _("Setup a session loop for practice"));
             $p = new \Parameter\ParamBool(NULL, $pc2, "PracticeEna", _("Enable"), _("Enable practice session loop"), "", FALSE);
-            $p = new \Parameter\ParamSpecialServerPreset(NULL, $pc2, "PracticePreset", _("Server Preset"), _("Select the server preset for the practice"));
+            $p = new \ParameterSpecial\ServerPreset(NULL, $pc2, "PracticePreset", _("Server Preset"), _("Select the server preset for the practice"));
 
 
             ///////
@@ -239,7 +239,7 @@ class ACswui  {
             // ----------------------------------------------------------------
 
             $pc = new \Parameter\Collection(NULL, $root_collection, "User", _("Default User Settings"), _("Settings for users"));
-            $p = new \Parameter\ParamSpecialUserPrivacy(NULL, $pc, "UserPrivacy", _("Privacy"), _("Privacy settings\n'Private' means nobody can identify me\n'Community' means that all active drivers, which actively use the ACswui system, can identify me - as long as I use the ACswui system as well\n'Active Drivers' means that all other active drivers can identify me - as long as I am an active driver as well\n'Public' means everyone can identify me"));
+            $p = new \ParameterSpecial\UserPrivacy(NULL, $pc, "UserPrivacy", _("Privacy"), _("Privacy settings\n'Private' means nobody can identify me\n'Community' means that all active drivers, which actively use the ACswui system, can identify me - as long as I use the ACswui system as well\n'Active Drivers' means that all other active drivers can identify me - as long as I am an active driver as well\n'Public' means everyone can identify me"));
             $p = new \Parameter\ParamColor(NULL, $pc, "UserColor", _("Color"), _("Your preferred color to better identify you in diagrams"));
             $p = new \Parameter\ParamInt(NULL, $pc, "UserLoginTokenExpire", _("Login Expire"), _("The user login is saved via a token inside a client cookie. This defines the amount of days when this token expires"), "d", 30);
             $p->setMin(1);
@@ -253,16 +253,16 @@ class ACswui  {
             $p->setValue("country");
 
             $coll = new \Parameter\Collection(NULL, $pc, "UserI18nL10n", _("Loc-/Internationalization"), _("Options for localization and internationalization"));
-            $p = new \Parameter\ParamSpecialUserCountry(NULL, $coll, "UserCountry", _("Country"), _("Select which country you want to represent"));
-            $p = new \Parameter\ParamSpecialLocale(NULL, $coll, "UserLocale", _("Locale"), _("Localization settings"));
-            $p = new \Parameter\ParamSpecialUserTimezone(NULL, $coll, "UserTimezone", _("Timezone"), _("Define your preferred timezone"));
+            $p = new \ParameterSpecial\UserCountry(NULL, $coll, "UserCountry", _("Country"), _("Select which country you want to represent"));
+            $p = new \ParameterSpecial\Locale(NULL, $coll, "UserLocale", _("Locale"), _("Localization settings"));
+            $p = new \ParameterSpecial\UserTimezone(NULL, $coll, "UserTimezone", _("Timezone"), _("Define your preferred timezone"));
 
             $coll = new \Parameter\Collection(NULL, $pc, "UserUnits", _("Units"), _("Setup preferred units for values"));
-            $p = new \Parameter\ParamSpecialUserPower(NULL, $coll, "UserUnitPower", _("Power"), "");
-            $p = new \Parameter\ParamSpecialUserPowerSpecific(NULL, $coll, "UserUnitPowerSpecific", _("Specific Power"), "");
-            $p = new \Parameter\ParamSpecialUserWeight(NULL, $coll, "UserUnitWeight", _("Weight"), "");
-            $p = new \Parameter\ParamSpecialUserFormatDate(NULL, $coll, "UserFormatDate", _("Date/Time Format"), _("How shal date-times be presented"));
-            $p = new \Parameter\ParamSpecialUserFormatLength(NULL, $coll, "UserUnitLength", _("Length"), "");
+            $p = new \ParameterSpecial\UserPower(NULL, $coll, "UserUnitPower", _("Power"), "");
+            $p = new \ParameterSpecial\UserPowerSpecific(NULL, $coll, "UserUnitPowerSpecific", _("Specific Power"), "");
+            $p = new \ParameterSpecial\UserWeight(NULL, $coll, "UserUnitWeight", _("Weight"), "");
+            $p = new \ParameterSpecial\UserFormatDate(NULL, $coll, "UserFormatDate", _("Date/Time Format"), _("How shal date-times be presented"));
+            $p = new \ParameterSpecial\UserFormatLength(NULL, $coll, "UserUnitLength", _("Length"), "");
 
             $coll = new \Parameter\Collection(NULL, $pc, "UserLaptimeDistriDia", _("Laptime Distribution Diagrams"), _("Options to adjust the laptime distribution diagrams"));
             $p = new \Parameter\ParamInt(NULL, $coll, "UserLaptimeDistriDiaMaxDelta", _("Max Delta"), _("Defines the maximum of the x-axis (how much seconds to show)"), "s", 10);

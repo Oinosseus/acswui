@@ -1,17 +1,21 @@
 <?php
 
-namespace Parameter;
+namespace ParameterSpecial;
 
 /**
  * Select multiplie user groups.
  * The available groups are automatically detected
  */
-final class ParamSpecialGroups extends ParamEnumMulti {
+final class Groups extends \Parameter\ParamEnumMulti {
 
-    public function __construct(?Deriveable $base, ?Collection $parent, string $key = "", string $label = "", string $description = "") {
+    public function __construct(?\Parameter\Deriveable $base,
+                                ?\Parameter\Collection $parent,
+                                string $key = "",
+                                string $label = "",
+                                string $description = "") {
         parent::__construct($base, $parent, $key, $label, $description);
         foreach (\DbEntry\Group::listGroups() as $group) {
-            new EnumItem($this, $group->id(), $group->name());
+            new \Parameter\EnumItem($this, $group->id(), $group->name());
         }
 
         // set to empty by default

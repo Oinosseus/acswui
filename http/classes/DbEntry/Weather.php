@@ -146,7 +146,7 @@ class Weather extends DbEntry {
                 $this->ParameterCollection = new \Parameter\Collection(NULL, NULL, "Weather", _("Weather"), _("Collection of weather settings"));
 
                 $p = new \Parameter\ParamString(NULL, $this->ParameterCollection, "Name", _("Name"), _("Arbitrary name for this weather"), "", "");
-                $p = new \Parameter\ParamSpecialWeatherGraphic(NULL, $this->ParameterCollection, "Graphic", _("Graphic"), _("it's exactly one of the folder name that you find into \"content\weather\" directory"));
+                $p = new \ParameterSpecial\WeatherGraphic(NULL, $this->ParameterCollection, "Graphic", _("Graphic"), _("it's exactly one of the folder name that you find into \"content\weather\" directory"));
 
                 // temperatures
                 $coll = new \Parameter\Collection(NULL, $this->ParameterCollection, "Temperatures", _("Temperatures"), _("Environment temperature settings"));

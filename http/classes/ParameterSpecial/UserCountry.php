@@ -1,15 +1,19 @@
 <?php
 
-namespace Parameter;
+namespace ParameterSpecial;
 
-class ParamSpecialUserCountry extends ParamEnum {
+class UserCountry extends \Parameter\ParamEnum {
 
-    public function __construct(?Deriveable $base, ?Collection $parent, string $key = "", string $label = "", string $description = "") {
+    public function __construct(?\Parameter\Deriveable $base,
+                                ?\Parameter\Collection $parent,
+                                string $key = "",
+                                string $label = "",
+                                string $description = "") {
         parent::__construct($base, $parent, $key, $label, $description, "", "");
 
-        new EnumItem($this, "_", "");
+        new \Parameter\EnumItem($this, "_", "");
         foreach (\Core\Config::Countries as $key=>$name) {
-            new EnumItem($this, $key, $name);
+            new \Parameter\EnumItem($this, $key, $name);
         }
         $this->setValue("_");
     }

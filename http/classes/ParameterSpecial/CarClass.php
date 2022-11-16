@@ -1,19 +1,22 @@
 <?php
 
-namespace Parameter;
+namespace ParameterSpecial;
 
 /**
  * Select a CarClass
  * The available classes are automatically detected
  */
-final class ParamSpecialCarClass extends ParamEnum {
+final class CarClass extends \Parameter\ParamEnum {
 
-    public function __construct(?Deriveable $base, ?Collection $parent, string $key = "", string $label = "", string $description = "") {
+    public function __construct(?\Parameter\Deriveable $base,
+                                ?\Parameter\Collection $parent,
+                                string $key = "",
+                                string $label = "",
+                                string $description = "") {
         parent::__construct($base, $parent, $key, $label, $description);
 
-
         foreach (\DbEntry\CarClass::listClasses() as $t) {
-            new EnumItem($this, $t->id(), $t->name());
+            new \Parameter\EnumItem($this, $t->id(), $t->name());
         }
 
         // set to empty by default
