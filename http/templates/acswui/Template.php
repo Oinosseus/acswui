@@ -43,12 +43,15 @@ class Template extends \Core\HtmlTemplate {
         // main/sub navigation
         $html .= "    <nav><ul class=\"MainMenu\">\n";
         foreach (\Core\HtmlContent::listRootItems() as $navitem) {
+            if (!$navitem->permitted()) continue;
+
             $html .= "      <li>\n";
 
             # output submenu if menu is active
             if ($navitem->isActive()) {
                 $html .= "      <ul>\n";
                 foreach ($navitem->childContents() as $subnavitem) {
+                    if (!$subnavitem->permitted()) continue;
                     $html .= "        <li>\n";
                     $a_class = ($subnavitem->isActive()) ? "class=\"active\"" : "";
                     $html .= "          <a href=\"" . $subnavitem->url() . "\" " . $a_class . ">" . $subnavitem->name() . "</a>\n";

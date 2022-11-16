@@ -104,13 +104,13 @@ abstract class HtmlContent {
                     include_once $content_inc;
                     $content_class = "\\Content\\Html\\$classname";
                     $content_object = new $content_class();
-                    if ($content_object->permitted()) {
+                    // if ($content_object->permitted()) {
                         $content_object->HierarchicalContentPath = $path;
                         $content_object->childContents();
 
                         if ($content_object->IsNavigated) $this->IsNavigated = TRUE;
                         $this->ChildItemsList[] = $content_object;
-                    }
+                    // }
                 }
             }
         }
@@ -194,12 +194,12 @@ abstract class HtmlContent {
                 include_once $content_inc;
                 $content_class = "\\content\\html\\$classname";
                 $content_object = new $content_class();
-                if ($content_object->permitted()) {
+                // if ($content_object->permitted()) {
                     $content_object->HierarchicalContentPath = "";
                     $content_object->childContents();
 
                     HtmlContent::$RootItemsList[] = $content_object;
-                }
+                // }
             }
 
         }
