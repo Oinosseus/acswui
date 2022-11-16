@@ -70,7 +70,7 @@ class TeamCarClass extends DbEntry {
 
     //! @return All available TeamCar objects in this class
     public function listCars() : array {
-        return TeamCar::listTeamCars($this);
+        return TeamCar::listTeamCars(teamcarclass: $this);
     }
 
 

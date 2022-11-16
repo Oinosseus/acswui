@@ -329,6 +329,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnTinyInt("SessionScheduleRegistrations", "Restrictor")
         self.__db.appendColumnTinyInt("SessionScheduleRegistrations", 'Active')
         self.__db.appendColumnCurrentTimestamp("SessionScheduleRegistrations", "Activated")
+        self.__db.appendColumnUInt("SessionScheduleRegistrations", 'TeamCar')
 
 
 

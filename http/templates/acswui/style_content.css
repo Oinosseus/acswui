@@ -378,7 +378,7 @@ main.DriverRanking .TrendFalling {
 
 main.SessionSchedules div#SessionScheduleOverview {
     display: inline-grid;
-    grid-template-columns: repeat(5, auto);
+    grid-template-columns: repeat(6, auto);
     margin-top: 2em;
 }
 
@@ -433,12 +433,27 @@ main.SessionSchedules .Registered {
     color: var(--color-functional-success);
 }
 
-main.SessionSchedules form#DriverRegistrationForm > div div {
+main.SessionSchedules form#DriverRegistrationForm div.DbEntryHtml {
+    background-color: transparent;
+    border: 0;
+}
+
+main.SessionSchedules form#RegistrationRoster td.NationalFlag,
+main.SessionSchedules form#RegistrationRoster td.TeamLogo {
     background-color: transparent;
 }
 
-main.SessionSchedules form#RegistrationRoster td.NationalFlag {
+main.SessionSchedules form#RegistrationRoster td.TeamLogo div.DbEntryHtml {
     background-color: transparent;
+    border: 0;
+}
+
+main.SessionSchedules form#RegistrationRoster td.NationalFlag img {
+    height: 1.0em;
+}
+
+main.SessionSchedules form#RegistrationRoster td.TeamLogo img {
+    height: 1.9em;
 }
 
 main.SessionSchedules form#RegistrationRoster td.CarSkin {
@@ -452,6 +467,10 @@ main.SessionSchedules form#RegistrationRoster td div.DbEntryHtml {
 
 main.SessionSchedules form#RegistrationRoster td div.DbEntryHtml img {
     max-height: 3em;
+}
+
+main.SessionSchedules form#RegistrationRoster td.DriverName {
+    text-align: left;
 }
 
 main.SessionSchedules form#RegistrationRoster table tr.Overbooked td {

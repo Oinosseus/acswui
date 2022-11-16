@@ -45,9 +45,15 @@ class Team extends DbEntry {
     }
 
 
+    //! @return A list of TeamCar objects
+    public function cars() : array {
+        return TeamCar::listTeamCars(team:$this);
+    }
+
+
     //! @return A list of TeamCarClass objects
     public function carClasses() : array {
-        return TeamCarClass::listTeamCarClasses($this);
+        return TeamCarClass::listTeamCarClasses(team:$this);
     }
 
 
@@ -95,9 +101,13 @@ class Team extends DbEntry {
      * @param $include_link Include a link
      * @param $show_name Include full name
      * @param $show_img Include a preview image
+     * @param $show_abbreviation Show the abbreviation of the Team name
      * @return Html content for this object
      */
-    public function html(bool $include_link = TRUE, bool $show_name = TRUE, bool $show_img = TRUE) {
+    public function html(bool $include_link = TRUE,
+                         bool $show_name = TRUE,
+                         bool $show_img = TRUE,
+                         bool $show_abbreviation = TRUE) {
 
         $html = "";
 
@@ -108,8 +118,8 @@ class Team extends DbEntry {
         if ($show_name) {
             $html .= "<strong>{$this->abbreviation()}</strong><br>";
             $html .= $this->name();
-        } else {
-            $html .= $this->abbreviation;
+        } else if ($show_abbreviation) {
+            $html .= $this->abbreviation();
         }
         $html .= "</label>";
 
@@ -117,20 +127,77 @@ class Team extends DbEntry {
             $html = "<a href=\"index.php?HtmlContent=Teams&Id={$this->id()}\">$html</a>";
         }
 
-        $html = "<div class=\"DbEntryHtml DbEntryHtmlTeam\">$html</div>";
+        $html = "<div class=\"DbEntryHtml DbEntryHtmlTeam\" title=\"{$this->name()}\">$html</div>";
         return $html;
     }
 
 
-    //! @return A list of Team objects, ordered by Id
-    public static function listTeams() : array {
-        $teams = array();
-        $query = "SELECT Id FROM Teams ORDER BY Id ASC;";
-        $res = \Core\Database::fetchRaw($query);
-        foreach ($res as $row) {
-            $teams[] = Team::fromId((int) $row['Id']);
+    /**
+     * List available teams
+     * @param $member Only list teams where this user is member
+     * @param $manager Only list teams where this user is manager
+     * @param $carclass Only list teams which drives in this CarClass
+     * @return A list of Team objects
+     */
+    public static function listTeams(User $member=NULL,
+                                     User $manager=NULL,
+                                     CarClass $carclass=NULL) : array {
+
+        // find teams with a certain member
+        $team_ids_membered = array();
+        if ($member) {
+            $query  = "SELECT DISTINCT(Teams.Id) FROM TeamMembers";
+            $query .= " INNER JOIN Teams ON Teams.Id=TeamMembers.Team";
+            $query .= " WHERE TeamMembers.User={$member->id()}";
+            $query .= " AND TeamMembers.Active=1";
+            $query .= " ORDER BY TeamMembers.Id;";
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $team_ids_membered[] = (int) $row['Id'];
+            }
         }
-        return $teams;
+
+        // find teams with a certain manager
+        $team_ids_managed = array();
+        if ($manager) {
+            $query  = "SELECT DISTINCT(Teams.Id) FROM TeamMembers";
+            $query .= " INNER JOIN Teams ON Teams.Id=TeamMembers.Team";
+            $query .= " WHERE TeamMembers.User={$manager->id()}";
+            $query .= " AND TeamMembers.Active=1";
+            $query .= " AND TeamMembers.PermissionManage=1";
+            $query .= " ORDER BY TeamMembers.Id;";
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $team_ids_managed[] = (int) $row['Id'];
+            }
+        }
+
+        // find teams with a certain carclass
+        $team_ids_classed = array();
+        if ($carclass) {
+            $query  = "SELECT DISTINCT(Teams.Id) FROM TeamCarClasses";
+            $query .= " INNER JOIN Teams ON Teams.Id=TeamCarClasses.Team";
+            $query .= " WHERE TeamCarClasses.CarClass={$carclass->id()}";
+            $query .= " AND TeamCarClasses.Active=1";
+            $query .= " ORDER BY TeamCarClasses.Id;";
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $team_ids_classed[] = (int) $row['Id'];
+            }
+        }
+
+        // scan for teams
+        $return_list = array();
+        $query  = "SELECT Id FROM Teams ORDER BY ID ASC;";
+        foreach (\Core\Database::fetchRaw($query) as $row) {
+            $id = (int) $row['Id'];
+
+            // check matches
+            if ($member && !in_array($id, $team_ids_membered)) continue;
+            if ($manager && !in_array($id, $team_ids_managed)) continue;
+            if ($carclass && !in_array($id, $team_ids_classed)) continue;
+
+            $return_list[] = Team::fromId($id);
+        }
+
+        return $return_list;
     }
 
 

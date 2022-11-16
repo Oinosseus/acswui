@@ -126,7 +126,7 @@ div.UserHiddenName {
 
 
 /* -----------------------------------------------------------------------------
- *                                  Team
+ *                                DbEntryHtmlTeam
  * -----------------------------------------------------------------------------
  */
 
@@ -147,4 +147,45 @@ div.DbEntryHtmlTeam label {
     display: block;
     white-space: nowrap;
     overflow: hidden;
+}
+
+
+/* -----------------------------------------------------------------------------
+ *                             DbEntryHtmlTeamCar
+ * -----------------------------------------------------------------------------
+ */
+
+div.DbEntryHtmlTeamCar {
+    vertical-align: top;
+}
+
+div.DbEntryHtmlTeamCar div.DbEntryHtmlTeamCarTeamName {
+    font-weight: bold;
+}
+
+div.DbEntryHtmlTeamCar div.DbEntryHtmlTeamCarSkinName {
+    font-size: 0.8em;
+    font-style: italic;
+}
+
+div.DbEntryHtmlTeamCar img.DbEntryHtmlTeamCarSkinImg {
+    display: inline-block;
+}
+
+div.DbEntryHtmlTeamCar ul.DbEntryHtmlTeamCarDrivers {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 0 0 0;
+    list-style: none outside none;
+}
+
+div.DbEntryHtmlTeamCar ul.DbEntryHtmlTeamCarDrivers li {
+    display: block;
+/*     overflow: hidden; */
+/*     white-space: nowrap; */
+}
+
+div.DbEntryHtmlTeamCar ul.DbEntryHtmlTeamCarDrivers li img,
+div.DbEntryHtmlTeamCar ul.DbEntryHtmlTeamCarDrivers li a {
+    display: inline-block;
 }

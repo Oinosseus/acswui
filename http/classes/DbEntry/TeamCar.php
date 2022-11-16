@@ -46,6 +46,12 @@ class TeamCar extends DbEntry {
     }
 
 
+    //! @return The according TeamCarClass object
+    public function carClass() : TeamCarClass {
+        return TeamCarClass::fromId((int) $this->loadColumn("TeamCarClass"));
+    }
+
+
     //! @return The according CarSKin object
     public function carSkin() : CarSkin {
         return CarSkin::fromId((int) $this->loadColumn("CarSkin"));
@@ -65,7 +71,7 @@ class TeamCar extends DbEntry {
     public static function createNew(TeamCarClass $tcc, CarSkin $car_skin) : TeamCar {
 
         // check if carskin already exists
-        $query = "SELECT Id FROM TeamCars WHERE TeamCarClass={$tcc->id()} AND CarSKin={$car_skin->id()}";
+        $query = "SELECT Id FROM TeamCars WHERE TeamCarClass={$tcc->id()} AND CarSkin={$car_skin->id()}";
         $res = \Core\Database::fetchRaw($query);
         if (count($res) > 0) {
             $tc = TeamCar::fromId((int) $res[0]['Id']);
@@ -77,6 +83,7 @@ class TeamCar extends DbEntry {
         $columns = array();
         $columns['TeamCarClass'] = $tcc->id();
         $columns['CarSkin'] = $car_skin->id();
+        $columns['Active'] = 1;
         $id = (int) \Core\Database::insert("TeamCars", $columns);
         return TeamCar::fromId($id);
     }
@@ -108,18 +115,91 @@ class TeamCar extends DbEntry {
 
 
     /**
-     * List all TeamCar objects from a certain TeamCarClass
+     * Return HTML content that represents this Team car
+     */
+    public function html() : string {
+        $html = "";
+
+        // team name
+        $html .= "<div class=\"DbEntryHtmlTeamCarTeamName\">{$this->team()->name()}</div>";
+
+        // carskin
+        $html .= "<div class=\"DbEntryHtmlTeamCarSkinName\">{$this->carSkin()->name()}</div>";
+        $img_src = \Core\Config::RelPathHtdata . "/htmlimg/car_skins/{$this->carSkin()->id()}.png";
+        $html .= "<img src=\"$img_src\" class=\"DbEntryHtmlTeamCarSkinImg\">";
+
+        // drivers
+        $html .= "<ul class=\"DbEntryHtmlTeamCarDrivers\">";
+        foreach ($this->drivers() as $tmm) {
+            $html .= "<li>" . $tmm->html() . "</li>";
+        }
+        $html .= "</ul>";
+
+
+        $html = "<div class=\"DbEntryHtml DbEntryHtmlTeamCar\">$html</div>";
+        return $html;
+    }
+
+
+    /**
+     * List TeamCar objects
      * @param $tcc The requested TeamCarClass objects
      * @return A list of TeamCar objects
      */
-    public static function listTeamCars(TeamCarClass $tcc) : array {
-        $list = array();
-        $query = "SELECT Id FROM TeamCars WHERE TeamCarClass={$tcc->id()} AND Active=1 ORDER By Id ASC;";
-        $res = \Core\Database::fetchRaw($query);
-        foreach ($res as $row) {
-            $list[] = TeamCar::fromId((int) $row['Id']);
+    public static function listTeamCars(Team $team=NULL,
+                                        TeamCarClass $teamcarclass=NULL,
+                                        CarClass $carclass=NULL) : array {
+
+        // find IDs by Team
+        $ids_from_team = array();
+        if ($team) {
+            $query  = "SELECT DISTINCT(TeamCars.Id) FROM TeamCars";
+            $query .= " INNER JOIN TeamCarClasses ON TeamCarClasses.Id=TeamCars.TeamCarClass";
+            $query .= " INNER JOIN Teams ON Teams.Id=TeamCarClasses.Team";
+            $query .= " WHERE Teams.Id={$team->id()};";
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $ids_from_team[] = (int) $row['Id'];
+            }
         }
-        return $list;
+
+        // find IDs by TeamCarClass
+        $ids_from_teamcarclass = array();
+        if ($teamcarclass) {
+            $query  = "SELECT DISTINCT(TeamCars.Id) FROM TeamCars";
+            $query .= " INNER JOIN TeamCarClasses ON TeamCarClasses.Id=TeamCars.TeamCarClass";
+            $query .= " WHERE TeamCarClasses.Id={$teamcarclass->id()}";
+            $query .= " AND TeamCars.Active=1;";
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $ids_from_teamcarclass[] = (int) $row['Id'];
+            }
+        }
+
+        // find IDs by CarClass
+        $ids_from_carclass = array();
+        if ($carclass) {
+            $query  = "SELECT DISTINCT(TeamCars.Id) FROM TeamCars";
+            $query .= " INNER JOIN TeamCarClasses ON TeamCarClasses.Id=TeamCar.TeamCarClass";
+            $query .= " WHERE TeamCarClass.CarClass={$carclass->id()};";
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                $ids_from_carclass[] = (int) $row['Id'];
+            }
+        }
+
+        // final selection
+        $return_list = array();
+        $query  = "SELECT Id FROM TeamCars WHERE Active=1 ORDER BY ID ASC;";
+        foreach (\Core\Database::fetchRaw($query) as $row) {
+            $id = (int) $row['Id'];
+
+            // check matches
+            if ($team && !in_array($id, $ids_from_team)) continue;
+            if ($teamcarclass && !in_array($id, $ids_from_teamcarclass)) continue;
+            if ($carclass && !in_array($id, $ids_from_carclass)) continue;
+
+            $return_list[] = TeamCar::fromId($id);
+        }
+
+        return $return_list;
     }
 
 
@@ -151,6 +231,6 @@ class TeamCar extends DbEntry {
 
     //! @return The according Team object
     public function team() : Team {
-        return Team::fromId((int) $this->loadColumn("Team"));
+        return $this->carClass()->team();
     }
 }

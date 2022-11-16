@@ -32,6 +32,21 @@ class TeamMember extends DbEntry {
     }
 
 
+    //! @return A html string with the user name and containing a link to the user profile page
+    public function html() {
+        $html = "";
+
+        if ($this->user()->privacyFulfilled()) {
+            $html .= $this->user()->nationalFlag();
+            $html .= "&nbsp;";
+            $html .= "<a href=\"index.php?HtmlContent=B_User&UserId={$this->user()->id()}\">{$this->user()->name()}</a>";
+        } else {
+            $html .= "<div class=\"UserHiddenName\">{$this->user()->name()}</div>";
+        }
+        return $html;
+    }
+
+
     //! same as setActive(FALSE)
     public function leaveTeam() {
         $this->setActive(FALSE);
@@ -93,7 +108,7 @@ class TeamMember extends DbEntry {
     }
 
 
-    //! @return The joined Team object
+    //! @return The according Team object
     public function team() : Team {
         return Team::fromId((int) $this->loadColumn("Team"));
     }

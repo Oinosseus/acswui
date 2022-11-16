@@ -126,11 +126,10 @@ class Teams extends \core\HtmlContent {
                     if ($tcc = \DbEntry\TeamCarClass::fromId($_POST['TeamCarClass'])) {
                         if ($cs = \DbEntry\CarSkin::fromId($_POST['CarSkinId'])) {
                             \DbEntry\TeamCar::createNew($tcc, $cs);
-                            $this->reload(["Id" => $this->CurrentTeam->id()]);
                         }
                     }
                 }
-                $this->reload(["Id"=>$team->id()]);
+                $this->reload(["Id" => $this->CurrentTeam->id()]);
             }
 
             // delete car skin
