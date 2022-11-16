@@ -34,6 +34,7 @@ class SessionScheduleRegistration extends DbEntry {
      * Add/Update a registration item.
      *
      * If the schedule/user or schedule/teamcar combination already exists, it will be updated
+     * If $car_skin is NULL and no Team is given, then the registration will be created as 'inactive'
      *
      * @param $schedule The related SessionSchedule object
      * @param $user The User object to be registered (can be NULL if $team_car is given)
@@ -62,11 +63,13 @@ class SessionScheduleRegistration extends DbEntry {
         }
 
         // check if CarSkin is already occupied
-        $query = "SELECT Id FROM SessionScheduleRegistrations WHERE SessionSchedule = {$schedule->id()} AND Active != 0 AND CarSkin = {$car_skin->id()}";
-        $res = \Core\Database::fetchRaw($query);
-        if (count($res) > 0) {
-            \Core\Log::error("Deny registration for User $user_id because duplicated CarSkin {$car_skin->id()} at SessionSchedule {$schedule->id()}!");
-            return NULL;
+        if ($car_skin) {
+            $query = "SELECT Id FROM SessionScheduleRegistrations WHERE SessionSchedule = {$schedule->id()} AND Active != 0 AND CarSkin = {$car_skin->id()}";
+            $res = \Core\Database::fetchRaw($query);
+            if (count($res) > 0) {
+                \Core\Log::error("Deny registration for User $user_id because duplicated CarSkin {$car_skin->id()} at SessionSchedule {$schedule->id()}!");
+                return NULL;
+            }
         }
 
         // unregister users from other cars than TeamCar
@@ -81,10 +84,10 @@ class SessionScheduleRegistration extends DbEntry {
         $columns = array();
         $columns['User'] = $user_id;
         $columns['SessionSchedule'] = $schedule->id();
-        $columns['CarSkin'] = $car_skin->id();
+        $columns['CarSkin'] = ($car_skin) ? $car_skin->id() : 0;
         $columns['TeamCar'] = ($team_car === NULL) ? 0 : $team_car->id();
-        $columns['Active'] = 1;
-        $columns['Activated'] = (new \DateTime("now"))->format("Y-m-d H:i:s");
+        $columns['Active'] = ($car_skin) ? 1 : 0;
+        $columns['Activated'] = \Core\Database::timestamp(new \DateTime("now"));
 
         // check if combination exists
         if ($team_car) {

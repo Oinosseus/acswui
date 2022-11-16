@@ -103,7 +103,15 @@ class SessionSchedules extends \core\HtmlContent {
                         $add_driver_id = $_REQUEST['AddDriverId'];
                         if ($add_driver_id) {
                             $user = \DbEntry\User::fromId($add_driver_id);
-                            \DbEntry\SessionScheduleRegistration::register($this->CurrentSchedule, $user);
+                            \DbEntry\SessionScheduleRegistration::register(schedule:$this->CurrentSchedule, user:$user);
+                        }
+
+                        // add teams
+                        $add_teamcar_id = $_REQUEST['AddTeamCar'];
+                        if ($add_teamcar_id) {
+                            $tmc = \DbEntry\TeamCar::fromId($add_teamcar_id);
+                            $ssr = \DbEntry\SessionScheduleRegistration::register(schedule:$this->CurrentSchedule, team_car:$tmc);
+                            $ssr->unregister();
                         }
                     }
 
@@ -512,7 +520,7 @@ class SessionSchedules extends \core\HtmlContent {
             }
 
             if ($sr->active()) {
-                $html .= "<td>" . $cuser->formatDateTime($sr->activated()) . "</td>";
+                $html .= "<td><span class=\"Registered\">{$cuser->formatDateTime($sr->activated())}</span></td>";
             } else {
                 $html .= "<td><span class=\"NotRegistered\">" . _("Not Registered") . "</span></td>";
             }
@@ -530,20 +538,35 @@ class SessionSchedules extends \core\HtmlContent {
 
         // add inactive registration
         if ($this->CanEdit && !$ss->obsolete()) {
+            $html .= "<br><br>";
+
+            // add driver
             $html .= _("Add Driver") . ": ";
             $html .= "<select name=\"AddDriverId\">";
-            $html .= "<option value=\"\"> </option>";
+            $html .= "<option value=\"\" selected=\"yes\"> </option>";
             $drivers = \DbEntry\User::listDrivers();
             usort($drivers, "\DbEntry\User::compareName");
             foreach ($drivers as $d) {
                 $html .= "<option value=\"{$d->id()}\">{$d->name()}</option>";
             }
-            $html .= "</select>";
+            $html .= "</select><br>";
+
+            // add Team
+            $html .= _("Add Team Car") . ": ";
+            $html .= "<select name=\"AddTeamCar\">";
+            $html .= "<option value=\"\" selected=\"yes\"> </option>";
+            foreach (\DbEntry\Team::listTeams() as $tm) {
+                $team_cars = \DbEntry\TeamCar::listTeamCars(team:$tm, carclass:$this->CurrentSchedule->carClass());
+                foreach ($team_cars as $tmc) {
+                    $html .= "<option value=\"{$tmc->id()}\">{$tm->name()} - {$tmc->carSkin()->name()}</option>";
+                }
+            }
+            $html .= "</select><br>";
         }
 
         // save roster
         if (!$ss->obsolete()) {
-            $html .= "<br>";
+            $html .= "<br><br>";
             $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveRoster\">" . _("Save Registration Roster") . "</button>";
         }
         $html .= "</form>";

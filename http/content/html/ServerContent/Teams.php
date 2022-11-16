@@ -368,6 +368,27 @@ class Teams extends \core\HtmlContent {
                     $html .= "</td></tr>";
                 }
 
+                // find registered schedules
+                $active_registrations = array();
+                foreach (\DbEntry\SessionSchedule::listSchedules() as $ss) {
+                    foreach (\DbEntry\SessionScheduleRegistration::listRegistrations(schedule:$ss, only_active:TRUE) as $ssr) {
+                        if ($ssr->teamCar() && $ssr->teamCar()->id() == $tc->id()) {
+                            $active_registrations[] = $ss;
+                            break;
+                        }
+                    }
+                }
+                if (count($active_registrations) > 0) {
+                    $html .= "<tr><td colspan=\"3\">";
+                    $html .= "<strong>" . _("Registrations") . "</strong><br>";
+                    $html .= "<ul>";
+                    foreach ($active_registrations as $ss) {
+                        $html .= "<li><a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"ShowRoster"], "SessionSchedules") . "\">{$ss->name()}</a></li>";
+                    }
+                    $html .= "</ul></td></tr>";
+                }
+
+
                 $html .= "</table>";
             }
         }

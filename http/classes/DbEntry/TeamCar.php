@@ -178,8 +178,8 @@ class TeamCar extends DbEntry {
         $ids_from_carclass = array();
         if ($carclass) {
             $query  = "SELECT DISTINCT(TeamCars.Id) FROM TeamCars";
-            $query .= " INNER JOIN TeamCarClasses ON TeamCarClasses.Id=TeamCar.TeamCarClass";
-            $query .= " WHERE TeamCarClass.CarClass={$carclass->id()};";
+            $query .= " INNER JOIN TeamCarClasses ON TeamCarClasses.Id=TeamCars.TeamCarClass";
+            $query .= " WHERE TeamCarClasses.CarClass={$carclass->id()};";
             foreach (\Core\Database::fetchRaw($query) as $row) {
                 $ids_from_carclass[] = (int) $row['Id'];
             }
@@ -216,9 +216,14 @@ class TeamCar extends DbEntry {
     //! @param $active TRUE if this object shall be active, else FALSE
     public function setActive(bool $active) {
 
-        // inactivate TeamCarOccupations
         if (!$active) {
+
+            // inactivate TeamCarOccupations
             $query = "UPDATE TeamCarOccupations SET Active=0 WHERE Car={$this->id()}";
+            \Core\Database::query($query);
+
+            // inactive session registrations
+            $query = "UPDATE SessionScheduleRegistrations SET Active=0 WHERE TeamCar={$this->id()}";
             \Core\Database::query($query);
         }
 
