@@ -190,7 +190,8 @@ class ACswui  {
             $p = new \Parameter\ParamString(NULL, $pc1, "Name", _("Name"), _("An arbitrary name for this schedule item"), "", "New Schedule Item");
             $p = new \ParameterSpecial\CarClass(NULL, $pc1, "CarClass", _("Car Class"), _("The car class to race with"));
             $p = new \ParameterSpecial\Track(NULL, $pc1, "Track", _("Track"), _("The track to be raced"));
-            $p = new \Parameter\ParamBool(NULL, $pc1, "AllowTeams", _("Team Registrations"), _("Allow to register teams"), "", TRUE);
+            $p = new \Parameter\ParamBool(NULL, $pc1, "AllowTeams", _("Team Registrations"), _("Allow to register teams"), "", FALSE);
+            //! @todo ^- What to do When AllowTeams is unset after teams have been registered?
 
             $pc2 = new \Parameter\Collection(NULL, $pc1, "Event", _("Event"), _("Settings for the main event"));
             $p = new \Parameter\ParamDateTime(NULL, $pc2, "EventStart", _("Date"), _("Date when the session shall start"));

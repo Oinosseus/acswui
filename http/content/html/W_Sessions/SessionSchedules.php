@@ -421,6 +421,12 @@ class SessionSchedules extends \core\HtmlContent {
             $time->add($interval->toDateInterval());
         }
         $html .= "</table>";
+
+        $html .= "<small>" . _("Sim Time") . ": ";
+        $html .= $ss->serverPreset()->parameterCollection()->child("SessionStartTime")->valueLabel();
+        $html .= " (x" . $ss->serverPreset()->parameterCollection()->child("AcServerTimeMultiplier")->valueLabel() . ")";
+        $html .= "</small>";
+
         $html .= "</div>";
 
         // weather forecast
