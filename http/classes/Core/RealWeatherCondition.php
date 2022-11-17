@@ -120,7 +120,17 @@ class RealWeatherCondition {
 
     //! @return An html img tag with the weather icon
     public function htmlImg() : string {
-        $html = "<img src=\"http://openweathermap.org/img/wn/{$this->OWMIcon}@2x.png\" class=\"OWMWeatherIcon\">";
+
+        // generate title with advanced info
+        $wpc = $this->weather()->parameterCollection();
+        $title = "";
+        $title = $this->description() . "\n";
+        $title .= _("Ambient") . ": " . $wpc->child("AmbientBase")->value() . "&deg;C\n";
+        $title .= _("Road") . ": " . ($wpc->child("AmbientBase")->value() + $wpc->child("RoadBase")->value()) . "&deg;C\n";
+        $title .= _("Rain") . ": " . sprintf("%0.1f", $this->precipitation()) . "mm/h\n";
+        $title .= _("Wind") . ": " . round(($wpc->child("WindBaseMin")->value() + $wpc->child("WindBaseMax")->value())/2) . "m/s\n";
+
+        $html = "<img src=\"http://openweathermap.org/img/wn/{$this->OWMIcon}@2x.png\" title=\"$title\" class=\"OWMWeatherIcon\">";
         return $html;
     }
 

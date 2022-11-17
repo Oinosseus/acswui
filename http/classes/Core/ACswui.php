@@ -167,11 +167,11 @@ class ACswui  {
                 $i = 1;
                 for (; $i < Config::DriverRankingGroups; ++$i) {
                     $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingGroup$i", _("Ranking Group") . " $i", _("Settings for a driver ranking group"));
-                    $p = new \Parameter\ParamString(NULL, $coll, "DriverRankingGroup$i". "Name", _("Name"), _("An arbitrary name for this group"), "", "Group $i");
-                    $p = new \Parameter\ParamInt(NULL, $coll, "DriverRankingGroup$i" . "Thld", _("Threshold"), _("The ranking threshold a driver needs to pass to enter this group"), "", 120 - 20 * $i);
+                    $p = new \Parameter\ParamString(NULL, $coll, "DriverRankingGroup{$i}Name", _("Name"), _("An arbitrary name for this group"), "", "Group $i");
+                    $p = new \Parameter\ParamInt(NULL, $coll, "DriverRankingGroup{$i}Thld", _("Threshold"), _("The ranking threshold a driver needs to pass to enter this group"), "", 120 - 20 * $i);
                 }
-                $p = new \Parameter\ParamString(NULL, $coll, "DriverRankingGroup$i". "Name", _("Name"), _("An arbitrary name for this group"), "", "Group $i");
                 $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingGroup$i", _("Group") . " $i", _("Settings for a driver ranking group"));
+                $p = new \Parameter\ParamString(NULL, $coll, "DriverRankingGroup{$i}Name", _("Name"), _("An arbitrary name for this group"), "", "Group $i");
             }
 
 

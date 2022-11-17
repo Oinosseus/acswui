@@ -168,8 +168,10 @@ class A_Home extends \core\HtmlContent {
             $html .= "</div>";
 
             $html .= "<div class=\"$class_obsolete\">";
-            $html .= "{$ss->serverSlot()->name()}<br>";;
+            $html .= "{$ss->serverSlot()->name()}<br>";
             $html .= _("Registrations") . ": <span class=\"$registration_css_class\">$count_registrations / $count_pits</span><br>";
+            $rwc = $ss->serverPreset()->forecastWeather($ss->start(), $ss->track()->location());
+            if ($rwc !== NULL) $html .= $rwc->htmlImg();
             $html .= "</div>";
 
         }

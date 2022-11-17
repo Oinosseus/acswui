@@ -100,18 +100,22 @@ class SessionSchedules extends \core\HtmlContent {
                         }
 
                         // add drivers
-                        $add_driver_id = $_REQUEST['AddDriverId'];
-                        if ($add_driver_id) {
-                            $user = \DbEntry\User::fromId($add_driver_id);
-                            \DbEntry\SessionScheduleRegistration::register(schedule:$this->CurrentSchedule, user:$user);
+                        if (array_key_exists("AddDriverId", $_REQUEST)) {  // should not happend
+                            $add_driver_id = $_REQUEST['AddDriverId'];
+                            if ($add_driver_id) {
+                                $user = \DbEntry\User::fromId($add_driver_id);
+                                \DbEntry\SessionScheduleRegistration::register(schedule:$this->CurrentSchedule, user:$user);
+                            }
                         }
 
                         // add teams
-                        $add_teamcar_id = $_REQUEST['AddTeamCar'];
-                        if ($add_teamcar_id) {
-                            $tmc = \DbEntry\TeamCar::fromId($add_teamcar_id);
-                            $ssr = \DbEntry\SessionScheduleRegistration::register(schedule:$this->CurrentSchedule, team_car:$tmc);
-                            $ssr->unregister();
+                        if (array_key_exists("AddTeamCar", $_REQUEST)) {  // can happend
+                            $add_teamcar_id = $_REQUEST['AddTeamCar'];
+                            if ($add_teamcar_id) {
+                                $tmc = \DbEntry\TeamCar::fromId($add_teamcar_id);
+                                $ssr = \DbEntry\SessionScheduleRegistration::register(schedule:$this->CurrentSchedule, team_car:$tmc);
+                                $ssr->unregister();
+                            }
                         }
                     }
 
@@ -239,12 +243,31 @@ class SessionSchedules extends \core\HtmlContent {
             // $html .= " (<span class=\"$registration_css_class\">$count_registrations / $count_pits</span>)<br>";
             $html .= "</div>";
 
+            // track
             $html .= "<div class=\"track $class_obsolete\">";
             $html .= $ss->track()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
             $html .= "</div>";
 
+            // carclass
             $html .= "<div class=\"CarClass $class_obsolete\">";
             $html .= $ss->carClass()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
+            $html .= "</div>";
+
+            // weather
+            $html .= "<div class=\"Weather $class_obsolete\">";
+            $rwc = $ss->serverPreset()->forecastWeather($ss->start(), $ss->track()->location());
+            $wpc = NULL;
+            if ($rwc !== NULL) {
+                $wpc = $rwc->weather()->parameterCollection();
+            } else if (count($ss->serverPreset()->weathers($ss->track()->location())) == 1) {
+                $wpc = $ss->serverPreset()->weathers($ss->track()->location())[0]->parameterCollection();
+            }
+            $html .= "<div class=\"SessionScheduleWeatherForecastData\">";
+            $html .= _("Ambient") . ": " . $wpc->child("AmbientBase")->value() . "&deg;C<br>";
+            $html .= _("Road") . ": " . ($wpc->child("AmbientBase")->value() + $wpc->child("RoadBase")->value()) . "&deg;C<br>";
+            $html .= _("Wind") . ": " . round(($wpc->child("WindBaseMin")->value() + $wpc->child("WindBaseMax")->value())/2) . "m/s<br>";
+            $html .= "</div>";
+            if ($rwc !== NULL) $html .= $rwc->htmlImg();
             $html .= "</div>";
 
             $html .= "<div class=\"$class_obsolete\">";
@@ -431,20 +454,22 @@ class SessionSchedules extends \core\HtmlContent {
 
         // weather forecast
         $html .= "<div>";
-        $html .= "<strong>" . _("Weather Forecast") . "</strong><br>";
+        $html .= "<strong>" . _("Weather") . "</strong>";
         $rwc = $ss->serverPreset()->forecastWeather($ss->start(), $ss->track()->location());
         if ($rwc !== NULL) {
+            $html .= "&nbsp;<small title=\"" . _("Weather data available from weather forecast") . "\">(" . _("Forecast") . ")</small><br>";
             $wpc = $rwc->weather()->parameterCollection();
             $html .= $rwc->htmlImg();
-            $html .= "<div id=\"SessionScheduleWeatherForecastData\">";
+            $html .= "<div class=\"SessionScheduleWeatherForecastData\">";
             $html .= _("Ambient") . ": " . $wpc->child("AmbientBase")->value() . "&deg;C<br>";
             $html .= _("Road") . ": " . ($wpc->child("AmbientBase")->value() + $wpc->child("RoadBase")->value()) . "&deg;C<br>";
             $html .= _("Rain") . ": " . sprintf("%0.1f", $rwc->precipitation()) . "mm/h<br>";
             $html .= _("Wind") . ": " . round(($wpc->child("WindBaseMin")->value() + $wpc->child("WindBaseMax")->value())/2) . "m/s<br>";
             $html .= "</div>";
         } else if (count($ss->serverPreset()->weathers($ss->track()->location())) == 1) {
+            $html .= "&nbsp;<small title=\"" . _("Fixed weather is used") . "\">(" . _("Fixed") . ")</small><br>";
             $wpc = $ss->serverPreset()->weathers($ss->track()->location())[0]->parameterCollection();
-            $html .= "<div id=\"SessionScheduleWeatherForecastData\">";
+            $html .= "<div class=\"SessionScheduleWeatherForecastData\">";
             $html .= _("Ambient") . ": " . $wpc->child("AmbientBase")->value() . "&deg;C<br>";
             $html .= _("Road") . ": " . ($wpc->child("AmbientBase")->value() + $wpc->child("RoadBase")->value()) . "&deg;C<br>";
             $html .= _("Wind") . ": " . round(($wpc->child("WindBaseMin")->value() + $wpc->child("WindBaseMax")->value())/2) . "m/s<br>";

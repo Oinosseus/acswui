@@ -427,11 +427,11 @@ main.DriverRanking .TrendFalling {
 
 main.SessionSchedules div#SessionScheduleOverview {
     display: inline-grid;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(5, auto);
     margin-top: 2em;
 }
 
-main.SessionSchedules div#SessionScheduleOverview div {
+main.SessionSchedules div#SessionScheduleOverview > div {
     border-radius: 1em;
     background-color: var(--color-bg-elements);
     padding: 0.5em 1em;
@@ -463,6 +463,16 @@ main.SessionSchedules div#SessionScheduleOverview span.RegistrationsFull {
 
 main.SessionSchedules div#SessionScheduleOverview span.RegistrationsAvailable {
     color: var(--color-functional-success);
+}
+
+main.SessionSchedules div#SessionScheduleOverview div.Weather {
+    vertical-align: middle;
+}
+
+main.SessionSchedules div#SessionScheduleOverview div.Weather > img,
+main.SessionSchedules div#SessionScheduleOverview div.Weather > div.SessionScheduleWeatherForecastData {
+    vertical-align: middle;
+    display: inline-block;
 }
 
 main.SessionSchedules form {
@@ -546,7 +556,7 @@ main.SessionSchedules div#SessionDetailsOverview div img.OWMWeatherIcon {
     float: left;
 }
 
-main.SessionSchedules div#SessionDetailsOverview div#SessionScheduleWeatherForecastData {
+main.SessionSchedules div#SessionDetailsOverview div.SessionScheduleWeatherForecastData {
     margin-top: 1em;
     margin-left: 1em;
     display: inline-block;
