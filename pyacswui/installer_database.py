@@ -102,6 +102,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt("SessionResults", "TotalTime")
         self.__db.appendColumnSmallInt("SessionResults", "Ballast")
         self.__db.appendColumnTinyInt("SessionResults", "Restrictor")
+        self.__db.appendColumnUInt("SessionResults", "TeamCar")
 
         # check table Laps
         Verbosity(verb).print("check database table `Laps`")
@@ -115,6 +116,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnSmallInt("Laps", "Ballast")
         self.__db.appendColumnTinyInt("Laps", "Restrictor")
         self.__db.appendColumnCurrentTimestamp("Laps", "Timestamp")
+        self.__db.appendColumnUInt("Laps", "TeamCar")
 
         # check table CollisionEnv
         Verbosity(verb).print("check database table `CollisionEnv`")

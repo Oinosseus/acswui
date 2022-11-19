@@ -55,16 +55,6 @@ class CommandUdpPlugin(Command):
         server_cfg = ConfigParser()
         server_cfg.read(path_server_cfg)
 
-        # map ballast
-        map_ballast = {}
-        for guid in self.getIniSection('BALLAST').keys():
-            map_ballast[guid] = self.getIniSection('BALLAST')[guid]
-
-        # map restrictor
-        map_restrictor = {}
-        for guid in self.getIniSection('RESTRICTOR').keys():
-            map_restrictor[guid] = self.getIniSection('RESTRICTOR')[guid]
-
         # setup UDP Plugin
         self._verbosity.print("Setup UDP plugin server")
         udpp = UdpPluginServer(self.getIniSection('PLUGIN')['slot'],
@@ -77,8 +67,12 @@ class CommandUdpPlugin(Command):
                                path_data_acserver,
                                path_realtime_json,
                                self.getIniSection('PLUGIN')['preserved_kick'].lower() in ["true", "1", "yes"],
-                               map_ballast,
-                               map_restrictor,
+                               self.getIniSection('BopCarBallast'),
+                               self.getIniSection('BopCarRestrictor'),
+                               self.getIniSection('BopUserBallast'),
+                               self.getIniSection('BopUserRestrictor'),
+                               self.getIniSection('BopTeamcarBallast'),
+                               self.getIniSection('BopTeamcarRestrictor'),
                                self.getIniSection('PLUGIN')['referenced_session_schedule_id'],
                                verbosity=self._verbosity)
         udpp.process() # run once just to ensure that it does not crash immediately

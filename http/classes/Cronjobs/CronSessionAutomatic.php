@@ -45,8 +45,7 @@ class CronSessionAutomatic extends \Core\Cronjob {
                                $schd->carClass(),
                                $schd->serverPreset(),
                                $schd->entryList(),
-                               $schd->mapBallasts(),
-                               $schd->mapRestrictors(),
+                               $schd->bopMap(),
                                $schd->id());
                     $schd->setExecuted(new \DateTime("now"));
                     \Core\Discord::messageScheduleStart($ss, $schd);
@@ -69,8 +68,7 @@ class CronSessionAutomatic extends \Core\Cronjob {
                                    $schd->carClass(),
                                    $preset,
                                    $schd->entryList(),
-                                   $schd->mapBallasts(),
-                                   $schd->mapRestrictors());
+                                   $schd->bopMap());
                         continue;
                     }
                 }

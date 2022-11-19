@@ -34,17 +34,9 @@ class UdpPluginCarEntry(object):
         self.__last_lap_cuts = 0
         self.__last_lap_grip = 0
 
-        # determine ballast
-        self.__ballast_original = 0
-        if 'BALLAST' in entry_dict and entry_dict['BALLAST'] != "":
-            self.__ballast_original = int(entry_dict['BALLAST'])
-        self.__ballast_current = self.__ballast_original
-
-        # determine restrictor
-        self.__restrictor_original = 0
-        if 'RESTRICTOR' in entry_dict and entry_dict['RESTRICTOR'] != "":
-            self.__restrictor_original = int(entry_dict['RESTRICTOR'])
-        self.__restrictor_current = self.__restrictor_original
+        # save BOP to save it into DB for Lap data
+        self.__ballast_current = 0
+        self.__restrictor_current = 0
 
         # identify car
         self.__car_model = entry_dict['MODEL']
@@ -76,6 +68,12 @@ class UdpPluginCarEntry(object):
 
         self.__verbosity.print("Car entry: Id =", self.__id, ", model =", self.__car_model, ", GUIDs =", ",".join(self.__preserved_drivers_guids))
 
+        # remember team-cars
+        self.__team_car_id = 0
+        if 'TeamCarId' in entry_dict:
+           self.__team_car_id = int(entry_dict['TeamCarId'])
+
+
 
 
     @property
@@ -92,12 +90,10 @@ class UdpPluginCarEntry(object):
 
     @BallastCurrent.setter
     def BallastCurrent(self, value):
-        self.__ballast_current = int(value)
-
-
-    @property
-    def BallastOriginal(self):
-        return self.__ballast_original
+        value = int(value)
+        if value != self.__ballast_current:
+            self.__verbosity.print("Changing ballast on Car ID%s for driver %s (%s) from %ikg to %ikg" % (self.Id, str(self.DriverGuid), str(self.DriverName), self.__ballast_current, value))
+        self.__ballast_current = value
 
 
     @property
@@ -112,12 +108,10 @@ class UdpPluginCarEntry(object):
 
     @RestrictorCurrent.setter
     def RestrictorCurrent(self, value):
-        self.__restrictor_current = int(value)
-
-
-    @property
-    def RestrictorOriginal(self):
-        return self.__restrictor_original
+        value = int(value)
+        if value != self.__restrictor_current:
+            self.__verbosity.print("Changing restrictor on Car ID%s for driver %s (%s) from %i%% to %i%%" % (self.Id, str(self.DriverGuid), str(self.DriverName), self.__restrictor_current, value))
+        self.__restrictor_current = value
 
 
     @property
@@ -127,6 +121,12 @@ class UdpPluginCarEntry(object):
     @property
     def SkinId(self):
         return self.__car_skin_id
+
+
+    @property
+    def TeamCarId(self):
+        return self.__team_car_id
+
 
     @property
     def DriverId(self):
@@ -172,18 +172,10 @@ class UdpPluginCarEntry(object):
     def illegalOccupation(self):
         """! @return True If the current occupation violates the preserved GUIDs
         """
-        if self.__driver_guid is None:
+        if self.DriverGuid is None or len(self.__preserved_drivers_guids) == 0:
             return False
 
-        illegal = False
-        if len(self.__preserved_drivers_guids) > 0:
-            illegal = True
-            for preserved_guid in self.__preserved_drivers_guids:
-                if self.__driver_guid == preserved_guid:
-                    illegal = False
-                    break
-
-        return illegal
+        return self.DriverGuid not in self.__preserved_drivers_guids
 
 
     def occupy(self, driver_name, driver_guid, session):
@@ -225,8 +217,8 @@ class UdpPluginCarEntry(object):
         self.__driver_guid = None
         self.__driver_name = None
         self.__driver_id = None
-        self.__restrictor_current = self.__restrictor_original
-        self.__ballast_current = self.__ballast_original
+        self.__restrictor_current = 0
+        self.__ballast_current = 0
 
 
     def complete_lap(self, session, laptime, cuts, grip):
@@ -248,6 +240,7 @@ class UdpPluginCarEntry(object):
         fields['Grip'] = grip
         fields['Ballast'] = self.__ballast_current
         fields['Restrictor'] = self.__restrictor_current
+        fields['TeamCar'] = self.__team_car_id
         self.__db.insertRow("Laps", fields)
 
         self.__last_lap_time = laptime

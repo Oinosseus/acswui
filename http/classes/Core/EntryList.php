@@ -10,15 +10,47 @@ class EntryList {
     private $ListItems = array();
 
     //! CacheUsers[User->id()] == User
-    private $CacheUsers = array();
+    // private $CacheUsers = array();
 
     //! $CacheCarSkins[CarSkin->id()] = CarSkin
     private $CacheCarSkins = array();
 
-    public function __construct() {
+    //! remmeber if TVCar has been added
+    private $TVCarAdded = FALSE;
 
-        // add TVCar
-        if (\Core\ACswui::getParam('TVCarEna')) {
+    public function __construct() {
+    }
+
+
+    //! @return The string representation of the class
+    public function __toString() {
+        $n = $this->count();
+        return "EntryList[{$n} Entries]";
+    }
+
+
+    /**
+     * Add an EntryListItem
+     * @param $eli An EntryListItem object
+     */
+    public function add(EntryListItem $eli) {
+        // if ($eli->user() !== NULL) $this->CacheUsers[$eli->user()->id()] = $eli->user();
+        $this->CacheCarSkins[$eli->carSkin()->id()] = $eli->carSkin();
+        $this->ListItems[] = $eli;
+    }
+
+
+    /**
+     * This will add the TV car to the entry list.
+     *
+     * When TVCarEna in ACswui settings is not activated, this call will have no effect.
+     * When the TV-Car already has been added, this has no effect.
+     */
+    public function addTvCar() {
+
+        // check if TVCar is activated
+        if (\Core\ACswui::getParam('TVCarEna') && !$this->TVCarAdded) {
+            $this->TVCarAdded = TRUE;  // if it failes, it will also fail in future, so adding can be assumed
 
             // get car
             $model_name = \Core\ACswui::getParam('TVCarModel');
@@ -35,51 +67,11 @@ class EntryList {
                 } else {
 
                     // add entry
-                    $eli = new EntryListItem($carskin, NULL, 0, 0);
-                    $eli->forceGUIDs(\Core\ACswui::getParam('TVCarGuids'));
+                    $eli = new EntryListItem($carskin);
+                    $eli->forceDriver("ACswui TV Car", \Core\ACswui::getParam('TVCarGuids'));
+                    $eli->setSpectator(TRUE);
                     $this->add($eli);
                 }
-            }
-        }
-    }
-
-
-
-    //! @return The string representation of the class
-    public function __toString() {
-        return "EntryList[]";
-    }
-
-
-    /**
-     * Add an EntryListItem
-     * @param $eli An EntryListItem object
-     */
-    public function add(EntryListItem $eli) {
-        if ($eli->user() !== NULL) $this->CacheUsers[$eli->user()->id()] = $eli->user();
-        $this->CacheCarSkins[$eli->carSkin()->id()] = $eli->carSkin();
-        $this->ListItems[] = $eli;
-    }
-
-
-    /**
-     * Apply ballast and restrictor from Car class to all current entries
-     * @param $cc \DbEntry\CarClass to retrieve ballast/restrictor from
-     */
-    public function  applyCarClass(\DbEntry\CarClass $cc) {
-
-        // list all cars within class
-        $car_ids = array();
-        foreach ($cc->cars() as $car) $car_ids[] = $car->id();
-
-        // apply to all cars within class
-        foreach ($this->ListItems as $eli) {
-            $car = $eli->carSkin()->car();
-            if (in_array($car->id(), $car_ids)) {
-                $ballast = $cc->ballast($car);
-                $eli->setBallast($ballast);
-                $restrictor = $cc->restrictor($car);
-                $eli->setRestrictor($restrictor);
             }
         }
     }
@@ -91,10 +83,10 @@ class EntryList {
     }
 
 
-    //! @return TRUE if the requested User is in the EntryList
-    public function containsUser(\DbEntry\User $user) {
-        return array_key_exists($user->id(), $this->CacheUsers);
-    }
+    // //! @return TRUE if the requested User is in the EntryList
+    // public function containsUser(\DbEntry\User $user) {
+    //     return array_key_exists($user->id(), $this->CacheUsers);
+    // }
 
 
     //! @return The amount of EntryListItems
@@ -104,7 +96,7 @@ class EntryList {
 
 
     //! @return An array of EntryListItem objects
-    public function entries() {
+    public function entries() : array {
         return $this->ListItems;
     }
 
@@ -116,11 +108,9 @@ class EntryList {
      * Each CarSkin object will be unique.
      *
      * @param $cc The CarClass object where to get the cars from
-     * @param $track The Track object to retrieve the maximum available pitboxes
-     * @param $ballast This ballast will be applied to all entries
-     * @param $restrictor This restrictor will be applied to all entries
+     * @param $max_count The number of entries that shall be in the EntryList afterwards
      */
-    public function fillSkins(\DbEntry\CarClass $cc, \DbEntry\Track $track, int $ballast=0, int $restrictor=0) {
+    public function fillSkins(\DbEntry\CarClass $cc, int $max_count) {
 
         // list available skins for each car
         $available_carskins = array(); // $available_carskins[Car->id()] = [CarSkin, CarSkin, ...]
@@ -153,8 +143,8 @@ class EntryList {
 
         // fill entry list
         foreach ($serial_skin_list as $cskin) {
-            if ($this->count() >= $track->pitboxes()) break;
-            $eli = new \Core\EntryListItem($cskin, NULL, $ballast, $restrictor);
+            if ($this->count() >= $max_count) break;
+            $eli = new \Core\EntryListItem($cskin);
             $this->add($eli);
         }
     }

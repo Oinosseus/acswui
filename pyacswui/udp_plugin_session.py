@@ -129,11 +129,14 @@ class UdpPluginSession(object):
             self.__verbosity.print("New Session: Id =", self._db_id, ", name =", session_name)
         else:
             self.__db.updateRow("Sessions", self._db_id, self.__db_field_cache)
-            Verbosity(self.__verbosity).print("Session-Id", self._db_id, ", elapsed %0.1fs" % (elapsed_ms * 1e-3))
+            # Verbosity(self.__verbosity).print("Session-Id", self._db_id, ", elapsed %0.1fs" % (elapsed_ms * 1e-3))
 
 
 
-    def parse_result_json(self, result_json_file_path):
+    def parse_result_json(self, result_json_file_path, entryies):
+        """
+            @param entryies a list of UdpPluginCarEntry objects
+        """
 
         # ignore, if session is not in database (maybe empty session)
         if self.Id is None:
@@ -174,8 +177,6 @@ class UdpPluginSession(object):
                 print("ERROR: No excat match for Steam64GUID '%s'" % steam64guid)
                 continue
             user = user_ids[0]
-            if user in already_listed_user_ids:
-                continue
 
             # find car model
             rslt_car_id = rslt['CarId']
@@ -194,17 +195,30 @@ class UdpPluginSession(object):
                 continue
             skin = skin_ids[0]
 
+            # find TeamCar
+            team_car_id = 0
+            for e in entryies:
+                if e.Id == rslt_car_id:
+                    team_car_id = e.TeamCarId
+                    break
+
+            # list single drivers only once
+            # but ignore for TeamCars
+            if team_car_id < 1:
+                if user in already_listed_user_ids:
+                    continue
+                else:
+                    already_listed_user_ids.append(user)
+
             # stroe result
             fields = {}
             fields['Position'] = position
             fields['Session'] = self.Id
-            fields['User'] = user
+            fields['User'] = user if team_car_id < 1 else 0  # if car was driven by a team, ignore the user
             fields['CarSkin'] = skin
             fields['BestLap'] = rslt['BestLap']
             fields['TotalTime'] = rslt['TotalTime']
             fields['Ballast'] = rslt['BallastKG']
             fields['Restrictor'] = rslt['Restrictor']
+            fields['TeamCar'] = team_car_id
             self.__db.insertRow("SessionResults", fields)
-
-            # ensure User is listed only once
-            already_listed_user_ids.append(user)

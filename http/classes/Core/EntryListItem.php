@@ -8,40 +8,82 @@ namespace Core;
 class EntryListItem {
 
     private $CarSkin = NULL;
-    private $User = NULL;
-    private $Ballast = 0;
-    private $Restrictor = 0;
-    private $ForceGUIDs = NULL;
+    private $Users = NULL;
+    private $TeamCar = NULL;
+    private $ForceDriver = NULL;
+    private $Spectator = FALSE;
 
-    public function __construct(\DbEntry\CarSkin $skin,
-                                \DbEntry\User $user=NULL,
-                                int $ballast=0,
-                                int $restrictor=0) {
+    public function __construct(\DbEntry\CarSkin $skin) {
         $this->CarSkin = $skin;
-        $this->User = $user;
-        $this->Ballast = $ballast;
-        $this->Restrictor = $restrictor;
+    }
+
+
+    /**
+     * Assign driver(s) to this cars.
+     * This could be either multiple User objects,
+     * or one TeamCar object.
+     *
+     * When adding a TeamCar while previously users or a different TeamCar were added, this generates an error.
+     * When adding a User while previously a TeamCar was assigned, this generates an error.
+     *
+     * To add multiple users, call this multiple times.
+     *
+     * @param $driver Either User or TeamCar object.
+     */
+    public function addDriver(\DbEntry\User|\DbEntry\TeamCar $driver) {
+
+        // add a user
+        if (is_a($driver, "\DbEntry\User")) {
+            if ($this->TeamCar) {
+                \Core\Log::error("Cannot add a user, because a team-car is already assigned!");
+            } else {
+                if ($this->Users === NULL) $this->Users = array();
+                $this->Users[] = $driver;
+            }
+
+        // add a team car
+        } else if (is_a($driver, "\DbEntry\TeamCar")) {
+            if ($this->Users !== NULL) {
+                \Core\Log::error("Cannot add a TeamCar, because User is already assigned!");
+            } else if ($this->TeamCar !== NULL) {
+                \Core\Log::error("Cannot add a TeamCar, because another TeamCar is already assigned!");
+            } else {
+                $this->TeamCar = $driver;
+            }
+
+        //! just for debugging
+        } else {
+            \Core\Log::error("Unexpected class: '" . get_class($driver) . "'!");
+        }
     }
 
 
     //! @return The CarSkin object of the occupation
-    public function carSkin() {
+    public function carSkin() : \DbEntry\CarSkin {
         return $this->CarSkin;
     }
 
 
     /**
-     * This sets the GUID for the car item in the entry list.
-     * When using this function, the assigned User object is ignored.
+     * When this is called, the actual users are ignored and
+     * driver-name and Steam64GUID is overwritten
+     * @param $driver_name The name of the driver that shall be visible in the entry-list
+     * @param $steam64guid The Steam64GUID that shall be set in the entry-list (can be any string - also multiple GUIDs)
      */
-    public function forceGUIDs(string $guids) {
-        $this->ForceGUIDs = $guids;
+    public function forceDriver(string $driver_name, string $steam64guid) {
+        $this->ForceDriver = [$driver_name, $steam64GUID];
     }
 
 
-    //! @return The User object of the occupation (can be NULL)
-    public function user() {
-        return $this->User;
+    //! @param §spectator Defines if SPECTATOR in entry list shall be set or not
+    public function setSpectator(bool $spectator) {
+        $this->Spectator = $spectator;
+    }
+
+
+    //! @return A list of User objects of the occupation (can be empty)
+    public function users() : array {
+        return $this->Users;
     }
 
 
@@ -51,43 +93,47 @@ class EntryListItem {
      * @param $id An incremental identifier for each car entry
      */
     public function writeToFile($f, int $id) {
+
+        // fillout driver/guid
+        $drivername = "";
+        $guid = "";
+        if ($this->ForceDriver !== NULL) {        // forced
+            $drivername = $this->ForceDriver[0];
+            $guid = $this->ForceDriver[1];
+        } else if ($this->Users !== NULL) {        // from User
+            foreach ($this->Users as $u) {
+                if (strlen($drivername) > 0) $drivername .= ";";
+                $drivername .= $u->name();
+                if (strlen($guid) > 0) $guid .= ";";
+                $guid .= $u->steam64GUID();
+            }
+        } else if ($this->TeamCar !== NULL) {    // from TeamCar
+            foreach ($this->TeamCar->drivers() as $tmm) {
+                $u = $tmm->user();
+                if (strlen($drivername) > 0) $drivername .= ";";
+                $drivername .= $u->name();
+                if (strlen($guid) > 0) $guid .= ";";
+                $guid .= $u->steam64GUID();
+            }
+        }
+
+        // export
         fwrite($f, "[CAR_$id]\n");
         fwrite($f, "MODEL={$this->CarSkin->car()->model()}\n");
         fwrite($f, "SKIN={$this->CarSkin->skin()}\n");
-        fwrite($f, "SPECTATOR_MODE=0\n");
-
-        if ($this->ForceGUIDs !== NULL) {
-            fwrite($f, "DRIVERNAME=ACswui TV Cam\n");
-            fwrite($f, "GUID={$this->ForceGUIDs}\n");
-        } else if ($this->User === NULL) {
-            fwrite($f, "DRIVERNAME=\n");
-            fwrite($f, "GUID=\n");
+        fwrite($f, "DRIVERNAME={$drivername}\n");
+        fwrite($f, "GUID={$guid}\n");
+        if ($this->TeamCar) {
+            fwrite($f, "TEAM={$this->TeamCar->team()->name()}\n");
+            fwrite($f, "TeamCarId={$this->TeamCar->id()}\n");
         } else {
-            fwrite($f, "DRIVERNAME={$this->getUserNameFromDb()}\n");
-            fwrite($f, "GUID={$this->User->steam64GUID()}\n");
+            fwrite($f, "TEAM=\n");
+            fwrite($f, "TeamCarId=0\n");
         }
-
-        fwrite($f, "TEAM=\n");
-
-        fwrite($f, "BALLAST={$this->Ballast}\n");
-        fwrite($f, "RESTRICTOR={$this->Restrictor}\n");
-    }
-
-
-    private function getUserNameFromDb() {
-        if (!$this->User) return "";
-        $res = \Core\Database::fetch("Users", ['Name'], ['Id'=>$this->User->id()]);
-        if (count($res)) return $res[0]['Name'];
-        return "";
-    }
-
-
-    public function setBallast(int $ballast) {
-        $this->Ballast = $ballast;
-    }
-
-
-    public function setRestrictor(int $restrictor) {
-        $this->Restrictor = $restrictor;
+        if ($this->Spectator) {
+            fwrite($f, "SPECTATOR_MODE=1\n");
+        } else {
+            fwrite($f, "SPECTATOR_MODE=0\n");
+        }
     }
 }

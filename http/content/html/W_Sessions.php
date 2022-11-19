@@ -29,13 +29,13 @@ class W_Sessions extends \core\HtmlContent {
                     sleep(2);
 
                 } else if ($_POST['Action'] == "StartSlot") {
-                    $trasck = \DbEntry\Track::fromId($_POST['Track']);
+                    $track = \DbEntry\Track::fromId($_POST['Track']);
                     $preset = \DbEntry\ServerPreset::fromId($_POST['ServerPreset']);
                     $car_class = \DbEntry\CarClass::fromId($_POST['CarClass']);
-                    $slot->start($trasck, $car_class, $preset);
+                    $slot->start($track, $car_class, $preset);
                     sleep(2);
 
-                    \Core\Discord::messageManualStart($slot, $trasck, $car_class, $preset);
+                    \Core\Discord::messageManualStart($slot, $track, $car_class, $preset);
                 }
             }
         }

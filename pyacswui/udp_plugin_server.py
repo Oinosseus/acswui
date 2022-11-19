@@ -24,8 +24,12 @@ class UdpPluginServer(object):
                  ac_server_path,
                  realtime_json_path = None,
                  kick_illegal_occupations = False,
-                 map_ballasts = {},
-                 map_restrictors = {},
+                 bop_map_car_ballasts = {},          # key=car_model, value=ballast
+                 bop_map_car_restrictors = {},       # key=car_model, value=restrictor
+                 bop_map_user_ballasts = {},         # key=Steam64GUID (or OTHER), value=ballast
+                 bop_map_user_restrictors = {},      # key=Steam64GUID (or OTHER), value=restrictor
+                 bop_map_teamcar_ballasts = {},      # key=TeamCarId, value=ballast
+                 bop_map_teamcar_restrictors = {},   # key=TeamCarId, value=restrictor
                  referenced_session_schedule_id = None,
                  verbosity=0):
 
@@ -54,8 +58,6 @@ class UdpPluginServer(object):
 
         # force ballast and restrictor
         self.__last_checked_balancing = None
-        self.__ballasts = map_ballasts
-        self.__restrictors = map_restrictors
 
         self.__port_plugin = int(port_plugin)
         self.__port_server = int(port_server)
@@ -83,6 +85,14 @@ class UdpPluginServer(object):
                                      entry_section, self.__entry_list[entry_section],
                                      self.__verbosity)
             self.__entries.append(upce)
+
+        # remember BOP maps
+        self.__bop_map_car_ballasts = {key: int(bop_map_car_ballasts[key]) for key in bop_map_car_ballasts.keys()}
+        self.__bop_map_car_restrictors = {key: int(bop_map_car_restrictors[key]) for key in bop_map_car_restrictors.keys()}
+        self.__bop_map_user_ballasts = {key: int(bop_map_user_ballasts[key]) for key in bop_map_user_ballasts.keys()}
+        self.__bop_map_user_restrictors = {key: int(bop_map_user_restrictors[key]) for key in bop_map_user_restrictors.keys()}
+        self.__bop_map_teamcar_ballasts = {key: int(bop_map_teamcar_ballasts[key]) for key in bop_map_teamcar_ballasts.keys()}
+        self.__bop_map_teamcar_restrictors = {key: int(bop_map_teamcar_restrictors[key]) for key in bop_map_teamcar_restrictors.keys()}
 
 
 
@@ -134,27 +144,65 @@ class UdpPluginServer(object):
                 if entry.DriverGuid is None:
                     continue
 
-                # check ballast
-                ballast_requested = entry.BallastOriginal
-                if entry.DriverGuid in self.__ballasts:
-                    ballast_requested = entry.BallastOriginal + int(self.__ballasts[entry.DriverGuid])
-                elif 'OTHER' in self.__ballasts:
-                    ballast_requested = entry.BallastOriginal + self.__ballasts[entry.DriverGuid]
 
-                #self.__verbosity.print("Apply OTHER ballast=" + str(ballast_requested)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
-                self.send_admin_command("/ballast %i %i" % (entry.Id, ballast_requested))
-                entry.BallastCurrent = ballast_requested
+                # -------------------------------------------------------------
+                #  Ballast
+                # -------------------------------------------------------------
 
-                # check restrictor
-                restrictor_requested = entry.RestrictorOriginal
-                if entry.DriverGuid in self.__restrictors:
-                    restrictor_requested = entry.RestrictorOriginal + int(self.__restrictors[entry.DriverGuid])
-                elif 'OTHER' in self.__restrictors:
-                    restrictor_requested = entry.RestrictorOriginal + self.__restrictors[entry.DriverGuid]
+                # for car model
+                if entry.Model in self.__bop_map_car_ballasts:
+                    ballast_car_model = self.__bop_map_car_ballasts[entry.Model]
+                else:
+                    ballast_car_model = 0
 
-                #self.__verbosity.print("Apply restrictor=" + str(restrictor_requested)  + " to " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id))
-                self.send_admin_command("/restrictor %i %i" % (entry.Id, restrictor_requested))
-                entry.RestrictorCurrent = restrictor_requested
+                # for dirver
+                if entry.DriverGuid in self.__bop_map_user_ballasts:
+                    ballast_user = self.__bop_map_user_ballasts[entry.DriverGuid]
+                elif 'OTHER' in self.__bop_map_user_ballasts:
+                    ballast_user = self.__bop_map_user_ballasts['OTHER']
+                else:
+                    ballast_user = 0
+
+                # for team
+                if entry.TeamCarId in self.__bop_map_teamcar_ballasts:
+                    ballast_team = self.__bop_map_teamcar_ballasts[entry.TeamCarId]
+                else:
+                    ballast_team = 0
+
+                # apply ballast
+                ballast = ballast_car_model + max(ballast_user, ballast_team)
+                self.send_admin_command("/ballast %i %i" % (entry.Id, ballast))
+                entry.BallastCurrent = ballast
+
+
+                # -------------------------------------------------------------
+                #  Restrictor
+                # -------------------------------------------------------------
+
+                # for car model
+                if entry.Model in self.__bop_map_car_restrictors:
+                    restrictor_car_model = self.__bop_map_car_restrictors[entry.Model]
+                else:
+                    restrictor_car_model = 0
+
+                # for dirver
+                if entry.DriverGuid in self.__bop_map_user_restrictors:
+                    restrictor_user = self.__bop_map_user_restrictors[entry.DriverGuid]
+                elif 'OTHER' in self.__bop_map_user_restrictors:
+                    restrictor_user = self.__bop_map_user_restrictors['OTHER']
+                else:
+                    restrictor_user = 0
+
+                # for team
+                if entry.TeamCarId in self.__bop_map_teamcar_restrictors:
+                    restrictor_team = self.__bop_map_teamcar_restrictors[entry.TeamCarId]
+                else:
+                    restrictor_team = 0
+
+                # apply ballast
+                restrictor = restrictor_car_model + max(restrictor_user, restrictor_team)
+                self.send_admin_command("/restrictor %i %i" % (entry.Id, restrictor))
+                entry.RestrictorCurrent = restrictor
 
 
 
@@ -265,7 +313,7 @@ class UdpPluginServer(object):
             if self.__session is None:
                 print("ERROR: ACSP_END_SESSION received, but no active session existent!")
             else:
-                self.__session.parse_result_json(json_file_abspath)
+                self.__session.parse_result_json(json_file_abspath, self.__entries)
 
 
         # ACSP_LAP_COMPLETED

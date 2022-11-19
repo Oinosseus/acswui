@@ -326,19 +326,37 @@ class ServerSlot {
      * @param $car_class The CarClass of the server run
      * @param $preset The ServerPreset for the server run
      * @param $el The EntryList which shall be used
-     * @param $map_ballasts An associative array with Steam64GUID->Ballast and one key with 'OTHER'->Ballst
-     * @param $map_restrictors An associative array with Steam64GUID->Restrictor and one key with 'OTHER'->Restrictor
+     * @param $bm A BopMap object to apply BOP
      * @param $referenced_session_schedule_id The ID of the SessionSchedule object, that shall be linked to the session
      */
     public function start(\DbEntry\Track $track,
                           \DbEntry\CarClass $car_class,
                           \DbEntry\ServerPreset $preset,
                           \Core\EntryList $el = NULL,
-                          array $map_ballast = [],
-                          array $map_restrictor = [],
+                          \Core\BopMap $bm = NULL,
                           int $referenced_session_schedule_id = NULL) {
 
         $id = $this->id();
+
+        // create EntryList if not existent
+        if (!$el) {
+            $el = new \Core\EntryList();
+            $el->addTvCar();
+            $el->fillSkins($car_class, $track->pitboxes());
+            $el->reverse();
+        }
+
+        // create BOP Map if not existent
+        if (!$bm) {
+            $bm = new \Core\BopMap();
+
+            // retrieve from CarClass
+            foreach ($car_class->cars() as $c) {
+                $b = $car_class->ballast($c);
+                $r = $car_class->restrictor($c);
+                $bm->update($b, $r, $c);
+            }
+        }
 
         // configure real penalty
         $this->writeRpAcSettings($preset);
@@ -346,19 +364,11 @@ class ServerSlot {
         $this->writeRpSettings();
 
         // configure ACswui plugin
-        $this->writeACswuiUdpPluginIni($car_class,
-                                       $preset,
-                                       $map_ballast,
-                                       $map_restrictor,
-                                       $referenced_session_schedule_id);
+        $this->writeACswuiUdpPluginIni($car_class, $preset, $bm, $referenced_session_schedule_id);
 
         // configure ac server
-        if ($el === NULL) {
-            $el = new \Core\EntryList();
-            $el->fillSkins($car_class, $track);
-        }
         $el->writeToFile(\Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/entry_list.ini");
-        $this->writeAcServerCfg($track, $car_class, $preset, $el, $map_ballast);
+        $this->writeAcServerCfg($track, $car_class, $preset, $el, $bm);
 
         // configure ac-server-wrapper
         $this->writeAcServerWrapperParams();
@@ -440,14 +450,12 @@ class ServerSlot {
      * create acswui_udp_plugin.ini
      * @param $car_class The CarClass of the server run
      * @param $preset The ServerPreset for the server run
-     * @param $map_ballasts An associative array with Steam64GUID->Ballast and one key with 'OTHER'->Ballst
-     * @param $map_restrictors An associative array with Steam64GUID->Restrictor and one key with 'OTHER'->Restrictor
+     * @param $bm A BopMap object to apply BOP
      * @param $referenced_session_schedule_id The ID of the SessionSchedule object, that shall be linked to the session
      */
     private function writeACswuiUdpPluginIni(\DbEntry\CarClass $car_class,
                                              \DbEntry\ServerPreset $preset,
-                                             array $map_ballasts = [],
-                                             array $map_restrictors = [],
+                                             \Core\BopMap $bm,
                                              int $referenced_session_schedule_id = NULL) {
         $pc = $this->parameterCollection();
         $file_path = \Core\Config::AbsPathData . "/acswui_udp_plugin/acswui_udp_plugin_" . $this->id() . ".ini";
@@ -479,15 +487,7 @@ class ServerSlot {
         fwrite($f, "preserved_kick = " . $preset->getParam("ACswuiPreservedKick") . "\n");
         fwrite($f, "referenced_session_schedule_id = $referenced_session_schedule_id\n");
 
-        fwrite($f, "\n[BALLAST]\n");
-        foreach ($map_ballasts as $guid=>$ballast) {
-            fwrite($f, "$guid = $ballast\n");
-        }
-
-        fwrite($f, "\n[RESTRICTOR]\n");
-        foreach ($map_restrictors as $guid=>$restrictor) {
-            fwrite($f, "$guid = $restrictor\n");
-        }
+        $bm->writeACswuiUdpPluginIni($f);
 
         fclose($f);
         chmod($file_path, 0660);
@@ -500,20 +500,13 @@ class ServerSlot {
      * @param $car_class The CarClass of the server run
      * @param $preset The ServerPreset for the server run
      * @param $el An EntryList object to extract cars from
-     * @param $map_ballasts An associative array with Steam64GUID->Ballast and one key with 'OTHER'->Ballst
+     * @param $bm A BopMap object to retrieve maximum ballast
      */
     private function writeAcServerCfg(\DbEntry\Track $track,
                                       \DbEntry\CarClass $car_class,
                                       \DbEntry\ServerPreset $preset,
-                                      \Core\EntryList $el = NULL,
-                                      array $map_ballasts = []) {
-
-        // determine maximum ballast
-        $car_class_max_ballast = $car_class->ballastMax();
-        $max_ballast = $car_class_max_ballast;
-        foreach ($map_ballasts as $guid=>$ballast) {
-            if ($ballast > $max_ballast) $max_ballast = $car_class_max_ballast + $ballast;
-        }
+                                      \Core\EntryList $el,
+                                      \Core\BopMap $bm) {
 
         $pc = $this->parameterCollection();
         $ppc = $preset->parameterCollection();
@@ -592,7 +585,7 @@ class ServerSlot {
             if (!in_array($model, $cars)) $cars[] = $model;
         }
         fwrite($f, "CARS=" . implode(";", $cars) . "\n");
-        fwrite($f, "MAX_BALLAST_KG=$max_ballast\n");
+        fwrite($f, "MAX_BALLAST_KG={$bm->maxBallast()}\n");
         fwrite($f, "TRACK=" . $track->location()->track() . "\n");
         fwrite($f, "CONFIG_TRACK=" . $track->config() . "\n");
 

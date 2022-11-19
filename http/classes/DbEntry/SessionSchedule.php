@@ -20,6 +20,51 @@ class SessionSchedule extends DbEntry {
     }
 
 
+    //! @return The BopMap object for this event
+    public function bopMap() : \Core\BopMap {
+        $bopm = new \Core\BopMap();
+
+        // assign foreign drivers
+        $bopm->update($this->getParamValue("BopNonRnkBallast"),
+                      $this->getParamValue("BopNonRnkRestrictor").
+                      NULL);
+
+        // retrieve from user ranking
+        foreach (\DbEntry\DriverRanking::listLatest() as $drvrnk) {
+            $group = $drvrnk->group();
+            $ballast = $this->getParamValue("BopDrvRnkGrpBallast$group");
+            $restrictor = $this->getParamValue("BopDrvRnkGrpRestrictor$group");
+            $bopm->update($ballast, $restrictor, $drvrnk->user());
+        }
+
+        // retrieve from explicit settings in registration
+        foreach (SessionScheduleRegistration::listRegistrations($this, FALSE) as $reg) {
+
+            // check if any BOP is assigned
+            if ($reg->ballast() > 0 || $reg->restrictor() > 0) {
+
+                if ($reg->user()) {
+                    $bopm->update($reg->ballast(), $reg->restrictor(), $reg->user());
+                }
+
+                if ($reg->teamCar()) {
+                    $bopm->update($reg->ballast(), $reg->restrictor(), $reg->teamCar());
+                }
+            }
+        }
+
+        // retrieve from CarClass
+        $cc = $this->carClass();
+        foreach ($cc->cars() as $c) {
+            $b = $cc->ballast($c);
+            $r = $cc->restrictor($c);
+            $bopm->update($b, $r, $c);
+        }
+
+        return $bopm;
+    }
+
+
     //! @return The assigned CarClass object
     public function carClass() {
         return CarClass::fromId($this->getParamValue("CarClass"));
@@ -30,7 +75,19 @@ class SessionSchedule extends DbEntry {
     public function carSkinOccupied(CarSkin $car_skin) {
         if ($this->ActiveRegisteredCarSkinIds === NULL) {
             $this->ActiveRegisteredCarSkinIds = array();
+
+            // find direct registrations
             $query = "SELECT CarSkin FROM SessionScheduleRegistrations WHERE SessionSchedule = {$this->id()} AND Active != 0";
+            foreach (\Core\Database::fetchRaw($query) as $row)
+                $this->ActiveRegisteredCarSkinIds[] = (int) $row['CarSkin'];
+
+            // find teamcar registrations
+            $query  = "SELECT TeamCars.CarSkin";
+            $query .= " FROM SessionScheduleRegistrations";
+            $query .= " INNER JOIN TeamCars ON TeamCars.Id=SessionScheduleRegistrations.TeamCar";
+            $query .= " WHERE SessionScheduleRegistrations.SessionSchedule={$this->id()}";
+            $query .= " AND SessionScheduleRegistrations.Active!=0";
+            $query .= " AND SessionScheduleRegistrations.TeamCar!=0;";
             foreach (\Core\Database::fetchRaw($query) as $row)
                 $this->ActiveRegisteredCarSkinIds[] = (int) $row['CarSkin'];
         }
@@ -51,55 +108,74 @@ class SessionSchedule extends DbEntry {
 
     //! @return A generated EntryList object
     public function entryList() {
+
+        // create EntryList
         $el = new \Core\EntryList();
 
-        $map_ballast = $this->mapBallasts();
-        $map_restrictors = $this->mapRestrictors();
 
-        // $user_registrations[User->id()] = SessionScheduleRegistration
-        $user_registrations = array();
-        foreach (SessionScheduleRegistration::listRegistrations($this) as $reg) {
-            $user_registrations[$reg->user()->id()] = $reg;
-        }
+        // --------------------------------------------------------------------
+        //  Create From Other Session
+        // --------------------------------------------------------------------
 
-        // add users by other SessionResult
-        $other_session = \DbEntry\Session::fromId($this->getParamValue("SessionEntryList"));
-        if ($other_session) {
-            foreach ($session->results() as $rslt) {
-                if ($el->count() >= $this->track()->pitboxes()) break;
+        //! @todo Implement retrieving other sessions when TeamCar is visible in session results
+        // $other_session = \DbEntry\Session::fromId($this->getParamValue("SessionEntryList"));
+        // if ($other_session) {
+        //
+        //     // fill entries from other result
+        //     foreach ($session->results() as $rslt) {
+        //         // if ($el->count() >= $this->track()->pitboxes()) break;
+        //
+        //         if (array_key_exists($rslt->user()->id(), $registered_user_ids)) {
+        //             $reg = $registered_user_ids[$rslt->user()->id()];
+        //             $eli = new \Core\EntryListItem($reg->carSkin(), $reg->user());//, $ballast, $restrictor);
+        //             $el->add($eli);
+        //         }
+        //
+        //     }
+        // }
 
-                if (array_key_exists($rslt->user()->id(), $registered_user_ids)) {
-                    $reg = $registered_user_ids[$rslt->user()->id()];
-                    $eli = new \Core\EntryListItem($reg->carSkin(), $reg->user());//, $ballast, $restrictor);
+
+        // --------------------------------------------------------------------
+        //  Create From Random
+        // --------------------------------------------------------------------
+
+        // if (!$other_session) {
+            // fill with registrations
+            foreach (SessionScheduleRegistration::listRegistrations($this) as $ssr) {
+
+                // team-car registrations
+                if ($ssr->teamCar()) {
+                    $eli = new \Core\EntryListItem($ssr->teamCar()->carSkin());
+                    $eli->addDriver($ssr->teamCar());
+                    $el->add($eli);
+
+                // single driver registration
+                } else if ($ssr->user()) {
+                    $eli = new \Core\EntryListItem($ssr->carSkin());
+                    $eli->addDriver($ssr->user());
                     $el->add($eli);
                 }
-
             }
-        }
 
-        // add users by registration
-        foreach (SessionScheduleRegistration::listRegistrations($this) as $reg) {
-            if ($el->count() >= $this->track()->pitboxes()) break;
+            // shuffle registered entries
+            $el->shuffle();
 
-            if (!$el->containsUser($reg->user())) {
-                $ballast = (array_key_exists($reg->user()->steam64GUID(), $map_ballast)) ? $map_ballast[$reg->user()->steam64GUID()] : $map_ballast["OTHER"];
-                $restrictor = (array_key_exists($reg->user()->steam64GUID(), $map_restrictors)) ? $map_restrictors[$reg->user()->steam64GUID()] : $map_restrictors["OTHER"];
-                $eli = new \Core\EntryListItem($reg->carSkin(), $reg->user(), $ballast, $restrictor);
-                $el->add($eli);
-            }
-        }
+            // add TVCar
+            $el->addTvCar();
 
-        // shuffle order of registered drivers
-        if (!$other_session) $el->shuffle();
+            // fill free slots
+            $max_count = $this->track()->pitboxes();
+            $el->fillSKins($this->carClass(), $max_count);
 
-        // fill random entries
-        $el->fillSkins($this->carClass(), $this->track(), $map_ballast["OTHER"], $map_restrictors["OTHER"]);
+            // reverse (to have free skins on top
+            // AC seems to assign new drivers from top of Entry list
+            $el->reverse();
+        // }
 
-        // apply ballast/restrictor accodring to CarClass
-        $el->applyCarClass($this->carClass());
 
-        // reverse to have unoccupied cars on top
-        if (!$other_session) $el->reverse();
+        // --------------------------------------------------------------------
+        //  Done
+        // --------------------------------------------------------------------
 
         return $el;
     }
@@ -149,55 +225,6 @@ class SessionSchedule extends DbEntry {
             $ret[] = SessionSchedule::fromId($row['Id']);
         }
         return $ret;
-    }
-
-
-    //! @return An accociative array with Steam64GUI->Ballast and one item 'OTHER'->Ballast
-    public function mapBallasts() {
-        $map = array();
-        $map['OTHER'] = $this->getParamValue("BopNonRnkBallast");
-
-        // retrieve from user ranking
-        foreach (\DbEntry\DriverRanking::listLatest() as $drvrnk) {
-            $group = $drvrnk->group();
-            $ballast = $this->getParamValue("BopDrvRnkGrpBallast$group");
-            $map[$drvrnk->user()->steam64GUID()] = $ballast;
-        }
-
-        // retrieve from explicit definition
-        foreach (SessionScheduleRegistration::listRegistrations($this, FALSE) as $reg) {
-            // ensure to have assigned penalty (if any assigned)
-            if ($reg->ballast() > 0 || $reg->restrictor() > 0) {
-                $map[$reg->user()->steam64GUID()] = $reg->ballast();
-            }
-        }
-
-
-        return $map;
-    }
-
-
-    //! @return An accociative array with Steam64GUI->Restrictor and one item 'OTHER'->Restrictor
-    public function mapRestrictors() {
-        $map = array();
-        $map['OTHER'] = $this->getParamValue("BopNonRnkRestrictor");
-
-        // retrieve from user ranking
-        foreach (\DbEntry\DriverRanking::listLatest() as $drvrnk) {
-            $group = $drvrnk->group();
-            $restrictor = $this->getParamValue("BopDrvRnkGrpRestrictor$group");
-            $map[$drvrnk->user()->steam64GUID()] = $restrictor;
-        }
-
-        // retrieve from explicit definition
-        foreach (SessionScheduleRegistration::listRegistrations($this, FALSE) as $reg) {
-            // ensure to have assigned penalty (if any assigned)
-            if ($reg->ballast() > 0 || $reg->restrictor() > 0) {
-                $map[$reg->user()->steam64GUID()] = $reg->restrictor();
-            }
-        }
-
-        return $map;
     }
 
 

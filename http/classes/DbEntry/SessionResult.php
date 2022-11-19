@@ -10,7 +10,6 @@ class SessionResult extends DbEntry {
     private $Session = NULL;
     private $Position = NULL;
     private $PositionLeading = NULL;
-    private $User = NULL;
     private $CarSkin = NULL;
     private $BestLaptime = NULL;
     private $TotalTime = NULL;
@@ -304,6 +303,12 @@ class SessionResult extends DbEntry {
     }
 
 
+    public function teamCar() : ?\DbEntry\TeamCar {
+        $id = (int) $this->loadColumn("TeamCar");
+        return TeamCar::fromId($id);
+    }
+
+
     //! @return The total time spent in this session [ms]
     public function totaltime() {
         if ($this->TotalTime == NULL) $this->TotalTime = (int) $this->loadColumn("TotalTime");
@@ -312,9 +317,9 @@ class SessionResult extends DbEntry {
 
 
     //! @return The according User object
-    public function user() {
-        if ($this->User == NULL) $this->User = User::fromId((int) $this->loadColumn("User"));
-        return $this->User;
+    public function user() : ?\DbEntry\USer {
+        $id = (int) $this->loadColumn("User");
+        return User::fromId($id);
     }
 }
 
