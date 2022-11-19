@@ -217,11 +217,15 @@ class ServerSlot {
                 // plugin ports
                 $coll = new \Parameter\Collection(NULL, $pc, "RPPortsPlugin", _("Plugin Ports"), _("UDP plugin port settings"));
 
-                $p = new \Parameter\ParamInt(NULL, $coll, "RPPortsPluginUdpL", "UDP_L", _("Local UDP port to communicate with the acServer"), "", 9103);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RPPortsPluginUdpL", "UDP_L1", _("Local UDP port to communicate with the acServer"), "", 9103);
                 $p->setMin(1024);
                 $p->setMax(65535);
 
-                $p = new \Parameter\ParamInt(NULL, $coll, "RPPortsPluginUdpR", "UDP_R", _("Remote UDP port for additional plugins"), "", 9104);
+                $p = new \Parameter\ParamInt(NULL, $coll, "RPPortsPluginUdpR", "UDP_R1", _("Remote UDP port for additional plugins"), "", 9104);
+                $p->setMin(1024);
+                $p->setMax(65535);
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "RPPortsPluginUdpR2", "UDP_R2", _("UDP port for the ACswui plugin to recieve RP evenrs"), "", 9108);
                 $p->setMin(1024);
                 $p->setMax(65535);
 
@@ -241,7 +245,11 @@ class ServerSlot {
                 // plugin ports
                 $coll = new \Parameter\Collection(NULL, $pc, "ACswuiPortsPlugin", _("Plugin Ports"), _("UDP plugin port settings"));
 
-                $p = new \Parameter\ParamInt(NULL, $coll, "ACswuiPortsPluginUdpL", "UDP_L", _("Local UDP port to communicate with the acServer"), "", 9106);
+                $p = new \Parameter\ParamInt(NULL, $coll, "ACswuiPortsPluginUdpL", "UDP_L1", _("Local UDP port to communicate with the acServer"), "", 9106);
+                $p->setMin(1024);
+                $p->setMax(65535);
+
+                $p = new \Parameter\ParamInt(NULL, $coll, "ACswuiPortsPluginUdpL2", "UDP_L2", _("Local UDP port of RP where it receives event-listen-start requests"), "", 9107);
                 $p->setMin(1024);
                 $p->setMax(65535);
 
@@ -481,8 +489,14 @@ class ServerSlot {
         fwrite($f, "udp_plugin = " . $pc->child("ACswuiPortsPluginUdpL")->value() . "\n");
         if ($pc->child("RPGeneralEnable")->value()) {
             fwrite($f, "udp_acserver = " . $pc->child("RPPortsPluginUdpR")->value() . "\n");
+            fwrite($f, "udp_rp_events_tx = " . $pc->child("RPPortsPluginUdpR2")->value() . "\n");
+            fwrite($f, "udp_rp_events_rx = " . $pc->child("ACswuiPortsPluginUdpL2")->value() . "\n");
+            fwrite($f, "rp_admin_password = " . $pc->child("RPGeneralAdminPwd")->value() . "\n");
         } else {
             fwrite($f, "udp_acserver = " . $pc->child("AcServerPortsPluginUdpR")->value() . "\n");
+            fwrite($f, "udp_rp_events_tx = 0\n");
+            fwrite($f, "udp_rp_events_rx = 0\n");
+            fwrite($f, "rp_admin_password = \n");
         }
         fwrite($f, "preserved_kick = " . $preset->getParam("ACswuiPreservedKick") . "\n");
         fwrite($f, "referenced_session_schedule_id = $referenced_session_schedule_id\n");
@@ -844,22 +858,37 @@ class ServerSlot {
 
         // section Sol
         fwrite($f, "\n[Sol]\n");
-        fwrite($f, "PERFORMACE_MODE_ALLOWED = true\n");  // intentionally not needed but current revision 4.01.07 throws an error when this is not present
         fwrite($f, "MANDATORY = " . (($ppc->child("RpAcsSolMandatory")->value()) ? 1:0) . "\n");
         fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RPGeneralCF")->value() . "\n");
 
         // section Custom_Shaders_Patch
         fwrite($f, "\n[Custom_Shaders_Patch]\n");
-        fwrite($f, "MANDATORY = " . (($ppc->child("RpAcsCspMandatory")->value()) ? 1:0) . "\n");
+        fwrite($f, "MANDATORY = " . (($ppc->child("RpAcsCspMandatory")->value()) ? "true":"false") . "\n");
         fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RPGeneralCF")->value() . "\n");
 
         // section Safety_Car
         fwrite($f, "\n[Safety_Car]\n");
         fwrite($f, "CAR_MODEL = " . $ppc->child("RpAcsScCarModel")->value() . "\n");
-        fwrite($f, "RACE_START_BEHIND_SC = " . (($ppc->child("RpAcsScStartBehind")->value()) ? 1:0) . "\n");
+        fwrite($f, "RACE_START_BEHIND_SC = " . (($ppc->child("RpAcsScStartBehind")->value()) ? "true":"false") . "\n");
         fwrite($f, "NORMALIZED_LIGHT_OFF_POSITION = " . $ppc->child("RpAcsScNormLightOff")->value() . "\n");
         fwrite($f, "NORMALIZED_START_POSITION = " . $ppc->child("RpAcsScNormStart")->value() . "\n");
         fwrite($f, "GREEN_LIGHT_DELAY = " . $ppc->child("RpAcsScGreenDelay")->value() . "\n");
+
+        //! @todo New features not supported yet
+        // fwrite($f, "vsc_reference_lap_name = \n");
+        // fwrite($f, "vsc_slow_ratio = \n");
+        // fwrite($f, "vsc_delta_threshold = \n");
+        // fwrite($f, "vsc_delay_threshold = \n");
+        // fwrite($f, "vsc_delta_delay = \n");
+        // fwrite($f, "vsc_penalty_type_0 = \n");
+        // fwrite($f, "vsc_delta_limit_0 = \n");
+        // fwrite($f, "vsc_penalty_type_1 = \n");
+        // fwrite($f, "vsc_delta_limit_1 = \n");
+        // fwrite($f, "vsc_penalty_type_2 = \n");
+        // fwrite($f, "vsc_delta_limit_2 = \n");
+        // fwrite($f, "full_course_yellow_speed = \n");
+        // fwrite($f, "rolling_start_speed = \n");
+        // fwrite($f, "normalized_speed_limiter_position = \n");
 
         // section No_Penalty
         fwrite($f, "\n[No_Penalty]\n");
@@ -873,7 +902,7 @@ class ServerSlot {
 
         // section Helicorsa
         fwrite($f, "\n[Helicorsa]\n");
-        fwrite($f, "MANDATORY = " . (($ppc->child("RPAcsHcMandatory")->value()) ? 1:0) . "\n");
+        fwrite($f, "MANDATORY = " . (($ppc->child("RPAcsHcMandatory")->value()) ? "true":"false") . "\n");
         fwrite($f, "DISTANCE_THRESHOLD = " . $ppc->child("RPAcsHcDistThld")->value() . "\n");
         fwrite($f, "WORLD_ZOOM = " . $ppc->child("RPAcsHcWorldZoom")->value() . "\n");
         fwrite($f, "OPACITY_THRESHOLD = " . $ppc->child("RPAcsHcOpaThld")->value() . "\n");
@@ -884,23 +913,24 @@ class ServerSlot {
 
         // section Swap
         fwrite($f, "\n[Swap]\n");
-        fwrite($f, "enable = " . (($ppc->child("RPAcsSwapEna")->value()) ? 1:0) . "\n");
+        fwrite($f, "enable = " . (($ppc->child("RPAcsSwapEna")->value()) ? "true":"false") . "\n");
         fwrite($f, "min_time = " . $ppc->child("RpAcsSwapMinTime")->value() . "\n");
         fwrite($f, "min_count = " . $ppc->child("RpAcsSwapMinCount")->value() . "\n");
-        fwrite($f, "enable_penalty = " . (($ppc->child("RPAcsSwapPenEna")->value()) ? 1:0) . "\n");
+        fwrite($f, "enable_penalty = " . (($ppc->child("RPAcsSwapPenEna")->value()) ? "true":"false") . "\n");
         fwrite($f, "penalty_time = " . $ppc->child("RpAcsSwapPenTime")->value() . "\n");
-        fwrite($f, "penalty_during_race = " . (($ppc->child("RPAcsSwapPenDurRace")->value()) ? 1:0) . "\n");
-        fwrite($f, "convert_time_penalty = " . (($ppc->child("RPAcsSwapConvertTimePen")->value()) ? 1:0) . "\n");
-        fwrite($f, "convert_race_penalty = " . (($ppc->child("RPAcsSwapConvertRacePen")->value()) ? 1:0) . "\n");
+        fwrite($f, "penalty_during_race = " . (($ppc->child("RPAcsSwapPenDurRace")->value()) ? "true":"false") . "\n");
+        fwrite($f, "convert_time_penalty = " . (($ppc->child("RPAcsSwapConvertTimePen")->value()) ? "true":"false") . "\n");
+        fwrite($f, "convert_race_penalty = " . (($ppc->child("RPAcsSwapConvertRacePen")->value()) ? "true":"false") . "\n");
         fwrite($f, "disqualify_time = " . $ppc->child("RpAcsSwapDsqTime")->value() . "\n");
-        fwrite($f, "count_only_driver_change = " . (($ppc->child("RPAcsSwapCntOnlyDrvChnge")->value()) ? 1:0) . "\n");
+        fwrite($f, "count_only_driver_change = " . (($ppc->child("RPAcsSwapCntOnlyDrvChnge")->value()) ? "true":"false") . "\n");
+        fwrite($f, "min_time_for_every_pit = " . (($ppc->child("RPAcsSwapMinTEvryPt")->value()) ? "true":"false") . "\n");
 
         // section Teleport
         fwrite($f, "\n[Teleport]\n");
         fwrite($f, "max_distance = " . $ppc->child("RPAcsTeleportMaxDist")->value() . "\n");
-        fwrite($f, "practice_enable = " . (($ppc->child("RPAcsTeleportEnaPractice")->value()) ? 1:0) . "\n");
-        fwrite($f, "qualify_enable = " . (($ppc->child("RPAcsTeleportEnaQualify")->value()) ? 1:0) . "\n");
-        fwrite($f, "race_enable = " . (($ppc->child("RPAcsTeleportEnaRace")->value()) ? 1:0) . "\n");
+        fwrite($f, "practice_enable = " . (($ppc->child("RPAcsTeleportEnaPractice")->value()) ? "true":"false") . "\n");
+        fwrite($f, "qualify_enable = " . (($ppc->child("RPAcsTeleportEnaQualify")->value()) ? "true":"false") . "\n");
+        fwrite($f, "race_enable = " . (($ppc->child("RPAcsTeleportEnaRace")->value()) ? "true":"false") . "\n");
 
         fclose($f);
         @chmod($file_path, 0660);
@@ -920,10 +950,10 @@ class ServerSlot {
 
         // section General
         fwrite($f, "[General]\n");
-        fwrite($f, "ENABLE_CUTTING_PENALTIES = " . (($ppc->child("RpPsGeneralCutting")->value()) ? 1:0) . "\n");
-        fwrite($f, "ENABLE_SPEEDING_PENALTIES = " . (($ppc->child("RpPsGeneralSpeeding")->value()) ? 1:0) . "\n");
-        fwrite($f, "ENABLE_CROSSING_PENALTIES = " . (($ppc->child("RpPsGeneralCrossing")->value()) ? 1:0) . "\n");
-        fwrite($f, "ENABLE_DRS_PENALTIES = " . (($ppc->child("RpPsGeneralDrs")->value()) ? 1:0) . "\n");
+        fwrite($f, "ENABLE_CUTTING_PENALTIES = " . (($ppc->child("RpPsGeneralCutting")->value()) ? "true":"false") . "\n");
+        fwrite($f, "ENABLE_SPEEDING_PENALTIES = " . (($ppc->child("RpPsGeneralSpeeding")->value()) ? "true":"false") . "\n");
+        fwrite($f, "ENABLE_CROSSING_PENALTIES = " . (($ppc->child("RpPsGeneralCrossing")->value()) ? "true":"false") . "\n");
+        fwrite($f, "ENABLE_DRS_PENALTIES = " . (($ppc->child("RpPsGeneralDrs")->value()) ? "true":"false") . "\n");
         fwrite($f, "LAPS_TO_TAKE_PENALTY = " . $ppc->child("RpPsGeneralLapsToTake")->value() . "\n");
         fwrite($f, "PENALTY_SECONDS = " . $ppc->child("RpPsGeneralPenSecs")->value() . "\n");
         fwrite($f, "LAST_TIME_WITHOUT_PENALTY = " . $ppc->child("RpPsGenerallastTimeNPen")->value() . "\n");
@@ -931,9 +961,9 @@ class ServerSlot {
 
         // section Cutting
         fwrite($f, "\n[Cutting]\n");
-        fwrite($f, "ENABLED_DURING_SAFETY_CAR = " . (($ppc->child("RpPsCuttingEnaDurSc")->value()) ? 1:0) . "\n");
+        fwrite($f, "ENABLED_DURING_SAFETY_CAR = " . (($ppc->child("RpPsCuttingEnaDurSc")->value()) ? "true":"false") . "\n");
         fwrite($f, "TOTAL_CUT_WARNINGS = " . $ppc->child("RpPsCuttingTotCtWarn")->value() . "\n");
-        fwrite($f, "ENABLE_TYRES_DIRT_LEVEL = " . (($ppc->child("RpPsCuttingTyreDirt")->value()) ? 1:0) . "\n");
+        fwrite($f, "ENABLE_TYRES_DIRT_LEVEL = " . (($ppc->child("RpPsCuttingTyreDirt")->value()) ? "true":"false") . "\n");
         fwrite($f, "WHEELS_OUT = " . $ppc->child("AcServerTyresOut")->value() . "\n");
         fwrite($f, "MIN_SPEED = " . $ppc->child("RpPsCuttingMinSpeed")->value() . "\n");
         fwrite($f, "SECONDS_BETWEEN_CUTS = " . $ppc->child("RpPsCuttingSecsBetween")->value() . "\n");
@@ -979,8 +1009,8 @@ class ServerSlot {
         fwrite($f, "ENABLED_AFTER_LAPS = " . $ppc->child("RpPsDRSEnaAfterLaps")->value() . "\n");
         fwrite($f, "MIN_SPEED = " . $ppc->child("RpPsDRSMinSpeed")->value() . "\n");
         fwrite($f, "BONUS_TIME = " . $ppc->child("RpPsDRSBonusTime")->value() . "\n");
-        fwrite($f, "MAX_ILLEGAL_USES = " . $ppc->child("RpPsJumpStartSpeedLimit2")->value() . "\n");
-        fwrite($f, "ENABLED_DURING_SAFETY_CAR = " . (($ppc->child("RpPsDRSEnaDurSc")->value()) ? 1:0) . "\n");
+        fwrite($f, "MAX_ILLEGAL_USES = " . $ppc->child("RpPsDRSMaxIllegal")->value() . "\n");
+        fwrite($f, "ENABLED_DURING_SAFETY_CAR = " . (($ppc->child("RpPsDRSEnaDurSc")->value()) ? "true":"false") . "\n");
         fwrite($f, "OMIT_CARS = " . $ppc->child("RpPsDRSOmitCars")->value() . "\n");
 
         // section Blue_Flag
@@ -1021,6 +1051,7 @@ class ServerSlot {
         fwrite($f, "TRACKS_FOLDER = " . \Core\Config::AbsPathData . "/real_penalty/$id/tracks\n");
         fwrite($f, "ADMIN_PSW = " . $pc->child("RPGeneralAdminPwd")->value() . "\n");
         fwrite($f, "AC_SERVER_MANAGER = false\n");
+        fwrite($f, "external_interface_udp_port = " . $pc->child("RPPortsPluginUdpR2")->value() . "\n");
 
         fwrite($f, "\n[Plugins_Relay]\n");
         fwrite($f, "UDP_PORT = " . $pc->child("RPPortsPluginUdpR")->value() . "\n");

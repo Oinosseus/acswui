@@ -19,6 +19,7 @@ class UdpPluginServer(object):
     def __init__(self,
                  server_slot, server_preset, car_class,
                  port_server, port_plugin,
+                 port_rp_events_tx, port_rp_events_rx, rp_admin_password,
                  database,
                  entry_list_path,
                  ac_server_path,
@@ -62,9 +63,8 @@ class UdpPluginServer(object):
         self.__port_plugin = int(port_plugin)
         self.__port_server = int(port_server)
 
-        # bind UDP socket
+        # bind UDP socket for RP event listening
         self.__sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
         address = "127.0.0.1"
         self.__verbosity.print("Bind UdpPluginSever to %s:%i" % (address, self.__port_plugin))
         try:
@@ -75,7 +75,28 @@ class UdpPluginServer(object):
             msg += " on port %i!" % self.__port_plugin
             msg += "\n%s" % str(be)
             raise BaseException(msg)
-        self.__sock.settimeout(self.__PROCESS_TIME)
+        self.__sock.settimeout(self.__PROCESS_TIME / 2)
+
+        # bind UDP socket for RP event listening
+        self.__port_rp_events_tx = int(port_rp_events_tx)
+        self.__port_rp_events_rx = int(port_rp_events_rx)
+        self.__rp_event_start_confirmed = False
+        self.__rp_event_start_send = time.time()
+        self.__rp_admin_password = str(rp_admin_password)
+        self.__sock_rp_events = None
+        if self.__port_rp_events_rx > 0:
+            self.__sock_rp_events = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            address = "127.0.0.1"
+            self.__verbosity.print("Bind RP Event Listener to %s:%i" % (address, self.__port_rp_events_rx))
+            try:
+                self.__sock_rp_events.bind((address, self.__port_rp_events_rx))
+            except BaseException as be:
+                msg = "Could not bind RP Event Listener server to address "
+                msg += "'%s'" % address
+                msg += " on port %i!" % self.__port_plugin
+                msg += "\n%s" % str(be)
+                raise BaseException(msg)
+            self.__sock_rp_events.settimeout(self.__PROCESS_TIME / 2)
 
         # parse car entries
         self.__entry_list = ConfigParser()
@@ -111,15 +132,37 @@ class UdpPluginServer(object):
         """ This must be called periodically
         """
 
+        # read from AC Server
+        new_data = False
         try:
             data, addr = self.__sock.recvfrom(2**12)
             pkt = UdpPacket(data, addr)
             self.parse_packet(pkt)
+            new_data = True
         except socket.timeout:
             pass
 
-        if self.__session is not None and self.__session.IsActive:
+        # update real time data
+        if new_data and self.__session is not None and self.__session.IsActive:
             self.dump_realtime_json()
+
+
+        # readfrom RP
+        if self.__sock_rp_events is not None:
+            try:
+                data, addr = self.__sock_rp_events.recvfrom(2**12)
+                self.parse_rp_data(data)
+            except socket.timeout:
+                pass
+
+
+        # send start request to RP
+        if not self.__rp_event_start_confirmed and (time.time() - self.__rp_event_start_send) > 5:
+            self.__rp_event_start_send = time.time()
+            if self.__port_rp_events_tx > 0:
+                self.__verbosity.print("Send new RP Event start request")
+                data = bytes("{\"request\": \"start\", \"password\": \"" + self.__rp_admin_password + "\"}", "utf-8")
+                self.__sock_rp_events.sendto(data, ("127.0.0.1", self.__port_rp_events_tx))
 
 
         # check for illegal occupations
@@ -388,6 +431,56 @@ class UdpPluginServer(object):
         # undefined
         else:
             raise NotImplementedError("UNKNOWN PACKET: ID '%i'!" % prot)
+
+
+
+    def parse_rp_data(self, data):
+        data = json.loads(data)
+        # .decode("utf-8")
+
+        # malformed data
+        if "type" not in data:
+            self.__verbosity.print("Malformed data from RP plugin")
+            print(data)
+
+        # startConfirm
+        elif data["type"] == "startConfirm":
+            self.__rp_event_start_confirmed = True
+            self.__verbosity.print("RP event registration confirmed")
+
+        # newSession
+        elif data["type"] == "newSession":
+            self.__verbosity.print("RP event", data["type"])
+
+        # endRace
+        elif data["type"] == "endRace":
+            self.__verbosity.print("RP event", data["type"])
+            print(data)
+
+        # dsq
+        elif data["type"] == "dsq":
+            self.__verbosity.print("RP event", data["type"])
+            print(data)
+
+        # leavePit
+        elif data["type"] == "leavePit":
+            self.__verbosity.print("RP event", data["type"])
+            print(data)
+
+        # enterPit
+        elif data["type"] == "enterPit":
+            self.__verbosity.print("RP event", data["type"])
+            print(data)
+
+        # ignored types
+        elif data["type"] in ["vscRestart", "fcyStart", "fcyRestart", "fcyDeployed", "fcyEnding", "vscDeployed", "vscEnding", "scDeployed", "scThisLap", "cutWarning", "newSecondsPenalty", "penaltyTaken", "drsEnabled", "scRestart", "longpit", "swap", "penaltyConverted", "secondsPenaltyConverted", "newPenalty"]:
+            self.__verbosity.print("Ignoring RP event", data["type"])
+            pass
+
+        # unwon type
+        else:
+            # this is no error, since future RP versions can implement new stuff
+            self.__verbosity.print("Unkown RP event type:", data["type"])
 
 
 

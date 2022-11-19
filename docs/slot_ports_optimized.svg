@@ -1,7 +1,7 @@
 <svg
    width="585.37384mm"
-   height="172.61024mm"
-   viewBox="0 0 585.37388 172.61025"
+   height="174.81491mm"
+   viewBox="0 0 585.37388 174.81492"
    version="1.1"
    id="ServerSlotPortsSvg"
    inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
@@ -20,13 +20,13 @@
      inkscape:pagecheckerboard="false"
      inkscape:document-units="px"
      showgrid="true"
-     inkscape:zoom="0.45405208"
-     inkscape:cx="1353.369"
-     inkscape:cy="150.86375"
+     inkscape:zoom="1.2842532"
+     inkscape:cx="1343.1931"
+     inkscape:cy="369.86476"
      inkscape:window-width="2560"
-     inkscape:window-height="1358"
+     inkscape:window-height="1357"
      inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-y="26"
      inkscape:window-maximized="1"
      inkscape:current-layer="Base"
      showguides="true"
@@ -47,39 +47,39 @@
        id="grid7128"
        dotted="true"
        originx="132.80533"
-       originy="0.13107647" />
+       originy="2.3357493" />
     <sodipodi:guide
-       position="188.36782,172.47917"
+       position="188.36782,172.47916"
        orientation="0,-1"
        id="guide14264"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="323.30534,98.395839"
+       position="323.30535,98.395835"
        orientation="0.70710678,-0.70710678"
        id="guide44857"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="228.05532,77.229173"
+       position="228.05533,77.229168"
        orientation="-0.70710678,-0.70710678"
        id="guide44861"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="191.01366,71.937507"
+       position="191.01367,71.937502"
        orientation="-0.70710678,-0.70710678"
        id="guide44863"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="217.47199,66.645839"
+       position="217.472,66.645834"
        orientation="-0.70710678,-0.70710678"
        id="guide44865"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="344.47201,103.68751"
+       position="344.47202,103.68751"
        orientation="0.70710678,-0.70710678"
        id="guide44947"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="349.76368,93.104173"
+       position="349.76369,93.104169"
        orientation="0.70710678,-0.70710678"
        id="guide44949"
        inkscape:locked="false" />
@@ -571,12 +571,69 @@
          style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
          id="path14609-6-2-2-9-0" />
     </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lstart-3"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(1.1,0,0,1.1,1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14606-6" />
+    </marker>
+    <marker
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="InfiniteLineStart-93-7"
+       inkscape:stockid="InfiniteLineStart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <g
+         transform="translate(-13)"
+         style="fill:context-stroke"
+         id="g14838-1-5">
+        <circle
+           cx="3"
+           cy="0"
+           r="0.80000001"
+           id="circle14832-9-3" />
+        <circle
+           cx="6.5"
+           cy="0"
+           r="0.80000001"
+           id="circle14834-4-56" />
+        <circle
+           cx="10"
+           cy="0"
+           r="0.80000001"
+           id="circle14836-7-2" />
+      </g>
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Lend-8-91"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
+         id="path14609-4-2" />
+    </marker>
   </defs>
   <g
      inkscape:label="Base"
      inkscape:groupmode="layer"
      id="Base"
-     transform="translate(110.80392,-82.586311)">
+     transform="translate(110.80392,-80.381638)">
     <g
        id="g37221">
       <rect
@@ -627,27 +684,25 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="391.71075"
-       y="21.294067"
-       id="text9488-2-5"
-       transform="translate(21.873996,82.589989)"><tspan
+       x="413.58475"
+       y="88.009071"
+       id="text9488-2-5"><tspan
          sodipodi:role="line"
-         id="ServerSlotPortsAcswuiUdpL"
+         id="ServerSlotPortsAcswuiUdpL1"
          style="text-align:end;text-anchor:end;stroke-width:0.264583"
-         x="391.71075"
-         y="21.294067">UDP_L = 88888</tspan></text>
+         x="413.58475"
+         y="88.009071">UDP_L1 = 88888</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;direction:ltr;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="63.627403"
-       y="39.814899"
-       transform="translate(21.873996,82.589989)"
+       x="85.501396"
+       y="106.52991"
        id="text6926"><tspan
          sodipodi:role="line"
          id="ServerSlotPortsAcServerUdpR"
          style="writing-mode:lr-tb;direction:ltr;stroke-width:0.264583"
-         x="63.627403"
-         y="39.814899">UDP_R = 88888</tspan></text>
+         x="85.501396"
+         y="106.52991">UDP_R = 88888</tspan></text>
     <path
        style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart-7-7);marker-mid:url(#InfiniteLineStart-3-4);marker-end:url(#Arrow2Lend-89-9)"
        d="M 146.35557,207.07156 80.209733,140.92572"
@@ -767,10 +822,10 @@
      id="WithoutRP"
      inkscape:label="WithoutRP"
      style="display:inline"
-     transform="translate(132.67791,0.00367695)">
+     transform="translate(132.67791,2.2083497)">
     <path
        style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-mid:url(#InfiniteLineStart-93-4);marker-end:url(#Arrow2Lend-8-9)"
-       d="M 63.621286,26.585733 H 391.71074"
+       d="M 63.621286,10.710723 H 391.71074"
        id="path14094-5-7" />
   </g>
   <g
@@ -778,37 +833,63 @@
      id="WithRP"
      inkscape:label="WithRP"
      style="display:inline"
-     transform="translate(132.67791,0.00367695)">
+     transform="translate(132.67791,2.2083497)">
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        x="193.27324"
-       y="21.294067"
+       y="5.4190674"
        id="text9488"><tspan
          sodipodi:role="line"
          id="ServerSlotPortsRpUdpL"
          style="text-align:end;text-anchor:end;stroke-width:0.264583"
          x="193.27324"
-         y="21.294067">UDP_L = 88888</tspan></text>
+         y="5.4190674">UDP_L = 88888</tspan></text>
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-mid:url(#InfiniteLineStart);marker-end:url(#Arrow2Lend)"
-       d="M 63.627403,26.585733 H 195.91907"
+       d="M 63.627403,10.710732 H 195.91907"
        id="path14094" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        x="259.41907"
-       y="39.814899"
+       y="23.939899"
        id="text9488-1-6"><tspan
          sodipodi:role="line"
-         id="ServerSlotPortsRpUdpR"
+         id="ServerSlotPortsRpUdpR1"
          style="stroke-width:0.264583"
          x="259.41907"
-         y="39.814899">UDP_R = 88888</tspan></text>
+         y="23.939899">UDP_R1 = 88888</tspan></text>
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-mid:url(#InfiniteLineStart-93);marker-end:url(#Arrow2Lend-8)"
-       d="M 259.41907,26.585733 H 391.71074"
+       d="M 259.41907,10.710732 H 391.71074"
        id="path14094-5" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="391.13696"
+       y="35.034946"
+       id="text9488-2-5-7"><tspan
+         sodipodi:role="line"
+         id="ServerSlotPortsAcswuiUdpL2"
+         style="text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="391.13696"
+         y="35.034946">UDP_L2 = 88888</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="258.84528"
+       y="53.555759"
+       id="text9488-1-6-9"><tspan
+         sodipodi:role="line"
+         id="ServerSlotPortsRpUdpR2"
+         style="stroke-width:0.264583"
+         x="258.84528"
+         y="53.555759">UDP_R2 = 88888</tspan></text>
+    <path
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart-3);marker-mid:url(#InfiniteLineStart-93-7);marker-end:url(#Arrow2Lend-8-91)"
+       d="M 258.84528,40.326592 H 391.13695"
+       id="path14094-5-6" />
     <g
        id="g37216">
       <rect
