@@ -11,6 +11,7 @@ class SessionResult extends DbEntry {
     private $Position = NULL;
     private $PositionLeading = NULL;
     private $CarSkin = NULL;
+    private $Drivers = NULL;
     private $BestLaptime = NULL;
     private $TotalTime = NULL;
     private $Ballast = NULL;
@@ -36,7 +37,7 @@ class SessionResult extends DbEntry {
             $this->AmountCollisionCar = 0;
             foreach ($this->session()->collisions() as $cll) {
                 if ($cll instanceof CollisionCar) {
-                    if ($cll->user()->id() == $this->user()->id())
+                    if (in_array($cll->user(), $this->drivers()))
                         $this->AmountCollisionCar += 1;
                 }
             }
@@ -47,13 +48,15 @@ class SessionResult extends DbEntry {
 
 
     //! @return The number of collisions with environment
-    public function amountCollisionEnv() {
+    public function amountCollisionEnv() : int {
+
+        // update cache
         if ($this->AmountCollisionEnv === NULL) {
 
             $this->AmountCollisionEnv = 0;
             foreach ($this->session()->collisions() as $cll) {
                 if ($cll instanceof CollisionEnv) {
-                    if ($cll->user()->id() == $this->user()->id())
+                    if (in_array($cll->user(), $this->drivers()))
                         $this->AmountCollisionEnv += 1;
                 }
             }
@@ -182,6 +185,27 @@ class SessionResult extends DbEntry {
     }
 
 
+    //! @return All drivers of this result (for teams this can be multiple drivers)
+    public function drivers() : array {
+
+        // update cache
+        if ($this->Drivers === NULL) {
+            $this->Drivers = array();
+
+            // add single driver
+            if ($this->user()) $this->Drivers[] = $this->user();
+
+            // add team drivers
+            if ($this->teamCar()) {
+                foreach ($this->teamCar()->drivers() as $tmm)
+                    $this->Drivers[] = $tmm->user();
+            }
+        }
+
+        return $this->Drivers;
+    }
+
+
     /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.
@@ -305,7 +329,7 @@ class SessionResult extends DbEntry {
 
     public function teamCar() : ?\DbEntry\TeamCar {
         $id = (int) $this->loadColumn("TeamCar");
-        return TeamCar::fromId($id);
+        return ($id == 0) ? NULL : TeamCar::fromId($id);
     }
 
 
@@ -319,7 +343,7 @@ class SessionResult extends DbEntry {
     //! @return The according User object
     public function user() : ?\DbEntry\USer {
         $id = (int) $this->loadColumn("User");
-        return User::fromId($id);
+        return ($id == 0) ? NULL : User::fromId($id);
     }
 }
 

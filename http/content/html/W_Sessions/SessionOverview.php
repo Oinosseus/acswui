@@ -203,9 +203,23 @@ class SessionOverview extends \core\HtmlContent {
             $html .= "<tr>";
             $html .= "<td>" . $r->position() ."</td>";
 
-            $html .= "<td class=\"SessionResultsDriverFlagCell\">" . $r->user()->parameterCollection()->child("UserCountry")->valueLabel() . "</td>";
-            $html .= "<td>" . $r->user()->html() . "</td>";
-            $html .= "</td>";
+            // country/team image
+            if ($r->user()) {
+                $html .= "<td class=\"SessionResultsDriverFlagCell\">" . $r->user()->parameterCollection()->child("UserCountry")->valueLabel() . "</td>";
+            } else if ($r->teamCar()) {
+
+                $html .= "<td class=\"SessionResultsDriverFlagCell\">{$r->teamCar()->team()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
+            } else {
+                $html .= "<td class=\"SessionResultsDriverFlagCell\"></td>";
+            }
+
+            // list drivers
+            $drivers_list = "";
+            foreach ($r->drivers() as $d) {
+                if (strlen($drivers_list)) $drivers_list .= ", ";
+                $drivers_list .= $d->html();
+            }
+            $html .= "<td>$drivers_list</td>";
 
             $html .= "<td class=\"SessionResultsCarSkinCell\">" . $r->carSkin()->html(TRUE, FALSE) ."</td>";
             $html .= "<td>" . $user->formatLaptime($r->bestLaptime()) . "</td>";

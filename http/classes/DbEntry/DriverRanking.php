@@ -349,18 +349,23 @@ class DriverRanking extends DbEntry implements \JsonSerializable {
 
             // walk through all session results
             foreach ($session->results() as $rslt) {
-                $uid = $rslt->user()->id();
-                $ranking_points = $rslt->rankingPoints();
 
-                // skip user if not an active driver
-                if (!array_key_exists($uid, $user_ranking)) continue;
+                // apply session result to all drivers
+                foreach ($rslt->drivers() as $user) {
 
-                // add results
-                foreach (array_keys($user_ranking[$uid]) as $grp) {
-                    foreach (array_keys($user_ranking[$uid][$grp]) as $key) {
-                        if ($grp == "SX" && $key == "BT") continue;  // skip, because not existing in session results
+                    $uid = $user->id();
+                    $ranking_points = $rslt->rankingPoints();
 
-                        $user_ranking[$uid][$grp][$key] += $ranking_points[$grp][$key];
+                    // skip user if not an active driver
+                    if (!array_key_exists($uid, $user_ranking)) continue;
+
+                    // add results
+                    foreach (array_keys($user_ranking[$uid]) as $grp) {
+                        foreach (array_keys($user_ranking[$uid][$grp]) as $key) {
+                            if ($grp == "SX" && $key == "BT") continue;  // skip, because not existing in session results
+
+                            $user_ranking[$uid][$grp][$key] += $ranking_points[$grp][$key];
+                        }
                     }
                 }
             }
