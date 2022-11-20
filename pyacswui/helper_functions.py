@@ -150,21 +150,6 @@ def generateHtmlImg(src_img_path, src_img_hover, dst_dir, db_id):
         shutil.copyfile(src_img_hover, path_htmlimg_hover)
 
 
-def version(detailed=False):
-    """
-        @return The version information, extracted from git tag
-    """
-    cmd = ["git", "describe"]
-    if detailed:
-        cmd.append("--long")
-    else:
-        cmd.append("--abbrev=0")
-    cp = subprocess.run(cmd, capture_output=True, check=True)
-    version = cp.stdout
-    return version.decode("utf-8").strip()
-
-
-
 class Longitude(float):
     pass
 

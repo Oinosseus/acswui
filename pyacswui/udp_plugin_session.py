@@ -159,8 +159,8 @@ class UdpPluginSession(object):
             return
 
         # ensure to delete all previous results
-        query = "DELETE FROM SessionResults WHERE Session = $session_id"
-        self.__db.rawQuery("DELETE FROM SessionResults WHERE Session = " + str(self.Id))
+        query = "DELETE FROM SessionResultsAc WHERE Session = $session_id"
+        self.__db.rawQuery("DELETE FROM SessionResultsAc WHERE Session = " + str(self.Id))
 
         # loop over all result entries
         position = 0
@@ -221,4 +221,4 @@ class UdpPluginSession(object):
             fields['Ballast'] = rslt['BallastKG']
             fields['Restrictor'] = rslt['Restrictor']
             fields['TeamCar'] = team_car_id
-            self.__db.insertRow("SessionResults", fields)
+            self.__db.insertRow("SessionResultsAc", fields)

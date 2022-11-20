@@ -56,7 +56,6 @@ class W_Sessions extends \core\HtmlContent {
                     $html .= _("Session") . ": " . $session->htmlName() . "<br>";
                     $html .= _("Start") . ": " . \Core\UserManager::currentUser()->formatDateTime($session->timestamp()) . "<br>";
                     if ($session->serverPreset()) $html .= _("Server Preset") . ": " . $session->serverPreset()->name() . "<br>";
-                    if ($session->carClass()) $html .= _("Car Class") . ": " . $session->carClass()->htmlName() . "<br>";
                     $html .= $session->track()->html();
                     $html .= "</div>";
 

@@ -372,7 +372,7 @@ class ServerSlot {
         $this->writeRpSettings();
 
         // configure ACswui plugin
-        $this->writeACswuiUdpPluginIni($car_class, $preset, $bm, $referenced_session_schedule_id);
+        $this->writeACswuiUdpPluginIni($preset, $bm, $referenced_session_schedule_id);
 
         // configure ac server
         $el->writeToFile(\Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/entry_list.ini");
@@ -456,13 +456,11 @@ class ServerSlot {
 
     /**
      * create acswui_udp_plugin.ini
-     * @param $car_class The CarClass of the server run
      * @param $preset The ServerPreset for the server run
      * @param $bm A BopMap object to apply BOP
      * @param $referenced_session_schedule_id The ID of the SessionSchedule object, that shall be linked to the session
      */
-    private function writeACswuiUdpPluginIni(\DbEntry\CarClass $car_class,
-                                             \DbEntry\ServerPreset $preset,
+    private function writeACswuiUdpPluginIni(\DbEntry\ServerPreset $preset,
                                              \Core\BopMap $bm,
                                              int $referenced_session_schedule_id = NULL) {
         $pc = $this->parameterCollection();
@@ -485,7 +483,6 @@ class ServerSlot {
         fwrite($f, "\n[PLUGIN]\n");
         fwrite($f, "slot = " . $this->id() . "\n");
         fwrite($f, "preset = " . $preset->id() . "\n");
-        fwrite($f, "carclass = " . $car_class->id() . "\n");
         fwrite($f, "udp_plugin = " . $pc->child("ACswuiPortsPluginUdpL")->value() . "\n");
         if ($pc->child("RPGeneralEnable")->value()) {
             fwrite($f, "udp_acserver = " . $pc->child("RPPortsPluginUdpR")->value() . "\n");

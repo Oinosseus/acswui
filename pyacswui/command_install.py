@@ -8,11 +8,11 @@ import shutil
 import subprocess
 from .command import Command, ArgumentException
 from .database import Database
-from .helper_functions import version
 from .installer_cars import InstallerCars
 from .installer_database import InstallerDatabase
 from .installer_tracks import InstallerTracks
 from .verbosity import Verbosity
+from .version import Version
 
 
 class CommandInstall(Command):
@@ -27,6 +27,8 @@ class CommandInstall(Command):
 
     def process(self):
         self._verbosity = Verbosity(self.getArg("v"), self.__class__.__name__)
+
+        self._verbosity.print("Install ACswui version", Version().stringDetailed())
 
         # setup database
         self.__db = Database(host=self.getGeneralArg("db-host"),
@@ -49,6 +51,14 @@ class CommandInstall(Command):
         else:
             print("HTTP root login disabled")
 
+        # findout previously installed version
+        if "installer" in self.__db.tables():
+            query = "SELECT version FROM installer ORDER BY Id DESC LIMIT 1;"
+            res = self.__db.rawQuery(query, True)
+            for row in res:
+                version = Version(row[0])
+                self.__prework_previous_version(version)
+
         # install work
         self._verbosity.print("copy data")
         self.__work_copy_files()
@@ -63,7 +73,7 @@ class CommandInstall(Command):
         installer.process()
 
         # document begin of installation
-        self.__installer_info_id = self.__db.insertRow("installer", {"version": version(), "info": "database installed"})
+        self.__installer_info_id = self.__db.insertRow("installer", {"version": Version().stringCompact(), "info": "database installed"})
         self.__work_cconfig()
 
         # cars
@@ -103,7 +113,7 @@ class CommandInstall(Command):
         # document begin of installation
         self.__db.updateRow("installer",
                             self.__installer_info_id,
-                            {"info": "installation finished of version " + version(True)})
+                            {"info": "installation finished of version " + Version().stringDetailed()})
 
 
 
@@ -143,6 +153,15 @@ class CommandInstall(Command):
                         if ret[-1:] == '"':
                             ret = ret[:-1]
         return ret
+
+
+
+    def __prework_previous_version(self, previous_version):
+
+        if previous_version >= Version("v0.1.0") and previous_version <= Version("v0.1.1"):
+            if "SessionResults" in self.__db.tables():
+                self.__db.rawQuery("ALTER TABLE SessionResults RENAME TO SessionResultsAc;")
+                self.__db.rawQuery("ALTER TABLE Sessions DROP COLUMN CarClass;")
 
 
 
@@ -434,8 +453,8 @@ class CommandInstall(Command):
             f.write("\n")
             f.write("    // misc\n")
             f.write("    const DriverRankingGroups = %s;\n" % drvrnkgrps)
-            f.write("    const ACswuiVersion = \"%s\";\n" % version())
-            f.write("    const ACswuiVersionLong = \"%s\";\n" % version(True))
+            f.write("    const ACswuiVersion = \"%s\";\n" % Version().stringCompact())
+            f.write("    const ACswuiVersionLong = \"%s\";\n" % Version().stringDetailed())
             f.write("}\n")
 
 

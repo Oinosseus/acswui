@@ -43,14 +43,6 @@ class Session extends DbEntry {
     }
 
 
-    //! @return The CarCLass object that was used (might be NULL if invalid
-    public function carClass() {
-        $id = (int) $this->loadColumn("CarClass");
-        if ($id < 1) return NULL;
-        return CarClass::fromId($id);
-    }
-
-
     //! @return A list of Collision objects from this session, ordered by timestamp
     public function collisions() {
         if ($this->Collisions === NULL) {

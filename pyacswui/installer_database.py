@@ -15,14 +15,14 @@ class InstallerDatabase(object):
         self._verbosity.print("Create database tables")
 
         self._tables_grey()
-        self._tables_mustard()
-        self._tables_blue()
         self._tables_red()
         self._tables_purple()
         self._tables_green()
         self._tables_cyan()
 
+        self._tables_accontent()
         self._tables_polls()
+        self._tables_sessions()
         self._tables_teams()
 
 
@@ -59,147 +59,6 @@ class InstallerDatabase(object):
         self.__db.appendColumnCurrentTimestamp("CarSkinRegistrations", "Requested")
         self.__db.appendColumnTimestamp("CarSkinRegistrations", "Processed")
         self.__db.appendColumnText("CarSkinRegistrations", "Info")
-
-
-
-    def _tables_mustard(self):
-        verb = Verbosity(self._verbosity)
-        verb.print("mustard tables")
-
-        # check table Sessions
-        Verbosity(verb).print("check database table `Sessions`")
-        self.__db.appendTable("Sessions")
-        self.__db.appendColumnUInt("Sessions", "Predecessor")
-        self.__db.appendColumnInt("Sessions", "ProtocolVersion")
-        self.__db.appendColumnInt("Sessions", "SessionIndex")
-        self.__db.appendColumnInt("Sessions", "CurrentSessionIndex")
-        self.__db.appendColumnInt("Sessions", "SessionCount")
-        self.__db.appendColumnString("Sessions", 'ServerName', 50)
-        self.__db.appendColumnUInt("Sessions", "Track")
-        self.__db.appendColumnString("Sessions", 'Name', 50)
-        self.__db.appendColumnInt("Sessions", "Type")
-        self.__db.appendColumnInt("Sessions", "Time")
-        self.__db.appendColumnInt("Sessions", "Laps")
-        self.__db.appendColumnInt("Sessions", "WaitTime")
-        self.__db.appendColumnInt("Sessions", "TempAmb")
-        self.__db.appendColumnInt("Sessions", "TempRoad")
-        self.__db.appendColumnString("Sessions", 'WheatherGraphics', 50)
-        self.__db.appendColumnInt("Sessions", "Elapsed")
-        self.__db.appendColumnCurrentTimestamp("Sessions", "Timestamp")
-        self.__db.appendColumnUInt("Sessions", "ServerSlot")
-        self.__db.appendColumnUInt("Sessions", "ServerPreset")
-        self.__db.appendColumnUInt("Sessions", 'CarClass')
-        self.__db.appendColumnUInt("Sessions", 'SessionSchedule')
-
-        # check table SessionResults
-        Verbosity(verb).print("check database table `SessionResults`")
-        self.__db.appendTable("SessionResults")
-        self.__db.appendColumnSmallInt("SessionResults", "Position")
-        self.__db.appendColumnUInt("SessionResults", "Session")
-        self.__db.appendColumnUInt("SessionResults", "User")
-        self.__db.appendColumnUInt("SessionResults", "CarSkin")
-        self.__db.appendColumnUInt("SessionResults", "BestLap")
-        self.__db.appendColumnUInt("SessionResults", "TotalTime")
-        self.__db.appendColumnSmallInt("SessionResults", "Ballast")
-        self.__db.appendColumnTinyInt("SessionResults", "Restrictor")
-        self.__db.appendColumnUInt("SessionResults", "TeamCar")
-
-        # check table Laps
-        Verbosity(verb).print("check database table `Laps`")
-        self.__db.appendTable("Laps")
-        self.__db.appendColumnUInt("Laps", "Session")
-        self.__db.appendColumnUInt("Laps", "CarSkin")
-        self.__db.appendColumnUInt("Laps", "User")
-        self.__db.appendColumnUInt("Laps", "Laptime")
-        self.__db.appendColumnInt("Laps", "Cuts")
-        self.__db.appendColumnFloat("Laps", "Grip")
-        self.__db.appendColumnSmallInt("Laps", "Ballast")
-        self.__db.appendColumnTinyInt("Laps", "Restrictor")
-        self.__db.appendColumnCurrentTimestamp("Laps", "Timestamp")
-        self.__db.appendColumnUInt("Laps", "TeamCar")
-
-        # check table CollisionEnv
-        Verbosity(verb).print("check database table `CollisionEnv`")
-        self.__db.appendTable("CollisionEnv")
-        self.__db.appendColumnUInt("CollisionEnv", "Session")
-        self.__db.appendColumnUInt("CollisionEnv", "CarSkin")
-        self.__db.appendColumnUInt("CollisionEnv", "User")
-        self.__db.appendColumnFloat("CollisionEnv", "Speed")
-        self.__db.appendColumnCurrentTimestamp("CollisionEnv", "Timestamp")
-
-        # check table CollisionCar
-        Verbosity(verb).print("check database table `CollisionCar`")
-        self.__db.appendTable("CollisionCar")
-        self.__db.appendColumnUInt("CollisionCar", "Session")
-        self.__db.appendColumnUInt("CollisionCar", "CarSkin")
-        self.__db.appendColumnUInt("CollisionCar", "User")
-        self.__db.appendColumnFloat("CollisionCar", "Speed")
-        self.__db.appendColumnUInt("CollisionCar", "OtherUser")
-        self.__db.appendColumnUInt("CollisionCar", "OtherCarSkin")
-        self.__db.appendColumnCurrentTimestamp("CollisionCar", "Timestamp")
-
-
-
-    def _tables_blue(self):
-        verb = Verbosity(self._verbosity)
-        verb.print("blue tables")
-
-        # check table TrackLocations
-        Verbosity(verb).print("check database table `TrackLocations`")
-        self.__db.appendTable("TrackLocations")
-        self.__db.appendColumnString("TrackLocations", "Track", 80)
-        self.__db.appendColumnString("TrackLocations", "Name", 80)
-        self.__db.appendColumnTinyInt("TrackLocations", "Deprecated")
-        self.__db.appendColumnString("TrackLocations", "Country", 80)
-        self.__db.appendColumnFloat("TrackLocations", "Latitude")
-        self.__db.appendColumnFloat("TrackLocations", "Longitude")
-        self.__db.appendColumnText("TrackLocations", "DownloadUrl")
-        self.__db.appendColumnTinyInt("TrackLocations", "KunosOriginal")
-
-        # check table Tracks
-        Verbosity(verb).print("check database table `Tracks`")
-        self.__db.appendTable("Tracks")
-        self.__db.appendColumnUInt("Tracks", "Location")
-        self.__db.appendColumnString("Tracks", "Config", 80)
-        self.__db.appendColumnString("Tracks", "Name", 80)
-        self.__db.appendColumnUInt("Tracks", "Length")
-        self.__db.appendColumnInt("Tracks", "Pitboxes")
-        self.__db.appendColumnTinyInt("Tracks", "Deprecated")
-        self.__db.appendColumnString("Tracks", "Version", 30)
-        self.__db.appendColumnString("Tracks", "Author", 50)
-        self.__db.appendColumnText("Tracks", "Description")
-        self.__db.appendColumnBool("Tracks", "RpTrackfile")
-
-        # check table CarBrands
-        Verbosity(verb).print("check database table `CarBrands`")
-        self.__db.appendTable("CarBrands")
-        self.__db.appendColumnString("CarBrands", "Name", 80)
-        self.__db.appendColumnUInt("CarBrands", "BadgeCar")
-
-        # check table Cars
-        Verbosity(verb).print("check database table `Cars`")
-        self.__db.appendTable("Cars")
-        self.__db.appendColumnUInt("Cars", "Brand")
-        self.__db.appendColumnString("Cars", "Car", 80)
-        self.__db.appendColumnString("Cars", "Name", 80)
-        self.__db.appendColumnUInt("Cars", "Parent")
-        self.__db.appendColumnTinyInt("Cars", "Deprecated")
-        self.__db.appendColumnText("Cars", "Description")
-        self.__db.appendColumnText("Cars", "TorqueCurve")
-        self.__db.appendColumnText("Cars", "PowerCurve")
-        self.__db.appendColumnUInt("Cars", "Weight")
-        self.__db.appendColumnText("Cars", "DownloadUrl")
-        self.__db.appendColumnTinyInt("Cars", "KunosOriginal")
-
-        # check table CarSkins
-        Verbosity(verb).print("check database table `CarSkins`")
-        self.__db.appendTable("CarSkins")
-        self.__db.appendColumnUInt("CarSkins", "Car")
-        self.__db.appendColumnString("CarSkins", "Skin", 50)
-        self.__db.appendColumnTinyInt("CarSkins", "Deprecated")
-        self.__db.appendColumnString("CarSkins", "Number", 20)
-        self.__db.appendColumnString("CarSkins", "Name", 80)
-        self.__db.appendColumnUInt("CarSkins", "Owner")
 
 
 
@@ -318,6 +177,63 @@ class InstallerDatabase(object):
 
 
 
+    def _tables_accontent(self):
+        verb = Verbosity(self._verbosity)
+        verb.print("AC Content tables")
+
+        table_name = "TrackLocations"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnString(table_name, "Track", 80)
+        self.__db.appendColumnString(table_name, "Name", 80)
+        self.__db.appendColumnTinyInt(table_name, "Deprecated")
+        self.__db.appendColumnString(table_name, "Country", 80)
+        self.__db.appendColumnFloat(table_name, "Latitude")
+        self.__db.appendColumnFloat(table_name, "Longitude")
+        self.__db.appendColumnText(table_name, "DownloadUrl")
+        self.__db.appendColumnTinyInt(table_name, "KunosOriginal")
+
+        table_name = "Tracks"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Location")
+        self.__db.appendColumnString(table_name, "Config", 80)
+        self.__db.appendColumnString(table_name, "Name", 80)
+        self.__db.appendColumnUInt(table_name, "Length")
+        self.__db.appendColumnInt(table_name, "Pitboxes")
+        self.__db.appendColumnTinyInt(table_name, "Deprecated")
+        self.__db.appendColumnString(table_name, "Version", 30)
+        self.__db.appendColumnString(table_name, "Author", 50)
+        self.__db.appendColumnText(table_name, "Description")
+        self.__db.appendColumnBool(table_name, "RpTrackfile")
+
+        table_name = "CarBrands"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnString(table_name, "Name", 80)
+        self.__db.appendColumnUInt(table_name, "BadgeCar")
+
+        table_name = "Cars"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Brand")
+        self.__db.appendColumnString(table_name, "Car", 80)
+        self.__db.appendColumnString(table_name, "Name", 80)
+        self.__db.appendColumnUInt(table_name, "Parent")
+        self.__db.appendColumnTinyInt(table_name, "Deprecated")
+        self.__db.appendColumnText(table_name, "Description")
+        self.__db.appendColumnText(table_name, "TorqueCurve")
+        self.__db.appendColumnText(table_name, "PowerCurve")
+        self.__db.appendColumnUInt(table_name, "Weight")
+        self.__db.appendColumnText(table_name, "DownloadUrl")
+        self.__db.appendColumnTinyInt(table_name, "KunosOriginal")
+
+        table_name = "CarSkins"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Car")
+        self.__db.appendColumnString(table_name, "Skin", 50)
+        self.__db.appendColumnTinyInt(table_name, "Deprecated")
+        self.__db.appendColumnString(table_name, "Number", 20)
+        self.__db.appendColumnString(table_name, "Name", 80)
+        self.__db.appendColumnUInt(table_name, "Owner")
+
+
     def _tables_polls(self):
         verb = Verbosity(self._verbosity)
         verb.print("polls tables")
@@ -350,6 +266,106 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt(table_name, 'PollTrack')
         self.__db.appendColumnUInt(table_name, 'PollCarClass')
         self.__db.appendColumnUInt(table_name, 'Points')
+
+
+    def _tables_sessions(self):
+        verb = Verbosity(self._verbosity)
+        verb.print("session tables")
+
+        table_name = "Sessions"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnInt(table_name, "SessionIndex")
+        self.__db.appendColumnUInt(table_name, "Predecessor")
+        self.__db.appendColumnInt(table_name, "ProtocolVersion")
+        self.__db.appendColumnInt(table_name, "CurrentSessionIndex")
+        self.__db.appendColumnInt(table_name, "SessionCount")
+        self.__db.appendColumnString(table_name, 'ServerName', 50)
+        self.__db.appendColumnUInt(table_name, "Track")
+        self.__db.appendColumnString(table_name, 'Name', 50)
+        self.__db.appendColumnInt(table_name, "Type")
+        self.__db.appendColumnInt(table_name, "Time")
+        self.__db.appendColumnInt(table_name, "Laps")
+        self.__db.appendColumnInt(table_name, "WaitTime")
+        self.__db.appendColumnInt(table_name, "TempAmb")
+        self.__db.appendColumnInt(table_name, "TempRoad")
+        self.__db.appendColumnString(table_name, 'WheatherGraphics', 50)
+        self.__db.appendColumnInt(table_name, "Elapsed")
+        self.__db.appendColumnCurrentTimestamp(table_name, "Timestamp")
+        self.__db.appendColumnUInt(table_name, "ServerSlot")
+        self.__db.appendColumnUInt(table_name, 'SessionSchedule')
+        self.__db.appendColumnUInt(table_name, "ServerPreset")
+        self.__db.appendColumnBool(table_name, "FinalResultsCalculated")
+
+        table_name = "SessionResultsAc"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnSmallInt(table_name, "Position")
+        self.__db.appendColumnUInt(table_name, "Session")
+        self.__db.appendColumnUInt(table_name, "User")
+        self.__db.appendColumnUInt(table_name, "CarSkin")
+        self.__db.appendColumnUInt(table_name, "TeamCar")
+        self.__db.appendColumnUInt(table_name, "BestLap")
+        self.__db.appendColumnUInt(table_name, "TotalTime")
+        self.__db.appendColumnSmallInt(table_name, "Ballast")
+        self.__db.appendColumnTinyInt(table_name, "Restrictor")
+
+        table_name = "Laps"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Session")
+        self.__db.appendColumnUInt(table_name, "User")
+        self.__db.appendColumnUInt(table_name, "CarSkin")
+        self.__db.appendColumnUInt(table_name, "TeamCar")
+        self.__db.appendColumnUInt(table_name, "Laptime")
+        self.__db.appendColumnInt(table_name, "Cuts")
+        self.__db.appendColumnFloat(table_name, "Grip")
+        self.__db.appendColumnSmallInt(table_name, "Ballast")
+        self.__db.appendColumnTinyInt(table_name, "Restrictor")
+        self.__db.appendColumnCurrentTimestamp(table_name, "Timestamp")
+
+        table_name = "CollisionEnv"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Session")
+        self.__db.appendColumnUInt(table_name, "User")
+        self.__db.appendColumnUInt(table_name, "CarSkin")
+        self.__db.appendColumnFloat(table_name, "Speed")
+        self.__db.appendColumnCurrentTimestamp(table_name, "Timestamp")
+
+        table_name = "CollisionCar"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Session")
+        self.__db.appendColumnUInt(table_name, "User")
+        self.__db.appendColumnUInt(table_name, "OtherUser")
+        self.__db.appendColumnUInt(table_name, "CarSkin")
+        self.__db.appendColumnUInt(table_name, "OtherCarSkin")
+        self.__db.appendColumnFloat(table_name, "Speed")
+        self.__db.appendColumnCurrentTimestamp(table_name, "Timestamp")
+
+        table_name = "SessionPenalties"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Session")
+        self.__db.appendColumnUInt(table_name, "Officer")
+        self.__db.appendColumnUInt(table_name, "User")
+        self.__db.appendColumnUInt(table_name, "TeamCar")
+        self.__db.appendColumnText(table_name, "Cause")
+        self.__db.appendColumnInt(table_name, "PenTime")
+        self.__db.appendColumnInt(table_name, "PenSf")
+        self.__db.appendColumnInt(table_name, "PenPts")
+        self.__db.appendColumnBool(table_name, "PenDsq")
+        self.__db.appendColumnBool(table_name, "PenDnf")
+
+        table_name = "SessionResultsFinal"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnSmallInt(table_name, "Position")
+        self.__db.appendColumnUInt(table_name, "Session")
+        self.__db.appendColumnUInt(table_name, "User")
+        self.__db.appendColumnUInt(table_name, "CarSkin")
+        self.__db.appendColumnUInt(table_name, "TeamCar")
+        self.__db.appendColumnUInt(table_name, "FinalLaps")
+        self.__db.appendColumnUInt(table_name, "FinalTime")
+        self.__db.appendColumnText(table_name, "RankingPoints")
+        self.__db.appendColumnInt(table_name, "PenTime")
+        self.__db.appendColumnInt(table_name, "PenPts")
+        self.__db.appendColumnBool(table_name, "PenDsq")
+        self.__db.appendColumnBool(table_name, "PenDnf")
 
 
     def _tables_teams(self):
