@@ -130,10 +130,12 @@ class EntryListItem {
             fwrite($f, "TEAM=\n");
             fwrite($f, "TeamCarId=0\n");
         }
-        if ($this->Spectator) {
-            fwrite($f, "SPECTATOR_MODE=1\n");
-        } else {
-            fwrite($f, "SPECTATOR_MODE=0\n");
-        }
+
+        // throws error from AC-Server-Wrapper
+        // if ($this->Spectator) {
+        //     fwrite($f, "SPECTATOR_MODE=1\n");
+        // } else {
+        //     fwrite($f, "SPECTATOR_MODE=0\n");
+        // }
     }
 }
