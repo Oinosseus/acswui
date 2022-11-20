@@ -19,10 +19,10 @@ class InstallerDatabase(object):
         self._tables_blue()
         self._tables_red()
         self._tables_purple()
-        self._tables_brown()
         self._tables_green()
         self._tables_cyan()
 
+        self._tables_polls()
         self._tables_teams()
 
 
@@ -256,46 +256,6 @@ class InstallerDatabase(object):
         self.__db.appendColumnSmallInt("CarClassesMap", 'Restrictor')
 
 
-    def _tables_brown(self):
-        verb = Verbosity(self._verbosity)
-        verb.print("brown tables")
-
-        # check table Polls
-        Verbosity(verb).print("check database table `Polls`")
-        self.__db.appendTable("Polls")
-        self.__db.appendColumnUInt("Polls", 'Creator')
-        self.__db.appendColumnSmallInt("Polls", 'IsSecret')
-        self.__db.appendColumnUInt("Polls", 'PointsForTracks')
-        self.__db.appendColumnUInt("Polls", 'PointsPerTrack')
-        self.__db.appendColumnUInt("Polls", 'PointsForCarClasses')
-        self.__db.appendColumnUInt("Polls", 'PointsPerCarClass')
-        self.__db.appendColumnString("Polls", 'Name', 50)
-        self.__db.appendColumnText("Polls", 'Description')
-        self.__db.appendColumnDateTime("Polls", 'Closing')
-
-        # check table PollTracks
-        Verbosity(verb).print("check database table `PollTracks`")
-        self.__db.appendTable("PollTracks")
-        self.__db.appendColumnUInt("PollTracks", 'Poll')
-        self.__db.appendColumnUInt("PollTracks", 'Track')
-
-        # check table PollCarClasses
-        Verbosity(verb).print("check database table `PollCarClasses`")
-        self.__db.appendTable("PollCarClasses")
-        self.__db.appendColumnUInt("PollCarClasses", 'Poll')
-        self.__db.appendColumnUInt("PollCarClasses", 'CarClass')
-
-        # check table PollVotes
-        Verbosity(verb).print("check database table `PollVotes`")
-        self.__db.appendTable("PollVotes")
-        self.__db.appendColumnUInt("PollVotes", 'User')
-        self.__db.appendColumnUInt("PollVotes", 'PollTrack')
-        self.__db.appendColumnUInt("PollVotes", 'PollCarClass')
-        self.__db.appendColumnUInt("PollVotes", 'Points')
-
-
-
-
     def _tables_green(self):
         verb = Verbosity(self._verbosity)
         verb.print("green tables")
@@ -356,6 +316,40 @@ class InstallerDatabase(object):
         self.__db.appendColumnFloat("DriverRanking", 'SF_CC')
         self.__db.appendColumnUInt("DriverRanking", 'RankingGroup')
 
+
+
+    def _tables_polls(self):
+        verb = Verbosity(self._verbosity)
+        verb.print("polls tables")
+
+        table_name = "Polls"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, 'Creator')
+        self.__db.appendColumnSmallInt(table_name, 'IsSecret')
+        self.__db.appendColumnUInt(table_name, 'PointsForTracks')
+        self.__db.appendColumnUInt(table_name, 'PointsPerTrack')
+        self.__db.appendColumnUInt(table_name, 'PointsForCarClasses')
+        self.__db.appendColumnUInt(table_name, 'PointsPerCarClass')
+        self.__db.appendColumnString(table_name, 'Name', 50)
+        self.__db.appendColumnText(table_name, 'Description')
+        self.__db.appendColumnDateTime(table_name, 'Closing')
+
+        table_name = "PollTracks"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, 'Poll')
+        self.__db.appendColumnUInt(table_name, 'Track')
+
+        table_name = "PollCarClasses"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, 'Poll')
+        self.__db.appendColumnUInt(table_name, 'CarClass')
+
+        table_name = "PollVotes"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, 'User')
+        self.__db.appendColumnUInt(table_name, 'PollTrack')
+        self.__db.appendColumnUInt(table_name, 'PollCarClass')
+        self.__db.appendColumnUInt(table_name, 'Points')
 
 
     def _tables_teams(self):
