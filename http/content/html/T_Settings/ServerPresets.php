@@ -36,6 +36,7 @@ class ServerPresets extends \core\HtmlContent {
                 if ($this->CanEdit) {
                     $this->CurrentPreset->parameterCollection()->storeHttpRequest();
                     $this->CurrentPreset->save();
+                    $this->reload(["ServerPreset"=>$this->CurrentPreset->id()]);
                 } else {
                     \Core\Log::warning("Prevent editing preset '" . $this->CurrentPreset->id() . "' from user '" . $current_user->id() . "'");
                 }
@@ -56,6 +57,8 @@ class ServerPresets extends \core\HtmlContent {
 
                 // it can happen that the current preset has been deleted
                 $this->CurrentPreset = NULL;
+
+                $this->reload();
             }
 
 
@@ -66,7 +69,8 @@ class ServerPresets extends \core\HtmlContent {
                 $current_user = \Core\UserManager::loggedUser();
                 if ($this->CanEdit) {
                     $this->CurrentPreset = NULL;
-                    \DbEntry\ServerPreset::derive($parent_preset);
+                    $sp = \DbEntry\ServerPreset::derive($parent_preset);
+                    $this->reload(["ServerPreset"=>$sp->id()]);
                 } else {
                     \Core\Log::warning("Prevent from creating a new preset, derived from '$parent_preset' for user '$current_user'.");
                 }

@@ -36,6 +36,7 @@ class Weathers extends \core\HtmlContent {
                 if ($this->CanEdit) {
                     $this->CurrentWeather->parameterCollection()->storeHttpRequest();
                     $this->CurrentWeather->save();
+                    $this->reload(["Weather"=>$this->CurrentWeather->id()]);
                 } else {
                     \Core\Log::warning("Prevent editing weather '" . $this->CurrentWeather->id() . "' from user '" . $current_user->id() . "'");
                 }
@@ -56,6 +57,8 @@ class Weathers extends \core\HtmlContent {
 
                 // it can happen that the current weather has been deleted
                 $this->CurrentWeather = NULL;
+
+                $this->reload();
             }
 
 
@@ -66,7 +69,8 @@ class Weathers extends \core\HtmlContent {
                 $current_user = \Core\UserManager::loggedUser();
                 if ($this->CanEdit) {
                     $this->CurrentWeather = NULL;
-                    \DbEntry\Weather::derive($parent_weather);
+                    $dw = \DbEntry\Weather::derive($parent_weather);
+                    $this->reload(["Weather"=>$dw->id()]);
                 } else {
                     \Core\Log::warning("Prevent from creating a new weather, derived from '$parent_weather' for user '$current_user'.");
                 }

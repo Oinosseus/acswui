@@ -64,6 +64,8 @@ class SessionLoops extends \core\HtmlContent {
             if (array_key_exists("NewSessionLoopName", $_POST) && strlen($_POST["NewSessionLoopName"]) > 0) {
                 $sl = \DbEntry\SessionLoop::createNew(trim($_POST["NewSessionLoopName"]));
             }
+
+            $this->reload();
         }
 
 

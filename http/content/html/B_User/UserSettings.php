@@ -19,6 +19,7 @@ class UserSettings extends \core\HtmlContent {
         if (array_key_exists("Action", $_POST) && $_POST['Action'] == "Save") {
             $user->parameterCollection()->storeHttpRequest();
             $user->saveParameterCollection();
+            $this->reload();
         }
 
         $html .= $this->newHtmlForm("POST");

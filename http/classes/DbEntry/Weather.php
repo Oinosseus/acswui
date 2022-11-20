@@ -60,7 +60,7 @@ class Weather extends DbEntry {
      * @return A new Weather object
      */
     public static function derive(Weather $parent) {
-        $new_id = \Core\Database::insert("Weathers", ['Name'=>"New Preset", 'Parent'=>$parent->id()]);
+        $new_id = \Core\Database::insert("Weathers", ['Name'=>$parent->name(), 'Parent'=>$parent->id()]);
         $new_preset = Weather::fromId($new_id);
         return $new_preset;
     }

@@ -86,8 +86,9 @@ class ServerPreset extends DbEntry {
      * @param $parent The parenting preset which shall be derived
      * @return A new ServerPreset object
      */
-    public static function derive(ServerPreset $parent) {
-        $new_id = \Core\Database::insert("ServerPresets", ['Name'=>"New Preset", 'Parent'=>$parent->id()]);
+    public static function derive(ServerPreset $parent) : ServerPreset {
+        $name = $parent->name();
+        $new_id = \Core\Database::insert("ServerPresets", ['Name'=>$name, 'Parent'=>$parent->id()]);
         $new_preset = ServerPreset::fromId((int) $new_id);
         return $new_preset;
     }
