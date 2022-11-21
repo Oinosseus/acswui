@@ -71,7 +71,7 @@ class EntryListItem {
      * @param $steam64guid The Steam64GUID that shall be set in the entry-list (can be any string - also multiple GUIDs)
      */
     public function forceDriver(string $driver_name, string $steam64guid) {
-        $this->ForceDriver = [$driver_name, $steam64GUID];
+        $this->ForceDriver = [$driver_name, $steam64guid];
     }
 
 
