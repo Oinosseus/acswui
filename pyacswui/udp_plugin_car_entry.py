@@ -225,7 +225,15 @@ class UdpPluginCarEntry(object):
 
         # sanity check
         if self.__driver_id is None:
-            raise ValueError("Cannot report lap, because no driver is connected to this car!")
+
+            # This actually happened:
+            # Driver has disconnect and re-connected before race start (during wait time)
+            # Disconnect of driver was reported, but new connection was not reported.
+            # Then the race has started and this code was reached after Driver has completed his first lap.
+
+            # No other idea how to catch this situation, than by binning the lap
+            self.__verbosity.print("AC-ERROR: complete_lap() called for Car-Id %i, but DriverId is None!\n" % self.Id)
+            return
 
         #self.__verbosity2.print("Car", self.__id,
                                #" (" + self.__driver_name + ") completed lap with",
