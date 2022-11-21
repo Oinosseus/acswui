@@ -501,7 +501,7 @@ class ServerSlot {
         $bm->writeACswuiUdpPluginIni($f);
 
         fclose($f);
-        chmod($file_path, 0660);
+        @chmod($file_path, 0660);
     }
 
 
@@ -739,7 +739,7 @@ class ServerSlot {
         }
         fwrite($f, $data_json);
         fclose($f);
-        chmod($file_path, 0660);
+        @chmod($file_path, 0660);
     }
 
 
