@@ -43,8 +43,38 @@ class Session extends DbEntry {
     }
 
 
-    //! @return A list of Collision objects from this session, ordered by timestamp
-    public function collisions() {
+    /**
+     * @param $driver If not NULL, only the collisions of this User or TeamCar are returned
+     * @return A list of Collision objects from this session, ordered by timestamp
+     */
+    public function collisions(User|TeamCar $driver = NULL) {
+        if ($driver !== NULL) {
+
+            $ret = array();
+            $search_key = "";
+            if (is_a($driver, "\\DbEntry\\User")) $search_key = "User";
+            else if (is_a($driver, "\\DbEntry\\TeamCar")) $search_key = "TeamCar";
+
+            // CollisionEnv
+            $res = \Core\Database::fetch("CollisionEnv",
+                                         ["Id"],
+                                         ["Session"=>$this->id(), $search_key=>$driver->id()]);
+            foreach ($res as $row) {
+                $ret = CollisionEnv::fromId($row['Id']);
+            }
+
+            // CollisionCar
+            $res = \Core\Database::fetch("CollisionCar",
+                                         ["Id"],
+                                         ["Session"=>$this->id(), $search_key=>$driver->id()]);
+            foreach ($res as $row) {
+                $ret = CollisionCar::fromId($row['Id']);
+            }
+
+            return $ret;
+        }
+
+        // update cache
         if ($this->Collisions === NULL) {
             $this->Collisions = array();
 
@@ -52,12 +82,16 @@ class Session extends DbEntry {
             foreach (\Core\Database::fetch("CollisionEnv", ["Id"], ["Session"=>$this->id()]) as $row) {
                 $this->Collisions[] = CollisionEnv::fromId($row['Id']);
             }
+
+            // CollisionCar
             foreach (\Core\Database::fetch("CollisionCar", ["Id"], ["Session"=>$this->id()]) as $row) {
                 $this->Collisions[] = CollisionCar::fromId($row['Id']);
             }
 
             usort($this->Collisions, "\DbEntry\Collision::compareTimestamp");
         }
+
+        // return from cache
         return $this->Collisions;
     }
 
@@ -80,12 +114,40 @@ class Session extends DbEntry {
     }
 
 
-    //! @return An array of User objects
-    public function drivers() {
-        //! @todo Duplicates users()
+    /**
+     * List all drivers in this sessions
+     * @param $serialize_teamcars If TRUE (default), then TeamCars will be deserialized and all drivers are listed as User obejcts. If FALSE, then also TeamCar listed in the output.
+     * @return An array of User and TeamCar objects
+     */
+    public function drivers(bool $serialize_teamcars=TRUE) : array {
         $drivers = array();
+
+        // find single drivers
         $res = \Core\Database::fetchRaw("SELECT DISTINCT User FROM Laps WHERE Session = " . $this->id());
-        foreach ($res as $row) $drivers[] = User::fromId($row['User']);
+        foreach ($res as $row) {
+            $id = (int) $row['User'];
+            if ($id == 0) continue;
+            $user = User::fromId($id);
+            if (!in_array($user, $drivers)) $drivers[] = $user;
+        }
+
+        // find team cars
+        $res = \Core\Database::fetchRaw("SELECT DISTINCT TeamCar FROM Laps WHERE Session = " . $this->id());
+        foreach ($res as $row) {
+            $id = (int) $row['TeamCar'];
+            if ($id == 0) continue;
+            $tmc = TeamCar::fromId($id);
+
+            if ($serialize_teamcars) {
+                foreach ($tmc->drivers() as $tmm) {
+                    $user = $tmm->user();
+                    if (!in_array($user, $drivers)) $drivers[] = $user;
+                }
+            } else {
+                if (!in_array($tmc, $drivers)) $drivers[] = $tmc;
+            }
+        }
+
         return $drivers;
     }
 
@@ -286,23 +348,29 @@ class Session extends DbEntry {
 
 
     /**
-     * @param $user If not NULL, only the laps of this user are returned
+     * @param $driver If not NULL, only the laps of this User or TeamCar are returned
      * @param $valid_only If TRUE (default FALSE) only laps without cuts are listed
      * @return An array of Lap objects
      */
-    public function laps(User $user = NULL, bool $valid_only=FALSE) {
-        if ($user !== NULL) {
+    public function laps(User|TeamCar $driver = NULL, bool $valid_only=FALSE) {
+
+        if ($driver !== NULL) {
+            $search_key = "";
+            if (is_a($driver, "\\DbEntry\\User")) $search_key = "User";
+            else if (is_a($driver, "\\DbEntry\\TeamCar")) $search_key = "TeamCar";
+
             $laps = array();
-            $query = "SELECT Id from Laps WHERE Session = " . $this->id() . " AND User = " . $user->id();
+            $query = "SELECT Id from Laps WHERE Session = " . $this->id() . " AND {$search_key} = " . $driver->id();
             if ($valid_only) $query .= " AND Cuts = 0";
             $query .= " ORDER BY Id ASC";
             $res = \Core\Database::fetchRaw($query);
-            foreach ($res as $row) {
-                $laps[] = Lap::fromId($row['Id']);
-            }
-            return $laps;
+            foreach ($res as $row) $laps[] = Lap::fromId($row['Id']);
 
-        } if ($this->Laps === NULL) {
+            return $laps;
+        }
+
+        // update cache
+        if ($this->Laps === NULL) {
             $this->Laps = array();
             $query = "SELECT Id from Laps WHERE Session = " . $this->id();
             if ($valid_only) $query .= " AND Cuts = 0";
@@ -312,6 +380,7 @@ class Session extends DbEntry {
                 $this->Laps[] = Lap::fromId($row['Id']);
             }
         }
+
         return $this->Laps;
     }
 
@@ -352,16 +421,6 @@ class Session extends DbEntry {
     }
 
 
-    //! @return A list of SessionResult objects from this session
-    public function results() {
-        if ($this->Results === NULL) {
-            $this->Results = SessionResult::listSessionResults($this);
-        }
-
-        return $this->Results;
-    }
-
-
     //! @return The ServerPreset object that was used (might be NULL if invalid
     public function serverPreset() {
         $id = (int) $this->loadColumn("ServerPreset");
@@ -376,6 +435,17 @@ class Session extends DbEntry {
         $slot_obj = NULL;
         if ($slot_id <= \Core\Config::ServerSlotAmount) $slot_obj = \Core\ServerSlot::fromId($slot_id);
         return $slot_obj;
+    }
+
+
+    //! Cal this function to force re calculation of final session results in cronjob (current results will be deleted
+    public function setNeedsFinalResultsCalculation() {
+
+        // delete current results
+        \Core\Database::query("DELETE FROM SessionResultsFinal WHERE Session={$this->id()};");
+
+        // mark for re-calculation
+        $this->storeColumns(['FinalResultsCalculated'=>0]);
     }
 
 

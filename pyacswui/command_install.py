@@ -668,6 +668,7 @@ class CommandInstall(Command):
             permissions.append("Sessions_Control_Slot%i" % i)
         permissions.append("Sessions_Loops_View")
         permissions.append("Sessions_Loops_Edit")
+        permissions.append("Sessions_Penalties_Edit")
         permissions.append("Sessions_Schedule_View")
         permissions.append("Sessions_Schedule_Edit")
         permissions.append("Json")

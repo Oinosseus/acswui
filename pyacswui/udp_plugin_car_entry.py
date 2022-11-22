@@ -272,6 +272,7 @@ class UdpPluginCarEntry(object):
             fields['Session'] = session.Id
             fields['CarSkin'] = self.__car_skin_id
             fields['User'] = self.__driver_id
+            fields['TeamCar'] = self.TeamCarId
             fields['Speed'] = speed
             self.__db.insertRow("CollisionEnv", fields)
 
@@ -297,6 +298,7 @@ class UdpPluginCarEntry(object):
             fields['Speed'] = speed
             fields['OtherUser'] = other_car_entry.DriverId
             fields['OtherCarSkin'] = other_car_entry.SkinId
+            fields['TeamCar'] = self.TeamCarId
             self.__db.insertRow("CollisionCar", fields)
 
 

@@ -326,6 +326,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt(table_name, "Session")
         self.__db.appendColumnUInt(table_name, "User")
         self.__db.appendColumnUInt(table_name, "CarSkin")
+        self.__db.appendColumnUInt(table_name, "TeamCar")
         self.__db.appendColumnFloat(table_name, "Speed")
         self.__db.appendColumnCurrentTimestamp(table_name, "Timestamp")
 
@@ -336,6 +337,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt(table_name, "OtherUser")
         self.__db.appendColumnUInt(table_name, "CarSkin")
         self.__db.appendColumnUInt(table_name, "OtherCarSkin")
+        self.__db.appendColumnUInt(table_name, "TeamCar")
         self.__db.appendColumnFloat(table_name, "Speed")
         self.__db.appendColumnCurrentTimestamp(table_name, "Timestamp")
 
@@ -346,11 +348,13 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt(table_name, "User")
         self.__db.appendColumnUInt(table_name, "TeamCar")
         self.__db.appendColumnText(table_name, "Cause")
-        self.__db.appendColumnInt(table_name, "PenTime")
         self.__db.appendColumnInt(table_name, "PenSf")
+        self.__db.appendColumnInt(table_name, "PenTime")
+        self.__db.appendColumnUInt(table_name, "PenLaps")
         self.__db.appendColumnInt(table_name, "PenPts")
         self.__db.appendColumnBool(table_name, "PenDsq")
         self.__db.appendColumnBool(table_name, "PenDnf")
+        self.__db.appendColumnBool(table_name, "Ignored")
 
         table_name = "SessionResultsFinal"
         self.__db.appendTable(table_name)
@@ -359,11 +363,12 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt(table_name, "User")
         self.__db.appendColumnUInt(table_name, "CarSkin")
         self.__db.appendColumnUInt(table_name, "TeamCar")
-        self.__db.appendColumnUInt(table_name, "FinalLaps")
+        self.__db.appendColumnUInt(table_name, "BestLaptime")
         self.__db.appendColumnUInt(table_name, "FinalTime")
+        self.__db.appendColumnUInt(table_name, "FinalLaps")
         self.__db.appendColumnText(table_name, "RankingPoints")
-        self.__db.appendColumnInt(table_name, "PenTime")
-        self.__db.appendColumnInt(table_name, "PenPts")
+        # self.__db.appendColumnInt(table_name, "PenTime")
+        # self.__db.appendColumnInt(table_name, "PenPts")
         self.__db.appendColumnBool(table_name, "PenDsq")
         self.__db.appendColumnBool(table_name, "PenDnf")
 

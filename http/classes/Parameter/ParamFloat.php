@@ -22,4 +22,8 @@ final class ParamFloat extends ParamInt {
         $value = str_replace(",", ".", $value);
         return sprintf("%0.2F", $value);
     }
+
+    public function value() {
+        return (float) parent::value();
+    }
 }

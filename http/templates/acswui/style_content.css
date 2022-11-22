@@ -399,11 +399,13 @@ main.SessionOverview div#SessionInformationDatalets div strong {
     display: block;
 }
 
-main.SessionOverview span.PositiveRankingPoints {
+main.SessionOverview span.PositiveRankingPoints,
+main.SessionOverview span.PenaltyGood {
     color: var(--color-functional-success);
 }
 
-main.SessionOverview span.NagativeRankingPoints {
+main.SessionOverview span.NagativeRankingPoints,
+main.SessionOverview span.PenaltyBad {
     color: var(--color-functional-fail);
 }
 

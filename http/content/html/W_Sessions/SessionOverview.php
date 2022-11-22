@@ -5,6 +5,8 @@ namespace Content\Html;
 class SessionOverview extends \core\HtmlContent {
 
     private $CurrentSession = NULL;
+    private $CurrentPenalty = NULL;
+    private $CanEditPenalties = FALSE;
 
     private $FilterShowPractice = FALSE;
     private $FilterShowQualifying = FALSE;
@@ -38,25 +40,198 @@ class SessionOverview extends \core\HtmlContent {
     public function getHtml() {
         $html = "";
 
-        $this->checkFilters();
+        // check permissions
+        $this->CanEditPenalties = \Core\UserManager::currentUser()->permitted("Sessions_Penalties_Edit");
 
         // retrieve requested session
         if (array_key_exists("SessionId", $_REQUEST)) {
-            $this->CurrentSession = \DbEntry\Session::fromId($_REQUEST['SessionId']);
+            $this->CurrentSession = \DbEntry\Session::fromId((int) $_REQUEST['SessionId']);
         } else {
             $this->CurrentSession = \DbEntry\Session::latestSession();
         }
 
-        $html .= $this->sessionSlector();
+        // retireve requested penalty
+        if (array_key_exists("PenaltyId", $_REQUEST))
+            $this->CurrentPenalty = \DbEntry\SessionPenalty::fromId((int) $_REQUEST['PenaltyId']);
 
+        // process actions
+        if (array_key_exists("Action", $_REQUEST)) {
+
+            if ($_REQUEST['Action'] == "SavePenalty") {
+                if (array_key_exists("SessionDriver", $_POST)) {
+
+                    // determine driver
+                    $driver = NULL;
+                    if (substr($_POST['SessionDriver'], 0, 7) == "TeamCar")
+                        $driver = \DbEntry\TeamCar::fromId((int) substr($_POST['SessionDriver'], 7));
+                    else
+                        $driver = \DbEntry\User::fromId((int) substr($_POST['SessionDriver'], 4));
+                    if ($driver === NULL) {
+                        \Core\Log::error("No driver found!");
+                    }
+
+                    // create new penalty
+                    if ($this->CurrentPenalty === NULL) {
+                        $this->CurrentPenalty = \DbEntry\SessionPenalty::create($this->CurrentSession, $driver);
+                    }
+
+                    // assign values
+                    $this->CurrentPenalty->setOfficer(\Core\UserManager::currentUser());
+                    $this->CurrentPenalty->setCause($_POST["Cause"]);
+                    $this->CurrentPenalty->setPenDnf(array_key_exists("PenDnf", $_POST));
+                    $this->CurrentPenalty->setPenDsq(array_key_exists("PenDsq", $_POST));
+                    $this->CurrentPenalty->setPenPts((int) $_POST["PenPts"]);
+                    $this->CurrentPenalty->setPenLaps((int) $_POST["PenLaps"]);
+                    $this->CurrentPenalty->setPenSf((int) $_POST["PenSf"]);
+                    $this->CurrentPenalty->setPenTime((int) $_POST["PenTime"]);
+
+                    $this->reload(["SessionId"=>$this->CurrentSession->id()]);
+                }
+
+
+            } else if ($_REQUEST['Action'] == "AddPenalty" && $this->CanEditPenalties) {
+                $html .= $this->getHtmlEditPenaltyForm();
+
+            } else if ($_REQUEST['Action'] == "EditPenalty" && $this->CanEditPenalties && $this->CurrentPenalty) {
+                $html .= $this->getHtmlEditPenaltyForm();
+            }
+
+        // show session oerview
+        } else {
+            $html .= $this->getHtmlSessionOverview();
+        }
+
+        return $html;
+    }
+
+
+    private function getHtmlEditPenaltyForm() : string {
+        $html = "";
+        if (!$this->CanEditPenalties || !$this->CurrentSession) return "";
+        $cuser = \Core\UserManager::currentUser();
+        $spen = $this->CurrentPenalty;
+
+        // heading with session info
+        $html .= "<h1>";
+        $html .= " [" . $this->CurrentSession->id() . "] ";
+        $html .= $cuser->formatDateTimeNoSeconds($this->CurrentSession->timestamp());
+        $html .= " (" . $this->CurrentSession->typeChar() . ") ";
+        $html .= $this->CurrentSession->name() . " @ ";
+        $html .= $this->CurrentSession->track()->name();
+        $html .="</h1>";
+
+        // begin form
+        $html .= $this->newHtmlForm("POST");
+        if ($this->CurrentPenalty) {
+            $html .= "<input type=\"hidden\" name=\"PenaltyId\" value=\"{$this->CurrentPenalty->id()}\">";
+        } else {
+            $html .= "<input type=\"hidden\" name=\"PenaltyId\" value=\"NEW\">";
+        }
+
+        $html .= "<table>";
+
+        // select driver
+        $html .= "<tr>";
+        $html .= "<th>" . _("Driver") . "</th>";
+        $html .= "<td><select name=\"SessionDriver\">";
+        foreach ($this->CurrentSession->drivers(TRUE) as $driver) {
+            $selected = ($spen && $spen->driver() == $driver) ? "selected=\"yes\"": "";
+
+            // hide other drivers when penalty already exists
+            if ($this->CurrentPenalty) {
+                if ($driver != $spen->driver()) continue;
+            }
+
+            if (is_a($driver, "\\DbEntry\\TeamCar")) {
+                $drivernames_array = array();
+                foreach ($driver->drivers() as $tmm) $drivernames_array[] = $tmm->user()->name();
+                $drivers_string = implode(", ", $drivernames_array);
+                $html .= "<option value=\"TeamCar{$driver->id()}\" $selected>";
+                $html .= _("Team") . " {$driver->team()->abbreviation()} - (";
+                $html .= $drivers_string . ")";
+                $html .= "</option>";
+
+            } else if (is_a($driver, "\\DbEntry\\User")) {
+                $html .= "<option value=\"User{$driver->id()}\" $selected>";
+                $html .= _("Driver") . " - {$driver->name()}";
+                $html .= "</option>";
+            } else {
+                \Core\Log::error("Unexpected Type!");
+            }
+        }
+        $html .= "</select></td></tr>";
+
+        // cause
+        $html .= "<tr>";
+        $html .= "<th>" . _("Cause") . "</th>";
+        $html .= "<td><textarea name=\"Cause\">";
+        if ($spen) $html .= $spen->cause();
+        $html .= "</textarea></td>";
+        $html .= "</tr>";
+
+        // PenSf
+        $html .= "<tr>";
+        $html .= "<th>" . _("Penalty Safety Points") . "</th>";
+        $v = ($spen) ? $spen->penSf() : 0;
+        $html .= "<td><input type=\"number\" name=\"PenSf\" value=\"$v\"></td>";
+        $html .= "</tr>";
+
+        // PenTime
+        $html .= "<tr>";
+        $html .= "<th>" . _("Penalty Time") . "</th>";
+        $v = ($spen) ? $spen->penTime() : 0;
+        $html .= "<td><input type=\"number\" name=\"PenTime\" value=\"$v\"></td>";
+        $html .= "</tr>";
+
+        // PenLaps
+        $html .= "<tr>";
+        $html .= "<th>" . _("Penalty Laps") . "</th>";
+        $v = ($spen) ? $spen->penLaps() : 0;
+        $html .= "<td><input type=\"number\" name=\"PenLaps\" value=\"$v\"></td>";
+        $html .= "</tr>";
+
+        // PenPts
+        $html .= "<tr>";
+        $html .= "<th>" . _("Penalty Points") . "</th>";
+        $v = ($spen) ? $spen->penPts() : 0;
+        $html .= "<td><input type=\"number\" name=\"PenPts\" value=\"$v\"></td>";
+        $html .= "</tr>";
+
+        // PenDnf
+        $html .= "<tr>";
+        $html .= "<th>" . _("Penalty DNF") . "</th>";
+        $checked = ($spen && $spen->penDnf()) ? "checked=\"yes\"": "";
+        $html .= "<td><input type=\"checkbox\" name=\"PenDnf\" $checked></td>";
+        $html .= "</tr>";
+
+        // PenDsq
+        $html .= "<tr>";
+        $html .= "<th>" . _("Penalty DSQ") . "</th>";
+        $checked = ($spen && $spen->penDsq()) ? "checked=\"yes\"": "";
+        $html .= "<td><input type=\"checkbox\" name=\"PenDsq\" $checked></td>";
+        $html .= "</tr>";
+
+        $html .= "</table>";
+
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"SavePenalty\">" . _("Save Penalty") . "</button>";
+
+        $html .= "</form>";
+        return $html;
+    }
+
+
+    private function getHtmlSessionOverview() : string {
+        $html = "";
+        $this->checkFilters();
+        $html .= $this->sessionSlector();
         if ($this->CurrentSession !== NULL) {
             $html .= $this->listSessionInformation();
             $html .= $this->listResults();
+            $html .= $this->listPenalties();
             $html .= $this->listBestlap();
             $html .= $this->listCollisions();
             $html .= $this->listLaps();
         }
-
         return $html;
     }
 
@@ -157,12 +332,100 @@ class SessionOverview extends \core\HtmlContent {
     }
 
 
+    private function listPenalties() {
+        $html = "<h1>" . _("Session Penalties") . "</h1>";
+
+        $html .= "<table>";
+        $html .= "<tr>";
+        $html .= "<th colspan=\"2\">" . _("Driver")  ."</th>";
+        $html .= "<th>" . _("Penalty")  ."</th>";
+        $html .= "<th>" . _("Cause")  ."</th>";
+        $html .= "<th>" . _("Officer")  ."</th>";
+        $html .= "</tr>";
+
+        foreach (\DbEntry\SessionPenalty::listPenalties($this->CurrentSession) as $spen) {
+            $html .= "<tr>";
+
+            // driver
+            if (is_a($spen->driver(), "\\DbEntry\\TeamCar")) {
+                $html .= "<td class=\"TeamLogo\">{$spen->driver()->team()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
+                $html .= "<td class=\"DriverName\">";
+                $drivers = $spen->driver()->drivers();
+                for ($i=0; $i < count($drivers); ++$i) {
+                    $tmm = $drivers[$i];
+                    if ($i > 0) $html .= ", ";
+                    $html .= $tmm->user()->html(TRUE, FALSE, TRUE);
+                }
+                $html .= "</td>";
+            } else if (is_a($spen->driver(), "\\DbEntry\\User")) {
+                $html .= "<td class=\"NationalFlag\">{$spen->driver()->nationalFlag()}</td>";
+                $html .= "<td class=\"DriverName\">{$spen->driver()->html()}</td>";
+            } else {
+                $html .= "<td></td><td></td>";
+            }
+
+            // penalty
+            $penalties = array();
+            $css_good = "PenaltyGood";
+            $css_bad = "PenaltyBad";
+            if ($spen->penSf() != 0) {
+                $css = ($spen->penSf() < 0) ? $css_bad : $css_good;
+                $penalties[] = "<span class=\"$css\">" . sprintf("%+dSF", $spen->penSf()) . "</span>";
+            }
+            if ($spen->penTime() != 0) {
+                $css = ($spen->penTime() > 0) ? $css_bad : $css_good;
+                $penalties[] = "<span class=\"$css\">" . sprintf("%+ds", $spen->penTime()) . "</span>";
+            }
+            if ($spen->penPts() != 0) {
+                $css = ($spen->penPts() < 0) ? $css_bad : $css_good;
+                $penalties[] = "<span class=\"$css\">" . sprintf("%+dpts", $spen->penPts()) . "</span>";
+            }
+            if ($spen->penLaps() != 0) {
+                $css = ($spen->penLaps() < 0) ? $css_bad : $css_good;
+                $penalties[] = "<span class=\"$css\">" . sprintf("%+dL", $spen->penLaps()) . "</span>";
+            }
+            if ($spen->penDnf() != 0) $penalties[] = "<span class=\"$css_bad\">DNF</span>";
+            if ($spen->penDsq() != 0) $penalties[] = "<span class=\"$css_bad\">DSQ</span>";
+            $html .= "<td>" . implode(", ", $penalties) . "</td>";
+
+            // cause
+            $html .= "<td>{$spen->cause()}</td>";
+
+            // officer
+            $officer = $spen->officer();
+            if ($officer === NULL) $html .= "<td>-</td>";
+            else  $html .= "<td>{$officer->html()}</td>";
+
+            // edit
+            if ($this->CanEditPenalties) {
+                $url = $this->url(['SessionId' => $this->CurrentSession->id(),
+                                   'Action'=>'EditPenalty',
+                                   'PenaltyId'=>$spen->id()]);
+                $html .= "<td><a href=\"{$url}\">&#x1f4dd;</a></td>";
+            }
+
+            $html .= "</tr>";
+
+        }
+
+        $html .= "</table>";
+
+        if ($this->CanEditPenalties) {
+            $html .= "<a href=\"{$this->url(['SessionId'=>$this->CurrentSession->id(), 'Action'=>'AddPenalty'])}\"\">" . _("Add Penalty") . "</a>";
+        }
+
+        return $html;
+    }
+
+
     private function listResults() {
         $user = \core\UserManager::currentUser();
         $html = "<h1>" . _("Session Results") . "</h1>";
 
+        $session_results = \DbEntry\SessionResultFinal::listResults($this->CurrentSession);
+
         // laptime diagram
-        $positions = count(\DbEntry\SessionResult::listSessionResults($this->CurrentSession));
+        $positions = count($session_results);
         $html .= "<div id=\"SessionPositionDiagram\">";
         $title = _("Session Position Diagram");
         $axis_x_title = ($this->CurrentSession->type() == \DbEntry\Session::TypeRace) ? _("Laps") : _("Minutes");
@@ -178,58 +441,41 @@ class SessionOverview extends \core\HtmlContent {
         $html .= "<table>";
         $html .= "<tr>";
         $html .= "<th rowspan=\"2\">"  . _("Position") . "</th>";
-        $html .= "<th colspan=\"2\" rowspan=\"2\">"  . _("Driver") . "</th>";
+        $html .= "<th rowspan=\"2\">"  . _("Driver") . "</th>";
         $html .= "<th rowspan=\"2\">"  . _("Car") . "</th>";
         $html .= "<th rowspan=\"2\">"  . _("Best Lap") . "</th>";
-        $html .= "<th rowspan=\"2\">"  . _("Total Time") . "</th>";
-        $html .= "<th rowspan=\"2\">"  . _("BOP") . "</th>";
-        $html .= "<th colspan=\"2\">"  . _("Driven") . "</th>";
-        $html .= "<th rowspan=\"2\">"  . _("Cuts") . "</th>";
-        $html .= "<th colspan=\"2\">"  . _("Collisions") . "</th>";
-        $html .= "<th rowspan=\"2\">"  . _("Ranking Points") . "</th>";
+        $html .= "<th colspan=\"3\">"  . _("Driven") . "</th>";
+        // $html .= "<th rowspan=\"2\">"  . _("Cuts") . "</th>";
+        // $html .= "<th colspan=\"2\">"  . _("Collisions") . "</th>";
+        $html .= "<th colspan=\"2\">"  . _("Result") . "</th>";
         $html .= "</tr>";
 
         $html .= "<tr>";
+        $html .= "<th>"  . _("Time") . "</th>";
         $html .= "<th>"  . _("Laps") . "</th>";
         $html .= "<th>"  . _("Distance") . "</th>";
-        $html .= "<th>"  . _("Environment") . "</th>";
-        $html .= "<th>"  . _("Other Cars") . "</th>";
+        // $html .= "<th>"  . _("Environment") . "</th>";
+        // $html .= "<th>"  . _("Other Cars") . "</th>";
+        $html .= "<th>"  . _("Rank") . "</th>";
+        $html .= "<th>"  . _("Pen") . "</th>";
         $html .= "<tr>";
 
         // list all results
-        $results = $this->CurrentSession->results();
-        usort($results, "\DbEntry\SessionResult::comparePosition");
-        foreach ($results as $r) {
+        foreach ($session_results as $r) {
             $html .= "<tr>";
             $html .= "<td>" . $r->position() ."</td>";
 
-            // country/team image
-            if ($r->user()) {
-                $html .= "<td class=\"SessionResultsDriverFlagCell\">" . $r->user()->parameterCollection()->child("UserCountry")->valueLabel() . "</td>";
-            } else if ($r->teamCar()) {
-
-                $html .= "<td class=\"SessionResultsDriverFlagCell\">{$r->teamCar()->team()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
-            } else {
-                $html .= "<td class=\"SessionResultsDriverFlagCell\"></td>";
-            }
-
-            // list drivers
-            $drivers_list = "";
-            foreach ($r->drivers() as $d) {
-                if (strlen($drivers_list)) $drivers_list .= ", ";
-                $drivers_list .= $d->html();
-            }
-            $html .= "<td>$drivers_list</td>";
+            // driver
+            $html .= "<td>" . $r->driver()->getHtml() . "</td>";
 
             $html .= "<td class=\"SessionResultsCarSkinCell\">" . $r->carSkin()->html(TRUE, FALSE) ."</td>";
             $html .= "<td>" . $user->formatLaptime($r->bestLaptime()) . "</td>";
-            $html .= "<td>" . $user->formatLaptime($r->totalTime()) . "</td>";
-            $html .= "<td>" . sprintf("%+dkg, %+d&percnt;", $r->ballast(), $r->restrictor()) . "</td>";
-            $html .= "<td>" . $r->amountLaps() . "</td>";
-            $html .= "<td>" . $user->formatDistance($r->amountLaps() * $r->session()->track()->length()) . "</td>";
-            $html .= "<td>" . $r->amountCuts() . "</td>";
-            $html .= "<td>" . $r->amountCollisionEnv() . "</td>";
-            $html .= "<td>" . $r->amountCollisionCar() . "</td>";
+            $html .= "<td>" . $user->formatLaptime($r->finalTime()) . "</td>";
+            $html .= "<td>" . $r->finalLaps() . "</td>";
+            $html .= "<td>" . $user->formatDistance($r->finalLaps() * $r->session()->track()->length()) . "</td>";
+            // $html .= "<td>" . $r->amountCuts() . "</td>";
+            // $html .= "<td>" . $r->amountCollisionEnv() . "</td>";
+            // $html .= "<td>" . $r->amountCollisionCar() . "</td>";
 
             // ranking points
             $rp = $r->rankingPoints();
@@ -241,6 +487,10 @@ class SessionOverview extends \core\HtmlContent {
             $css_class = ($sum > 0.0) ? "PositiveRankingPoints" : "NagativeRankingPoints";
             $html .= "<span title=\"$title\" class=\"$css_class\">" . sprintf("%+0.1f", round($sum, 1)) . "</span>";
             $html .= "</td>";
+
+            // penalties
+            //! @todo Proceed here
+            // $pens = new \Compound\SessionPenaltiesSum($this->CurrentSession, $r->driver());
 
             $html .= "<tr>";
         }
