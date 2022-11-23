@@ -59,7 +59,6 @@ class CommandUdpPlugin(Command):
         self._verbosity.print("Setup UDP plugin server")
         udpp = UdpPluginServer(self.getIniSection('PLUGIN')['slot'],
                                self.getIniSection('PLUGIN')['preset'],
-                               self.getIniSection('PLUGIN')['carclass'],
                                self.getIniSection('PLUGIN')['udp_acserver'],
                                self.getIniSection('PLUGIN')['udp_plugin'],
                                self.getIniSection('PLUGIN')['udp_rp_events_tx'],

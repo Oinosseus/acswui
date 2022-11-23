@@ -21,6 +21,7 @@ class Template extends \Core\HtmlTemplate {
         $html .= "    <title>ACswui</title>\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style.css\">\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_dbentry.css\">\n";
+        $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_compound.css\">\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_content.css\">\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_functional.css\">\n";
         $html .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"templates/acswui/style_parameter.css\">\n";

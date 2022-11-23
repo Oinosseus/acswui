@@ -73,6 +73,10 @@ class UdpPluginCarEntry(object):
         if 'TeamCarId' in entry_dict:
            self.__team_car_id = int(entry_dict['TeamCarId'])
 
+        # It happened that completed_lap() was called, but no driver was connected.
+        # In this case, count all completed laps to inform later
+        self.__missed_completed_laps = 0
+
 
 
 
@@ -205,6 +209,16 @@ class UdpPluginCarEntry(object):
                                ", name =", self.__driver_name,
                                ", guid =", self.__driver_guid)
 
+        # Inform about possible missed completed_lap() calls
+        if self.__missed_completed_laps > 0:
+            columns = {'Session': session.Id,
+                       'Cause': "ACswui-Plugin detected possible lost laps",
+                       'TeamCar': self.__team_car_id,
+                       'User': self.__driver_id if self.__team_car_id == 0 else 0,
+                       'PenLaps': self.__missed_completed_laps}
+            self.__db.insertRow("SessionPenalties", columns)
+            self.__missed_completed_laps = 0
+
 
     def release(self):
         self.__verbosity2.print("Car", self.__id,
@@ -233,6 +247,7 @@ class UdpPluginCarEntry(object):
 
             # No other idea how to catch this situation, than by binning the lap
             self.__verbosity.print("AC-ERROR: complete_lap() called for Car-Id %i, but DriverId is None!\n" % self.Id)
+            self.__missed_completed_laps += 1
             return
 
         #self.__verbosity2.print("Car", self.__id,

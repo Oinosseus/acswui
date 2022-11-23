@@ -86,7 +86,8 @@ class SessionPenalty extends DbEntry {
      * @param $driver If set, only penalties for a certain driver are listed
      * @return A list of SessionPenalty objects
      */
-    public static function listPenalties(Session $session, User|TeamCar $driver=NULL) : array {
+    public static function listPenalties(Session $session,
+                                         \Compound\Driver|User|TeamCar $driver=NULL) : array {
         $ret = array();
 
         if ($driver === NULL) {
@@ -99,6 +100,10 @@ class SessionPenalty extends DbEntry {
             }
 
         } else {
+
+            // replace driver
+            if (is_a($driver, "\\Compound\\Driver")) $driver = $driver->driver();
+
             // resolve driver type
             $search_key = "";
             if (is_a($driver, "\\DbEntry\\User")) {

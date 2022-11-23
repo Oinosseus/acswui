@@ -5,7 +5,7 @@ import json
 
 class UdpPluginSession(object):
 
-    def __init__(self, server_slot, server_preset, car_class,
+    def __init__(self, server_slot, server_preset,
                  database, packet, predecessor=None,
                  referenced_session_schedule_id = None,
                  verbosity=0):
@@ -18,7 +18,6 @@ class UdpPluginSession(object):
 
         self.__server_slot = int(server_slot)
         self.__server_preset = int(server_preset)
-        self.__car_class = int(car_class)
         self.__db = database
         self.__db_field_cache = {}
         self._db_id = None
@@ -117,7 +116,6 @@ class UdpPluginSession(object):
         self.__db_field_cache['Elapsed'] = elapsed_ms
         self.__db_field_cache['ServerSlot'] = self.__server_slot
         self.__db_field_cache['ServerPreset'] = self.__server_preset
-        self.__db_field_cache['CarClass'] = self.__car_class
         if self.__referenced_session_schedule_id is None:
             self.__db_field_cache['SessionSchedule'] = 0
         else:

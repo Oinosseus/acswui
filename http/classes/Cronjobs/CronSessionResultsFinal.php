@@ -19,8 +19,9 @@ class CronSessionResultsFinal extends \Core\Cronjob {
         $query = "SELECT Id FROM Sessions WHERE FinalResultsCalculated=0 ORDER BY Id ASC;";
         foreach(\Core\Database::fetchRaw($query) as $row) {
 
-            // interrupt processing to save CPU time
-            if ((microtime(TRUE) - $time_start) > 1e6) break;
+            // interrupt processing to save CPU load
+            $time_elapsed = microtime(TRUE) - $time_start;
+            if ($time_elapsed > 10) break;
 
             // get session and calculate results
             $s = \DbEntry\Session::fromId((int) $row['Id']);

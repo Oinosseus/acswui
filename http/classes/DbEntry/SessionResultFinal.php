@@ -55,6 +55,7 @@ class SessionResultFinal extends DbEntry {
             $new_result_columns['Driver'] = ($new_result_columns['User'] == 0) ?
                                                     \DbEntry\TeamCar::fromId($new_result_columns['TeamCar']) :
                                                     \DbEntry\User::fromId($new_result_columns['User']);
+
             // prepare data
             $new_result_columns['RankingPoints'] = array();
             $new_result_columns['RankingPoints']['XP'] = array('P'=>0,  'Q'=>0,  'R'=>0,  'Sum'=>0);
@@ -75,7 +76,7 @@ class SessionResultFinal extends DbEntry {
 
                 if ($spen->penDnf()) $new_result_columns['PenDnf'] = 1;
                 if ($spen->penDsq()) $new_result_columns['PenDsq'] = 1;
-                $new_result_columns['FinalTime'] += $spen->penTime();
+                $new_result_columns['FinalTime'] += $spen->penTime() * 1000;
                 $new_result_columns['FinalLaps'] += $spen->penLaps();
                 $new_result_columns['RankingPoints']['SF']['Pen'] += $spen->penSf();
             }

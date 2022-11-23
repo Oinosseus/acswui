@@ -1,0 +1,12 @@
+/* -----------------------------------------------------------------------------
+ *                           Compound SessionPenaltiesSum
+ * -----------------------------------------------------------------------------
+ */
+
+div.CompoundSessionPenaltiesSum span.PenaltyGood {
+    color: var(--color-functional-success);
+}
+
+div.CompoundSessionPenaltiesSum span.PenaltyBad {
+    color: var(--color-functional-fail);
+}

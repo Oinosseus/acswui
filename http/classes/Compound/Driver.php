@@ -39,6 +39,14 @@ class Driver {
     }
 
 
+    //! @return A User or TeamCar object, which represents the driver
+    public function driver() : \DbEntry\User|\DbEntry\TeamCar {
+        if ($this->TeamCar) return $this->TeamCar;
+        else if ($this->User) return $this->User;
+        else return NULL;  // this is not expected
+    }
+
+
     //! @return A HTML string, representing the driver
     public function getHtml() : string {
         $html = "";

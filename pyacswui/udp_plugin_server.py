@@ -17,7 +17,7 @@ class NoCarEntryError(BaseException):
 class UdpPluginServer(object):
 
     def __init__(self,
-                 server_slot, server_preset, car_class,
+                 server_slot, server_preset,
                  port_server, port_plugin,
                  port_rp_events_tx, port_rp_events_rx, rp_admin_password,
                  database,
@@ -42,7 +42,6 @@ class UdpPluginServer(object):
         self.__verbosity = Verbosity(verbosity, self.__class__.__name__)
         self.__server_slot = int(server_slot)
         self.__server_preset = int(server_preset)
-        self.__car_class = int(car_class)
         self.__session = None
         self.__entries = []
         self.__database = database
@@ -261,7 +260,6 @@ class UdpPluginServer(object):
             # set new session object
             self.__session = UdpPluginSession(self.__server_slot,
                                               self.__server_preset,
-                                              self.__car_class,
                                               self.__database,
                                               pkt,
                                               self.__session,
@@ -277,7 +275,6 @@ class UdpPluginServer(object):
                 self.__verbosity.print("ACSP_SESSION_INFO")
                 self.__session = UdpPluginSession(self.__server_slot,
                                                   self.__server_preset,
-                                                  self.__car_class,
                                                   self.__database,
                                                   pkt,
                                                   self.__session,
@@ -454,13 +451,35 @@ class UdpPluginServer(object):
 
         # endRace
         elif data["type"] == "endRace":
-            self.__verbosity.print("RP event", data["type"])
-            print(data)
+
+            # notify about penalty
+            if 'seconds_penalty' in data["type"]:
+                self.impose_penalty("Real-Penalty: End-Race/Seconds-Penalty",
+                                    data["driver"], data["seconds_penalty"], False)
+
+            else:
+                print("Unexpected RP Event:", data)
 
         # dsq
         elif data["type"] == "dsq":
-            self.__verbosity.print("RP event", data["type"])
-            print(data)
+            self.impose_penalty("Real-Penalty: DSQ\n" + data['cause'],
+                                data["driver"], 0, True)
+
+        # newSecondsPenalty
+        elif data["type"] == "newSecondsPenalty":
+
+            if 'cause' not in data['penalty']:
+                print("Unexpected RP Event:", data)
+
+            elif data['penalty']['cause'] == "missingSwaps":
+                self.impose_penalty("Real-Penalty: DSQ\n" + data['penalty']['cause'],
+                                    data["driver"], data['penalty']['seconds'], False)
+
+            elif data['penalty']['cause'] == "jump":
+                pass
+
+            else:
+                print("Unexpected RP Event:", data)
 
         # leavePit
         elif data["type"] == "leavePit":
@@ -473,14 +492,14 @@ class UdpPluginServer(object):
             print(data)
 
         # ignored types
-        elif data["type"] in ["vscRestart", "fcyStart", "fcyRestart", "fcyDeployed", "fcyEnding", "vscDeployed", "vscEnding", "scDeployed", "scThisLap", "cutWarning", "newSecondsPenalty", "penaltyTaken", "drsEnabled", "scRestart", "longpit", "swap", "penaltyConverted", "secondsPenaltyConverted", "newPenalty"]:
+        elif data["type"] in ["vscRestart", "fcyStart", "fcyRestart", "fcyDeployed", "fcyEnding", "vscDeployed", "vscEnding", "scDeployed", "scThisLap", "cutWarning", "penaltyTaken", "drsEnabled", "scRestart", "longpit", "swap", "penaltyConverted", "secondsPenaltyConverted", "newPenalty"]:
             self.__verbosity.print("Ignoring RP event", data["type"])
             pass
 
         # unwon type
         else:
             # this is no error, since future RP versions can implement new stuff
-            self.__verbosity.print("Unkown RP event type:", data["type"])
+            print("Unexpected RP Event:", __line__, data)
 
 
 
@@ -590,3 +609,42 @@ class UdpPluginServer(object):
             index += 1
 
         self.__sock.sendto(data, ("127.0.0.1", self.__port_server))
+
+
+    def impose_penalty(self,
+                       cause_drescription,
+                       driver,
+                       pen_seconds,
+                       pen_dsq):
+
+        # check data
+        if self.__session.Id is None:
+            print("ERROR", "Cannot impose penalty because Session-Id is None:", cause_drescription, driver)
+            return
+
+        # identify driver
+        car_id = int(driver['carId'])
+        guid = driver['guid']
+        entry = None
+        for e in self.__entries:
+            if e.Id == car_id:
+                entry = e
+                break
+        if entry is None:
+            print("ERROR", "Cannot impose penalty because Entry is None:", cause_drescription, driver)
+            return
+        if entry.DriverGuid != guid:
+            print("WARNING", "At imposing penalty Entry.DriverGuid '%s' is not equal to RP guid '%s'" % (entry.DriverGuid, guid))
+
+        # enhancing cause by driver
+        cause_drescription += "\nDriver: " + driver['Driver name']
+        cause_drescription += "\nCar: " + driver['car model']
+        cause_drescription += "\nSkin: " + driver['car skin']
+
+        columns = {'Session': self.__session.Id,
+                   'Cause': cause_drescription,
+                   'TeamCar': entry.TeamCarId,
+                   'User': entry.DriverId if entry.TeamCarId == 0 else 0,
+                   'PenTime': pen_seconds,
+                   'PenDsq': 1 if pen_dsq else 0}
+        self.__db.insertRow("SessionPenalties", columns)

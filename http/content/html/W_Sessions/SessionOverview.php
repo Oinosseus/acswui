@@ -85,6 +85,9 @@ class SessionOverview extends \core\HtmlContent {
                     $this->CurrentPenalty->setPenSf((int) $_POST["PenSf"]);
                     $this->CurrentPenalty->setPenTime((int) $_POST["PenTime"]);
 
+                    // re-calculate final results
+                    \DbEntry\SessionResultFinal::calculate($this->CurrentSession);
+
                     $this->reload(["SessionId"=>$this->CurrentSession->id()]);
                 }
 
@@ -489,8 +492,8 @@ class SessionOverview extends \core\HtmlContent {
             $html .= "</td>";
 
             // penalties
-            //! @todo Proceed here
-            // $pens = new \Compound\SessionPenaltiesSum($this->CurrentSession, $r->driver());
+            $pens = new \Compound\SessionPenaltiesSum($this->CurrentSession, $r->driver());
+            $html .= "<td>{$pens->getHtml()}</td>";
 
             $html .= "<tr>";
         }
