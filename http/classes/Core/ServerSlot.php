@@ -773,6 +773,7 @@ class ServerSlot {
             // check if car download exists
             if (strlen($eli->carSkin()->car()->downloadUrl()) > 0) {
 
+                // add cars entry
                 if (!array_key_exists("cars", $data_array)) $data_array['cars'] = array();
 
                 // add car
@@ -795,6 +796,9 @@ class ServerSlot {
                     if ($succ === FALSE) {
                         \Core\Log::error("Failed to copy '$package_path' to '$dst'");
                     } else {
+
+                        // add cars entry
+                        if (!array_key_exists("cars", $data_array)) $data_array['cars'] = array();
 
                         // add car
                         $car_model = $eli->carSkin()->car()->model();
