@@ -32,6 +32,7 @@ class UdpPluginServer(object):
                  bop_map_teamcar_ballasts = {},      # key=TeamCarId, value=ballast
                  bop_map_teamcar_restrictors = {},   # key=TeamCarId, value=restrictor
                  referenced_session_schedule_id = None,
+                 auto_dnf_level = 0,                 # Percentage of driven laps (relative to race leader), below automatically a DNF penalty is imposed
                  verbosity=0):
 
         # This is the typical duration for the process() method
@@ -55,6 +56,8 @@ class UdpPluginServer(object):
             self.__referenced_session_schedule_id = int(referenced_session_schedule_id)
         except:
             self.__referenced_session_schedule_id = None
+
+        self.__auto_dnf_level = float(auto_dnf_level)
 
         # force ballast and restrictor
         self.__last_checked_balancing = None
@@ -113,6 +116,17 @@ class UdpPluginServer(object):
         self.__bop_map_user_restrictors = {key: int(bop_map_user_restrictors[key]) for key in bop_map_user_restrictors.keys()}
         self.__bop_map_teamcar_ballasts = {key: int(bop_map_teamcar_ballasts[key]) for key in bop_map_teamcar_ballasts.keys()}
         self.__bop_map_teamcar_restrictors = {key: int(bop_map_teamcar_restrictors[key]) for key in bop_map_teamcar_restrictors.keys()}
+
+        # identifiy if within an active session
+        self.__active_session = False
+
+
+
+    @property
+    def ActiveSession(self):
+        """ If TRUE, current status is between ACSP_NEW_SESSION and ACSP_END_SESSION
+        """
+        return self.__active_session
 
 
 
@@ -269,6 +283,10 @@ class UdpPluginServer(object):
             # enable realtime update
             self.enable_realtime_report()
 
+            # define an active session
+            self.__active_session = True
+
+
         # ACSP_SESSION_INFO
         elif prot == 59:
             if self.__session is None:
@@ -354,6 +372,10 @@ class UdpPluginServer(object):
                 print("ERROR: ACSP_END_SESSION received, but no active session existent!")
             else:
                 self.__session.parse_result_json(json_file_abspath, self.__entries)
+                self.__session.apply_auto_dnf(self.__auto_dnf_level)
+
+            # define an inactive session
+            self.__active_session = False
 
 
         # ACSP_LAP_COMPLETED
@@ -453,10 +475,11 @@ class UdpPluginServer(object):
         elif data["type"] == "endRace":
 
             # notify about penalty
-            if 'seconds_penalty' in data["type"]:
-                self.impose_penalty("Real-Penalty: End-Race/Seconds-Penalty",
-                                    data["driver"], data["seconds_penalty"], False)
-
+            if 'seconds_penalty' in data:
+                seconds = int(data["seconds_penalty"])
+                if seconds > 0:
+                    self.impose_penalty("Real-Penalty: End-Race/Seconds-Penalty",
+                                        data["driver"], seconds, False)
             else:
                 print("Unexpected RP Event:", data)
 
@@ -611,11 +634,7 @@ class UdpPluginServer(object):
         self.__sock.sendto(data, ("127.0.0.1", self.__port_server))
 
 
-    def impose_penalty(self,
-                       cause_drescription,
-                       driver,
-                       pen_seconds,
-                       pen_dsq):
+    def impose_penalty(self, cause_drescription, driver, pen_seconds, pen_dsq):
 
         # check data
         if self.__session.Id is None:

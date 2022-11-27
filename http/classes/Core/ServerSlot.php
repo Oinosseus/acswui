@@ -497,6 +497,7 @@ class ServerSlot {
         }
         fwrite($f, "preserved_kick = " . $preset->getParam("ACswuiPreservedKick") . "\n");
         fwrite($f, "referenced_session_schedule_id = $referenced_session_schedule_id\n");
+        fwrite($f, "auto-dnf-level = " . $preset->getParam("AccswuiAutoDnfLevel") . "\n");
 
         $bm->writeACswuiUdpPluginIni($f);
 

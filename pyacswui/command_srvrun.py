@@ -121,7 +121,7 @@ class CommandSrvrun(Command):
 
 
         # grant sub processes one OS process execution round after AC has finished
-        time.sleep(0.1)
+        time.sleep(0.5)
 
 
         # friendly ask to finish processing

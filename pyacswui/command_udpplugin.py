@@ -76,6 +76,7 @@ class CommandUdpPlugin(Command):
                                self.getIniSection('BopTeamcarBallast'),
                                self.getIniSection('BopTeamcarRestrictor'),
                                self.getIniSection('PLUGIN')['referenced_session_schedule_id'],
+                               self.getIniSection('PLUGIN')['auto-dnf-level'],
                                verbosity=self._verbosity)
         udpp.process() # run once just to ensure that it does not crash immediately
 
@@ -86,7 +87,7 @@ class CommandUdpPlugin(Command):
             sys.stdout.flush()
 
             # quit at termination
-            if __TERMINATION_REQUESTED__:
+            if __TERMINATION_REQUESTED__ and not udpp.ActiveSession:
                 break
 
         self._verbosity.print("Finished")

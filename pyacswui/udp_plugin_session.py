@@ -2,6 +2,7 @@ from .verbosity import Verbosity
 from .database import Database
 from .udp_packet import UdpPacket
 import json
+import math
 
 class UdpPluginSession(object):
 
@@ -18,6 +19,7 @@ class UdpPluginSession(object):
 
         self.__server_slot = int(server_slot)
         self.__server_preset = int(server_preset)
+        self.__session_type = None
         self.__db = database
         self.__db_field_cache = {}
         self._db_id = None
@@ -43,6 +45,52 @@ class UdpPluginSession(object):
 
 
 
+    def apply_auto_dnf(self, auto_dnf_level):
+
+        # only for race sessions
+        if int(self.__session_type) != 3:
+            self.__verbosity.print("skip Auto-DNF because no race session (session =", self.__session_type,")")
+            return
+
+        # get Id of race leader
+        leader_user = None
+        leader_teamcar = None
+        res = self.__db.fetch("SessionResultsAc", ['User', 'TeamCar'], {"Session":self.Id}, "Position", True)
+        for row in res:
+            leader_user = row['User']
+            leader_teamcar = row['TeamCar']
+            break
+        if None in [leader_user, leader_teamcar]:
+            print("ERROR: Cannot apply Auto-DNF because no leader found for session", self.Id)
+            return
+
+        # count laps of leader
+        res = self.__db.fetch("Laps", ['Id'], {"Session":self.Id, 'User':leader_user, 'TeamCar':leader_teamcar})
+        leader_laps = len(res)
+        min_laps = math.ceil(leader_laps * auto_dnf_level / 100)
+
+        # iterate over all results
+        res = self.__db.fetch("SessionResultsAc", ['User', 'TeamCar'], {"Session":self.Id})
+        for row in res:
+            user_id = row['User']
+            teamcar_id = row['TeamCar']
+
+            # count laps of driver
+            res_laps = self.__db.fetch("Laps", ['Id'], {"Session":self.Id, 'User':user_id, 'TeamCar':teamcar_id})
+            driver_laps = len(res_laps)
+
+            # impose DNF if lap amount is insufficient
+            if driver_laps < min_laps:
+                columns = {'Session': self.Id,
+                        'Cause': "ACswui-Plugin: minimum amount of %i laps not achieved" % min_laps,
+                        'TeamCar': teamcar_id,
+                        'User': user_id,
+                        'PenDnf': 1}
+                self.__db.insertRow("SessionPenalties", columns)
+                self.__verbosity.print("Apply auto-DNF to User=%i, TeamCar=%i" % (user_id, teamcar_id))
+
+
+
     def update(self, packet):
 
         # sanity check
@@ -60,7 +108,7 @@ class UdpPluginSession(object):
         track_name = packet.readString()
         track_config = packet.readString()
         session_name = packet.readString()
-        session_type = packet.readByte()
+        self.__session_type = packet.readByte()
         session_time = packet.readUint16()
         session_laps = packet.readUint16()
         session_waittime = packet.readUint16()
@@ -93,7 +141,7 @@ class UdpPluginSession(object):
             is_new_session = True
         if 'Track' not in self.__db_field_cache or self.__db_field_cache['Track'] != track_id:
             is_new_session = True
-        if 'Type' not in self.__db_field_cache or self.__db_field_cache['Type'] != session_type:
+        if 'Type' not in self.__db_field_cache or self.__db_field_cache['Type'] != self.__session_type:
             is_new_session = True
 
         # setup database fields
@@ -106,7 +154,7 @@ class UdpPluginSession(object):
         self.__db_field_cache['ServerName'] = server_name
         self.__db_field_cache['Track'] = track_id
         self.__db_field_cache['Name'] = session_name
-        self.__db_field_cache['Type'] = session_type
+        self.__db_field_cache['Type'] = self.__session_type
         self.__db_field_cache['Time'] = session_time
         self.__db_field_cache['Laps'] = session_laps
         self.__db_field_cache['WaitTime'] = session_waittime
@@ -157,7 +205,6 @@ class UdpPluginSession(object):
             return
 
         # ensure to delete all previous results
-        query = "DELETE FROM SessionResultsAc WHERE Session = $session_id"
         self.__db.rawQuery("DELETE FROM SessionResultsAc WHERE Session = " + str(self.Id))
 
         # loop over all result entries
@@ -170,9 +217,11 @@ class UdpPluginSession(object):
             steam64guid = rslt['DriverGuid']
             if steam64guid.lower().find("kicked") >= 0:
                 continue
+            if steam64guid == "":
+                continue
             user_ids = self.__db.findIds("Users", {"Steam64GUID": steam64guid})
             if len(user_ids) != 1:
-                print("ERROR: No excat match for Steam64GUID '%s'" % steam64guid)
+                print("ERROR: No exact match for Steam64GUID '%s'" % steam64guid)
                 continue
             user = user_ids[0]
 
@@ -181,7 +230,7 @@ class UdpPluginSession(object):
             rslt_car_model = json_dict['Cars'][rslt_car_id]['Model']
             car_ids = self.__db.findIds("Cars", {"Car": rslt_car_model})
             if len(car_ids) != 1:
-                print("ERROR: No excat match for car model '%s'" % rslt_car_model)
+                print("ERROR: No exact match for car model '%s'" % rslt_car_model)
                 continue
             car = car_ids[0]
 
@@ -189,7 +238,7 @@ class UdpPluginSession(object):
             rlst_car_skin = json_dict['Cars'][rslt_car_id]['Skin']
             skin_ids = self.__db.findIds("CarSkins", {"Car": car, "Skin": rlst_car_skin})
             if len(skin_ids) != 1:
-                print("ERROR: No excat match for car skin '%s' at car %i" % (rslt_car_model, car))
+                print("ERROR: No exact match for car skin '%s' at car %i" % (rslt_car_model, car))
                 continue
             skin = skin_ids[0]
 
