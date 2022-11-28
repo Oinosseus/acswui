@@ -6,6 +6,7 @@ namespace Core;
 class DriverRankingPoints {
 
     private $RankingPoints = NULL;
+    private $CountBt = 0;
 
 
     /**
@@ -26,6 +27,19 @@ class DriverRankingPoints {
                     if (!array_key_exists($key_value, $initial_data[$key_group])) continue;
                     $this->RankingPoints[$key_group][$key_value] = (float) $initial_data[$key_group][$key_value];
                 }
+            }
+        }
+    }
+
+
+    //! @param $other Another DriverRankingPoints object that shall be added to this
+    public function add(DriverRankingPoints $other) {
+        foreach (array_keys($this->RankingPoints) as $grp) {
+            foreach (array_keys($this->RankingPoints[$grp]) as $key) {
+
+                if (!array_key_exists($grp, $other->RankingPoints)) continue;
+                if (!array_key_exists($key, $other->RankingPoints[$grp])) continue;
+                $this->RankingPoints[$grp][$key] += $other->RankingPoints[$grp][$key];
             }
         }
     }
@@ -57,6 +71,23 @@ class DriverRankingPoints {
     }
 
 
+    //! @param $leading_positions The amount of drivers which are worse in a records table
+    public function addSxBt(int $leading_positions) {
+
+        // revert averaging
+        if (\Core\Acswui::getPAram('DriverRankingSxBtAvrg'))
+                $this->RankingPoints['SX']['BT'] *= $this->CountBt;
+
+        // increment points
+        $this->RankingPoints['SX']['BT'] = \Core\Acswui::getPAram('DriverRankingSxBt') * $leading_positions;
+        $this->CountBt += 1;
+
+        // apply averaging
+        if (\Core\Acswui::getPAram('DriverRankingSxBtAvrg'))
+                $this->RankingPoints['SX']['BT'] /= $this->CountBt;
+    }
+
+
     //! @param $leading_positions The amount of drivers which are worse in a race
     public function addSxR(int $leading_positions) {
         $this->RankingPoints['SX']['R'] = \Core\Acswui::getPAram('DriverRankingSxR') * $leading_positions;
@@ -65,7 +96,7 @@ class DriverRankingPoints {
 
     //! Adding best race-time success
     public function addSxRt() {
-        $this->RankingPoints['SX']['BT'] += \Core\Acswui::getPAram('DriverRankingSxRt');
+        $this->RankingPoints['SX']['RT'] += \Core\Acswui::getPAram('DriverRankingSxRt');
     }
 
 

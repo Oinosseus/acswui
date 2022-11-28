@@ -18,7 +18,6 @@ class InstallerDatabase(object):
         self._tables_red()
         self._tables_purple()
         self._tables_green()
-        self._tables_cyan()
 
         self._tables_accontent()
         self._tables_polls()
@@ -66,33 +65,38 @@ class InstallerDatabase(object):
         verb = Verbosity(self._verbosity)
         verb.print("red tables")
 
-        # check table users
-        Verbosity(verb).print("check database table `Users`")
-        self.__db.appendTable("Users")
-        self.__db.appendColumnString("Users", "Name", 50)
-        self.__db.appendColumnString("Users", "Steam64GUID", 50)
-        self.__db.appendColumnUInt("Users", "CurrentSession")
-        self.__db.appendColumnText("Users", "ParameterData")
-        self.__db.appendColumnDateTime("Users", 'LastLogin')
+        table_name = "Users"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnString(table_name, "Name", 50)
+        self.__db.appendColumnString(table_name, "Steam64GUID", 50)
+        self.__db.appendColumnUInt(table_name, "CurrentSession")
+        self.__db.appendColumnText(table_name, "ParameterData")
+        self.__db.appendColumnDateTime(table_name, 'LastLogin')
+        self.__db.appendColumnUInt(table_name, "RankingGroup")
+        self.__db.appendColumnFloat(table_name, "RankingPoints")
 
-        # check table Groups
-        Verbosity(verb).print("check database table `Groups`")
-        self.__db.appendTable("Groups")
-        self.__db.appendColumnString("Groups", "Name", 50)
+        table_name = "Groups"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnString(table_name, "Name", 50)
 
-        # check table UserGroupMap
-        Verbosity(verb).print("check database table `UserGroupMap`")
-        self.__db.appendTable("UserGroupMap")
-        self.__db.appendColumnUInt("UserGroupMap", "User")
-        self.__db.appendColumnUInt("UserGroupMap", "Group")
+        table_name = "UserGroupMap"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "User")
+        self.__db.appendColumnUInt(table_name, "Group")
 
-        # check table LoginTokens
-        Verbosity(verb).print("check database table `LoginTokens`")
-        self.__db.appendTable("LoginTokens")
-        self.__db.appendColumnUInt("LoginTokens", "User")
-        self.__db.appendColumnString("LoginTokens", "Token", 50)
-        self.__db.appendColumnString("LoginTokens", "Password", 100)
-        self.__db.appendColumnDateTime("LoginTokens", 'Timestamp')
+        table_name = "LoginTokens"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "User")
+        self.__db.appendColumnString(table_name, "Token", 50)
+        self.__db.appendColumnString(table_name, "Password", 100)
+        self.__db.appendColumnDateTime(table_name, 'Timestamp')
+
+        table_name = "DriverRankingLatest"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, 'User')
+        self.__db.appendColumnCurrentTimestamp(table_name, "Timestamp")
+        self.__db.appendColumnText(table_name, "RankingData")
+        self.__db.appendColumnFloat(table_name, "RankingPoints")
 
 
 
@@ -151,29 +155,6 @@ class InstallerDatabase(object):
         self.__db.appendColumnTinyInt("SessionScheduleRegistrations", 'Active')
         self.__db.appendColumnCurrentTimestamp("SessionScheduleRegistrations", "Activated")
         self.__db.appendColumnUInt("SessionScheduleRegistrations", 'TeamCar')
-
-
-
-    def _tables_cyan(self):
-        verb = Verbosity(self._verbosity)
-        verb.print("cyan tables")
-
-        # check table DriverRanking
-        Verbosity(verb).print("check database table `DriverRanking`")
-        self.__db.appendTable("DriverRanking")
-        self.__db.appendColumnUInt("DriverRanking", 'User')
-        self.__db.appendColumnCurrentTimestamp("DriverRanking", "Timestamp")
-        self.__db.appendColumnFloat("DriverRanking", 'XP_R')
-        self.__db.appendColumnFloat("DriverRanking", 'XP_Q')
-        self.__db.appendColumnFloat("DriverRanking", 'XP_P')
-        self.__db.appendColumnFloat("DriverRanking", 'SX_R')
-        self.__db.appendColumnFloat("DriverRanking", 'SX_Q')
-        self.__db.appendColumnFloat("DriverRanking", 'SX_RT')
-        self.__db.appendColumnFloat("DriverRanking", 'SX_BT')
-        self.__db.appendColumnFloat("DriverRanking", 'SF_CT')
-        self.__db.appendColumnFloat("DriverRanking", 'SF_CE')
-        self.__db.appendColumnFloat("DriverRanking", 'SF_CC')
-        self.__db.appendColumnUInt("DriverRanking", 'RankingGroup')
 
 
 

@@ -57,7 +57,7 @@ class Cron0CleanEmptySessions extends \Core\Cronjob {
     private function deleteSession(int $session_id) {
 
         // delete session dependencies
-        foreach (['CollisionCar', 'CollisionEnv', 'SessionResults'] as $table) {
+        foreach (['CollisionCar', 'CollisionEnv', 'SessionResultsAc', 'SessionPenalties', 'SessionResultsFinal'] as $table) {
             \Core\Database::query("DELETE FROM $table WHERE $table.Session = $session_id");
         }
 

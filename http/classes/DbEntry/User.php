@@ -651,6 +651,21 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    //! @return The current DriverRankingGroup of this user
+    public function rankingGroup () : int {
+        $grp = (int) $this->loadColumn("RankingGroup");
+        if ($grp > \Core\Config::DriverRankingGroups || $grp < 1)
+                $grp = \Core\Config::DriverRankingGroups;
+        return $grp;
+    }
+
+
+    //! @return The amount of DriverRankingPoints when the DriverRankingGroup was assigned
+    public function rankingPoints() : float {
+        return (float) $this->loadColumn("RankingPoints");
+    }
+
+
     /**
      * Saves the current values of the users parameterCollection.
      * Remember to retrieve enventally posted changes before.

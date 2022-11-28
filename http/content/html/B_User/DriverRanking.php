@@ -16,8 +16,9 @@ class DriverRanking extends \core\HtmlContent {
 
         // determine maximum points
         $max_ranking_points = 0;
-        foreach (\DbEntry\DriverRanking::listLatest() as $rnk)
+        foreach (\DbEntry\DriverRanking::listLatest() as $rnk) {
             if ($rnk->points() > $max_ranking_points) $max_ranking_points = $rnk->points();
+        }
 
         // laptime diagram
         $html .= "<div id=\"DriverRankingDiagram\">";
@@ -90,18 +91,14 @@ class DriverRanking extends \core\HtmlContent {
                 $html .= "<td>";
                 $title = sprintf("%0.1f", $rnk->points());
                 $html .= "<span title=\"$title\">" . round($rnk->points()) . "</span>";
-                $rnk_old = $rnk->lastHistory();
-                if ($rnk_old !== NULL) $rnk_old = $rnk->lastHistory();
-                if ($rnk_old !== NULL) {
-                    $points_increase = $rnk->points() - $rnk_old->points();
-                    if (abs($points_increase) >= 0.1) {
-                        $css_class = ($points_increase > 0) ? "TrendRising" : "TrendFalling";
-                        $html .= " <small class=\"$css_class\">(" . sprintf("%+0.1f", $points_increase) . ")</small>";
-                    }
+                $points_increase = $rnk->points() - $rnk->user()->rankingPoints();
+                if (abs($points_increase) >= 0.1) {
+                    $css_class = ($points_increase > 0) ? "TrendRising" : "TrendFalling";
+                    $html .= " <small class=\"$css_class\">(" . sprintf("%+0.1f", $points_increase) . ")</small>";
                 }
-                if ($rnk->groupNext() < $rnk->group()) {
+                if ($rnk->groupNext() < $rnk->user()->rankingGroup()) {
                     $html .= " <span title=\"" . _("Driver will rise to next group") . "\" class=\"TrendRising\">&#x2b06;</span>";
-                } else if ($rnk->groupNext() > $rnk->group()) {
+                } else if ($rnk->groupNext() > $rnk->user()->rankingGroup()) {
                     $html .= " <span title=\"" . _("Driver will fall to previous group") . "\" class=\"TrendFalling\">&#x2b07;</span>";
                 }
                 $html .= "</td>";
@@ -168,7 +165,7 @@ class DriverRanking extends \core\HtmlContent {
             $html .= "</table>";
 
             // inform about required points
-            $min_points = \DbEntry\DriverRanking::minGroupPoints($rnk_grp);
+            $min_points = \DbEntry\DriverRanking::groupThreshold($rnk_grp);
             if ($min_points !== NULL) {
                 $html .= "<small>";
                 $html .= _("Minimum points required for this Group") . ": ";

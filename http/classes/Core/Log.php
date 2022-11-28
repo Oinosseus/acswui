@@ -42,6 +42,7 @@ class Log {
                     else if (is_a($arg, "\DateTime")) $backtrace_args .= $arg->format(\DateTime::ISO8601);
                     else if (is_string($arg)) $backtrace_args .= $arg;
                     else if (is_float($arg)) $backtrace_args .= $arg;
+                    else if (is_int($arg)) $backtrace_args .= $arg;
                     else if (enum_exists($arg::class)) $backtrace_args .= $arg->name;
                     else $backtrace_args .= $arg;
                 }

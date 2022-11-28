@@ -14,16 +14,33 @@ class Cron3DriverRankingGroupAssignment extends \Core\Cronjob {
     }
 
     protected function process() {
-        foreach (\DbEntry\DriverRanking::listLatest() as $rnk_cur) {
 
-            // get the latest object from DB
-            $rnk_old = $rnk_cur->lastHistory();
-            if ($rnk_old === NULL) continue;
+        // walk through all current rankings
+        $user_ids = array();
+        foreach (\DbEntry\DriverRanking::listLatest() as $rnk) {
+            $user_ids[] = $rnk->user()->id();
 
-            // update group assignment of latest object in DB
-            $fields = array();
-            $fields['RankingGroup'] = $rnk_cur->groupNext();
-            \Core\Database::update("DriverRanking", $rnk_old->id(), $fields);
+            // user info
+            $current_group = $rnk->user()->rankingGroup();
+            $next_group = $rnk->groupNext();
+            if ($next_group < $current_group)
+                    $this->verboseOutput("Promoting user {$rnk->user()->id()} from group $current_group to $next_group<br>");
+            else if ($next_group > $current_group)
+                    $this->verboseOutput("Demoting user {$rnk->user()->id()} from group $current_group to $next_group<br>");
+
+            // update ranking
+            $columns = array();
+            $columns["RankingGroup"] = $rnk->groupNext();
+            $columns["RankingPoints"] = $rnk->points();
+            \Core\Database::update("Users", $rnk->user()->id(), $columns);
+        }
+
+        // reset group of all other drivers
+        $query = "SELECT Id FROM Users WHERE RankingGroup!=0;";
+        foreach (\Core\Database::fetchRaw($query) as $row) {
+            $id = (int) $row['Id'];
+            if (in_array($id, $user_ids)) continue;
+            \Core\Database::update("Users", $id, ['RankingGroup'=>0, 'RankingPoints'=>0]);
         }
     }
 }

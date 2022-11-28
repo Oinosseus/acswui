@@ -159,9 +159,34 @@ class CommandInstall(Command):
     def __prework_previous_version(self, previous_version):
 
         if previous_version >= Version("v0.1.0") and previous_version <= Version("v0.1.1"):
+
             if "SessionResults" in self.__db.tables():
                 self.__db.rawQuery("ALTER TABLE SessionResults RENAME TO SessionResultsAc;")
                 self.__db.rawQuery("ALTER TABLE Sessions DROP COLUMN CarClass;")
+
+            if "XP_R" in self.__db.columns("DriverRanking"):
+
+                # rearrange to new names
+                self.__db.appendColumnFloat("DriverRanking", "RankingPoints")
+                self.__db.appendColumnText("DriverRanking", "RankingData")
+
+                old_columns = ['XP_R', 'XP_Q', 'XP_P', 'SX_R', 'SX_Q', 'SX_RT', 'SX_BT', 'SF_CT', 'SF_CE', 'SF_CC']
+                res = self.__db.fetch("DriverRanking", ['Id'] + old_columns, {})
+                for row in res:
+                    data = {'XP':{'P':row['XP_P'], 'Q':row['XP_Q'], 'R':row['XP_R']},
+                            'SX':{'RT':row['SX_RT'], 'Q':row['SX_Q'], 'R':row['SX_R'], 'BT':row['SX_BT']},
+                            'SF':{'CT':row['SF_CT'], 'CE':row['SF_CE'], 'CC':row['SF_CC']}}
+                    points = 0.0
+                    for grp in data.keys():
+                        for key in data[grp].keys():
+                            points += float(data[grp][key])
+                    self.__db.updateRow("DriverRanking", row['Id'], {'RankingData':json.dumps(data), 'RankingPoints':points})
+
+                # delete old columns
+                for col in old_columns:
+                    self.__db.deleteColumn('DriverRanking', col)
+                self.__db.deleteColumn('DriverRanking', "RankingGroup")
+                self.__db.deleteColumn('DriverRanking', "RankingLast")
 
 
 

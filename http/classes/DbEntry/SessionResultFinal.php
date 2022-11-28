@@ -135,6 +135,12 @@ class SessionResultFinal extends DbEntry {
             $new_results[$rslt_idx]['Position'] = $rslt_idx + 1;
         }
 
+        // count DNF drivers
+        $dnf_amount = 0;
+        for ($rslt_idx=0; $rslt_idx<count($new_results); ++$rslt_idx) {
+            if ($new_results[$rslt_idx]['PenDnf']) ++$dnf_amount;
+        }
+
 
         // --------------------------------------------------------------------
         //  Ranking Points
@@ -148,6 +154,8 @@ class SessionResultFinal extends DbEntry {
             // calculate some metadata
             $l = $new_results[$rslt_idx]['FinalLaps'] * $session->track()->length();  // amount of laps
             $pl = count($new_results) - $new_results[$rslt_idx]['Position'];  // positions leading
+            $pl_no_dnf = $pl - $dnf_amount;
+            if ($pl_no_dnf < 0) $pl_no_dnf = 0;
 
             // calculate experience
             if ($new_results[$rslt_idx]['PenDsq'] == 0) {
@@ -159,7 +167,7 @@ class SessionResultFinal extends DbEntry {
                 if ($session->type() == \DbEntry\Session::TypeRace) {
                     if ($session->lapBest() !== NULL && $new_results[$rslt_idx]['BestLaptime'] == $session->lapBest()->laptime())
                         $rp->addSxRt();
-                    $rp->addSxR($pl);
+                    $rp->addSxR($pl_no_dnf);
 
                 } else if ($session->type() == \DbEntry\Session::TypeQualifying) {
                     $rp->addSxQ($pl);
@@ -218,7 +226,7 @@ class SessionResultFinal extends DbEntry {
     }
 
 
-    //! @return The User or TeamCar that this result is granted
+    //! @return The \Compound\SessionEntry that this result is granted
     public function driver() : \Compound\SessionEntry {
         $t = TeamCar::fromId((int) $this->loadColumn("TeamCar"));
         $u = User::fromId((int) $this->loadColumn("User"));
