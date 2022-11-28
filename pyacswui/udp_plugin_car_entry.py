@@ -209,7 +209,7 @@ class UdpPluginCarEntry(object):
     def release(self):
 
         if self.__driver_id is None:
-            self.__verbosity.print("ERROR at releasing car", self.Id, "because driver is None")
+            self.__verbosity.print("AC-ERROR at releasing car", self.Id, "because driver is None")
 
         else:
             self.__verbosity2.print("Car", self.__id,
