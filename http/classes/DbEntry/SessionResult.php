@@ -291,7 +291,7 @@ class SessionResult extends DbEntry {
                 $normspeed_coll_env = 0;
                 $normspeed_coll_car = 0;
                 foreach ($this->session()->collisions() as $coll) {
-                    if ($coll->user()->id() != $this->user()->id()) continue;
+                    if (($coll->user() === NULL) || ($coll->user()->id() != $this->user()->id())) continue;
                     if  ($coll instanceof CollisionCar) {
                         $normspeed_coll_car += $coll->speed();
                     } else if  ($coll instanceof CollisionEnv) {
