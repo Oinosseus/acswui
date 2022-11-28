@@ -203,6 +203,16 @@ class TeamCar extends DbEntry {
     }
 
 
+    //! @return the name of the TeamCar
+    public function name() : string {
+        $name = "";
+        $name .= $this->team()->abbreviation();
+        $name .= " - ";
+        $name .= $this->carSkin()->name();
+        return $name;
+    }
+
+
     /**
      * Removes a team member as car driver
      * @param $tmm The TeamMember to be removed

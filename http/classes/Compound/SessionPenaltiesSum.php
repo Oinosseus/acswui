@@ -22,14 +22,14 @@ class SessionPenaltiesSum {
     /**
      * This will request \DbEntry\SessionPenalty::listPenalties()
      *
-     * When $driver is a User object, then the user is ignored for TeamCars (only penalties for single driver)
+     * When $entry is a User object, then the user is ignored for TeamCars (only penalties for single driver)
      *
      * @param $session The requested session
-     * @param $driver If set, only penalties for a certain driver are listed
+     * @param $entry If set, only penalties for a certain driver are listed
      */
     public function __construct(\DbEntry\Session $session,
-                                \Compound\Driver $driver=NULL) {
-        $this->Penalties = \DbEntry\SessionPenalty::listPenalties($session, $driver);
+                                \Compound\SessionEntry $entry=NULL) {
+        $this->Penalties = \DbEntry\SessionPenalty::listPenalties($session, $entry);
         $this->Session = $session;
 
         // sum penalties

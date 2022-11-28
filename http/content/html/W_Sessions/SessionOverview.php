@@ -58,21 +58,20 @@ class SessionOverview extends \core\HtmlContent {
         if (array_key_exists("Action", $_REQUEST)) {
 
             if ($_REQUEST['Action'] == "SavePenalty") {
-                if (array_key_exists("SessionDriver", $_POST)) {
+                if (array_key_exists("SessionEntry", $_POST)) {
 
                     // determine driver
-                    $driver = NULL;
-                    if (substr($_POST['SessionDriver'], 0, 7) == "TeamCar")
-                        $driver = \DbEntry\TeamCar::fromId((int) substr($_POST['SessionDriver'], 7));
-                    else
-                        $driver = \DbEntry\User::fromId((int) substr($_POST['SessionDriver'], 4));
-                    if ($driver === NULL) {
-                        \Core\Log::error("No driver found!");
+                    $entry = NULL;
+                    foreach($this->CurrentSession->entries() as $e) {
+                        if ($e->id() == $_POST['SessionEntry']) {
+                            $entry = $e;
+                            break;
+                        }
                     }
 
                     // create new penalty
                     if ($this->CurrentPenalty === NULL) {
-                        $this->CurrentPenalty = \DbEntry\SessionPenalty::create($this->CurrentSession, $driver);
+                        $this->CurrentPenalty = \DbEntry\SessionPenalty::create($this->CurrentSession, $entry);
                     }
 
                     // assign values
@@ -136,31 +135,16 @@ class SessionOverview extends \core\HtmlContent {
         // select driver
         $html .= "<tr>";
         $html .= "<th>" . _("Driver") . "</th>";
-        $html .= "<td><select name=\"SessionDriver\">";
-        foreach ($this->CurrentSession->drivers(TRUE) as $driver) {
-            $selected = ($spen && $spen->driver() == $driver) ? "selected=\"yes\"": "";
+        $html .= "<td><select name=\"SessionEntry\">";
+        foreach ($this->CurrentSession->entries() as $entry) {
+            $selected = ($spen && $spen->entry() == $entry) ? "selected=\"yes\"": "";
 
             // hide other drivers when penalty already exists
-            if ($this->CurrentPenalty) {
-                if ($driver != $spen->driver()) continue;
-            }
+            if ($this->CurrentPenalty && $entry != $spen->entry()) continue;
 
-            if (is_a($driver, "\\DbEntry\\TeamCar")) {
-                $drivernames_array = array();
-                foreach ($driver->drivers() as $tmm) $drivernames_array[] = $tmm->user()->name();
-                $drivers_string = implode(", ", $drivernames_array);
-                $html .= "<option value=\"TeamCar{$driver->id()}\" $selected>";
-                $html .= _("Team") . " {$driver->team()->abbreviation()} - (";
-                $html .= $drivers_string . ")";
-                $html .= "</option>";
-
-            } else if (is_a($driver, "\\DbEntry\\User")) {
-                $html .= "<option value=\"User{$driver->id()}\" $selected>";
-                $html .= _("Driver") . " - {$driver->name()}";
-                $html .= "</option>";
-            } else {
-                \Core\Log::error("Unexpected Type!");
-            }
+            $html .= "<option value=\"{$entry->id()}\" $selected>";
+            $html .= $entry->name();
+            $html .= "</option>";
         }
         $html .= "</select></td></tr>";
 
@@ -350,22 +334,7 @@ class SessionOverview extends \core\HtmlContent {
             $html .= "<tr>";
 
             // driver
-            if (is_a($spen->driver(), "\\DbEntry\\TeamCar")) {
-                $html .= "<td class=\"TeamLogo\">{$spen->driver()->team()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
-                $html .= "<td class=\"DriverName\">";
-                $drivers = $spen->driver()->drivers();
-                for ($i=0; $i < count($drivers); ++$i) {
-                    $tmm = $drivers[$i];
-                    if ($i > 0) $html .= ", ";
-                    $html .= $tmm->user()->html(TRUE, FALSE, TRUE);
-                }
-                $html .= "</td>";
-            } else if (is_a($spen->driver(), "\\DbEntry\\User")) {
-                $html .= "<td class=\"NationalFlag\">{$spen->driver()->nationalFlag()}</td>";
-                $html .= "<td class=\"DriverName\">{$spen->driver()->html()}</td>";
-            } else {
-                $html .= "<td></td><td></td>";
-            }
+            $html .= "<td>{$spen->entry()->getHtml()}</td>";
 
             // penalty
             $penalties = array();
@@ -483,10 +452,10 @@ class SessionOverview extends \core\HtmlContent {
             // ranking points
             $rp = $r->rankingPoints();
             $html .= "<td>";
-            $title =  "XP:" . $rp['XP']['Sum'] . "\n";
-            $title .= "SX:" . $rp['SX']['Sum'] . "\n";
-            $title .= "SF:" . $rp['SF']['Sum'];
-            $sum = $rp['XP']['Sum'] + $rp['SX']['Sum'] + $rp['SF']['Sum'];
+            $title =  "XP:" . $rp->points('XP') . "\n";
+            $title .= "SX:" . $rp->points('SX') . "\n";
+            $title .= "SF:" . $rp->points('SF');
+            $sum = $rp->points();
             $css_class = ($sum > 0.0) ? "PositiveRankingPoints" : "NagativeRankingPoints";
             $html .= "<span title=\"$title\" class=\"$css_class\">" . sprintf("%+0.1f", round($sum, 1)) . "</span>";
             $html .= "</td>";

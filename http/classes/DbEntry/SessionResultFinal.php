@@ -49,18 +49,12 @@ class SessionResultFinal extends DbEntry {
             $new_result_columns['FinalTime'] = (int) $row['TotalTime'];
             $new_result_columns['PenDnf'] = 0;
             $new_result_columns['PenDsq'] = 0;
-            $new_result_columns['RankingPoints'] = array();
+            $new_result_columns['RankingPoints'] = new \Core\DriverRankingPoints();
             $new_result_columns['BestLaptime'] = (int) $row['BestLap'];
             $new_result_columns['AmountsCuts'] = 0;
             $new_result_columns['Driver'] = ($new_result_columns['User'] == 0) ?
                                                     \DbEntry\TeamCar::fromId($new_result_columns['TeamCar']) :
                                                     \DbEntry\User::fromId($new_result_columns['User']);
-
-            // prepare data
-            $new_result_columns['RankingPoints'] = array();
-            $new_result_columns['RankingPoints']['XP'] = array('P'=>0,  'Q'=>0,  'R'=>0,  'Sum'=>0);
-            $new_result_columns['RankingPoints']['SX'] = array('RT'=>0, 'Q'=>0,  'R'=>0,  'Sum'=>0);
-            $new_result_columns['RankingPoints']['SF'] = array('CT'=>0, 'CE'=>0, 'CC'=>0, 'Pen'=>0, 'Sum'=>0);
 
             // count laps
             $new_result_columns['FinalLaps'] = count($session->laps($new_result_columns['Driver']));
@@ -78,7 +72,7 @@ class SessionResultFinal extends DbEntry {
                 if ($spen->penDsq()) $new_result_columns['PenDsq'] = 1;
                 $new_result_columns['FinalTime'] += $spen->penTime() * 1000;
                 $new_result_columns['FinalLaps'] += $spen->penLaps();
-                $new_result_columns['RankingPoints']['SF']['Pen'] += $spen->penSf();
+                $new_result_columns['RankingPoints']->addSfPen($spen->penSf());
             }
 
             // store result
@@ -157,63 +151,37 @@ class SessionResultFinal extends DbEntry {
 
             // calculate experience
             if ($new_results[$rslt_idx]['PenDsq'] == 0) {
-                if ($session->type() == \DbEntry\Session::TypeRace) {
-                    $rp['XP']['R'] = \Core\Acswui::getPAram('DriverRankingXpR') * $l / 1e6;
-                } else if ($session->type() == \DbEntry\Session::TypeQualifying) {
-                    $rp['XP']['Q'] = \Core\Acswui::getPAram('DriverRankingXpQ') * $l / 1e6;
-                } else if ($session->type() == \DbEntry\Session::TypePractice) {
-                    $rp['XP']['P'] = \Core\Acswui::getPAram('DriverRankingXpP') * $l / 1e6;
-                }
+                $rp->addXp($session->type(), $l);
             }
 
             // success
             if ($new_results[$rslt_idx]['PenDsq'] == 0 && $new_results[$rslt_idx]['PenDnf'] == 0) {
                 if ($session->type() == \DbEntry\Session::TypeRace) {
                     if ($session->lapBest() !== NULL && $new_results[$rslt_idx]['BestLaptime'] == $session->lapBest()->laptime())
-                        $rp['SX']['RT'] = \Core\Acswui::getPAram('DriverRankingSxRt');
-                    $rp['SX']['R'] = $pl * \Core\Acswui::getPAram('DriverRankingSxR');
+                        $rp->addSxRt();
+                    $rp->addSxR($pl);
 
                 } else if ($session->type() == \DbEntry\Session::TypeQualifying) {
-                    $rp['SX']['Q'] = $pl * \Core\Acswui::getPAram('DriverRankingSxQ');
+                    $rp->addSxQ($pl);
                 }
             }
 
             // safety
             if ($session->type() != Session::TypePractice || \Core\ACswui::getPAram('DriverRankingSfAP') == FALSE) {
-                $rp['SF']['CT'] = $new_results[$rslt_idx]['AmountsCuts'] * \Core\Acswui::getPAram('DriverRankingSfCt');
-                $normspeed_coll_env = 0;
-                $normspeed_coll_car = 0;
+                $rp->addSfCt($new_results[$rslt_idx]['AmountsCuts']);
                 foreach ($session->collisions($new_results[$rslt_idx]['Driver']) as $coll) {
-
                     if  ($coll instanceof CollisionCar) {
-                        $normspeed_coll_car += $coll->speed();
+                        $rp->addSfCc($coll->speed());
                     } else if  ($coll instanceof CollisionEnv) {
-                        $normspeed_coll_env += $coll->speed();
+                        $rp->addSfCe($coll->speed());
                     } else {
                         \Core\Log::error("Unknown collision class!");
                     }
-
-                }
-                $normspeed_coll_env /= \Core\Acswui::getPAram('DriverRankingCollNormSpeed');
-                $normspeed_coll_car /= \Core\Acswui::getPAram('DriverRankingCollNormSpeed');
-                $rp['SF']['CE'] = \Core\Acswui::getPAram('DriverRankingSfCe') * $normspeed_coll_env;
-                $rp['SF']['CC'] = \Core\Acswui::getPAram('DriverRankingSfCc') * $normspeed_coll_car;
-            }
-
-            // round values
-            foreach ($rp as $group=>$data) {
-                foreach ($data as $key=>$value) {
-                    $rp[$group][$key] = round($value, 6);
                 }
             }
-
-            // create sums
-            $rp['XP']['Sum'] = $rp['XP']['R'] + $rp['XP']['Q'] + $rp['XP']['P'];
-            $rp['SX']['Sum'] = $rp['SX']['RT'] + $rp['SX']['R'] + $rp['SX']['Q'];
-            $rp['SF']['Sum'] = $rp['SF']['CT'] + $rp['SF']['CE'] + $rp['SF']['CC'] + $rp['SF']['Pen'];
 
             // store
-            $new_results[$rslt_idx]['RankingPoints'] = json_encode($rp);
+            $new_results[$rslt_idx]['RankingPoints'] = $rp->json();
         }
 
 
@@ -251,10 +219,10 @@ class SessionResultFinal extends DbEntry {
 
 
     //! @return The User or TeamCar that this result is granted
-    public function driver() : \Compound\Driver {
-        $tcid = (int) $this->loadColumn("TeamCar");
-        $uid = (int) $this->loadColumn("User");
-        return new \Compound\Driver($tcid, $uid);
+    public function driver() : \Compound\SessionEntry {
+        $t = TeamCar::fromId((int) $this->loadColumn("TeamCar"));
+        $u = User::fromId((int) $this->loadColumn("User"));
+        return new \Compound\SessionEntry($this->session(), $t, $u);
     }
 
 
@@ -315,9 +283,9 @@ class SessionResultFinal extends DbEntry {
 
 
     //! @return An array with DriverRanking points information
-    public function rankingPoints() : array {
+    public function rankingPoints() : \Core\DriverRankingPoints {
         $rp = $this->loadColumn("RankingPoints");
-        return json_decode($rp, TRUE);
+        return new \Core\DriverRankingPoints($rp);
     }
 
 

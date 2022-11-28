@@ -8,21 +8,27 @@ namespace Compound;
  * * single User objects, or
  * * TeamCar objects with multiple users assigned
  */
-class Driver {
+class SessionEntry {
 
+    private $Session = NULL;
     private $User = NULL;
     private $TeamCar = NULL;
+    private $Drivers = NULL;
 
     /**
      * Create a new object from User and/or TeamCar
      *
      * If teamcar is not NULL, then user is igniored.
      *
+     * @param $session The session where the entry was mounted (necessary to find team-drivers)
      * @param $teamcar_id Can be A TeamCar object or the teamcardatabase Id (or NULL if User)
      * @param $user_id Can be A User object or the user database Id (or NULL if TeamCar)
      */
-    public function __construct(\DbEntry\TeamCar|int|NULL $teamcar,
-                                 \DbEntry\User|int|NULL $user) {
+    public function __construct(\DbEntry\Session $session,
+                                \DbEntry\TeamCar|NULL $teamcar,
+                                \DbEntry\User|NULL $user) {
+
+        $this->Session = $session;
 
         if ($teamcar !== NULL && $teamcar !== 0) {
 
@@ -36,11 +42,16 @@ class Driver {
             else if ($user > 0) $this->User = \DbEntry\User::fromId($user);
             else throw new \TypeError("Unexpected type ." . gettype($user));
         }
+
+        // sanity check
+        if ($this->User === NULL && $this->TeamCar === NULL) {
+            \Core\Log::warning("Both, user ($user) and teamcar ($teamcar) are invalid!");
+        }
     }
 
 
-    //! @return A User or TeamCar object, which represents the driver
-    public function driver() : \DbEntry\User|\DbEntry\TeamCar {
+    //! @return A User or TeamCar object, which represents the entry
+    public function entry() : \DbEntry\User|\DbEntry\TeamCar {
         if ($this->TeamCar) return $this->TeamCar;
         else if ($this->User) return $this->User;
         else return NULL;  // this is not expected
@@ -57,7 +68,7 @@ class Driver {
         } else if ($this->User) {
             $html .= $this->User->parameterCollection()->child("UserCountry")->valueLabel();
         } else {
-            \Core\Log::error("I did not expect to end up here ^~^");
+            $html .= _("Invalid Entry");
         }
 
         // drivers list
@@ -69,20 +80,47 @@ class Driver {
     }
 
 
+    //! @return A string with that the SessionEntry can be identified
+    public function id() {
+        $sid = $this->Session->id();
+        $uid = ($this->User === NULL) ? 0 : $this->User->id();
+        $tid = ($this->TeamCar === NULL) ? 0 : $this->TeamCar->id();
+        return "\\Compound\\SessionEntry[$sid,$uid,$tid]";
+    }
+
+
+    //! @return The name of the single driver or the TeamCar
+    public function name() : string {
+        $name = "";
+        if ($this->User !== NULL) $name .= $this->User->name();
+        if ($this->TeamCar !== NULL) $name .= $this->TeamCar->name();
+        return $name;
+    }
+
+
     //! @return A list of User objects that are assigned as driver
     public function users() : array {
-        $ret = array();
 
-        if ($this->User) {
-            $ret[] = $this->User;
-        }
+        // create cache
+        if ($this->Drivers === NULL) {
 
-        if ($this->TeamCar) {
-            foreach ($this->TeamCar->drivers() as $tmm) {
-                $ret[] = $tmm->user();
+            // create a new list of User objects
+            $this->Drivers = array();
+
+            // add single driver
+            if ($this->User !== NULL) $this->Drivers[] = $this->User;
+
+            // add team drivers
+            if ($this->TeamCar !== NULL) {
+
+                // find all actual drivers
+                $query = "SELECT DISTINCT(User) FROM Laps WHERE Session={$this->Session->id()} AND TeamCar={$this->TeamCar->id()};";
+                foreach (\COre\Database::fetchRaw($query) as $row) {
+                    $this->Drivers[] = \DbEntry\User::fromId((int) $row['User']);
+                }
             }
         }
 
-        return $ret;
+        return $this->Drivers;
     }
 }

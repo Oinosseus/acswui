@@ -5,6 +5,8 @@ namespace DbEntry;
 
 class SessionPenalty extends DbEntry {
 
+    private $SessionEntry = NULL;
+
 
     /**
      * @param $id Database table id
@@ -23,18 +25,18 @@ class SessionPenalty extends DbEntry {
     /**
      * Create a new penalty
      * @param $session The session which the penalty shall be assigned to
-     * @param $driver The driver which the penalty shall be assigned to (can be a User or TeamCar)
+     * @param $entry The driver which the penalty shall be assigned to (can be a User or TeamCar)
      * @return The new created SessionPenalty object
      */
-    public static function create(Session $session, User|TeamCar $driver) : ?SessionPenalty {
+    public static function create(Session $session, \Compound\SessionEntry $entry) : ?SessionPenalty {
 
         // prepare columns
         $columns = array();
         $columns["Session"] = $session->id();
-        if (is_a($driver, "\\DbEntry\\TeamCar")) {
-            $columns["TeamCar"] = $driver->id();
-        } else if (is_a($driver, "\\DbEntry\\User")) {
-            $columns['User'] = $driver->id();
+        if (is_a($entry->entry(), "\\DbEntry\\TeamCar")) {
+            $columns["TeamCar"] = $entry->entry()->id();
+        } else if (is_a($entry->entry(), "\\DbEntry\\User")) {
+            $columns['User'] = $entry->entry()->id();
         } else {
             \Core\Log::error("Unexpected type!");
             return NULL;
@@ -47,21 +49,17 @@ class SessionPenalty extends DbEntry {
 
 
     //! @return The User or TeamCar object where the penalty is assigned to (can be NULL)
-    public function driver() : TeamCar|User|NULL {
-        $user_id = (int) $this->loadColumn("User");
-        $teamcar_id = (int) $this->loadColumn("TeamCar");
+    public function entry() : \Compound\SessionEntry {
 
-        // sanity check
-        if ($user_id > 0 && $teamcar_id > 0) {
-            \Core\Log::error("Both, User and TeamCar are assigned at $this!");
-            return NULL;
+        // create cache
+        if ($this->SessionEntry === NULL) {
+            $session = $this->session();
+            $u = User::fromId((int) $this->loadColumn("User"));
+            $t = TeamCar::fromId((int) $this->loadColumn("TeamCar"));
+            $this->SessionEntry = new \Compound\SessionEntry($session, $t, $u);
         }
 
-        // return requested objects
-        if ($teamcar_id > 0) return TeamCar::fromId($teamcar_id);
-        if ($user_id > 0) return User::fromId($user_id);
-
-        return NULL;
+        return $this->SessionEntry;
     }
 
 
@@ -80,17 +78,17 @@ class SessionPenalty extends DbEntry {
     /**
      * List all assigned penalties in a session
      *
-     * When $driver is a User object, then the user is ignored for TeamCars (only penalties for single driver)
+     * When $entry is a User object, then the user is ignored for TeamCars (only penalties for single driver)
      *
      * @param $session The requested session
-     * @param $driver If set, only penalties for a certain driver are listed
+     * @param $entry If set, only penalties for a certain driver are listed
      * @return A list of SessionPenalty objects
      */
     public static function listPenalties(Session $session,
-                                         \Compound\Driver|User|TeamCar $driver=NULL) : array {
+                                         \Compound\SessionEntry $entry=NULL) : array {
         $ret = array();
 
-        if ($driver === NULL) {
+        if ($entry === NULL) {
             // query penalties
             $query = "SELECT Id FROM SessionPenalties WHERE Session={$session->id()} ORDER BY User, TeamCar;";
             $res = \Core\Database::fetchRaw($query);
@@ -101,14 +99,11 @@ class SessionPenalty extends DbEntry {
 
         } else {
 
-            // replace driver
-            if (is_a($driver, "\\Compound\\Driver")) $driver = $driver->driver();
-
             // resolve driver type
             $search_key = "";
-            if (is_a($driver, "\\DbEntry\\User")) {
+            if (is_a($entry->entry(), "\\DbEntry\\User")) {
                 $search_key = "User";
-            } else if (is_a($driver, "\\DbEntry\\TeamCar")) {
+            } else if (is_a($entry->entry(), "\\DbEntry\\TeamCar")) {
                 $search_key = "TeamCar";
             } else {
                 \Core\Log::error("Unexpected type!");
@@ -116,7 +111,7 @@ class SessionPenalty extends DbEntry {
             }
 
             // query penalties
-            $query = "SELECT Id FROM SessionPenalties WHERE Session={$session->id()} AND $search_key={$driver->id()}";
+            $query = "SELECT Id FROM SessionPenalties WHERE Session={$session->id()} AND $search_key={$entry->entry()->id()}";
             $res = \Core\Database::fetchRaw($query);
             foreach ($res as $row) {
                 $id = (int) $row['Id'];

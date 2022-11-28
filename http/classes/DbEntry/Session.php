@@ -27,6 +27,7 @@ class Session extends DbEntry {
     private $DrivenLength = NULL;
     private $Laps = NULL;
     private $Users = NULL;
+    private $Entries = NULL;
     private $Results = NULL;
     private $DynamicPositions = NULL;
     private $Grip = NULL;
@@ -116,39 +117,25 @@ class Session extends DbEntry {
 
     /**
      * List all drivers in this sessions
-     * @param $serialize_teamcars If TRUE (default), then TeamCars will be deserialized and all drivers are listed as User obejcts. If FALSE, then also TeamCar listed in the output.
-     * @return An array of User and TeamCar objects
+     * @return An array of \Compound\SessionEntry objects
      */
-    public function drivers(bool $serialize_teamcars=TRUE) : array {
-        $drivers = array();
+    public function entries() : array {
 
-        // find single drivers
-        $res = \Core\Database::fetchRaw("SELECT DISTINCT User FROM Laps WHERE Session = " . $this->id());
-        foreach ($res as $row) {
-            $id = (int) $row['User'];
-            if ($id == 0) continue;
-            $user = User::fromId($id);
-            if (!in_array($user, $drivers)) $drivers[] = $user;
-        }
+        // update cache
+        if ($this->Entries === NULL) {
 
-        // find team cars
-        $res = \Core\Database::fetchRaw("SELECT DISTINCT TeamCar FROM Laps WHERE Session = " . $this->id());
-        foreach ($res as $row) {
-            $id = (int) $row['TeamCar'];
-            if ($id == 0) continue;
-            $tmc = TeamCar::fromId($id);
+            $this->Entries = array();
 
-            if ($serialize_teamcars) {
-                foreach ($tmc->drivers() as $tmm) {
-                    $user = $tmm->user();
-                    if (!in_array($user, $drivers)) $drivers[] = $user;
-                }
-            } else {
-                if (!in_array($tmc, $drivers)) $drivers[] = $tmc;
+            // find single drivers
+            $res = \Core\Database::fetchRaw("SELECT DISTINCT User, TeamCar FROM Laps WHERE Session = " . $this->id());
+            foreach ($res as $row) {
+                $u = User::fromId((int) $row['User']);
+                $t = TeamCar::fromId((int) $row['TeamCar']);
+                $this->Entries[] = new \Compound\SessionEntry($this, $t, $u);
             }
         }
 
-        return $drivers;
+        return $this->Entries;
     }
 
 
@@ -486,8 +473,8 @@ class Session extends DbEntry {
 
 
     //! @return either Session:TypeRace, Session::TypeQualifying or Session::TypePractice
-    public function type() {
-        return (int) $this->loadColumn("Type");
+    public function type() : \Enums\SessioNType {
+        return \Enums\SessionType::from((int) $this->loadColumn("Type"));
     }
 
     //! @return 'P', 'Q' or 'R', depending on the session type
@@ -500,21 +487,26 @@ class Session extends DbEntry {
      * Converty any Session Type identifier to a indetifier char
      * @return A char
      */
-    public static function type2Char($type) {
+    public static function type2Char(int|\Enums\SessionType $type) {
         switch ($type) {
             case Session::TypeRace:
+            case \Enums\SessionType::Race:
                 return "R";
                 break;
             case Session::TypeQualifying:
+            case \Enums\SessionType::Qualifying:
                 return "Q";
                 break;
             case Session::TypePractice:
+            case \Enums\SessionType::Practice:
                 return "P";
                 break;
             case Session::TypeBooking:
+            case \Enums\SessionType::Booking:
                 return "B";
                 break;
             case Session::TypeInvalid:
+            case \Enums\SessionType::Invalid:
                 return "I";
                 break;
             default:
@@ -527,7 +519,7 @@ class Session extends DbEntry {
 
     //! @return A list of User objects of all users that have driven a lap in this session
     public function users() {
-        //! @todo Duplicates drivers()
+        //! @todo Duplicates entries()
         if ($this->Users === NULL) {
             $this->Users = array();
             $res = \Core\Database::fetchRaw("SELECT DISTINCT User FROM `Laps` WHERE Session = " . $this->id());
