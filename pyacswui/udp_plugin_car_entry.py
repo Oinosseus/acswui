@@ -207,12 +207,17 @@ class UdpPluginCarEntry(object):
 
 
     def release(self):
-        self.__verbosity2.print("Car", self.__id,
-                                "released from driver: Id =", self.__driver_id,
-                                ", name =", self.__driver_name)
 
-        # inform that driver is not online anymore
-        self.__db.updateRow("Users", self.__driver_id, {"CurrentSession": 0})
+        if self.__driver_id is None:
+            self.__verbosity.print("ERROR at releasing car", self.Id, "because driver is None")
+
+        else:
+            self.__verbosity2.print("Car", self.__id,
+                                    "released from driver: Id =", self.__driver_id,
+                                    ", name =", self.__driver_name)
+
+            # inform that driver is not online anymore
+            self.__db.updateRow("Users", self.__driver_id, {"CurrentSession": 0})
 
         self.__driver_guid = None
         self.__driver_name = None
