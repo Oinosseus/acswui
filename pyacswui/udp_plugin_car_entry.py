@@ -261,7 +261,8 @@ class UdpPluginCarEntry(object):
 
         # sanity check
         if self.__driver_id is None:
-            raise ValueError("Cannot report lap, because no driver is connected to this car!")
+            self.__verbosity.print("AC-ERROR: collision() called for Car-Id %i, but DriverId is None!\n" % self.Id)
+            return
 
         # collision with environment
         if other_car_entry is None:
