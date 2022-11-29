@@ -654,8 +654,10 @@ class User extends DbEntry { #implements JsonSerializable {
     //! @return The current DriverRankingGroup of this user
     public function rankingGroup () : int {
         $grp = (int) $this->loadColumn("RankingGroup");
-        if ($grp > \Core\Config::DriverRankingGroups || $grp < 1)
-                $grp = \Core\Config::DriverRankingGroups;
+
+        if ($grp >= \Core\Config::DriverRankingGroups) $grp = \Core\Config::DriverRankingGroups - 1;
+        if ($grp < 0) $grp = 0;
+
         return $grp;
     }
 

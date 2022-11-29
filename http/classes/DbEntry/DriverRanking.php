@@ -69,6 +69,9 @@ class DriverRanking extends DbEntry {
                     DriverRanking::$LastRankings[] = DriverRanking::fromId((int) $res[0]['Id']);
                 }
             }
+
+            // sort by ranking
+            usort(DriverRanking::$LastRankings, "\\DbEntry\DriverRanking::compareRankingPoints");
         }
 
         // filter groups
@@ -120,16 +123,16 @@ class DriverRanking extends DbEntry {
             $next_group = NULL;
 
             // promotion
-            if ($current_group > 1 &&
-                $current_points > \DbEntry\DriverRanking::groupThreshold($current_group - 1)
-            ) {
-                    $next_group = $current_group - 1;
-
-            // demotion
-            } else if ($current_group < \Core\Config::DriverRankingGroups &&
-                        $current_points < \DbEntry\DriverRanking::groupThreshold($current_group + 1)
+            if ($current_group < (\Core\Config::DriverRankingGroups - 1) &&
+                $current_points >= \DbEntry\DriverRanking::groupThreshold($current_group + 1)
             ) {
                     $next_group = $current_group + 1;
+
+            // demotion
+            } else if ($current_group > 0 &&
+                        $current_points < \DbEntry\DriverRanking::groupThreshold($current_group)
+            ) {
+                    $next_group = $current_group - 1;
             }
 
             $this->GroupNext = ($next_group !== NULL) ? $next_group : $current_group;
@@ -156,8 +159,8 @@ class DriverRanking extends DbEntry {
             $type = \Core\ACswui::getPAram("DriverRankingGroupType");
             switch ($type) {
                 case "points":
-                    $g = 1;
-                    for (; $g < \Core\Config::DriverRankingGroups; ++$g) {
+                    $g = \Core\Config::DriverRankingGroups - 1;
+                    for (; $g > 0; --$g) {
                         DriverRanking::$GroupThresholds[$g] = \Core\ACswui::getPAram("DriverRankingGroup{$g}Thld");
                     }
                     DriverRanking::$GroupThresholds[$g] = NULL;
@@ -165,8 +168,8 @@ class DriverRanking extends DbEntry {
 
                 case "percent":
                     $most_points = DriverRanking::listLatest()[0]->points();
-                    $g = 1;
-                    for (; $g < \Core\Config::DriverRankingGroups; ++$g) {
+                    $g = \Core\Config::DriverRankingGroups - 1;
+                    for (; $g > 0; --$g) {
                         DriverRanking::$GroupThresholds[$g] = $most_points * \Core\ACswui::getPAram("DriverRankingGroup{$g}Thld") / 100;
                     }
                     DriverRanking::$GroupThresholds[$g] = NULL;
@@ -174,11 +177,14 @@ class DriverRanking extends DbEntry {
 
                 case "drivers":
                     $ranking_list = DriverRanking::listLatest();
-                    $ranking_index = 0;
-                    $g = 1;
-                    for (; $g < \Core\Config::DriverRankingGroups; ++$g) {
+                    $ranking_index = 0;//count($ranking_list);
+                    $g = \Core\Config::DriverRankingGroups - 1;
+                    for (; $g > 0; --$g) {
+
                         $ranking_index += \Core\ACswui::getPAram("DriverRankingGroup{$g}Thld");
-                        if (count($ranking_list) >= $ranking_index) {
+                        if ($ranking_index <= 0) {
+                            DriverRanking::$GroupThresholds[$g] = $ranking_list[0]->points() + 1.0;
+                        } else if ($ranking_index < count($ranking_list)) {
                             DriverRanking::$GroupThresholds[$g] = $ranking_list[$ranking_index - 1]->points();
                         } else {
                             DriverRanking::$GroupThresholds[$g] = NULL;

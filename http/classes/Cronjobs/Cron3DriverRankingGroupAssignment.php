@@ -23,9 +23,9 @@ class Cron3DriverRankingGroupAssignment extends \Core\Cronjob {
             // user info
             $current_group = $rnk->user()->rankingGroup();
             $next_group = $rnk->groupNext();
-            if ($next_group < $current_group)
+            if ($next_group > $current_group)
                     $this->verboseOutput("Promoting user {$rnk->user()->id()} from group $current_group to $next_group<br>");
-            else if ($next_group > $current_group)
+            else if ($next_group < $current_group)
                     $this->verboseOutput("Demoting user {$rnk->user()->id()} from group $current_group to $next_group<br>");
 
             // update ranking

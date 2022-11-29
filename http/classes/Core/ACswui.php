@@ -156,7 +156,7 @@ class ACswui  {
                 $pc2 = new \Parameter\Collection(NULL, $pc, "DriverRankingGroups", _("Ranking Groups"), _("Adjusting groups"));
 
                 $p = new \Parameter\ParamEnumMonthly(NULL, $pc2, "DriverRankingGroupCycle", _("Cycle Time"), _("Define how often the ranking groups shall be assigned"));
-                $p->setValue("1Mon;2Mon;3Mon;4Mon;5Mon");
+                $p->setValue("1Mon");
 
                 $p = new \Parameter\ParamEnum(NULL, $pc2, "DriverRankingGroupType", _("Threshold Type"), _("points - A driver needs an amount of points to reach a group\ndrivers - a fix amount of top drivers per group\npercent - percentage of points from the absolute top driver"), "");
                 new \Parameter\EnumItem($p, "points", _("points"));
@@ -164,11 +164,11 @@ class ACswui  {
                 new \Parameter\EnumItem($p, "percent", _("percent"));
                 $p->setValue("points");
 
-                $i = 1;
-                for (; $i < Config::DriverRankingGroups; ++$i) {
+                $i = Config::DriverRankingGroups - 1;
+                for (; $i > 0; --$i) {
                     $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingGroup$i", _("Ranking Group") . " $i", _("Settings for a driver ranking group"));
                     $p = new \Parameter\ParamString(NULL, $coll, "DriverRankingGroup{$i}Name", _("Name"), _("An arbitrary name for this group"), "", "Group $i");
-                    $p = new \Parameter\ParamInt(NULL, $coll, "DriverRankingGroup{$i}Thld", _("Threshold"), _("The ranking threshold a driver needs to pass to enter this group"), "", 120 - 20 * $i);
+                    $p = new \Parameter\ParamInt(NULL, $coll, "DriverRankingGroup{$i}Thld", _("Threshold"), _("The ranking threshold a driver needs to pass to enter this group"), "", 20 * $i);
                 }
                 $coll = new \Parameter\Collection(NULL, $pc2, "DriverRankingGroup$i", _("Group") . " $i", _("Settings for a driver ranking group"));
                 $p = new \Parameter\ParamString(NULL, $coll, "DriverRankingGroup{$i}Name", _("Name"), _("An arbitrary name for this group"), "", "Group $i");

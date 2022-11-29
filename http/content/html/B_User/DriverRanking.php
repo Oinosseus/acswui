@@ -31,7 +31,7 @@ class DriverRanking extends \core\HtmlContent {
         $html .= "</div>";
 
         // show ranking per group
-        for ($rnk_grp = 1; $rnk_grp <= \Core\Config::DriverRankingGroups; ++$rnk_grp) {
+        for ($rnk_grp = \Core\Config::DriverRankingGroups - 1; $rnk_grp >= 0; --$rnk_grp) {
 
             if (\Core\Config::DriverRankingGroups > 1) {
                 $html .= "<h1>" . \Core\ACswui::getPAram("DriverRankingGroup$rnk_grp". "Name") . "</h1>";
@@ -96,9 +96,9 @@ class DriverRanking extends \core\HtmlContent {
                     $css_class = ($points_increase > 0) ? "TrendRising" : "TrendFalling";
                     $html .= " <small class=\"$css_class\">(" . sprintf("%+0.1f", $points_increase) . ")</small>";
                 }
-                if ($rnk->groupNext() < $rnk->user()->rankingGroup()) {
+                if ($rnk->groupNext() > $rnk->user()->rankingGroup()) {
                     $html .= " <span title=\"" . _("Driver will rise to next group") . "\" class=\"TrendRising\">&#x2b06;</span>";
-                } else if ($rnk->groupNext() > $rnk->user()->rankingGroup()) {
+                } else if ($rnk->groupNext() < $rnk->user()->rankingGroup()) {
                     $html .= " <span title=\"" . _("Driver will fall to previous group") . "\" class=\"TrendFalling\">&#x2b07;</span>";
                 }
                 $html .= "</td>";
