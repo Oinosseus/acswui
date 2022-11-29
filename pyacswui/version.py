@@ -34,11 +34,22 @@ class Version(object):
             @param version_string like "v1.2.3"
             @return a tuple of (major, minor, patch)
         """
+
+        # try vx.y.z
         m = re.match(".*([0-9]+)\.([0-9]+)\.([0-9]+)(.*)", version_string)
-        self.Major = int(m.group(1))
-        self.Minor = int(m.group(2))
-        self.Patch = int(m.group(3))
-        self.DetailedString  = "%i.%i.%i%s" % (self.Major, self.Minor, self.Patch, m.group(4))
+        if m:
+            self.Major = int(m.group(1))
+            self.Minor = int(m.group(2))
+            self.Patch = int(m.group(3))
+            self.DetailedString  = "%i.%i.%i%s" % (self.Major, self.Minor, self.Patch, m.group(4))
+
+        # try vx.y
+        else:
+            m = re.match(".*([0-9]+)\.([0-9]+)(.*)", version_string)
+            self.Major = int(m.group(1))
+            self.Minor = int(m.group(2))
+            self.Patch = 0
+            self.DetailedString  = "%i.%i.%i%s" % (self.Major, self.Minor, self.Patch, m.group(3))
 
 
     def stringCompact(self):
