@@ -62,13 +62,13 @@ class CronRecords extends \Core\Cronjob {
         $f = fopen($file_path, "w");
         fwrite($f, json_encode($track_records, JSON_PRETTY_PRINT));
         fclose($f);
-        chmod($file_path, 0660);
+        @chmod($file_path, 0660);
 
         // store carclass records
         $file_path = \Core\Config::AbsPathData . "/htcache/records_carclass.json";
         $f = fopen($file_path, "w");
         fwrite($f, json_encode($carclass_records, JSON_PRETTY_PRINT));
         fclose($f);
-        chmod($file_path, 0660);
+        @chmod($file_path, 0660);
     }
 }

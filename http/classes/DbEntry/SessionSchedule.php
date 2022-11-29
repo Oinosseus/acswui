@@ -31,7 +31,7 @@ class SessionSchedule extends DbEntry {
 
         // retrieve from user ranking
         foreach (\DbEntry\DriverRanking::listLatest() as $drvrnk) {
-            $group = $drvrnk->group();
+            $group = $drvrnk->user()->rankingGroup();
             $ballast = $this->getParamValue("BopDrvRnkGrpBallast$group");
             $restrictor = $this->getParamValue("BopDrvRnkGrpRestrictor$group");
             $bopm->update($ballast, $restrictor, $drvrnk->user());

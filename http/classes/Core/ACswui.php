@@ -211,7 +211,8 @@ class ACswui  {
             if (\Core\Config::DriverRankingGroups > 1) {
                 $pc1 = new \Parameter\Collection(NULL, $pc, "BopDrvRnk", _("Ballance Driver Ranking"), _("Ballance of performacne based on driver ranking"));
 
-                for ($i = 1; $i <= \Core\Config::DriverRankingGroups; ++$i) {
+                $i = Config::DriverRankingGroups - 1;
+                for (; $i >= 0; --$i) {
                     $grp_label = _("Ranking Group") . " $i";//\Core\ACswui::parameterCollection()->child("DriverRankingGroup$i". "Name")->valueLabel();
                     $pc2 = new \Parameter\Collection(NULL, $pc1, "BopDrvRnkGrp$i", $grp_label, _("Add ballast or restrictors to driver in this ranking group"));
 
