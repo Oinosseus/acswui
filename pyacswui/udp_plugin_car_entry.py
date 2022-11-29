@@ -197,12 +197,9 @@ class UdpPluginCarEntry(object):
                                                              'Steam64GUID': driver_guid,
                                                              'Password': "",
                                                              'CurrentSession': session.Id})
-        elif len(res) == 1:
+        else:
             self.__driver_id = res[0]['Id']
             self.__db.updateRow("Users", self.__driver_id, {"Name": self.__driver_name,
-                                                            "CurrentSession": session.Id})
-        else:
-            raise ValueError("Database table 'Users' is ambigous")
 
         self.__verbosity.print("Car", self.__id,
                                "occupied by driver: Id =", self.__driver_id,
@@ -221,12 +218,17 @@ class UdpPluginCarEntry(object):
 
 
     def release(self):
-        self.__verbosity2.print("Car", self.__id,
-                                "released from driver: Id =", self.__driver_id,
-                                ", name =", self.__driver_name)
 
-        # inform that driver is not online anymore
-        self.__db.updateRow("Users", self.__driver_id, {"CurrentSession": 0})
+        if self.__driver_id is None:
+            self.__verbosity.print("AC-ERROR at releasing car", self.Id, "because driver is None")
+
+        else:
+            self.__verbosity2.print("Car", self.__id,
+                                    "released from driver: Id =", self.__driver_id,
+                                    ", name =", self.__driver_name)
+
+            # inform that driver is not online anymore
+            self.__db.updateRow("Users", self.__driver_id, {"CurrentSession": 0})
 
         self.__driver_guid = None
         self.__driver_name = None
@@ -250,6 +252,7 @@ class UdpPluginCarEntry(object):
             self.__missed_completed_laps += 1
             return
 
+        # heavy information rate
         #self.__verbosity2.print("Car", self.__id,
                                #" (" + self.__driver_name + ") completed lap with",
                                #cuts, "cuts after", laptime, "ms")
@@ -276,7 +279,8 @@ class UdpPluginCarEntry(object):
 
         # sanity check
         if self.__driver_id is None:
-            raise ValueError("Cannot report lap, because no driver is connected to this car!")
+            self.__verbosity.print("AC-ERROR: collision() called for Car-Id %i, but DriverId is None!\n" % self.Id)
+            return
 
         # collision with environment
         if other_car_entry is None:
