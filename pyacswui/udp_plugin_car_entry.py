@@ -200,6 +200,7 @@ class UdpPluginCarEntry(object):
         else:
             self.__driver_id = res[0]['Id']
             self.__db.updateRow("Users", self.__driver_id, {"Name": self.__driver_name,
+                                                            "CurrentSession": session.Id})
 
         self.__verbosity.print("Car", self.__id,
                                "occupied by driver: Id =", self.__driver_id,
@@ -252,7 +253,7 @@ class UdpPluginCarEntry(object):
             self.__missed_completed_laps += 1
             return
 
-        # heavy information rate
+        # heavy log flooding
         #self.__verbosity2.print("Car", self.__id,
                                #" (" + self.__driver_name + ") completed lap with",
                                #cuts, "cuts after", laptime, "ms")
