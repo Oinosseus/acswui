@@ -35,11 +35,6 @@ class UdpPluginServer(object):
                  auto_dnf_level = 0,                 # Percentage of driven laps (relative to race leader), below automatically a DNF penalty is imposed
                  verbosity=0):
 
-        # This is the typical duration for the process() method
-        # used for UDP polling timeout
-        # and for realtime data update
-        self.__PROCESS_TIME = 0.1 # seconds
-
         self.__verbosity = Verbosity(verbosity, self.__class__.__name__)
         self.__server_slot = int(server_slot)
         self.__server_preset = int(server_preset)
@@ -77,7 +72,7 @@ class UdpPluginServer(object):
             msg += " on port %i!" % self.__port_plugin
             msg += "\n%s" % str(be)
             raise BaseException(msg)
-        self.__sock.settimeout(self.__PROCESS_TIME / 2)
+        self.__sock.settimeout(0.01)
 
         # bind UDP socket for RP event listening
         self.__port_rp_events_tx = int(port_rp_events_tx)
@@ -98,7 +93,7 @@ class UdpPluginServer(object):
                 msg += " on port %i!" % self.__port_plugin
                 msg += "\n%s" % str(be)
                 raise BaseException(msg)
-            self.__sock_rp_events.settimeout(self.__PROCESS_TIME / 2)
+            self.__sock_rp_events.settimeout(0.01)
 
         # parse car entries
         self.__entry_list = ConfigParser()
@@ -559,7 +554,7 @@ class UdpPluginServer(object):
 
 
     def enable_realtime_report(self):
-        rate_milliseconds = int(self.__PROCESS_TIME * 1000)
+        rate_milliseconds = 1000
 
         data = bytearray(100)
         data[0] = 200

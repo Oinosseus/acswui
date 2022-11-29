@@ -39,7 +39,7 @@ class Verbosity(object):
 
     def print(self, *args, **kwargs):
 
-        if self._verbose_level > 0:
+        # if self._verbose_level > 0:
 
             # timestamp
             t = datetime.datetime.now()
