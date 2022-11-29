@@ -21,7 +21,7 @@ class DriverRankingData extends \Core\JsonContent {
             \Core\Log::error("UserId not requested!");
             return array();
         }
-        $user = \DbEntry\User::fromId($_GET['UserId']);
+        $user = \DbEntry\User::fromId((int) $_GET['UserId']);
         if ($user === NULL) {
             \Core\Log::error("Invalid UserId '{$_GET['UserId']}'!");
             return array();

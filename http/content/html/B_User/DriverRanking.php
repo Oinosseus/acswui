@@ -14,20 +14,13 @@ class DriverRanking extends \core\HtmlContent {
         $current_user = \Core\UserManager::currentUser();
         $html = "";
 
-        // determine maximum points
-        $max_ranking_points = 0;
-        foreach (\DbEntry\DriverRanking::listLatest() as $rnk) {
-            if ($rnk->points() > $max_ranking_points) $max_ranking_points = $rnk->points();
-        }
-
         // laptime diagram
         $html .= "<div id=\"DriverRankingDiagram\">";
         $title = _("Driver Ranking Diagram");
         $axis_y_title = _("Days");
         $axis_x_title = _("Ranking Points");
         $current_user_id = ($current_user !== NULL) ? $current_user->id() : 0;
-        $max = round($max_ranking_points);
-        $html .= "<canvas axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" currentUser=\"$current_user_id\" maxRankingPoints=\"$max\"></canvas>";
+        $html .= "<canvas axYTitle=\"$axis_y_title\" axXTitle=\"$axis_x_title\" title=\"$title\" currentUser=\"$current_user_id\"></canvas>";
         $html .= "</div>";
 
         // show ranking per group

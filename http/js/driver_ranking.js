@@ -59,10 +59,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // create chart
     DriverRankingDiagramChart = new Chart(canvas, {
+        type: "line",
         data: {
             datasets: []
         },
-        options:{
+        options: {
             scales: {
                     x: {type: 'linear',
 //                         min: 0,
@@ -75,8 +76,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     y: {
 //                         type: 'category',
 //                         labels: y_axis_categories,
-//                         max: -1,
-//                         min: 0,
+                        // max: 20,
+                        // min: 0,
 //                         bottom: 10,
 //                         top: 1,
 //                         reversed: true,
@@ -97,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // y-scaling
-    canvas_div.style.height = "" + (1 * canvas.getAttribute("maxRankingPoints") + 100) + "px";
+    canvas_div.style.height = "400px";
 
     // load first user
     var user_id = canvas.getAttribute("currentUser");
