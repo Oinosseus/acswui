@@ -324,7 +324,7 @@ class SessionOverview extends \core\HtmlContent {
 
         $html .= "<table>";
         $html .= "<tr>";
-        $html .= "<th colspan=\"2\">" . _("Driver")  ."</th>";
+        $html .= "<th>" . _("Driver")  ."</th>";
         $html .= "<th>" . _("Penalty")  ."</th>";
         $html .= "<th>" . _("Cause")  ."</th>";
         $html .= "<th>" . _("Officer")  ."</th>";
