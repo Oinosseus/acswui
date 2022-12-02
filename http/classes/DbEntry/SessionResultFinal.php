@@ -101,7 +101,7 @@ class SessionResultFinal extends DbEntry {
                     else if ($new_results[$rslt_idx-1]['PenDnf'] == $new_results[$rslt_idx]['PenDnf']) {
 
                         // sort race sessions
-                        if ($session->type() == \DbEntry\Session::TypeRace) {
+                        if ($session->type() == \Enums\SessionType::Race) {
 
                             // sort by FinalLaps
                             if ($new_results[$rslt_idx-1]['FinalLaps'] < $new_results[$rslt_idx]['FinalLaps']) $do_swap = TRUE;
@@ -164,18 +164,18 @@ class SessionResultFinal extends DbEntry {
 
             // success
             if ($new_results[$rslt_idx]['PenDsq'] == 0 && $new_results[$rslt_idx]['PenDnf'] == 0) {
-                if ($session->type() == \DbEntry\Session::TypeRace) {
+                if ($session->type() == \Enums\SessionType::Race) {
                     if ($session->lapBest() !== NULL && $new_results[$rslt_idx]['BestLaptime'] == $session->lapBest()->laptime())
                         $rp->addSxRt();
                     $rp->addSxR($pl_no_dnf);
 
-                } else if ($session->type() == \DbEntry\Session::TypeQualifying) {
+                } else if ($session->type() == \Enums\SessionType::Qualifying) {
                     $rp->addSxQ($pl);
                 }
             }
 
             // safety
-            if ($session->type() != Session::TypePractice || \Core\ACswui::getPAram('DriverRankingSfAP') == FALSE) {
+            if ($session->type() != \Enums\SessionType::Practice || \Core\ACswui::getPAram('DriverRankingSfAP') == FALSE) {
                 $rp->addSfCt($new_results[$rslt_idx]['AmountsCuts']);
                 foreach ($session->collisions($new_results[$rslt_idx]['Driver']) as $coll) {
                     if  ($coll instanceof CollisionCar) {

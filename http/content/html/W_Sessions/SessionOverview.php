@@ -400,7 +400,7 @@ class SessionOverview extends \core\HtmlContent {
         $positions = count($session_results);
         $html .= "<div id=\"SessionPositionDiagram\">";
         $title = _("Session Position Diagram");
-        $axis_x_title = ($this->CurrentSession->type() == \DbEntry\Session::TypeRace) ? _("Laps") : _("Minutes");
+        $axis_x_title = ($this->CurrentSession->type() == \Enums\SessionType::Race) ? _("Laps") : _("Minutes");
         if ($user->getParam("UserSessionPositionDiaType") == "place") {
             $axis_y_title = _("Position");
         } if ($user->getParam("UserSessionPositionDiaType") == "gap") {

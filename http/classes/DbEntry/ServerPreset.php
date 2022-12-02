@@ -137,15 +137,15 @@ class ServerPreset extends DbEntry {
         $duration_r = NULL;
         foreach ($this->schedule() as [$interval, $uncertainty, $type, $name]) {
             switch ($type) {
-                case Session::TypePractice:
+                case \Enums\SessionType::Practice:
                     $duration_p = $interval->seconds();
                     break;
 
-                case Session::TypeQualifying:
+                case \Enums\SessionType::Qualifying:
                     $duration_q = $interval->seconds();
                     break;
 
-                case Session::TypeRace:
+                case \Enums\SessionType::Race:
                     $duration_r = $interval->seconds();
                     break;
 
@@ -778,9 +778,9 @@ class ServerPreset extends DbEntry {
      * // now $session_time points to the latest end of the session (including uncertainty)
      *
      * The returned array will be like this:
-     * [ [\Core\TimeInterval, \Core\TimeInterval, \DbEntry\Session::TypeQualifying, "Qualifying"],
-     *   [\Core\TimeInterval, \Core\TimeInterval, \DbEntry\Session::TypeInvalid, "Pause"],
-     *   [\Core\TimeInterval, \Core\TimeInterval, \DbEntry\Session::TypeRace, "Race"]
+     * [ [\Core\TimeInterval, \Core\TimeInterval, \Enums\SessionType::Qualifying, "Qualifying"],
+     *   [\Core\TimeInterval, \Core\TimeInterval, \Enums\SessionType::Invalid, "Pause"],
+     *   [\Core\TimeInterval, \Core\TimeInterval, \Enums\SessionType::Race, "Race"]
      * ]
      *
      * @return A list of [\Core\TimeInterval, \Core\TimeInterval, Name]-tuples
@@ -805,7 +805,7 @@ class ServerPreset extends DbEntry {
             $name = $this->getParam("AcServerBookingName");
             $interval = new \Core\TimeInterval($t * 60);
             $uncertainty = new \Core\TimeInterval(0);
-            $schedule[] = array($interval, $uncertainty, Session::TypeBooking, $name);
+            $schedule[] = array($interval, $uncertainty, \Enums\SessionType::Booking, $name);
         }
 
         // Practice
@@ -814,7 +814,7 @@ class ServerPreset extends DbEntry {
             $name = $this->getParam("AcServerPracticeName");
             $interval = new \Core\TimeInterval($t * 60);
             $uncertainty = new \Core\TimeInterval(0);
-            $schedule[] = array($interval, $uncertainty, Session::TypePractice, $name);
+            $schedule[] = array($interval, $uncertainty, \Enums\SessionType::Practice, $name);
 
             // Result Screen Time
             $t = $this->getParam("AcServerResultScreenTime");
@@ -822,7 +822,7 @@ class ServerPreset extends DbEntry {
                 $name = _("Result Screen");
                 $interval = new \Core\TimeInterval($t);
                 $uncertainty = new \Core\TimeInterval(0);
-                $schedule[] = array($interval, $uncertainty, Session::TypeInvalid, $name);
+                $schedule[] = array($interval, $uncertainty, \Enums\SessionType::Invalid, $name);
             }
         }
 
@@ -832,7 +832,7 @@ class ServerPreset extends DbEntry {
             $name = $this->getParam("AcServerQualifyingName");
             $interval = new \Core\TimeInterval($t * 60);
             $uncertainty = new \Core\TimeInterval($laptime_max * $this->getParam("AcServerQualifyingWaitPerc") / 100);
-            $schedule[] = array($interval, $uncertainty, Session::TypeQualifying, $name);
+            $schedule[] = array($interval, $uncertainty, \Enums\SessionType::Qualifying, $name);
 
             // Result Screen Time
             $rst = $this->getParam("AcServerResultScreenTime");
@@ -840,7 +840,7 @@ class ServerPreset extends DbEntry {
                 $name = _("Result Screen");
                 $interval = new \Core\TimeInterval($rst);
                 $uncertainty = new \Core\TimeInterval();
-                $schedule[] = array($interval, $uncertainty, Session::TypeInvalid, $name);
+                $schedule[] = array($interval, $uncertainty, \Enums\SessionType::Invalid, $name);
             }
         }
 
@@ -857,7 +857,7 @@ class ServerPreset extends DbEntry {
                     $name = _("Wait Time");
                     $interval = new \Core\TimeInterval($wt);
                     $uncertainty = new \Core\TimeInterval(0);
-                    $schedule[] = array($interval, $uncertainty, Session::TypeInvalid, $name);
+                    $schedule[] = array($interval, $uncertainty, \Enums\SessionType::Invalid, $name);
                 }
 
                 // race
@@ -878,7 +878,7 @@ class ServerPreset extends DbEntry {
                     $interval->add($laptime_max - $laptime_typ);
                 }
                 $name = $this->getParam("AcServerRaceName");
-                $schedule[] = array($interval, $uncertainty, Session::TypeRace, $name);
+                $schedule[] = array($interval, $uncertainty, \Enums\SessionType::Race, $name);
 
                 // Result Screen Time
                 $rst = $this->getParam("AcServerResultScreenTime");
@@ -886,7 +886,7 @@ class ServerPreset extends DbEntry {
                     $name = _("Result Screen");
                     $interval = new \Core\TimeInterval($rst);
                     $uncertainty = new \Core\TimeInterval();
-                    $schedule[] = array($interval, $uncertainty, Session::TypeInvalid, $name);
+                    $schedule[] = array($interval, $uncertainty, \Enums\SessionType::Invalid, $name);
                 }
             }
         }
@@ -895,7 +895,7 @@ class ServerPreset extends DbEntry {
         $name = _("End");
         $interval = new \Core\TimeInterval();
         $uncertainty = new \Core\TimeInterval();
-        $schedule[] = array($interval, $uncertainty, Session::TypeInvalid, $name);
+        $schedule[] = array($interval, $uncertainty, \Enums\SessionType::Invalid, $name);
 
         return $schedule;
     }

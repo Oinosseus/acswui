@@ -98,7 +98,7 @@ class SessionData extends \Core\JsonContent {
             $data_row[] = round($c->speed()) . " km/h";
 
             $distance = $session->drivenDistance($c->user());
-            if ($session->type() != \DbEntry\Session::TypePractice || \Core\ACswui::getPAram('DriverRankingSfAP') == FALSE) {
+            if ($session->type() != \Enums\SessionType::Practice || \Core\ACswui::getPAram('DriverRankingSfAP') == FALSE) {
                 $sf_coll = \Core\ACswui::getParam(($c instanceof \DbEntry\CollisionEnv) ? "DriverRankingSfCe" : "DriverRankingSfCc");
                 $sf_coll *= $c->speed() / \Core\ACswui::getParam("DriverRankingCollNormSpeed");
             } else {

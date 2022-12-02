@@ -435,7 +435,7 @@ class SessionSchedules extends \core\HtmlContent {
         $schedules = $ss->serverPreset()->schedule($ss->track(), $ss->carClass());
         for ($i = 0; $i < count($schedules); ++$i) {
             [$interval, $uncertainty, $type, $name] = $schedules[$i];
-            if ($type == \DbEntry\Session::TypeInvalid && ($i+1) < count($schedules)) continue; // do not care for intermediate break
+            if ($type == \Enums\SessionType::Invalid && ($i+1) < count($schedules)) continue; // do not care for intermediate break
             $html .= "<tr>";
             $html .= "<td>" . $cuser->formatTimeNoSeconds($time) . "</td>";
             $html .= "<td>$name</td>";

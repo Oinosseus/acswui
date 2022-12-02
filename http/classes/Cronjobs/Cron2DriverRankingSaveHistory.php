@@ -20,7 +20,7 @@ class Cron2DriverRankingSaveHistory extends \Core\Cronjob {
 //
 //         // get all race sessions since the last scanned race
 //         $race_sessions = array();
-//         $query = "SELECT Id FROM Sessions WHERE Id > $last_session_id AND Id <= $max_session_id AND Type = " . \DbEntry\Session::TypeRace;
+//         $query = "SELECT Id FROM Sessions WHERE Id > $last_session_id AND Id <= $max_session_id AND Type = " . \Enums\SessionType::Race;
 //         $res = \Core\Database::fetchRaw($query);
 //         foreach ($res as $row) {
 //             $session = \DbEntry\Session::fromId($row['Id']);

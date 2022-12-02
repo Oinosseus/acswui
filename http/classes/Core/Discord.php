@@ -19,12 +19,12 @@ class Discord {
         for ($i = 0; $i < count($schedules); ++$i) {
             [$interval, $uncertainty, $type, $name] = $schedules[$i];
 
-            if ($type == \DbEntry\Session::TypeInvalid && ($i+1) < count($schedules)) continue; // do not care for intermediate break
+            if ($type == \Enums\SessionType::Invalid && ($i+1) < count($schedules)) continue; // do not care for intermediate break
 
             $content_line = \Core\UserManager::currentUser()->formatTimeNoSeconds($time) . " - $name";
             if (($i + 1) == count($schedules)) {
                 $content .= "*$content_line*";
-            } else if ($type == \DbEntry\Session::TypeRace) {
+            } else if ($type == \Enums\SessionType::Race) {
                 $content .= "**$content_line**";
             } else {
                 $content .= $content_line;

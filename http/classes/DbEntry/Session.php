@@ -8,21 +8,6 @@ namespace DbEntry;
  */
 class Session extends DbEntry {
 
-    //! Definition of race session type
-    const TypeRace = 3;
-
-    //! Definition of qualifying session type
-    const TypeQualifying = 2;
-
-    //! Definition of practice session type
-    const TypePractice = 1;
-
-    //! Definition of practice session type
-    const TypeBooking = 0;
-
-    //! Invalid Session type
-    const TypeInvalid = -1;
-
     private $Collisions = NULL;
     private $DrivenLength = NULL;
     private $Laps = NULL;
@@ -310,9 +295,9 @@ class Session extends DbEntry {
 
         // create query
         $where = array();
-        if ($show_races == FALSE) $where[] = "Type != " . Session::TypeRace;
-        if ($show_qualifying == FALSE) $where[] = "Type != " . Session::TypeQualifying;
-        if ($show_practice == FALSE) $where[] = "Type != " . Session::TypePractice;
+        if ($show_races == FALSE) $where[] = "Type != " . \Enums\SessionType::Race;
+        if ($show_qualifying == FALSE) $where[] = "Type != " . \Enums\SessionType::Qualifying;
+        if ($show_practice == FALSE) $where[] = "Type != " . \Enums\SessionType::Practice;
         $query = "SELECT Id FROM Sessions ";
         if (count($where) > 0) $query .= "WHERE " . (implode(" AND ", $where));
         $query .= " ORDER BY Id DESC LIMIT 1";
@@ -380,9 +365,9 @@ class Session extends DbEntry {
 
         // create query
         $where = array();
-        if ($show_races == FALSE) $where[] = "Type != " . Session::TypeRace;
-        if ($show_qualifying == FALSE) $where[] = "Type != " . Session::TypeQualifying;
-        if ($show_practice == FALSE) $where[] = "Type != " . Session::TypePractice;
+        if ($show_races == FALSE) $where[] = "Type != " . \Enums\SessionType::Race;
+        if ($show_qualifying == FALSE) $where[] = "Type != " . \Enums\SessionType::Qualifying;
+        if ($show_practice == FALSE) $where[] = "Type != " . \Enums\SessionType::Practice;
         $query = "SELECT Id FROM Sessions ";
         if (count($where) > 0) $query .= "WHERE " . (implode(" AND ", $where));
         $query .= " ORDER BY Id DESC";
@@ -472,8 +457,8 @@ class Session extends DbEntry {
     }
 
 
-    //! @return either Session:TypeRace, Session::TypeQualifying or Session::TypePractice
-    public function type() : \Enums\SessioNType {
+    //! @return either \Enums\SessionType
+    public function type() : \Enums\SessionType {
         return \Enums\SessionType::from((int) $this->loadColumn("Type"));
     }
 
@@ -489,23 +474,23 @@ class Session extends DbEntry {
      */
     public static function type2Char(int|\Enums\SessionType $type) {
         switch ($type) {
-            case Session::TypeRace:
+            case \Enums\SessionType::Race:
             case \Enums\SessionType::Race:
                 return "R";
                 break;
-            case Session::TypeQualifying:
+            case \Enums\SessionType::Qualifying:
             case \Enums\SessionType::Qualifying:
                 return "Q";
                 break;
-            case Session::TypePractice:
+            case \Enums\SessionType::Practice:
             case \Enums\SessionType::Practice:
                 return "P";
                 break;
-            case Session::TypeBooking:
+            case \Enums\SessionType::Booking:
             case \Enums\SessionType::Booking:
                 return "B";
                 break;
-            case Session::TypeInvalid:
+            case \Enums\SessionType::Invalid:
             case \Enums\SessionType::Invalid:
                 return "I";
                 break;
@@ -572,7 +557,7 @@ class Session extends DbEntry {
             // race sessions
 
             // determine positions based on laps
-            if ($this->type() == Session::TypeRace) {
+            if ($this->type() == \Enums\SessionType::Race) {
 
                 // get position of race laps
                 $leader_laptimes = array();      // laptimes of the race leader

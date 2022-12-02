@@ -131,7 +131,7 @@ class ServerPresets extends \core\HtmlContent {
             $preset_offset->add($interval);
             $preset_offset_delay->add($uncertainty);
 
-            if ($type == \DbEntry\Session::TypeInvalid) $type = "";
+            if ($type == \Enums\SessionType::Invalid) $type = "";
             else $type = \DbEntry\Session::type2Char($type);
             $html .= "<td>" . $type . "</td>";
             $html .= "<td>" . $name . "</td>";
@@ -159,7 +159,7 @@ class ServerPresets extends \core\HtmlContent {
         $preset_offset_delay = new \Core\TimeInterval();
         foreach ($this->CurrentPreset->schedule() as [$interval, $uncertainty, $type, $name]) {
 
-            if ($type != \DbEntry\Session::TypeInvalid) {
+            if ($type != \Enums\SessionType::Invalid) {
                 $html .= "<tr>";
                 $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeInterval($preset_offset) . "</td>";
                 $html .= "<td>$name</td>";
