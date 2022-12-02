@@ -257,7 +257,7 @@ class UdpPluginSession(object):
                 else:
                     already_listed_user_ids.append(user)
 
-            # stroe result
+            # store result
             fields = {}
             fields['Position'] = position
             fields['Session'] = self.Id
@@ -269,3 +269,6 @@ class UdpPluginSession(object):
             fields['Restrictor'] = rslt['Restrictor']
             fields['TeamCar'] = team_car_id
             self.__db.insertRow("SessionResultsAc", fields)
+
+            # request to calculate final results
+            self.__db.update("Sessions", self.Id, {"FinalResultsCalculated": 0})
