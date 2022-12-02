@@ -365,9 +365,9 @@ class Session extends DbEntry {
 
         // create query
         $where = array();
-        if ($show_races == FALSE) $where[] = "Type != " . \Enums\SessionType::Race;
-        if ($show_qualifying == FALSE) $where[] = "Type != " . \Enums\SessionType::Qualifying;
-        if ($show_practice == FALSE) $where[] = "Type != " . \Enums\SessionType::Practice;
+        if ($show_races == FALSE) $where[] = "Type != " . \Enums\SessionType::Race->value;
+        if ($show_qualifying == FALSE) $where[] = "Type != " . \Enums\SessionType::Qualifying->value;
+        if ($show_practice == FALSE) $where[] = "Type != " . \Enums\SessionType::Practice->value;
         $query = "SELECT Id FROM Sessions ";
         if (count($where) > 0) $query .= "WHERE " . (implode(" AND ", $where));
         $query .= " ORDER BY Id DESC";
@@ -473,32 +473,7 @@ class Session extends DbEntry {
      * @return A char
      */
     public static function type2Char(int|\Enums\SessionType $type) {
-        switch ($type) {
-            case \Enums\SessionType::Race:
-            case \Enums\SessionType::Race:
-                return "R";
-                break;
-            case \Enums\SessionType::Qualifying:
-            case \Enums\SessionType::Qualifying:
-                return "Q";
-                break;
-            case \Enums\SessionType::Practice:
-            case \Enums\SessionType::Practice:
-                return "P";
-                break;
-            case \Enums\SessionType::Booking:
-            case \Enums\SessionType::Booking:
-                return "B";
-                break;
-            case \Enums\SessionType::Invalid:
-            case \Enums\SessionType::Invalid:
-                return "I";
-                break;
-            default:
-                \Core\Log::warning("Unknown session type '$type'!");
-                return "?";
-                break;
-        }
+        return substr($type->name, 0, 1);
     }
 
 

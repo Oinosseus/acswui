@@ -33,7 +33,7 @@ class Cronjobs extends \core\HtmlContent {
             $html .= "<td>" . $cj->name() . "</td>";
             $html .= "<td>" . \Core\Cronjob::status2str($cj->status()) . "</td>";
             $html .= "<td>" . $user->formatDateTime($cj->lastExecutionTimestamp()) . "</td>";
-            $html .= "<td>" . $user->formatLaptime(1e3 * $cj->lastExecutionDuration()) . "</td>";
+            $html .= "<td>" . $user->formatLaptime(round(1e3 * $cj->lastExecutionDuration())) . "</td>";
             $html .= "<td>" . $cj->intervalStr() . "</td>";
 
             if ($this->CanForce) {
