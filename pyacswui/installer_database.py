@@ -91,7 +91,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnString(table_name, "Password", 100)
         self.__db.appendColumnDateTime(table_name, 'Timestamp')
 
-        table_name = "DriverRankingLatest"
+        table_name = "DriverRanking"
         self.__db.appendTable(table_name)
         self.__db.appendColumnUInt(table_name, 'User')
         self.__db.appendColumnCurrentTimestamp(table_name, "Timestamp")

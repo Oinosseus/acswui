@@ -318,7 +318,7 @@ class DriverRanking extends DbEntry {
             $columns['RankingData'] = $drp->json();
             $columns['RankingPoints'] = $drp->points();
             $columns['RankingGroup'] = User::fromId($uid)->rankingGroup();
-            \Core\Database::insert("DriverRankingLatest", $columns);
+            \Core\Database::insert("DriverRanking", $columns);
         }
     }
 
