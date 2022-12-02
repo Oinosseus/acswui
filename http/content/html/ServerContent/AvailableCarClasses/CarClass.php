@@ -20,10 +20,17 @@ class CarClass extends \core\HtmlContent {
     public function getHtml() {
         $this->CanEdit = \Core\UserManager::permitted("ServerContent_CarClasses_Edit");
 
+        // get requested carclass
+        if (!array_key_exists("Id", $_REQUEST) && $_REQUEST['Id'] != "") {
+            \Core\Log::warning("No Id parameter given!");
+            return "";
+        }
+        $this->CarClass = \DbEntry\CarClass::fromId($_REQUEST['Id']);
+
         // delete carclass
         if ($this->CanEdit && array_key_exists("DeleteCarClass", $_POST)) {
             $cc = \DbEntry\CarClass::fromId($_POST['DeleteCarClass']);
-            $cc->delete();
+            if ($cc) $cc->delete();
             return _("Car Class Deleted");
         }
 
@@ -60,6 +67,8 @@ class CarClass extends \core\HtmlContent {
                 $key = "Car" . $car->id() . "Restrictor";
                 $cc->setRestrictor($car, $_POST[$key]);
             }
+
+            $this->reload(["Id"=>$cc->id()]);
         }
 
         // add cars
@@ -71,14 +80,8 @@ class CarClass extends \core\HtmlContent {
                     $cc->addCar($car);
                 }
             }
+            $this->reload(["Id"=>$cc->id()]);
         }
-
-        // get requested carclass
-        if (!array_key_exists("Id", $_REQUEST) && $_REQUEST['Id'] != "") {
-            \Core\Log::warning("No Id parameter given!");
-            return "";
-        }
-        $this->CarClass = \DbEntry\CarClass::fromId($_REQUEST['Id']);
 
         // show content
         if ($this->CanEdit && array_key_exists("Action", $_REQUEST) && $_REQUEST['Action'] == "AddCars") {
@@ -115,6 +118,8 @@ class CarClass extends \core\HtmlContent {
 
     private function showCarClassOverview() {
         $html  = '';
+
+        if (!$this->CarClass) return "";
 
         if ($this->CanEdit) {
             $html .= "<form method=\"post\">";
@@ -219,10 +224,13 @@ class CarClass extends \core\HtmlContent {
 
 
     private function showRecords() {
+        if (!$this->CarClass) return "";
+
         $html = "";
         $html .= "<h1>" . _("CarClass Records") . "</h1>";
         $html .= "<button type=\"button\" carClassId=\"" . $this->CarClass->id() . "\" onclick=\"CarClassLoadRecords(this)\">" . _("Load CarClass Records") . "</button>";
         $html .= "<div id=\"CarClassRecordsList\"></div>";
+
         return $html;
     }
 }
