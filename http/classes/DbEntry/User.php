@@ -376,7 +376,7 @@ class User extends DbEntry { #implements JsonSerializable {
             foreach ($res as $row) {
                 $g = \DbEntry\Group::fromId($row['Group']);
                 if ($g === NULL) {
-                    \Core\Log::warning("Received NULL for group Id {$row['Group']}");
+                    \Core\Log::debug("Received NULL for group Id {$row['Group']}");
                 } else {
                     $this->Groups[] = $g;
                 }

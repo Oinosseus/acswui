@@ -52,9 +52,9 @@ class SessionResultFinal extends DbEntry {
             $new_result_columns['RankingPoints'] = new \Core\DriverRankingPoints();
             $new_result_columns['BestLaptime'] = (int) $row['BestLap'];
             $new_result_columns['AmountsCuts'] = 0;
-            $new_result_columns['Driver'] = ($new_result_columns['User'] == 0) ?
-                                                    \DbEntry\TeamCar::fromId($new_result_columns['TeamCar']) :
-                                                    \DbEntry\User::fromId($new_result_columns['User']);
+            $new_result_columns['Driver'] = new \Compound\SessionEntry($session,
+                                                                       \DbEntry\TeamCar::fromId($new_result_columns['TeamCar']),
+                                                                       \DbEntry\User::fromId($new_result_columns['User']));
 
             // count laps
             $new_result_columns['FinalLaps'] = count($session->laps($new_result_columns['Driver']));

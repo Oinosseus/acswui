@@ -451,6 +451,7 @@ class CarClass extends DbEntry {
      * @param $new_name The new name of the car class
      */
     public function rename($new_name) {
+        $new_name = substr($new_name, 0, 50);
         \Core\Database::update("CarClasses", $this->id(), ["Name"=>$new_name]);
         $this->Name = $new_name;
     }

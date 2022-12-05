@@ -253,8 +253,9 @@ class SessionOverview extends \core\HtmlContent {
         // scan best laps
         $best_laps = array();
         foreach ($this->CurrentSession->users() as $u) {
-            $laps = $this->CurrentSession->laps($u, TRUE);  // valid laps
-            if (count($laps) == 0) $laps = $this->CurrentSession->laps($u, FALSE);  // all laps
+            $entry = new \Compound\SessionEntry($this->CurrentSession, NULL, $u);
+            $laps = $this->CurrentSession->laps($entry, TRUE);  // valid laps
+            if (count($laps) == 0) $laps = $this->CurrentSession->laps($entry, FALSE);  // all laps
             usort($laps, "\DbEntry\Lap::compareLaptime");
             $best_laps[] = $laps[0];
         }

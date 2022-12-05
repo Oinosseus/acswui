@@ -30,31 +30,28 @@ class Session extends DbEntry {
 
 
     /**
-     * @param $driver If not NULL, only the collisions of this User or TeamCar are returned
+     * @param $entry If not NULL, only the collisions of this entry will be returned
      * @return A list of Collision objects from this session, ordered by timestamp
      */
-    public function collisions(User|TeamCar $driver = NULL) {
-        if ($driver !== NULL) {
+    public function collisions(\Compound\SessionEntry $entry = NULL) {
+        if ($entry !== NULL) {
 
             $ret = array();
-            $search_key = "";
-            if (is_a($driver, "\\DbEntry\\User")) $search_key = "User";
-            else if (is_a($driver, "\\DbEntry\\TeamCar")) $search_key = "TeamCar";
+            $where = array();
+            $where['Session'] = $this->id();
+            if (is_a($entry->entry(), "\\DbEntry\\User")) $where["User"] = $entry->entry()->id();
+            else if (is_a($entry->entry(), "\\DbEntry\\TeamCar")) $where["TeamCar"] = $entry->entry()->id();
 
             // CollisionEnv
-            $res = \Core\Database::fetch("CollisionEnv",
-                                         ["Id"],
-                                         ["Session"=>$this->id(), $search_key=>$driver->id()]);
+            $res = \Core\Database::fetch("CollisionEnv", ["Id"], $where);
             foreach ($res as $row) {
-                $ret = CollisionEnv::fromId($row['Id']);
+                $ret[] = CollisionEnv::fromId($row['Id']);
             }
 
             // CollisionCar
-            $res = \Core\Database::fetch("CollisionCar",
-                                         ["Id"],
-                                         ["Session"=>$this->id(), $search_key=>$driver->id()]);
+            $res = \Core\Database::fetch("CollisionCar", ["Id"], $where);
             foreach ($res as $row) {
-                $ret = CollisionCar::fromId($row['Id']);
+                $ret[] = CollisionCar::fromId($row['Id']);
             }
 
             return $ret;
@@ -92,7 +89,7 @@ class Session extends DbEntry {
             $this->DrivenLength = array();
             $tracklength = $this->track()->length();
             foreach ($this->users() as $user) {
-                $distance = $tracklength * count($this->laps($user));
+                $distance = $tracklength * count($this->laps(new \Compound\SessionEntry($this, NULL, $user)));
                 $this->DrivenLength[$user->id()] = $distance;
             }
         }
@@ -320,19 +317,19 @@ class Session extends DbEntry {
 
 
     /**
-     * @param $driver If not NULL, only the laps of this User or TeamCar are returned
+     * @param $entry If not NULL, only the laps of this entry will be counted
      * @param $valid_only If TRUE (default FALSE) only laps without cuts are listed
      * @return An array of Lap objects
      */
-    public function laps(User|TeamCar $driver = NULL, bool $valid_only=FALSE) {
+    public function laps(\Compound\SessionEntry $entry = NULL, bool $valid_only=FALSE) {
 
-        if ($driver !== NULL) {
+        if ($entry !== NULL) {
             $search_key = "";
-            if (is_a($driver, "\\DbEntry\\User")) $search_key = "User";
-            else if (is_a($driver, "\\DbEntry\\TeamCar")) $search_key = "TeamCar";
+            if (is_a($entry->entry(), "\\DbEntry\\User")) $search_key = "User";
+            else if (is_a($entry->entry(), "\\DbEntry\\TeamCar")) $search_key = "TeamCar";
 
             $laps = array();
-            $query = "SELECT Id from Laps WHERE Session = " . $this->id() . " AND {$search_key} = " . $driver->id();
+            $query = "SELECT Id from Laps WHERE Session = " . $this->id() . " AND {$search_key} = " . $entry->entry()->id();
             if ($valid_only) $query .= " AND Cuts = 0";
             $query .= " ORDER BY Id ASC";
             $res = \Core\Database::fetchRaw($query);
@@ -524,8 +521,8 @@ class Session extends DbEntry {
             $this->DynamicPositions['Info']['MaxPlace'] = 0;
             $this->DynamicPositions['Info']['MaxGap'] = 0;
             $this->DynamicPositions['Data'] = array();
-            foreach ($this->drivers() as $d) {
-                $this->DynamicPositions['Data'][$d->id()] = array();
+            foreach ($this->entries() as $e) {
+                $this->DynamicPositions['Data'][$e->id()] = array();
             }
 
             //////////////////
