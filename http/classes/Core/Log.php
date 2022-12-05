@@ -38,11 +38,13 @@ class Log {
                 $backtrace_args = "";
                 foreach ($bktrc[$i]['args'] as $arg) {
                     if ($backtrace_args != "") $backtrace_args .= ", ";
-                    if (is_array($arg)) $backtrace_args .= "ARRAY";
+                    if ($arg === NULL) $backtrace_args .= "NULL";
+                    else if (is_array($arg)) $backtrace_args .= "ARRAY";
                     else if (is_a($arg, "\DateTime")) $backtrace_args .= $arg->format(\DateTime::ISO8601);
                     else if (is_string($arg)) $backtrace_args .= $arg;
                     else if (is_float($arg)) $backtrace_args .= $arg;
                     else if (is_int($arg)) $backtrace_args .= $arg;
+                    else if (is_bool($arg)) $backtrace_args .= $arg;
                     else if (enum_exists($arg::class)) $backtrace_args .= $arg->name;
                     else $backtrace_args .= $arg;
                 }

@@ -271,4 +271,4 @@ class UdpPluginSession(object):
             self.__db.insertRow("SessionResultsAc", fields)
 
             # request to calculate final results
-            self.__db.update("Sessions", self.Id, {"FinalResultsCalculated": 0})
+            self.__db.updateRow("Sessions", self.Id, {"FinalResultsCalculated": 0})
