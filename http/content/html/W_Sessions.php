@@ -60,18 +60,9 @@ class W_Sessions extends \core\HtmlContent {
                     $html .= "</div>";
 
                     // list online drivers
-                    foreach ($slot->driversOnline() as $user) {
-                        $html .= "<div class=\"Infolet\">";
-                        $html .= "<label>" . $user->html() . "</label>";
-                        $laps = $session->laps($user);
-                        if (count($laps) > 0) {
-                            $carskin = $laps[count($laps) - 1]->carSkin();
-                            $html .= $carskin->html(TRUE, FALSE, TRUE);
-                        }
-                        $html .= "</div>";
+                    foreach ($session->entries() as $e) {
+                        $html .= "<div class=\"Infolet\">{$e->getHtml()}</div>";
                     }
-
-
                 }
                 if ($this->CanControl[$slot->id()])
                     $html .= "<br><button type=\"submit\" name=\"Action\" value=\"StopSlot\">" . _("Stop") . "</button>";
