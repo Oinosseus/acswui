@@ -49,6 +49,12 @@ class Lap extends DbEntry {
     }
 
 
+    //! @return \Compound\SessionEntry
+    public function entry() : \Compound\SessionEntry {
+        return new \Compound\SessionEntry($this->session(), $this->teamCar(), $this->user());
+    }
+
+
     /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.
@@ -100,6 +106,12 @@ class Lap extends DbEntry {
         $delta_minutes = ceil($delta_minutes);
 
         return $delta_minutes;
+    }
+
+
+    //! @return The according TeamCar object (can be NULL)
+    public function teamCar() : ?TeamCar {
+        return TeamCar::fromId((int) $this->loadColumn("TeamCar"));
     }
 
 

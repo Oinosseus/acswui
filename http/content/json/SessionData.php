@@ -59,15 +59,6 @@ class SessionData extends \Core\JsonContent {
         $data['UserInfo'] = array();
         $data['Positions'] = $session->dynamicPositions();
 
-        // excplicit users
-        foreach ($session->users() as $user) {
-            $data_user = array();
-            $data_user = array();
-            $data_user['Name'] = $user->name();
-            $data_user['Color'] = $user->getParam("UserColor");
-            $data['UserInfo'][$user->id()] = $data_user;
-        }
-
         // entries
         foreach ($session->entries() as $e) {
             $data_user = array();

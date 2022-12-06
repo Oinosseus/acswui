@@ -536,7 +536,7 @@ class Session extends DbEntry {
                 $driver_laps_amount = array();   // stores the amount of driven laps for a certain user
                 $driver_laps_timesum = array();  // stores the sum of all laptimes per driver
                 foreach ($this->laps() as $lap) {
-                    $uid = $lap->user()->id();
+                    $uid = $lap->entry()->id();
 
                     // cumulate laptimes
                     if (!array_key_exists($uid, $driver_laps_timesum)) $driver_laps_timesum[$uid] = 0;
@@ -602,7 +602,7 @@ class Session extends DbEntry {
                 $outlap_drivers = array(); // list of user-ids (to identify first lap / outlap)
 
                 foreach ($this->laps() as $lap) {
-                    $uid = $lap->user()->id();
+                    $uid = $lap->entry()->id();
 
                     // filter outlaps
                     $is_outlap = !in_array($uid, $outlap_drivers);

@@ -38,7 +38,6 @@ function SessionPositionDiagramReceiveData(response) {
         }
 
         // draw data
-//         console.log("" + user_id + ", " + data.UserInfo[user_id].Name);
         var dataset = {
                         type: "line",
                         label: data.UserInfo[user_id].Name,
