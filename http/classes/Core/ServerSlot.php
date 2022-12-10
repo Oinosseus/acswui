@@ -56,21 +56,34 @@ class ServerSlot {
     }
 
 
-    //! @return An array of User objects that are currently online
-    public function driversOnline() {
+    //! @return An array of \Compound\SessionEntry objects that are currently online
+    public function driversOnline() : array {
 
-        $drivers = array();
+        $entries = array();
 
         // get current session of this slot
         $session = $this->currentSession();
-        if ($session === NULL) return $drivers;
+        if ($session === NULL) return $entries;
 
         $res = \Core\Database::fetch("Users", ['Id'], ['CurrentSession'=>$session->id()]);
         foreach ($res as $row) {
-            $drivers[] = \DbEntry\User::fromId($row['Id']);
+            $user = \DbEntry\User::fromId($row['Id']);
+            $teamcar = NULL;
+            $carskin = NULL;
+
+            // find last lap
+            $query = "SELECT CarSkin, TeamCar FROM Laps WHERE Session={$session->id()} AND User={$user->id()} ORDER BY Id DESC LIMIT 1;";
+            $res2 = \Core\Database::fetchRaw($query);
+            if (count($res2) > 0) {
+                $teamcar = \DbEntry\TeamCar::fromId((int) $res2[0]['TeamCar']);
+                $carskin = \DbEntry\CarSkin::fromId((int) $res2[0]['CarSkin']);
+            }
+
+            // create new entry
+            $entries[] = new \Compound\SessionEntry($session, $teamcar, $user, $carskin);
         }
 
-        return $drivers;
+        return $entries;
     }
 
 

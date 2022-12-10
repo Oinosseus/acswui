@@ -60,8 +60,13 @@ class W_Sessions extends \core\HtmlContent {
                     $html .= "</div>";
 
                     // list online drivers
-                    foreach ($session->entries() as $e) {
-                        $html .= "<div class=\"Infolet\">{$e->getHtml()}</div>";
+                    foreach ($slot->driversOnline() as $entry) {
+                        $html .= "<div class=\"Infolet\">";
+                        $html .= $entry->getHtml();
+                        if ($entry->carSkin()) {
+                            $html .= "<br>" . $entry->CarSkin()->html();
+                        }
+                        $html .= "</div>";
                     }
                 }
                 if ($this->CanControl[$slot->id()])

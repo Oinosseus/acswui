@@ -11,8 +11,9 @@ namespace Compound;
 class SessionEntry {
 
     private $Session = NULL;
-    private $User = NULL;
     private $TeamCar = NULL;
+    private $User = NULL;
+    private $CarSkin = NULL;
     private $Drivers = NULL;
 
     /**
@@ -21,12 +22,14 @@ class SessionEntry {
      * If teamcar is not NULL, then user is igniored.
      *
      * @param $session The session where the entry was mounted (necessary to find team-drivers)
-     * @param $teamcar_id Can be A TeamCar object or the teamcardatabase Id (or NULL if User)
-     * @param $user_id Can be A User object or the user database Id (or NULL if TeamCar)
+     * @param $teamcar Can be A TeamCar object or the teamcardatabase Id (or NULL if User)
+     * @param $user Can be A User object or the user database Id (or NULL if TeamCar)
+     * @param $carskin The Carskin which was used for the entry (can be NULL)
      */
     public function __construct(\DbEntry\Session $session,
                                 \DbEntry\TeamCar|NULL $teamcar,
-                                \DbEntry\User|NULL $user) {
+                                \DbEntry\User|NULL $user,
+                                \DbEntry\CarSkin|NULL $carskin) {
 
         $this->Session = $session;
 
@@ -43,10 +46,18 @@ class SessionEntry {
             else throw new \TypeError("Unexpected type ." . gettype($user));
         }
 
+        $this->CarSkin = $carskin;
+
         // sanity check
         if ($this->User === NULL && $this->TeamCar === NULL) {
             \Core\Log::warning("Both, user ($user) and teamcar ($teamcar) are invalid!");
         }
+    }
+
+
+    //! @return The driven carskin
+    public function carSkin() : ?\DbEntry\CarSkin {
+        return $this->CarSkin;
     }
 
 
