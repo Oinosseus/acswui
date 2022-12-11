@@ -48,6 +48,7 @@ main.A_Home .Registered {
 }
 
 
+
 /******************************************************************************
                                    CarBrand
  ******************************************************************************/
@@ -246,6 +247,7 @@ main.Weathers table#WeatherManagementTable tr.CurrentSlot td:first-child {
 }
 
 
+
 /******************************************************************************
                              GroupManagement
  *****************************************************************************/
@@ -288,6 +290,7 @@ main.W_Sessions div.Infolet {
 main.W_Sessions div.Infolet div {
     background-color: transparent;
 }
+
 
 
 /*****************************************************************************
@@ -565,6 +568,7 @@ main.SessionSchedules div#SessionDetailsOverview div.SessionScheduleWeatherForec
 }
 
 
+
 /*****************************************************************************
                                  CarClass
  *****************************************************************************/
@@ -694,6 +698,7 @@ main.ServerContent table td.CarClassImage div img {
 }
 
 
+
 /*****************************************************************************
                                     Teams
  *****************************************************************************/
@@ -708,4 +713,14 @@ main.Teams table.TeamCar div.DbEntryHtml {
     background-color: transparent;
     margin: 0;
     border: None;
+}
+
+
+
+/******************************************************************************
+                                    RSer
+ ******************************************************************************/
+
+main.RSer table#RSerSeriesEditGeneralSetup img {
+    height: 4em;
 }

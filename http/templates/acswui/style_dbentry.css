@@ -132,7 +132,7 @@ div.UserHiddenName {
 
 div.DbEntryHtmlTeam {
     display: inline-block;
-    margin-legt: 10em;
+/*     margin-left: 10em; */
     margin-bottom: 2em;
 }
 
@@ -148,6 +148,27 @@ div.DbEntryHtmlTeam label {
     white-space: nowrap;
     overflow: hidden;
 }
+
+
+/* -----------------------------------------------------------------------------
+ *                                DbEntryHtmlRSerSeries
+ * -----------------------------------------------------------------------------
+ */
+
+div.DbEntryHtmlRSerSeries {
+}
+
+div.DbEntryHtmlRSerSeries > a,
+div.DbEntryHtmlRSerSeries > div {
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 0.8em 1em;
+}
+
+div.DbEntryHtmlRSerSeries img {
+    margin-right: 2em;
+}
+
 
 
 /* -----------------------------------------------------------------------------
