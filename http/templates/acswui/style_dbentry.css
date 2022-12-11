@@ -169,6 +169,11 @@ div.DbEntryHtmlRSerSeries img {
     margin-right: 2em;
 }
 
+div.DbEntryHtmlRSerSeries div.RSerInformation div.RSerInfoClasses {
+    margin-top: 0.8em;
+    font-weight: normal;
+    font-size: 0.8em;
+}
 
 
 /* -----------------------------------------------------------------------------

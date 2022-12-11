@@ -724,3 +724,21 @@ main.Teams table.TeamCar div.DbEntryHtml {
 main.RSer table#RSerSeriesEditGeneralSetup img {
     height: 4em;
 }
+
+main.RSer div#RaceResultPointsList {
+}
+
+main.RSer div#RaceResultPointsList div {
+    display: inline-block;
+    background-color: var(--color-bg-elements);
+    border-radius: 1em;
+    padding: 0.1em 0.5em;
+    margin-right: 0.5em;
+    margin-top: 0.5em;
+    font-size: 0.8em;
+}
+
+main.RSer div#RaceResultPointsList div strong {
+    font-size: 1.3em;
+    font-weight: bold;
+}

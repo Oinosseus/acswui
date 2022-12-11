@@ -159,6 +159,15 @@ class RSer extends \core\HtmlContent {
         $html .= "<h1>" . _("Parameters") . "</h1>";
         $html .= $this->CurrentSeries->parameterCollection()->getHtml(TRUE, FALSE);
 
+        $html .= "<br>" . _("Race Result Points") . ": ";
+        $html .= "<div id=\"RaceResultPointsList\">";
+        for ($position=1; TRUE; ++$position) {
+            $points = $this->CurrentSeries->raceResultPoints($position);
+            $html .= "<div>$position: <strong>{$points}</strong>pts</div>";
+            if ($points <= 0) break;
+        }
+        $html .= "</div>";
+
 
         // --------------------------------------------------------------------
         //  Classes

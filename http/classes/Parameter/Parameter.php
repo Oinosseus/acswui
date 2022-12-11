@@ -10,7 +10,14 @@ abstract class Parameter extends Deriveable {
     private $InheritValue = TRUE;
 
 
-    public function __construct(?Deriveable $base, ?Collection $parent, string $key = "", string $label = "", string $description = "", $unit="", $default=NULL) {
+    public function __construct(?Deriveable $base,
+                                ?Collection $parent,
+                                string $key = "",
+                                string $label = "",
+                                string $description = "",
+                                $unit="",
+                                $default=NULL) {
+
         parent::__construct($base, $parent, $key, $label, $description);
         $this->Unit = $unit;
         if ($default !== NULL) $this->Value = $this->formatValue($default);

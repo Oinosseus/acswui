@@ -39,6 +39,14 @@ class RSerSeries extends DbEntry {
     }
 
 
+    /**
+     * Access parameters statically
+     * @return The curent value of a certain parameter
+     */
+    public function getParam(string $parameter_key) {
+        return $this->parameterCollection()->child($parameter_key)->value();
+    }
+
 
     /**
      * @param $include_link Include a link
@@ -55,9 +63,14 @@ class RSerSeries extends DbEntry {
         // image
         if ($show_img) $html .= "<img class=\"RSerSeriesLogoImage\" src=\"{$this->logoPath()}\" alt=\"{$this->name()}\" title=\"{$this->name()}\">";
 
+        $class_names = [];
+        foreach ($this->listClasses() as $c) $class_names[] = $c->name();
+        $class_names_string = implode(", ", $class_names);
+
         // information
-        $html .= "<div>";
+        $html .= "<div class=\"RSerInformation\">";
         $html .= "<label>{$this->name()}</label>";
+        $html .= "<div class=\"RSerInfoClasses\">$class_names_string</div>";
         $html .= "</div>";
 
         // link container
@@ -128,6 +141,37 @@ class RSerSeries extends DbEntry {
         }
 
         return $this->ParameterCollection;
+    }
+
+
+    /**
+     * @param $position The final race position
+     * @return the points for a certain race position
+     */
+    public function raceResultPoints(int $position) {
+        $points = 0;
+
+        // consolation points
+        $pos_con = $this->getParam("PtsPosCons");
+        if ($position <= $pos_con) {
+            $points += 1;
+        }
+
+        // increment points
+        $pos_inc = $this->getParam("PtsPosInc");
+        if ($position <= $pos_inc) {
+            $points += $pos_inc - $position + 1;
+        }
+
+        // gain stage
+        $pos_gain = $this->getParam("PtsGainPos");
+        if ($position <= $pos_gain) {
+            $fact_gain = $this->getParam("PtsGainFact");
+            $points += ($pos_gain - $position + 1) * $fact_gain;
+        }
+
+
+        return $points;
     }
 
 
