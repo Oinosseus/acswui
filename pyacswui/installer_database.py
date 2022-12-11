@@ -21,6 +21,7 @@ class InstallerDatabase(object):
 
         self._tables_accontent()
         self._tables_polls()
+        self._tables_rser()
         self._tables_sessions()
         self._tables_teams()
 
@@ -247,6 +248,67 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt(table_name, 'PollTrack')
         self.__db.appendColumnUInt(table_name, 'PollCarClass')
         self.__db.appendColumnUInt(table_name, 'Points')
+
+
+    def _tables_rser(self):
+        verb = Verbosity(self._verbosity)
+        verb.print("rser tables")
+
+        table_name = "RSerSeries"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnString(table_name, "Name", 50)
+        self.__db.appendColumnText(table_name, "ParamColl")
+
+        table_name = "RSerClasses"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnString(table_name, "Name", 30)
+        self.__db.appendColumnUInt(table_name, "CarClass")
+        self.__db.appendColumnUInt(table_name, "Series")
+        self.__db.appendColumnText(table_name, "ParamColl")
+
+        table_name = "RSerSeasons"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnString(table_name, "Name", 30)
+        self.__db.appendColumnUInt(table_name, "Series")
+
+        table_name = "RSerRegistrations"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "User")
+        self.__db.appendColumnUInt(table_name, "TeamCar")
+        self.__db.appendColumnUInt(table_name, "CarSkin")
+        self.__db.appendColumnUInt(table_name, "Class")
+        self.__db.appendColumnUInt(table_name, "Season")
+
+        table_name = "RSerEvents"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Season")
+        self.__db.appendColumnUInt(table_name, "Track")
+
+        table_name = "RSerQualifications"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "BestLap")
+        self.__db.appendColumnUInt(table_name, "Registration")
+        self.__db.appendColumnUInt(table_name, "Event")
+
+        table_name = "RSerSplits"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Event")
+        self.__db.appendColumnUInt(table_name, "ServerSlot")
+        self.__db.appendColumnTimestamp(table_name, "Start")
+
+        table_name = "RSerResults"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Registration")
+        self.__db.appendColumnUInt(table_name, "Event")
+        self.__db.appendColumnUInt(table_name, "Position")
+        self.__db.appendColumnFloat(table_name, "Points")
+
+        table_name = "RSerStandings"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Registration")
+        self.__db.appendColumnUInt(table_name, "Season")
+        self.__db.appendColumnUInt(table_name, "Position")
+        self.__db.appendColumnFloat(table_name, "Points")
 
 
     def _tables_sessions(self):
