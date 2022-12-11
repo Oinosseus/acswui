@@ -36,7 +36,7 @@ abstract class Parameter extends Deriveable {
     }
 
 
-    abstract public function getHtmlInput();
+    public abstract function getHtmlInput(string $html_id_prefix = "");
 
 
     /**
@@ -87,16 +87,16 @@ abstract class Parameter extends Deriveable {
 
 
     //! This function will check for HTTP POST/GEST form data and store the data into the collection
-    public function storeHttpRequest() {
-        parent::storeHttpRequest();
-        $key_snake = $this->key();
+    public function storeHttpRequest(string $html_id_prefix = "") {
+        parent::storeHttpRequest($html_id_prefix);
+        $key = $html_id_prefix . $this->key();
 
         // my inherit value
-        $this->InheritValue = (array_key_exists("ParameterInheritValueCheckbox_$key_snake", $_REQUEST)) ? TRUE : FALSE;
+        $this->InheritValue = (array_key_exists("ParameterInheritValueCheckbox_$key", $_REQUEST)) ? TRUE : FALSE;
 
         // my value
-        if (array_key_exists("ParameterValue_$key_snake", $_REQUEST)) {
-            $val = $_REQUEST["ParameterValue_$key_snake"];
+        if (array_key_exists("ParameterValue_$key", $_REQUEST)) {
+            $val = $_REQUEST["ParameterValue_$key"];
             $this->setValue($val);
         }
 

@@ -14,10 +14,10 @@ class ParamEnum extends Parameter {
     }
 
 
-    public function getHtmlInput() {
+    public function getHtmlInput(string $html_id_prefix = "") {
         $html = "";
 
-        $key = $this->key();
+        $key = $html_id_prefix . $this->key();
         $value = $this->value();
         $html .= "<select name=\"ParameterValue_$key\">";
         foreach ($this->EnumItemList as $enum_item) {

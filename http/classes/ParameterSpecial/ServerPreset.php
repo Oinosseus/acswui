@@ -32,10 +32,10 @@ final class ServerPreset extends \Parameter\ParamEnum {
     }
 
 
-    public function getHtmlInput() {
+    public function getHtmlInput(string $html_id_prefix = "") {
         $html = "";
 
-        $key = $this->key();
+        $key = $html_id_prefix . $this->key();
         $value = $this->value();
         $html .= "<select name=\"ParameterValue_$key\">";
         foreach ($this->EnumItemList as $enum_item) {
@@ -56,16 +56,16 @@ final class ServerPreset extends \Parameter\ParamEnum {
 
 
     //! This function will check for HTTP POST/GEST form data and store the data into the collection
-    public function storeHttpRequest() {
+    public function storeHttpRequest(string $html_id_prefix = "") {
         parent::storeHttpRequest();
-        $key_snake = $this->key();
+        $key = $html_id_prefix . $this->key();
 
         // no idea why this is needed -> just copyed from Parameter base class
-        $this->InheritValue = (array_key_exists("ParameterInheritValueCheckbox_$key_snake", $_REQUEST)) ? TRUE : FALSE;
+        $this->InheritValue = (array_key_exists("ParameterInheritValueCheckbox_$key", $_REQUEST)) ? TRUE : FALSE;
 
         // my value
-        if (array_key_exists("ParameterValue_$key_snake", $_REQUEST)) {
-            $val = (int) $_REQUEST["ParameterValue_$key_snake"];
+        if (array_key_exists("ParameterValue_$key", $_REQUEST)) {
+            $val = (int) $_REQUEST["ParameterValue_$key"];
             $preset = \DbEntry\ServerPreset::fromId($val);
 
             // set only when allowed -> (this is the difference to the base class implementation

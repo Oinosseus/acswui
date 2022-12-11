@@ -358,18 +358,21 @@ abstract class Deriveable {
     }
 
 
-    //! This function will check for HTTP POST/GEST form data and store the data into the collection
-    public function storeHttpRequest() {
+    /**
+     * This function will check for HTTP POST/GEST form data and store the data into the collection
+     * @param $html_id_prefix Must be the same as used for Collection::getHtml()
+     */
+    public function storeHttpRequest(string $html_id_prefix = "") {
 
         // accessability
-        $key = $this->key();
+        $key = $html_id_prefix . $this->key();
         if (array_key_exists("ParameterAccessability_$key", $_REQUEST)) {
             $this->derivedAccessability($_REQUEST["ParameterAccessability_$key"]);
         }
 
         // store http request for children
         foreach ($this->children() as $child) {
-            $child->storeHttpRequest();
+            $child->storeHttpRequest($html_id_prefix);
         }
     }
 }

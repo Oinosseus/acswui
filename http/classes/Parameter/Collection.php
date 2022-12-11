@@ -2,7 +2,8 @@
 
 namespace Parameter;
 
-final class Collection extends Deriveable {
+// final class Collection extends Deriveable {
+class Collection extends Deriveable {
 
 
 
@@ -28,24 +29,27 @@ final class Collection extends Deriveable {
      * Create an HTML string with all parameter settings as form elements
      * @param $hide_accessability_controls When TRUE (default FALSE), the constrols for derived accessability are hidden (intended for collections that shall not be derived)
      * @param $read_only When set to TRUE (default FALSE), inputs for editing are ommitted (when TRUE, $hide_accessability_controls is automatically TRUE)
+     * @param $html_id_prefix Additional prefix for HTML form elements to allow multiple collections of same type (must be reused at Deriveable::storeHttpRequest!)
      * @return An HTML string
      */
-    public function getHtml(bool $hide_accessability_controls = FALSE, bool $read_only = FALSE) {
+    public function getHtml(bool $hide_accessability_controls = FALSE,
+                            bool $read_only = FALSE,
+                            string $html_id_prefix = "") {
         $html = "";
 
         $level = $this->maxChildLevels();
 
         if ($level >= 0 && $level <= 1) {
-            $html .= $this->getContainerLevel1($hide_accessability_controls, $read_only);
+            $html .= $this->getContainerLevel1($hide_accessability_controls, $read_only, $html_id_prefix);
 
         } else if ($level == 2) {
-            $html .= $this->getContainerLevel2($hide_accessability_controls, $read_only);
+            $html .= $this->getContainerLevel2($hide_accessability_controls, $read_only, $html_id_prefix);
 
         } else if ($level == 3) {
-            $html .= $this->getContainerLevel3($hide_accessability_controls, $read_only);
+            $html .= $this->getContainerLevel3($hide_accessability_controls, $read_only, $html_id_prefix);
 
         } else if ($level == 4) {
-            $html .= $this->getContainerLevel4($hide_accessability_controls, $read_only);
+            $html .= $this->getContainerLevel4($hide_accessability_controls, $read_only, $html_id_prefix);
 
         } else {
             \Core\Log::error("Collection with level > 4 are currently not implemented :-(");
@@ -59,7 +63,9 @@ final class Collection extends Deriveable {
 
 
 
-    private function getContainerLevel4(bool $hide_accessability_controls, bool $read_only) {
+    private function getContainerLevel4(bool $hide_accessability_controls,
+                                        bool $read_only,
+                                        string $html_id_prefix) {
         $html = "";
         $html .= "<div class=\"CollectionContainerLevel4\">";
 
@@ -73,7 +79,7 @@ final class Collection extends Deriveable {
             $key = $collection->key();
             $id = "ParameterCollectionTabLabel$key";
             $name = "ParameterCollectionTabRadios" . $this->key();
-            $html .= "<input type=\"radio\" id=\"$id\" name=\"$name\" $checked/>";
+            $html .= "<input type=\"radio\" id=\"{$html_id_prefix}{$id}\" name=\"$name\" $checked/>";
             $html .= "<label for=\"$id\" onmouseup=\"toggleParameterCollectionTabVisibility('" . $this->key() . "', '$key')\">";
             $html .= $collection->label();
             $html .= "</label>";
@@ -99,7 +105,7 @@ final class Collection extends Deriveable {
             foreach ($collection->children() as $parameter) {
                 if (!($parameter instanceof Parameter)) continue;
                 if ($parameter->accessability() < 1) continue;
-                $html_childparams .= $collection->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
+                $html_childparams .= $collection->getHtmlParameter($parameter, $hide_accessability_controls, $read_only, $html_id_prefix);
             }
             if ($html_childparams != "") {
                 $html .= "<div class=\"CollectionContainerLevel4ParameterContainer\">";
@@ -110,7 +116,7 @@ final class Collection extends Deriveable {
             // sub collections
             foreach ($collection->children() as $collection) {
                 if (!($collection instanceof Collection)) continue;
-                $html .= $collection->getContainerLevel2($hide_accessability_controls, $read_only);
+                $html .= $collection->getContainerLevel2($hide_accessability_controls, $read_only, $html_id_prefix);
             }
 
             $html .= "</div>";
@@ -123,7 +129,9 @@ final class Collection extends Deriveable {
     }
 
 
-    private function getContainerLevel3(bool $hide_accessability_controls, bool $read_only) {
+    private function getContainerLevel3(bool $hide_accessability_controls,
+                                        bool $read_only,
+                                        string $html_id_prefix) {
         $html = "";
         $html .= "<div class=\"CollectionContainerLevel3\">";
 
@@ -134,13 +142,13 @@ final class Collection extends Deriveable {
         foreach ($this->children() as $parameter) {
             if (!($parameter instanceof Parameter)) continue;
             if ($parameter->accessability() < 1) continue;
-            $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
+            $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only, $html_id_prefix);
         }
         $html .= "</div>";
 
         foreach ($this->children() as $collection) {
             if (!($collection instanceof Collection)) continue;
-            $html .= $collection->getContainerLevel2($hide_accessability_controls, $read_only);
+            $html .= $collection->getContainerLevel2($hide_accessability_controls, $read_only, $html_id_prefix);
         }
 
         $html .= "</div>";
@@ -149,7 +157,9 @@ final class Collection extends Deriveable {
     }
 
 
-    private function getContainerLevel2(bool $hide_accessability_controls, bool $read_only) {
+    private function getContainerLevel2(bool $hide_accessability_controls,
+                                        bool $read_only,
+                                        string $html_id_prefix) {
         $html = "";
         if ($this->containsAccessableParameters()) {
             $html .= "<div class=\"CollectionContainerLevel2\">";
@@ -161,7 +171,7 @@ final class Collection extends Deriveable {
             foreach ($this->children() as $parameter) {
                 if (!($parameter instanceof Parameter)) continue;
                 if ($parameter->accessability() < 1) continue;
-                $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
+                $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only, $html_id_prefix);
             }
             $html .= "</div>";
 
@@ -169,7 +179,7 @@ final class Collection extends Deriveable {
             foreach ($this->children() as $collection) {
                 if (!($collection instanceof Collection)) continue;
                 if (!$collection->containsAccessableParameters()) continue;  // hide collections with only invisible children
-                $html .= $collection->getContainerLevel1($hide_accessability_controls, $read_only);
+                $html .= $collection->getContainerLevel1($hide_accessability_controls, $read_only, $html_id_prefix);
             }
 
             $html .= "</div>";
@@ -180,7 +190,9 @@ final class Collection extends Deriveable {
 
 
 
-    private function getContainerLevel1(bool $hide_accessability_controls, bool $read_only) {
+    private function getContainerLevel1(bool $hide_accessability_controls,
+                                        bool $read_only,
+                                        string $html_id_prefix) {
         $html = "";
         $html .= "<div class=\"CollectionContainerLevel1\">";
         $html .= "<div class=\"CollectionContainerLevel1Label\" title=\"" . $this->description() . "\">" . $this->label() . "</div>";
@@ -190,7 +202,7 @@ final class Collection extends Deriveable {
         foreach ($this->children() as $parameter) {
             if (!($parameter instanceof Parameter)) continue;
             if ($parameter->accessability() < 1) continue;
-            $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only);
+            $html .= $this->getHtmlParameter($parameter, $hide_accessability_controls, $read_only, $html_id_prefix);
         }
         $html .= "</div>";
 
@@ -200,14 +212,17 @@ final class Collection extends Deriveable {
 
 
 
-    private function getHtmlParameter(Parameter $param, bool $hide_accessability_controls, bool $read_only = FALSE) {
+    private function getHtmlParameter(Parameter $param,
+                                      bool $hide_accessability_controls,
+                                      bool $read_only = FALSE,
+                                      string $html_id_prefix = "") {
         $html = "";
 
         // skip invisible items
         if ($param->accessability() < 1) return "";
 
         // key snake for ID and Name attributes
-        $key = $param->key();
+        $key = $html_id_prefix . $param->key();
 
         $class_param_inherited = ($param->inheritValue()) ? "ParameterIsInherited" : "";
 
@@ -227,7 +242,7 @@ final class Collection extends Deriveable {
         } else {
             if ($param->accessability() == 2) {  // editable input
                 $visible = ($param->inheritValue()) ? "style=\"display: none;\"" : "";
-                $html .= "<div id=\"ParameterValueInput_$key\" $visible>" . $param->getHtmlInput() . "</div>";
+                $html .= "<div id=\"ParameterValueInput_$key\" $visible>" . $param->getHtmlInput($html_id_prefix) . "</div>";
             }
             if ($param->base() !== NULL) {  // inherited value
                 $visible = ($param->inheritValue()) ? "" : "style=\"display: none;\"";

@@ -400,6 +400,10 @@ class CommandInstall(Command):
             Verbosity(Verbosity(verb)).print("mkdirs " + path_htmlimg_teamlogos)
             self.mkdirs(path_htmlimg_teamlogos)
 
+        # htmlimg/rser_logos
+        path_htmlimg_rserlogos = os.path.join(path_htdata, "htmlimg", "rser_logos")
+        self.mkdirs(path_htmlimg_rserlogos)
+
         verb = None
 
 
@@ -608,6 +612,7 @@ class CommandInstall(Command):
         paths.append(os.path.join(abspath_htdata, "content"))
         paths.append(os.path.join(abspath_htdata, "htmlimg", "car_skins"))
         paths.append(os.path.join(abspath_htdata, "htmlimg", "team_logos"))
+        paths.append(os.path.join(abspath_htdata, "htmlimg", "rser_logos"))
         paths.append(os.path.join(abspath_htdata, "owned_carskin_packages"))
         for path in paths:
             cmd = ["chmod", "-R", "g+w", path]
@@ -662,6 +667,10 @@ class CommandInstall(Command):
         permissions.append("ServerContent_CarClasses_Edit")
         permissions.append("ServerContent_Cars_View")
         permissions.append("ServerContent_Cars_Edit")
+        permissions.append("ServerContent_RaceSeries_View")
+        permissions.append("ServerContent_RaceSeries_Register")
+        permissions.append("ServerContent_RaceSeries_Edit")
+        permissions.append("ServerContent_RaceSeries_Create")
         permissions.append("ServerContent_Teams_View")
         permissions.append("ServerContent_Teams_Found")
         permissions.append("ServerContent_Tracks_View")

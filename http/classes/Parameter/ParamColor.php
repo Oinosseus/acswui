@@ -8,9 +8,9 @@ class ParamColor extends Parameter {
     }
 
 
-    public function getHtmlInput() {
+    public function getHtmlInput(string $html_id_prefix = "") {
         $html = "";
-        $key = $this->key();
+        $key = $html_id_prefix . $this->key();
         $value = $this->value();
         $html .= "<input type=\"color\" value=\"$value\" name=\"ParameterValue_$key\">";
         return $html;

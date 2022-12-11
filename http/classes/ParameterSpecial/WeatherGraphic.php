@@ -93,10 +93,10 @@ class WeatherGraphic extends \Parameter\ParamEnum {
     }
 
 
-    public function getHtmlInput() {
+    public function getHtmlInput(string $html_id_prefix = "") {
         $html = "";
 
-        $key = $this->key();
+        $key = $html_id_prefix . $this->key();
         $value = $this->value();
 
 //         $img_src = \Core\Config::RelPathHtdata . "/content/weather/$value/preview.jpg";

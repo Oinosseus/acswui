@@ -14,10 +14,10 @@ class ParamInt extends Parameter {
     }
 
 
-    public function getHtmlInput() {
+    public function getHtmlInput(string $html_id_prefix = "") {
         $html = "";
 
-        $key = $this->key();
+        $key = $html_id_prefix . $this->key();
         $value = $this->value();
         $min = ($this->MinVal !== NULL) ? "min=\"$this->MinVal\"" : "";
         $max = ($this->MaxVal !== NULL) ? "max=\"$this->MaxVal\"" : "";

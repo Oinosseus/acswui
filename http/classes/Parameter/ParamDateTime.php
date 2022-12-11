@@ -27,10 +27,10 @@ class ParamDateTime extends Parameter {
     }
 
 
-    public function getHtmlInput() {
+    public function getHtmlInput(string $html_id_prefix = "") {
         $html = "";
 
-        $key = $this->key();
+        $key = $html_id_prefix . $this->key();
         $value = $this->value();
 
         // transform to user-time
@@ -75,9 +75,9 @@ class ParamDateTime extends Parameter {
     }
 
 
-    public function storeHttpRequest() {
+    public function storeHttpRequest(string $html_id_prefix = "") {
         parent::storeHttpRequest();
-        $key = $this->key();
+        $key = $html_id_prefix . $this->key();
 
         // my inherit value
         $this->InheritValue = (array_key_exists("ParameterInheritValueCheckbox_$key", $_REQUEST)) ? TRUE : FALSE;

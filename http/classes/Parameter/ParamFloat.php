@@ -4,10 +4,10 @@ namespace Parameter;
 
 final class ParamFloat extends ParamInt {
 
-    final public function getHtmlInput() {
+    final public function getHtmlInput(string $html_id_prefix = "") {
         $html = "";
 
-        $key = $this->key();
+        $key = $html_id_prefix . $this->key();
         $value = $this->value();
         $min = ($this->MinVal !== NULL) ? "min=\"$this->MinVal\"" : "";
         $max = ($this->MaxVal !== NULL) ? "max=\"$this->MaxVal\"" : "";

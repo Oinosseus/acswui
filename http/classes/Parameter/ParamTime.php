@@ -8,10 +8,10 @@ class ParamTime extends Parameter {
     }
 
 
-    public function getHtmlInput() {
+    public function getHtmlInput(string $html_id_prefix = "") {
         $html = "";
 
-        $key = $this->key();
+        $key = $html_id_prefix . $this->key();
         $value = $this->value();
 
         $html .= "<input type=\"time\" name=\"ParameterValue_$key\" value=\"$value\">";
@@ -62,9 +62,9 @@ class ParamTime extends Parameter {
     }
 
 
-    public function storeHttpRequest() {
-        parent::storeHttpRequest();
-        $key = $this->key();
+    public function storeHttpRequest(string $html_id_prefix = "") {
+        parent::storeHttpRequest($html_id_prefix);
+        $key = $html_id_prefix . $this->key();
 
         // my inherit value
         $this->InheritValue = (array_key_exists("ParameterInheritValueCheckbox_$key", $_REQUEST)) ? TRUE : FALSE;

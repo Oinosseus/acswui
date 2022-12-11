@@ -6,6 +6,9 @@ namespace DbEntry;
 //! Wrapper for database table element
 class RSerSeries extends DbEntry {
 
+    private $ParameterCollection = NULL;
+
+
     /**
      * Construct a new object
      * @param $id Database table id
@@ -71,6 +74,16 @@ class RSerSeries extends DbEntry {
 
 
     /**
+     * List all available classes
+     * @param $active_only If TRUE (default) only active classes are returned
+     * @return A list of RSerClass objects
+     */
+    public function listClasses(bool $active_only=TRUE) : array {
+        return \DbEntry\RSerClass::listClasses($this, $active_only);
+    }
+
+
+    /**
      * List available race series
      * @return A list of RSerSeries objects
      */
@@ -99,6 +112,36 @@ class RSerSeries extends DbEntry {
     //! @return The name of the team
     public function name() : string {
         return $this->loadColumn("Name");
+    }
+
+
+    //! @return A \ParameterCollections\RSerSeries object
+    public function parameterCollection() : \ParameterCollections\RSerSeries {
+        if ($this->ParameterCollection === NULL) {
+            $base_collection = new \ParameterCollections\RSerSeries();
+            $this->ParameterCollection = new \ParameterCollections\RSerSeries($base_collection);
+
+            // load from database
+            $data_json = $this->loadColumn("ParamColl");
+            $data_array = json_decode($data_json, TRUE);
+            if ($data_array !== NULL) $this->ParameterCollection->dataArrayImport($data_array);
+        }
+
+        return $this->ParameterCollection;
+    }
+
+
+    //! Save the current parameter collection into the database
+    public function save() {
+        if ($this->id() == 0) return;
+
+        // parameter data
+        $column_data = array();
+        $data_array = $this->parameterCollection()->dataArrayExport();
+        $data_json = json_encode($data_array);
+        $column_data['ParamColl'] = $data_json;
+
+        $this->storeColumns($column_data);
     }
 
 
