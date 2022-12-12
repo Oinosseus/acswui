@@ -195,6 +195,16 @@ class RSer extends \core\HtmlContent {
 
             $html .= $rser_c->carClass()->html();
             $html .= $rser_c->parameterCollection()->getHtml(TRUE, FALSE, "Class{$rser_c->id()}_");
+
+            $html .= "<br>" . _("BOP") . ": ";
+            $html .= "<div id=\"RaceResultPointsList\">";
+            $pos_end = 1 + max($rser_c->getParam("BopRestrictorPosition"), $rser_c->getParam("BopBallastPosition"));
+            for ($position=1; $position <= $pos_end; ++$position) {
+                $ballast= $rser_c->bopBallast($position);
+                $restrictor= $rser_c->bopRestrictor($position);
+                $html .= "<div>$position: <strong>{$ballast}kg {$restrictor}&percnt;</strong></div>";
+            }
+            $html .= "</div>";
         }
 
 

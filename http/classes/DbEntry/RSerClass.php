@@ -18,6 +18,36 @@ class RSerClass extends DbEntry {
     }
 
 
+    /**
+     * @param $position The season position
+     * @return the ballast for a certain season position
+     */
+    public function bopBallast(int $position) {
+        $bop = 0;
+        $bop += $this->getParam("BopBallastOffset");
+
+        $pos_relative = $this->getParam("BopBallastPosition") - $position + 1;
+        if ($pos_relative > 0) $bop += $pos_relative * $this->getParam("BopBallastGain");
+
+        return $bop;
+    }
+
+
+    /**
+     * @param $position The season position
+     * @return the restrictor for a certain season position
+     */
+    public function bopRestrictor(int $position) {
+        $bop = 0;
+        $bop += $this->getParam("BopRestrictorOffset");
+
+        $pos_relative = $this->getParam("BopRestrictorPosition") - $position + 1;
+        if ($pos_relative > 0) $bop += $pos_relative * $this->getParam("BopRestrictorGain");
+
+        return $bop;
+    }
+
+
     //! @return The assigned CarClass object
     public function carClass() : ?CarClass {
         return CarClass::fromId((int) $this->loadColumn("CarClass"));
@@ -78,6 +108,15 @@ class RSerClass extends DbEntry {
      */
     public static function fromId(int $id) : ?RSerClass {
         return parent::getCachedObject("RSerClasses", "RSerClass", $id);
+    }
+
+
+    /**
+     * Access parameters statically
+     * @return The curent value of a certain parameter
+     */
+    public function getParam(string $parameter_key) {
+        return $this->parameterCollection()->child($parameter_key)->value();
     }
 
 
