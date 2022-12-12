@@ -313,12 +313,23 @@ class DriverRanking extends DbEntry {
 
         // store into database
         foreach ($user_ranking as $uid=>$drp) {
-            $columns = array();
-            $columns['User'] = $uid;
-            $columns['RankingData'] = $drp->json();
-            $columns['RankingPoints'] = $drp->points();
-            $columns['RankingGroup'] = User::fromId($uid)->rankingGroup();
-            \Core\Database::insert("DriverRanking", $columns);
+
+            // get last ranking points
+            $last_ranking_points = 0.0;
+            $res = \Core\Database::fetchRaw("SELECT RankingPoints FROM DriverRanking WHERE User=$uid ORDER BY Id DESC LIMIT 1;");
+            if (count($res) > 0) {
+                $last_ranking_points = (float) $res[0]['RankingPoints'];
+            }
+
+            // update at significant change
+            if (abs($last_ranking_points - $drp->points()) >= 0.1) {
+                $columns = array();
+                $columns['User'] = $uid;
+                $columns['RankingData'] = $drp->json();
+                $columns['RankingPoints'] = $drp->points();
+                $columns['RankingGroup'] = User::fromId($uid)->rankingGroup();
+                \Core\Database::insert("DriverRanking", $columns);
+            }
         }
     }
 
