@@ -78,6 +78,14 @@ class RSerSeries extends \Parameter\Collection {
         $p->setMin(0);
         $p->setMax(999);
 
+        $p = new \Parameter\ParamInt(NULL, $pc,
+                                     "PtsStrikeRslt",
+                                     _("Strike Results"),
+                                     _("Amount of weakest events which will not be considered for final results."),
+                                     "", 1);
+        $p->setMin(0);
+        $p->setMax(999);
+
 
         // set all deriveable and visible
         // $this->setAllAccessible();
