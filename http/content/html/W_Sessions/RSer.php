@@ -10,11 +10,13 @@ class RSer extends \core\HtmlContent {
     private $CanRegister = FALSE;
 
     private $CurrentSeries = NULL;
+    private $CurrentSeason = NULL;
 
 
     public function __construct() {
         parent::__construct(_("Race Series"),  _("Race Series"));
         $this->requirePermission("ServerContent_RaceSeries_View");
+        $this->addScript("Content_RSer.js");
     }
 
 
@@ -26,10 +28,11 @@ class RSer extends \core\HtmlContent {
         $this->CanEdit = \Core\UserManager::currentUser()->permitted("ServerContent_RaceSeries_Edit");
         $this->CanCreate = \Core\UserManager::currentUser()->permitted("ServerContent_RaceSeries_Create");
 
-        // get current requested series
-        if (array_key_exists("RSerSeries", $_REQUEST)) {
-            $this->CurrentSeries = \DbEntry\RSerSeries::fromId((int) $_REQUEST['RSerSeries']);
-        }
+        // get current requested series/season
+        if (array_key_exists("RSerSeries", $_REQUEST))
+                $this->CurrentSeries = \DbEntry\RSerSeries::fromId((int) $_REQUEST['RSerSeries']);
+        if (array_key_exists("RSerSeason", $_REQUEST))
+            $this->CurrentSeason = \DbEntry\RSerSeason::fromId((int) $_REQUEST['RSerSeason']);
 
         // process actions
         if (array_key_exists("Action", $_REQUEST)) {
@@ -39,6 +42,14 @@ class RSer extends \core\HtmlContent {
                 $this->CurrentSeries = \DbEntry\RSerSeries::createNew();
                 $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
                                "View"=>"EditSeries"]);
+            }
+
+            // create new season
+            if ($this->CanCreate && $this->CanEdit && $_REQUEST['Action'] == "CreateNewSeason") {
+                $rser_s = \DbEntry\RSerSeason::createNew($this->CurrentSeries);
+                $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
+                               "RSerSeason"=>$rser_s->id(),
+                               "View"=>"EditSeason"]);
             }
 
             // save series settings
@@ -74,6 +85,12 @@ class RSer extends \core\HtmlContent {
                                "View"=>"EditSeries"]);
             }
 
+            // save season
+            if ($this->CanEdit && $_REQUEST['Action'] == "SaveSeason") {
+                $new_name = $_POST['RSerSeasonName'];
+                $this->CurrentSeason->setName($new_name);
+            }
+
             // remove car class
             if ($this->CanEdit && $_REQUEST['Action'] == "DeactivateClass") {
 
@@ -106,7 +123,11 @@ class RSer extends \core\HtmlContent {
 
             if ($_REQUEST["View"] == "EditSeries") {
                 $html .= $this->getHtmlEditSeries();
+
+            } else if ($_REQUEST["View"] == "EditSeason") {
+                $html .= $this->getHtmlEditSeason();
             }
+
         } else {
             $html .= $this->gehtHtmlShowSeries();
         }
@@ -114,6 +135,39 @@ class RSer extends \core\HtmlContent {
         return $html;
     }
 
+
+    // edit settings of a race series season
+    private function getHtmlEditSeason() : string {
+        $html = "";
+
+        // permission check
+        if (!$this->CanEdit) return "";
+        if ($this->CurrentSeries === NULL) return "";
+        if ($this->CurrentSeason === NULL) return "";
+
+        // create new form
+        $html .= $this->newHtmlForm("POST");
+        $html .= "<input type=\"hidden\" name=\"RSerSeries\" value=\"{$this->CurrentSeries->id()}\">";
+        $html .= "<input type=\"hidden\" name=\"RSerSeason\" value=\"{$this->CurrentSeason->id()}\">";
+
+        // name
+        $html .= "<h1>" . _("Season") . " ";
+        $html .= "<div style=\"display: inline-block;\" id=\"LabelRSerSeasonName\">{$this->CurrentSeason->name()}</div>";
+        if ($this->CanEdit) {
+            $html .= " <div style=\"display: inline-block; cursor: pointer;\" id=\"EnableEditRSerSeasonNameButton\">&#x270e;</div>";
+        }
+        $html .= "</h1>";
+
+
+        //  Fisnish Form
+        $html .= "<br><br><br><br>";
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"SaveSeason\">";
+        $html .=_("Save Season");
+        $html .= "</button>";
+        $html .= "</form>";
+
+        return $html;
+    }
 
     // edit settings of a race series
     private function getHtmlEditSeries() : string {
@@ -231,11 +285,12 @@ class RSer extends \core\HtmlContent {
             $html .= $rser_s->html();
         }
 
+
         // found new team
         if ($this->CanCreate) {
             $html .= "<br><br>";
             $url = $this->url(['Action'=>"CreateNewSeries"]);
-            $html .= "<a href=\"$url\">" . _("Create new Race Series") . "</a>";
+            $html .= "<a href=\"$url\">" . _("Create new Race Series") . "</a> ";
         }
 
         return $html;
@@ -252,12 +307,32 @@ class RSer extends \core\HtmlContent {
         if ($this->CanEdit) {
             $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
                                'View'=>"EditSeries"]);
-            $html .= "<a href=\"$url\">" . _("Edit Race Series") . "</a>";
+            $html .= "<a href=\"$url\">" . _("Edit Race Series") . "</a> ";
+
+            // add season
+            if ($this->CanCreate) {
+                $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                   'Action'=>"CreateNewSeason"]);
+                $html .= "<a href=\"$url\">" . _("Create New Season") . "</a> ";
+            }
+
             $html .= "<br><br>";
         }
 
+        // list seasons
+        $html .= "<h1>" . _("Seasons") . "</h1>";
+        foreach (\DbEntry\RSerSeason::listSeasons($this->CurrentSeries) as $rser_s) {
+            $html .= "<h2>{$rser_s->name()}</h2>";
 
-
+            // edit link
+            if ($this->CanEdit) {
+                $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                   "RSerSeason"=>$rser_s->id(),
+                                   "View"=>"EditSeason"]);
+                $html .= "<a href=\"$url\">" . _("Edit Season") . "</a> ";
+                $html .= "<br><br>";
+            }
+        }
 
         return $html;
     }
