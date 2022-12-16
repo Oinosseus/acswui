@@ -37,6 +37,24 @@ class RSer extends \core\HtmlContent {
         // process actions
         if (array_key_exists("Action", $_REQUEST)) {
 
+            // add split
+            if ($this->CanEdit && $_REQUEST['Action'] == "AddSplit") {
+                $rser_e = \DbEntry\RSerEvent::fromId((int) $_REQUEST['RSerEvent']);
+                \DbEntry\RSerSplit::createNew($rser_e);
+
+                $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
+                               "RSerSeason"=>$this->CurrentSeason->id(),
+                               "View"=>"EditSeason"]);
+            }
+
+            // add event
+            if ($this->CanEdit && $_REQUEST['Action'] == "AddEvent") {
+                \DbEntry\RSerEvent::createNew($this->CurrentSeason);
+                $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
+                               "RSerSeason"=>$this->CurrentSeason->id(),
+                               "View"=>"EditSeason"]);
+            }
+
             // create new series
             if ($this->CanCreate && $_REQUEST['Action'] == "CreateNewSeries") {
                 $this->CurrentSeries = \DbEntry\RSerSeries::createNew();
@@ -87,8 +105,35 @@ class RSer extends \core\HtmlContent {
 
             // save season
             if ($this->CanEdit && $_REQUEST['Action'] == "SaveSeason") {
-                $new_name = $_POST['RSerSeasonName'];
-                $this->CurrentSeason->setName($new_name);
+
+                if (array_key_exists("RSerSeasonName", $_POST)) {
+                    $new_name = $_POST['RSerSeasonName'];
+                    $this->CurrentSeason->setName($new_name);
+                }
+
+                // events
+                foreach ($this->CurrentSeason->listEvents() as $rser_e) {
+                    $html_id = "RSerEvent{$rser_e->id()}Track";
+                    $track = \DbEntry\Track::fromId((int) $_POST[$html_id]);
+                    $rser_e->setTrack($track);
+
+                    // splits
+                    foreach ($rser_e->listSplits() as $rser_sp) {
+                        $date = $_POST["RSerSplit{$rser_sp->id()}Date"];
+                        $time = $_POST["RSerSplit{$rser_sp->id()}Time"];
+                        $dt = new \DateTime("$date $time", new \DateTimeZone(\Core\UserManager::currentUser()->getParam("UserTimezone")));
+                        $rser_sp->setStart($dt);
+
+                        $server_slot_id = (int) $_POST["RSerSplit{$rser_sp->id()}Slot"];
+                        $server_slot = \Core\ServerSlot::fromId($server_slot_id);
+                        $rser_sp->setServerSlot($server_slot);
+                    }
+                }
+
+                // reload
+                $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
+                               "RSerSeason"=>$this->CurrentSeason->id(),
+                               "View"=>"EditSeason"]);
             }
 
             // remove car class
@@ -119,6 +164,7 @@ class RSer extends \core\HtmlContent {
         // determine HTML output
         if ($this->CurrentSeries == NULL) {
             $html .= $this->getHtmlOverview();
+
         } else if (array_key_exists("View", $_REQUEST)) {
 
             if ($_REQUEST["View"] == "EditSeries") {
@@ -140,6 +186,10 @@ class RSer extends \core\HtmlContent {
     private function getHtmlEditSeason() : string {
         $html = "";
 
+        // back link
+        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
+        $html .= "<a href=\"$url\">&lt;&lt; " . _("Back") . "</a><br><br>";
+
         // permission check
         if (!$this->CanEdit) return "";
         if ($this->CurrentSeries === NULL) return "";
@@ -158,6 +208,69 @@ class RSer extends \core\HtmlContent {
         }
         $html .= "</h1>";
 
+        // add event
+        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                            "RSerSeason"=>$this->CurrentSeason->id(),
+                            "Action"=>"AddEvent"]);
+        $html .= "<a href=\"$url\">" . _("Add Event") . "</a> ";
+        $html .= "<br><br>";
+
+        // list events
+        $html .= "<h1>" . _("Events") . "</h1>";
+        $events = \DbEntry\RSerEvent::listEvents($this->CurrentSeason);
+        for ($event_idx=0; $event_idx < count($events); ++$event_idx) {
+
+            $html .= "<table>";
+            $html .= "<caption>";
+            $html .= _("Event") . " " . ($event_idx+1) . " - ";
+            $track = $events[$event_idx]->track();
+            if ($track) $html .= $track->name();
+            $html .= "</caption>";
+
+            // track select
+            $html .= "<tr><th>" . _("Track") . "</th><td colspan=\"2\"><select name=\"RSerEvent{$events[$event_idx]->id()}Track\">";
+            foreach (\DbEntry\Track::listTracks() as $track) {
+                $selected = ($events[$event_idx]->track() == $track) ? "selected=\"yes\"" : "";
+                $html .= "<option value=\"{$track->id()}\" $selected>{$track->name()}</option>";
+            }
+            $html .= "</select></td></tr>";
+
+            // list splits
+            $html .= "<tr><th>" . _("Split") . "</th><th>" . _("Start") . "</th><th>" . _("Server Slot") . "</th></tr>";
+            $splits = \DbEntry\RSerSplit::listSplits($events[$event_idx]);
+            for ($split_idx=0; $split_idx < count($splits); ++$split_idx) {
+                $html .= "<tr>";
+                $html .= "<td>" . _("Split") . " " . ($split_idx+1) . "</td>";
+
+                $html .= "<td>";
+                $dt = $splits[$split_idx]->start();
+                $dt->setTimezone(new \DateTimeZone(\Core\UserManager::currentUser()->getParam("UserTimezone")));
+                $html .= "<input type=\"date\" name=\"RSerSplit{$splits[$split_idx]->id()}Date\" value=\"{$dt->format('Y-m-d')}\"> ";
+                $html .= "<input type=\"time\" name=\"RSerSplit{$splits[$split_idx]->id()}Time\" value=\"{$dt->format('H:i')}\">";
+                $html .= "</td>";
+
+                $html .= "<td><select name=\"RSerSplit{$splits[$split_idx]->id()}Slot\">";
+                foreach (\Core\ServerSlot::listSlots() as $server_slot) {
+                    $selected = ($server_slot == $splits[$split_idx]->serverSlot()) ? "selected=\"yes\"" : "";
+                    $html .= "<option value=\"{$server_slot->id()}\" $selected>{$server_slot->name()}</option>";
+                }
+                $html .= "</select></td>";
+
+                $html .= "</tr>";
+
+            }
+
+            // add split
+            $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                "RSerSeason"=>$this->CurrentSeason->id(),
+                                "RSerEvent"=>$events[$event_idx]->id(),
+                                "Action"=>"AddSplit"]);
+            $html .= "<tr><td><a href=\"$url\">" . _("Add Spit") . "</a></td></tr>";
+
+            $html .= "<br>";
+            $html .= "</table>";
+        }
+
 
         //  Fisnish Form
         $html .= "<br><br><br><br>";
@@ -172,6 +285,10 @@ class RSer extends \core\HtmlContent {
     // edit settings of a race series
     private function getHtmlEditSeries() : string {
         $html = "";
+
+        // back link
+        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
+        $html .= "<a href=\"$url\">&lt;&lt; " . _("Back") . "</a><br><br>";
 
         // permission check
         if (!$this->CanEdit) return "";
@@ -300,6 +417,11 @@ class RSer extends \core\HtmlContent {
     // Show a certain race series
     private function gehtHtmlShowSeries() : string {
         $html = "";
+
+        // back link
+        $url = $this->url(['RSerSeries'=>0]);
+        $html .= "<a href=\"$url\">&lt;&lt; " . _("Back") . "</a><br><br>";
+
 
         $html .= "<h1>{$this->CurrentSeries->name()}</h1>";
 

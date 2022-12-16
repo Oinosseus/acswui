@@ -6,8 +6,6 @@ namespace DbEntry;
 //! Wrapper for database table element
 class RSerSeason extends DbEntry {
 
-    private $ParameterCollection = NULL;
-
 
     /**
      * Construct a new object
@@ -43,6 +41,12 @@ class RSerSeason extends DbEntry {
      */
     public static function fromId(int $id) : ?RSerSeason {
         return parent::getCachedObject("RSerSeasons", "RSerSeason", $id);
+    }
+
+
+    //! @return A list of RSerEvent objects
+    public function listEvents() : array {
+        return RSerEvent::listEvents($this);
     }
 
 
