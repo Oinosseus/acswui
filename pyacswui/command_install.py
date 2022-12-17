@@ -668,7 +668,6 @@ class CommandInstall(Command):
         permissions.append("ServerContent_Cars_View")
         permissions.append("ServerContent_Cars_Edit")
         permissions.append("ServerContent_RaceSeries_View")
-        permissions.append("ServerContent_RaceSeries_Register")
         permissions.append("ServerContent_RaceSeries_Edit")
         permissions.append("ServerContent_RaceSeries_Create")
         permissions.append("ServerContent_Teams_View")

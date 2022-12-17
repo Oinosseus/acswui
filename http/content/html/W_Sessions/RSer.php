@@ -453,11 +453,17 @@ class RSer extends \core\HtmlContent {
     private function gehtHtmlSeasonEdit() : string {
         $html = "";
 
-        // back link
+        // breadcrumps
+        $url = $this->url(['RSerSeries'=>0]);
+        $html .= "<a href=\"$url\">" . _("Race Series List") . "</a> &lt;&lt; ";
+        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
+        $html .= "<a href=\"$url\">" . _("Race Series Overview") . "</a> &lt;&lt; ";
         $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
                            "RSerSeason"=>$this->CurrentSeason->id(),
                            "View"=>"SeasonOverview"]);
-        $html .= "<a href=\"$url\">&lt;&lt; " . _("Season Overview") . "</a>";
+        $html .= "<a href=\"$url\">" . _("Season") . " {$this->CurrentSeason->name()}</a> &lt;&lt; ";
+        $html .= _("Season Edit");
+        $html .= "<br>";
 
         // header
         $html .= $this->getHtmlPageHeader();
@@ -559,19 +565,26 @@ class RSer extends \core\HtmlContent {
     private function getHtmlSeasonOverview() : string {
         $html = "";
 
-        // back link
+        // breadcrumps
+        $url = $this->url(['RSerSeries'=>0]);
+        $html .= "<a href=\"$url\">" . _("Race Series List") . "</a> &lt;&lt; ";
         $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
-        $html .= "<a href=\"$url\">&lt;&lt; " . _("Race Series Overview") . "</a> ";
-        if ($this->CanEdit) {  // edit link
+        $html .= "<a href=\"$url\">" . _("Race Series Overview") . "</a> &lt;&lt; ";
+        $html .= _("Season") . " ";
+        $html .= $this->CurrentSeason->name();
+        $html .= "<br>";
+
+        // Header
+        $html .= $this->getHtmlPageHeader();
+
+        // edit seasn
+        if ($this->CanEdit) {
             $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
                                 "RSerSeason"=>$this->CurrentSeason->id(),
                                 "View"=>"SeasonEdit"]);
             $html .= "<a href=\"$url\">" . _("Edit Season") . "</a> ";
             $html .= "<br><br>";
         }
-
-        // Header
-        $html .= $this->getHtmlPageHeader();
 
         // standings
         $html .= "<h1>" . _("Standings") . "</h1>";
@@ -589,7 +602,7 @@ class RSer extends \core\HtmlContent {
             // current registrations
             $html .= "<table>";
             $html .= "<caption>{$rser_c->name()} <small>({$rser_c->carClass()->name()})</small></caption>";
-            $html .= "<tr><th>" . _("Team") . "</th><th>" . _("Car") . "</th><th>" . _("Drivers") . "</th></tr>";
+            $html .= "<tr><th>" . _("Team") . "</th><th>" . _("Car") . "</th><th>" . _("Drivers") . "</th><td></td></tr>";
             foreach ($this->CurrentSeason->listRegistrations($rser_c) as $rser_reg) {
                 if (!$rser_reg->active()) continue;
                 $html .= "<tr>";
@@ -601,7 +614,7 @@ class RSer extends \core\HtmlContent {
                     $drivers = $rser_reg->teamCar()->drivers();
                     for ($i=0; $i < count($drivers); ++$i) {
                         $tmm = $drivers[$i];
-                        if ($i > 0) $html .= ", ";
+                        if ($i > 0) $html .= ",<br>";
                         $html .= $tmm->user()->nationalFlag() . " ";
                         $html .= $tmm->user()->html();
                     }
@@ -663,9 +676,13 @@ class RSer extends \core\HtmlContent {
     private function getHtmlSeriesEdit() : string {
         $html = "";
 
-        // back link
+        // breadcrumps
+        $url = $this->url(['RSerSeries'=>0]);
+        $html .= "<a href=\"$url\">" . _("Race Series List") . "</a> &lt;&lt; ";
         $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
-        $html .= "<a href=\"$url\">&lt;&lt; " . _("Race Series Overview") . "</a>";
+        $html .= "<a href=\"$url\">" . _("Race Series Overview") . "</a> &lt;&lt; ";
+        $html .= _("Race Series Edit");
+        $html .= "<br>";
 
         // heading
         $html .= $this->getHtmlPageHeader();
@@ -778,9 +795,14 @@ class RSer extends \core\HtmlContent {
     private function gehtHtmlSeriesOverview() : string {
         $html = "";
 
-        // back link
+        // breadcrumps
         $url = $this->url(['RSerSeries'=>0]);
-        $html .= "<a href=\"$url\">&lt;&lt; " . _("List of Race Series") . "</a> ";
+        $html .= "<a href=\"$url\">" . _("Race Series List") . "</a> &lt;&lt; ";
+        $html .= _("Race Series Overview");
+        $html .= "<br>";
+
+        // Header
+        $html .= $this->getHtmlPageHeader();
 
         // edit option
         if ($this->CanEdit) {
@@ -795,9 +817,6 @@ class RSer extends \core\HtmlContent {
                 $html .= "<a href=\"$url\">" . _("Create New Season") . "</a> ";
             }
         }
-
-        // Header
-        $html .= $this->getHtmlPageHeader();
 
         // list seasons
         $html .= "<h1>" . _("Seasons") . "</h1>";
