@@ -742,3 +742,26 @@ main.RSer div#RaceResultPointsList div strong {
     font-size: 1.3em;
     font-weight: bold;
 }
+
+
+/* RSer Logo in Heading */
+main.RSer div.RSerPageHeader {
+    display: block;
+    margin-top: 1em;
+    margin-bottom: 3em;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+}
+
+main.RSer div.RSerPageHeader img {
+    height: 2em;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+main.RSer ul.RSerSeasonList {
+    display: block;
+    text-align: center;
+}

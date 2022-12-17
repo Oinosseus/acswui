@@ -58,7 +58,7 @@ class RSerSeason extends DbEntry {
     public static function listSeasons(RSerSeries $rser_series) : array {
 
         // prepare query
-        $query = "SELECT Id FROM RSerSeasons WHERE Series={$rser_series->id()} ORDER BY Id ASC";
+        $query = "SELECT Id FROM RSerSeasons WHERE Series={$rser_series->id()} ORDER BY Id DESC";
 
         // list results
         $list = array();

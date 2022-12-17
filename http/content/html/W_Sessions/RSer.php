@@ -44,7 +44,7 @@ class RSer extends \core\HtmlContent {
 
                 $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
                                "RSerSeason"=>$this->CurrentSeason->id(),
-                               "View"=>"EditSeason"]);
+                               "View"=>"SeasonEdit"]);
             }
 
             // add event
@@ -52,14 +52,14 @@ class RSer extends \core\HtmlContent {
                 \DbEntry\RSerEvent::createNew($this->CurrentSeason);
                 $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
                                "RSerSeason"=>$this->CurrentSeason->id(),
-                               "View"=>"EditSeason"]);
+                               "View"=>"SeasonEdit"]);
             }
 
             // create new series
             if ($this->CanCreate && $_REQUEST['Action'] == "CreateNewSeries") {
                 $this->CurrentSeries = \DbEntry\RSerSeries::createNew();
                 $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
-                               "View"=>"EditSeries"]);
+                               "View"=>"SeriesEdit"]);
             }
 
             // create new season
@@ -67,7 +67,7 @@ class RSer extends \core\HtmlContent {
                 $rser_s = \DbEntry\RSerSeason::createNew($this->CurrentSeries);
                 $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
                                "RSerSeason"=>$rser_s->id(),
-                               "View"=>"EditSeason"]);
+                               "View"=>"SeasonEdit"]);
             }
 
             // save series settings
@@ -100,7 +100,7 @@ class RSer extends \core\HtmlContent {
 
                 // reload
                 $this->reload(['RSerSeries'=>$this->CurrentSeries->id(),
-                               "View"=>"EditSeries"]);
+                               "View"=>"SeriesEdit"]);
             }
 
             // save season
@@ -133,7 +133,7 @@ class RSer extends \core\HtmlContent {
                 // reload
                 $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
                                "RSerSeason"=>$this->CurrentSeason->id(),
-                               "View"=>"EditSeason"]);
+                               "View"=>"SeasonEdit"]);
             }
 
             // remove car class
@@ -155,7 +155,7 @@ class RSer extends \core\HtmlContent {
                 if ($valid) {
                     $rser_c->deactivate();
                     $this->reload(['RSerSeries'=>$this->CurrentSeries->id(),
-                                   'View'=>"EditSeries"]);
+                                   'View'=>"SeriesEdit"]);
                 }
             }
 
@@ -163,32 +163,65 @@ class RSer extends \core\HtmlContent {
 
         // determine HTML output
         if ($this->CurrentSeries == NULL) {
-            $html .= $this->getHtmlOverview();
+
+            // list available series
+            foreach (\DbEntry\RSerSeries::listSeries() as $rser_s) {
+                $html .= $rser_s->html();
+            }
+
+            // create new series
+            if ($this->CanCreate) {
+                $html .= "<br><br>";
+                $url = $this->url(['Action'=>"CreateNewSeries"]);
+                $html .= "<a href=\"$url\">" . _("Create new Race Series") . "</a> ";
+            }
 
         } else if (array_key_exists("View", $_REQUEST)) {
 
-            if ($_REQUEST["View"] == "EditSeries") {
-                $html .= $this->getHtmlEditSeries();
+            if ($_REQUEST["View"] == "SeriesEdit") {
+                $html .= $this->getHtmlSeriesEdit();
 
-            } else if ($_REQUEST["View"] == "EditSeason") {
-                $html .= $this->getHtmlEditSeason();
+            } else if ($_REQUEST["View"] == "SeasonEdit") {
+                $html .= $this->gehtHtmlSeasonEdit();
+
+            } else if ($_REQUEST["View"] == "SeasonOverview") {
+                $html .= $this->getHtmlSeasonOverview();
+
             }
 
         } else {
-            $html .= $this->gehtHtmlShowSeries();
+            $html .= $this->gehtHtmlSeriesOverview();
         }
 
         return $html;
     }
 
 
+    private function getHtmlPageHeader() {
+        $html = "";
+
+        $html .= "<div class=\"RSerPageHeader\">";
+        $html .= "<img src=\"{$this->CurrentSeries->logoPath()}\"> ";
+        $html .= "<div>{$this->CurrentSeries->name()}</div>";
+        if ($this->CurrentSeason) $html .= "<div>{$this->CurrentSeason->name()}</div>";
+        $html .= "</div>";
+
+        return $html;
+    }
+
+
     // edit settings of a race series season
-    private function getHtmlEditSeason() : string {
+    private function gehtHtmlSeasonEdit() : string {
         $html = "";
 
         // back link
-        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
-        $html .= "<a href=\"$url\">&lt;&lt; " . _("Back") . "</a><br><br>";
+        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                           "RSerSeason"=>$this->CurrentSeason->id(),
+                           "View"=>"SeasonOverview"]);
+        $html .= "<a href=\"$url\">&lt;&lt; " . _("Season Overview") . "</a>";
+
+        // header
+        $html .= $this->getHtmlPageHeader();
 
         // permission check
         if (!$this->CanEdit) return "";
@@ -282,13 +315,48 @@ class RSer extends \core\HtmlContent {
         return $html;
     }
 
-    // edit settings of a race series
-    private function getHtmlEditSeries() : string {
+
+    // edit settings of a race series season
+    private function getHtmlSeasonOverview() : string {
         $html = "";
 
         // back link
         $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
-        $html .= "<a href=\"$url\">&lt;&lt; " . _("Back") . "</a><br><br>";
+        $html .= "<a href=\"$url\">&lt;&lt; " . _("Race Series Overview") . "</a> ";
+        if ($this->CanEdit) {  // edit link
+            $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                "RSerSeason"=>$this->CurrentSeason->id(),
+                                "View"=>"SeasonEdit"]);
+            $html .= "<a href=\"$url\">" . _("Edit Season") . "</a> ";
+            $html .= "<br><br>";
+        }
+
+        // Header
+        $html .= $this->getHtmlPageHeader();
+
+        // standings
+        $html .= "<h1>" . _("Standings") . "</h1>";
+
+        // event results
+        $html .= "<h1>" . _("Event Results") . "</h1>";
+
+        // registrations
+        $html .= "<h1>" . _("Registrations") . "</h1>";
+
+        return $html;
+    }
+
+
+    // edit settings of a race series
+    private function getHtmlSeriesEdit() : string {
+        $html = "";
+
+        // back link
+        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
+        $html .= "<a href=\"$url\">&lt;&lt; " . _("Race Series Overview") . "</a>";
+
+        // heading
+        $html .= $this->getHtmlPageHeader();
 
         // permission check
         if (!$this->CanEdit) return "";
@@ -393,42 +461,19 @@ class RSer extends \core\HtmlContent {
     }
 
 
-    // Overview of available race series
-    private function getHtmlOverview() : string {
-        $html = "";
-
-        // list available series
-        foreach (\DbEntry\RSerSeries::listSeries() as $rser_s) {
-            $html .= $rser_s->html();
-        }
-
-
-        // found new team
-        if ($this->CanCreate) {
-            $html .= "<br><br>";
-            $url = $this->url(['Action'=>"CreateNewSeries"]);
-            $html .= "<a href=\"$url\">" . _("Create new Race Series") . "</a> ";
-        }
-
-        return $html;
-    }
-
 
     // Show a certain race series
-    private function gehtHtmlShowSeries() : string {
+    private function gehtHtmlSeriesOverview() : string {
         $html = "";
 
         // back link
         $url = $this->url(['RSerSeries'=>0]);
-        $html .= "<a href=\"$url\">&lt;&lt; " . _("Back") . "</a><br><br>";
-
-
-        $html .= "<h1>{$this->CurrentSeries->name()}</h1>";
+        $html .= "<a href=\"$url\">&lt;&lt; " . _("List of Race Series") . "</a> ";
 
         // edit option
         if ($this->CanEdit) {
             $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
-                               'View'=>"EditSeries"]);
+                               'View'=>"SeriesEdit"]);
             $html .= "<a href=\"$url\">" . _("Edit Race Series") . "</a> ";
 
             // add season
@@ -437,24 +482,25 @@ class RSer extends \core\HtmlContent {
                                    'Action'=>"CreateNewSeason"]);
                 $html .= "<a href=\"$url\">" . _("Create New Season") . "</a> ";
             }
-
-            $html .= "<br><br>";
         }
+
+        // Header
+        $html .= $this->getHtmlPageHeader();
 
         // list seasons
         $html .= "<h1>" . _("Seasons") . "</h1>";
+        $html .= "<ul class=\"RSerSeasonList\">";
         foreach (\DbEntry\RSerSeason::listSeasons($this->CurrentSeries) as $rser_s) {
-            $html .= "<h2>{$rser_s->name()}</h2>";
 
-            // edit link
-            if ($this->CanEdit) {
-                $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
-                                   "RSerSeason"=>$rser_s->id(),
-                                   "View"=>"EditSeason"]);
-                $html .= "<a href=\"$url\">" . _("Edit Season") . "</a> ";
-                $html .= "<br><br>";
-            }
+            $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                "RSerSeason"=>$rser_s->id(),
+                                "View"=>"SeasonOverview"]);
+
+            $html .= "<li><a href=\"$url\">{$rser_s->name()}</a></li>";
+
         }
+        $html .= "</ul>";
+
 
         return $html;
     }
