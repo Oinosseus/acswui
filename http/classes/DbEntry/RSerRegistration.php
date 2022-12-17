@@ -49,8 +49,6 @@ class RSerRegistration extends DbEntry {
                                      User $user=NULL,
                                      CarSkin $carskin=NULL) : ?RSerRegistration {
 
-        //! @todo TBD Delete existing qualifications
-
         // register TeamCar
         if ($teamcar !== NULL) {
 
@@ -64,7 +62,10 @@ class RSerRegistration extends DbEntry {
             $query = "SELECT Id FROM RSerRegistrations WHERE Season={$season->id()} AND TeamCar={$teamcar->id()}";
             $res = \Core\Database::fetchRaw($query);
             $id = NULL;
-            if (count($res) > 0) $id = (int) $res[0]['Id'];
+            if (count($res) > 0) {
+                $id = (int) $res[0]['Id'];
+                \Core\Database::query("DELETE FROM RSerQualifications WHERE Registration=$id");
+            }
 
             // update database
             $cols = array();
@@ -102,7 +103,10 @@ class RSerRegistration extends DbEntry {
             $query = "SELECT Id FROM RSerRegistrations WHERE Season={$season->id()} AND User={$user->id()};";
             $res = \Core\Database::fetchRaw($query);
             $id = NULL;
-            if (count($res) > 0) $id = (int) $res[0]['Id'];
+            if (count($res) > 0) {
+                $id = (int) $res[0]['Id'];
+                \Core\Database::query("DELETE FROM RSerQualifications WHERE Registration=$id");
+            }
 
             // update database
             $cols = array();
