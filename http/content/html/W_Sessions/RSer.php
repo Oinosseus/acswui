@@ -11,6 +11,7 @@ class RSer extends \core\HtmlContent {
 
     private $CurrentSeries = NULL;
     private $CurrentSeason = NULL;
+    private $CurrentClass = NULL;
 
 
     public function __construct() {
@@ -33,11 +34,20 @@ class RSer extends \core\HtmlContent {
                 $this->CurrentSeries = \DbEntry\RSerSeries::fromId((int) $_REQUEST['RSerSeries']);
         if (array_key_exists("RSerSeason", $_REQUEST))
             $this->CurrentSeason = \DbEntry\RSerSeason::fromId((int) $_REQUEST['RSerSeason']);
+        if (array_key_exists("RSerClass", $_REQUEST))
+            $this->CurrentClass = \DbEntry\RSerClass::fromId((int) $_REQUEST['RSerClass']);
 
-        // process actions
+
+        // --------------------------------------------------------------------
+        //  Process Actions
+        // --------------------------------------------------------------------
+
         if (array_key_exists("Action", $_REQUEST)) {
 
-            // add split
+
+            // ----------------------------------------------------------------
+            //  Add Split
+
             if ($this->CanEdit && $_REQUEST['Action'] == "AddSplit") {
                 $rser_e = \DbEntry\RSerEvent::fromId((int) $_REQUEST['RSerEvent']);
                 \DbEntry\RSerSplit::createNew($rser_e);
@@ -47,7 +57,10 @@ class RSer extends \core\HtmlContent {
                                "View"=>"SeasonEdit"]);
             }
 
-            // add event
+
+            // ----------------------------------------------------------------
+            //  Add Event
+
             if ($this->CanEdit && $_REQUEST['Action'] == "AddEvent") {
                 \DbEntry\RSerEvent::createNew($this->CurrentSeason);
                 $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
@@ -55,14 +68,19 @@ class RSer extends \core\HtmlContent {
                                "View"=>"SeasonEdit"]);
             }
 
-            // create new series
+
+            // ----------------------------------------------------------------
+            //  Create New Series
             if ($this->CanCreate && $_REQUEST['Action'] == "CreateNewSeries") {
                 $this->CurrentSeries = \DbEntry\RSerSeries::createNew();
                 $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
                                "View"=>"SeriesEdit"]);
             }
 
-            // create new season
+
+            // ----------------------------------------------------------------
+            //  Create New Season
+
             if ($this->CanCreate && $this->CanEdit && $_REQUEST['Action'] == "CreateNewSeason") {
                 $rser_s = \DbEntry\RSerSeason::createNew($this->CurrentSeries);
                 $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
@@ -70,7 +88,42 @@ class RSer extends \core\HtmlContent {
                                "View"=>"SeasonEdit"]);
             }
 
-            // save series settings
+
+            // ----------------------------------------------------------------
+            //  Register Single Driver
+
+            if (\Core\UserManager::loggedUser() && $_REQUEST['Action'] == "RegisterDriver") {
+                $user = \Core\UserManager::loggedUser();
+                $carskin = \DbEntry\CarSkin::fromId((int) $_POST['RegistrationCarSkin']);
+
+                \DbEntry\RSerRegistration::createNew($this->CurrentSeason,
+                                                     $this->CurrentClass,
+                                                     NULL, $user, $carskin);
+
+                $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
+                               "RSerSeason"=>$this->CurrentSeason->id(),
+                               "View"=>"SeasonOverview"]);
+            }
+
+
+            // ----------------------------------------------------------------
+            //  Register TeamCar
+
+            if (\Core\UserManager::loggedUser() && $_REQUEST['Action'] == "RegisterTeam") {
+                $teamcar = \DbEntry\TeamCar::fromId((int) $_POST['RegisterTeamCar']);
+
+                \DbEntry\RSerRegistration::createNew($this->CurrentSeason,
+                                                     $this->CurrentClass,
+                                                     $teamcar);
+
+                $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
+                               "RSerSeason"=>$this->CurrentSeason->id(),
+                               "View"=>"SeasonOverview"]);
+            }
+
+
+            // ----------------------------------------------------------------
+            //  Save Series Settings
             if ($this->CanEdit && $_REQUEST['Action'] == "SaveRaceSeries") {
 
                 // update name
@@ -103,7 +156,10 @@ class RSer extends \core\HtmlContent {
                                "View"=>"SeriesEdit"]);
             }
 
-            // save season
+
+            // ----------------------------------------------------------------
+            //  Save Season
+
             if ($this->CanEdit && $_REQUEST['Action'] == "SaveSeason") {
 
                 if (array_key_exists("RSerSeasonName", $_POST)) {
@@ -136,7 +192,10 @@ class RSer extends \core\HtmlContent {
                                "View"=>"SeasonEdit"]);
             }
 
-            // remove car class
+
+            // ----------------------------------------------------------------
+            //  Remove Car Class
+
             if ($this->CanEdit && $_REQUEST['Action'] == "DeactivateClass") {
 
                 // get car class
@@ -161,7 +220,11 @@ class RSer extends \core\HtmlContent {
 
         }
 
-        // determine HTML output
+
+        // --------------------------------------------------------------------
+        //  Determine HTML Output
+        // --------------------------------------------------------------------
+
         if ($this->CurrentSeries == NULL) {
 
             // list available series
@@ -178,15 +241,30 @@ class RSer extends \core\HtmlContent {
 
         } else if (array_key_exists("View", $_REQUEST)) {
 
-            if ($_REQUEST["View"] == "SeriesEdit") {
-                $html .= $this->getHtmlSeriesEdit();
+            switch ($_REQUEST["View"]) {
 
-            } else if ($_REQUEST["View"] == "SeasonEdit") {
-                $html .= $this->gehtHtmlSeasonEdit();
+                case "SeriesEdit":
+                    $html .= $this->getHtmlSeriesEdit();
+                    break;
 
-            } else if ($_REQUEST["View"] == "SeasonOverview") {
-                $html .= $this->getHtmlSeasonOverview();
+                case "SeasonEdit":
+                    $html .= $this->gehtHtmlSeasonEdit();
+                    break;
 
+                case "SeasonOverview":
+                    $html .= $this->getHtmlSeasonOverview();
+                    break;
+
+                case "SeasonRegisterDriver":
+                    $html .= $this->getHtmlRegisterDriver();
+                    break;
+
+                case "SeasonRegisterTeam":
+                    $html .= $this->getHtmlRegisterTeam();
+                    break;
+
+                default:
+                    \Core\Log::error("Unknown view {$_REQUEST['View']}!");
             }
 
         } else {
@@ -204,8 +282,140 @@ class RSer extends \core\HtmlContent {
         $html .= "<img src=\"{$this->CurrentSeries->logoPath()}\"> ";
         $html .= "<div>{$this->CurrentSeries->name()}</div>";
         if ($this->CurrentSeason) $html .= "<div>{$this->CurrentSeason->name()}</div>";
+        if ($this->CurrentClass) $html .= "<div>{$this->CurrentClass->name()}</div>";
         $html .= "</div>";
 
+        return $html;
+    }
+
+
+    private function getHtmlRegisterDriver() {
+        $html = "";
+
+        // back link
+        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                           "RSerSeason"=>$this->CurrentSeason->id(),
+                           "View"=>"SeasonOverview"]);
+        $html .= "<a href=\"$url\">&lt;&lt; " . _("Season Overview") . "</a>";
+
+        // header
+        $html .= $this->getHtmlPageHeader();
+
+        // permission check
+        if ($this->CurrentSeries === NULL) return "";
+        if ($this->CurrentSeason === NULL) return "";
+        if ($this->CurrentClass === NULL) return "";
+        if (\Core\UserManager::loggedUser() == NULL) return;
+
+        // create new form
+        $html .= $this->newHtmlForm("POST");
+        $html .= "<input type=\"hidden\" name=\"RSerSeries\" value=\"{$this->CurrentSeries->id()}\">";
+        $html .= "<input type=\"hidden\" name=\"RSerSeason\" value=\"{$this->CurrentSeason->id()}\">";
+        $html .= "<input type=\"hidden\" name=\"RSerClass\" value=\"{$this->CurrentClass->id()}\">";
+
+        // save button
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"RegisterDriver\">" . _("Save Registration") . "</button>";
+        $html .= "<br>";
+
+        // cars for driver registration
+        foreach ($this->CurrentClass->carClass()->cars() as $car) {
+
+            $html .= "<h2>{$car->name()}</h2>";
+            foreach ($car->skins() as $skin) {
+
+                // skip already occupied skins
+                //! @todo TBD Filter already occupied cars
+                // if ($ss->carSkinOccupied($skin)) continue;
+
+                // skip owned skins
+                if ($skin->owner() && $skin->owner()->id() != \Core\UserManager::currentUser()->id()) continue;
+
+                // offer skin as radio button
+                $skin_img = $skin->html(FALSE, TRUE, TRUE);
+                $checked = FALSE;
+                $disabled = FALSE;
+                $html .= $this->newHtmlContentRadio("RegistrationCarSkin",
+                                                    (string) $skin->id(),
+                                                    $skin_img,
+                                                    $checked,
+                                                    $disabled);
+            }
+        }
+
+        // save button
+        $html .= "<br>";
+        $html .= "<br>";
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"RegisterDriver\">" . _("Save Registration") . "</button>";
+        $html .= "<br>";
+
+        $html .= "</form>";
+        return $html;
+    }
+
+
+    private function getHtmlRegisterTeam() {
+        $html = "";
+
+        // back link
+        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                           "RSerSeason"=>$this->CurrentSeason->id(),
+                           "View"=>"SeasonOverview"]);
+        $html .= "<a href=\"$url\">&lt;&lt; " . _("Season Overview") . "</a>";
+
+        // header
+        $html .= $this->getHtmlPageHeader();
+
+        // permission check
+        if ($this->CurrentSeries === NULL) return "";
+        if ($this->CurrentSeason === NULL) return "";
+        if ($this->CurrentClass === NULL) return "";
+        if (\Core\UserManager::loggedUser() == NULL) return;
+        $cu = \Core\UserManager::currentUser();
+
+        // create new form
+        $html .= $this->newHtmlForm("POST");
+        $html .= "<input type=\"hidden\" name=\"RSerSeries\" value=\"{$this->CurrentSeries->id()}\">";
+        $html .= "<input type=\"hidden\" name=\"RSerSeason\" value=\"{$this->CurrentSeason->id()}\">";
+        $html .= "<input type=\"hidden\" name=\"RSerClass\" value=\"{$this->CurrentClass->id()}\">";
+
+        // save button
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"RegisterTeam\">" . _("Save Registration") . "</button>";
+        $html .= "<br>";
+
+        // cars for team registration
+        $html .= "<div id=\"RegistrationTypeTeamCars\">";
+        $any_team_car_found = FALSE;
+        foreach (\DbEntry\Team::listTeams(manager:$cu, carclass:$this->CurrentClass->carClass()) as $tm) {
+            $html .= "<h1>{$tm->name()}</h1>";
+
+            foreach ($tm->cars() as $tc) {
+                $skin_img = $tc->html();
+                $checked = FALSE;
+                $disabled = FALSE;
+                $html .= $this->newHtmlContentRadio("RegisterTeamCar",
+                                                    (string) $tc->id(),
+                                                    $skin_img,
+                                                    $checked,
+                                                    $disabled);
+                $any_team_car_found |= TRUE;
+            }
+        }
+        $html .= "</div>";
+
+        // consolation message
+        if (!$any_team_car_found) {
+            $html .= "<br><br>";
+            $html .= _("You either have no permission to manage a team or none of your teams has a car in the correct class");
+            $html .= "<br><br>";
+        }
+
+        // save button
+        $html .= "<br>";
+        $html .= "<br>";
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"RegisterTeam\">" . _("Save Registration") . "</button>";
+        $html .= "<br>";
+
+        $html .= "</form>";
         return $html;
     }
 
@@ -342,6 +552,56 @@ class RSer extends \core\HtmlContent {
 
         // registrations
         $html .= "<h1>" . _("Registrations") . "</h1>";
+
+        // list classes
+        foreach ($this->CurrentSeason->listClasses() as $rser_c) {
+            $html .= "<div class=\"TableWrapper\">";
+
+            // current registrations
+            $html .= "<table>";
+            $html .= "<caption>{$rser_c->name()} <small>({$rser_c->carClass()->name()})</small></caption>";
+            $html .= "<tr><th>" . _("Team") . "</th><th>" . _("Car") . "</th><th>" . _("Drivers") . "</th></tr>";
+            foreach ($this->CurrentSeason->listRegistrations($rser_c) as $rser_reg) {
+                $html .= "<tr>";
+
+                if ($rser_reg->teamCar()) {
+                    $html .= "<td class=\"ZeroPadding\">{$rser_reg->teamCar()->team()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
+                    $html .= "<td class=\"ZeroPadding\">{$rser_reg->teamCar()->carSkin()->html(TRUE, FALSE, TRUE)}</td>";
+                    $html .= "<td>";
+                    $drivers = $rser_reg->teamCar()->drivers();
+                    for ($i=0; $i < count($drivers); ++$i) {
+                        $tmm = $drivers[$i];
+                        if ($i > 0) $html .= ", ";
+                        $html .= $tmm->user()->nationalFlag() . " ";
+                        $html .= $tmm->user()->html();
+                    }
+                    $html .= "</td>";
+                } else {
+                    $html .= "<td></td>";
+                    $html .= "<td class=\"ZeroPadding\">{$rser_reg->carSkin()->html(TRUE, FALSE, TRUE)}</td>";
+                    $html .= "<td>{$rser_reg->user()->nationalFlag()} {$rser_reg->user()->html()}</td>";
+                }
+
+                $html .= "</tr>";
+            }
+            $html .= "</table>";
+
+            // register team
+            $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                "RSerSeason"=>$this->CurrentSeason->id(),
+                                "RSerClass"=>$rser_c->id(),
+                                "View"=>"SeasonRegisterTeam"]);
+            $html .= "<a href=\"$url\">" . _("Register Team") . "</a> ";
+
+            // register driver
+            $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                "RSerSeason"=>$this->CurrentSeason->id(),
+                                "RSerClass"=>$rser_c->id(),
+                                "View"=>"SeasonRegisterDriver"]);
+            $html .= "<a href=\"$url\">" . _("Register Single Driver") . "</a> ";
+
+            $html .= "</div>";
+        }
 
         return $html;
     }

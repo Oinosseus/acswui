@@ -33,33 +33,26 @@ class RSerClass extends \Parameter\Collection {
                                    _("Name"),
                                    _("Name of this class in context of the race series"));
 
+        $p = new \Parameter\ParamInt(NULL, $pc,
+                                     "Priority",
+                                     _("Priority"),
+                                     _("Defines which class is most important (0) and which are less important (higher values)"));
+        $p->setMin(0);
+        $p->setMax(9);
+
 
         // --------------
-        //  Qualifcation
+        //  Registration
 
         $pc = new \Parameter\Collection(NULL, $pc,
-                                  "Qualification",
-                                  _("Qualification"),
-                                  _("Qualification settings the class"));
+                                  "Registration",
+                                  _("Registration"),
+                                  _("Settings for registration requirements"));
 
         new \Parameter\ParamInt(NULL, $pc,
-                                "QualMinPts",
+                                "RegMinPts",
                                 _("Min Points"),
                                 _("Minimum points from last season which driver needs for registration"));
-
-
-        $p = new \ParameterSpecial\RankingGroup(NULL, $pc,
-                                                "QualMaxRnkGrp",
-                                                _("Max Group"),
-                                                _("The maximum driver ranking group a driver needs to have to register for this class"));
-        $p->setValue(\Core\Config::DriverRankingGroups - 1);
-
-
-        $p = new \ParameterSpecial\RankingGroup(NULL, $pc,
-                                                "QualMinRnkGrp",
-                                                _("Min Group"),
-                                                _("The minimum driver ranking group a driver needs to have to register for this class"));
-        $p->setValue(0);
 
 
         // --------------------------------------------------------------------

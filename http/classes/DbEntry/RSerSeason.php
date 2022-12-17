@@ -44,9 +44,52 @@ class RSerSeason extends DbEntry {
     }
 
 
+    /**
+     * @return TRUE if this season has still events planned
+     */
+    public function isActive() : bool {
+        //! @todo TBD Determine if a season is active
+        return TRUE;
+    }
+
+
+    /**
+     * All classes than can be registered, or where registrations currently exist.
+     * @return A list of RSerClass objects
+     */
+    public function listClasses() : array {
+
+        // get active classes of the series
+        $classes = $this->series()->listClasses();
+
+        // get inactive classes which have active registrations
+        $query = "SELECT RSerRegistrations.Class FROM RSerRegistrations";
+        $query .= " INNER JOIN RSerClasses ON RSerRegistrations.Class=RSerClasses.Id";
+        $query .= " WHERE RSerRegistrations.Season={$this->id()}";
+        $query .= " AND RSerRegistrations.Active!=0";
+        $query .= " AND RSerClasses.Active=0";
+        $res = \Core\Database::fetchRaw($query);
+        foreach ($res as $row) {
+            $classes[] = RSerClass::fromId((int) $row['Class']);
+        }
+
+        return $classes;
+    }
+
+
     //! @return A list of RSerEvent objects
     public function listEvents() : array {
         return RSerEvent::listEvents($this);
+    }
+
+
+    /**
+     * List registrations for a certain class
+     * @param $class The RSerClass
+     * @return A list of RSerRegistration objects
+     */
+    public function listRegistrations(RSerClass $class) : array {
+        return RSerRegistration::listRegistrations($this, $class);
     }
 
 
@@ -74,6 +117,12 @@ class RSerSeason extends DbEntry {
     //! @return The race-series-name of this car class
     public function name() {
         return $this->loadColumn("Name");
+    }
+
+
+    //! @return The according RSerSeries object
+    public function series() : RSerSeries {
+        return RSerSeries::fromId((int) $this->loadColumn("Series"));
     }
 
 

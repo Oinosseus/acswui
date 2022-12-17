@@ -765,3 +765,23 @@ main.RSer ul.RSerSeasonList {
     display: block;
     text-align: center;
 }
+
+main.RSer div.TableWrapper {
+    margin-bottom: 5em;
+    display: block;
+    text-align: center;
+}
+
+main.RSer div.TableWrapper div.DbEntryHtml {
+    background-color: transparent;
+    border: 0;
+    margin: 0;
+}
+
+main.RSer div.TableWrapper div.DbEntryHtml img {
+    height: 3em;
+}
+
+main.RSer div.TableWrapper td.ZeroPadding {
+    padding: 0;
+}

@@ -262,6 +262,7 @@ class InstallerDatabase(object):
         table_name = "RSerClasses"
         self.__db.appendTable(table_name)
         self.__db.appendColumnString(table_name, "Name", 30)
+        self.__db.appendColumnUInt(table_name, "Priority")
         self.__db.appendColumnUInt(table_name, "CarClass")
         self.__db.appendColumnUInt(table_name, "Series")
         self.__db.appendColumnText(table_name, "ParamColl")

@@ -78,7 +78,8 @@ class RSerClass extends DbEntry {
         } else {
 
             // get default serialized prameter collection
-            $pc = new \ParameterCollections\RSerClass();
+            $base_collection = new \ParameterCollections\RSerClass();
+            $pc = new \ParameterCollections\RSerClass($base_collection);
             $pc->child("Name")->setValue($car_class->name());
 
             // store into db
@@ -132,7 +133,7 @@ class RSerClass extends DbEntry {
         // prepare query
         $query = "SELECT Id FROM RSerClasses WHERE Series={$rser_series->id()}";
         if ($active_only) $query .= " AND Active!=0";
-        $query .= " ORDER BY Id ASC";
+        $query .= " ORDER BY Priority ASC";
 
         // list results
         $list = array();
@@ -179,6 +180,7 @@ class RSerClass extends DbEntry {
         $column_data = array();
         $column_data['ParamColl'] = $data_json;
         $column_data['Name'] = $this->parameterCollection()->child("Name")->value();
+        $column_data['Priority'] = $this->parameterCollection()->child("Priority")->value();
         $this->storeColumns($column_data);
     }
 }
