@@ -785,3 +785,8 @@ main.RSer div.TableWrapper div.DbEntryHtml img {
 main.RSer div.TableWrapper td.ZeroPadding {
     padding: 0;
 }
+
+main.RSer a.Unregister {
+    color: var(--color-red-accent);
+    text-decoration: none;
+}

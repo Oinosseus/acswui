@@ -16,6 +16,12 @@ class RSerRegistration extends DbEntry {
     }
 
 
+    //! @return TRUE if this registration is active
+    public function active() : bool {
+        return ($this->loadColumn("Active") != 0) ? TRUE : FALSE;
+    }
+
+
     //! @return The CarSkin for this registration
     public function carSkin() : CarSkin {
         return CarSkin::fromId((int) $this->loadColumn("CarSkin"));
@@ -42,6 +48,8 @@ class RSerRegistration extends DbEntry {
                                      ?TeamCar $teamcar,
                                      User $user=NULL,
                                      CarSkin $carskin=NULL) : ?RSerRegistration {
+
+        //! @todo TBD Delete existing qualifications
 
         // register TeamCar
         if ($teamcar !== NULL) {
@@ -112,6 +120,12 @@ class RSerRegistration extends DbEntry {
 
             return RSerRegistration::fromId($id);
         }
+    }
+
+
+    //! deactivates this registration  (can be re-activated with createNew()
+    public function deactivate() {
+        $this->storeColumns(["Active"=>0]);
     }
 
 

@@ -107,6 +107,20 @@ class RSer extends \core\HtmlContent {
 
 
             // ----------------------------------------------------------------
+            //  Unregister Single Driver
+
+            if (\Core\UserManager::loggedUser() && $_REQUEST['Action'] == "UnregisterDriver") {
+                $reg = \DbEntry\RSerRegistration::fromId((int) $_REQUEST['RSerRegistration']);
+                if ($reg->user() == \Core\UserManager::loggedUser()) {
+                    $reg->deactivate();
+                }
+                $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
+                               "RSerSeason"=>$this->CurrentSeason->id(),
+                               "View"=>"SeasonOverview"]);
+            }
+
+
+            // ----------------------------------------------------------------
             //  Register TeamCar
 
             if (\Core\UserManager::loggedUser() && $_REQUEST['Action'] == "RegisterTeam") {
@@ -116,6 +130,21 @@ class RSer extends \core\HtmlContent {
                                                      $this->CurrentClass,
                                                      $teamcar);
 
+                $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
+                               "RSerSeason"=>$this->CurrentSeason->id(),
+                               "View"=>"SeasonOverview"]);
+            }
+
+
+            // ----------------------------------------------------------------
+            //  Unregister TeamCar
+
+            if (\Core\UserManager::loggedUser() && $_REQUEST['Action'] == "UnregisterTeamCar") {
+                $reg = \DbEntry\RSerRegistration::fromId((int) $_REQUEST['RSerRegistration']);
+                $tmm = $reg->teamCar()->team()->findMember(\Core\UserManager::currentUser());
+                if ($tmm && $tmm->permissionManage()) {
+                    $reg->deactivate();
+                }
                 $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
                                "RSerSeason"=>$this->CurrentSeason->id(),
                                "View"=>"SeasonOverview"]);
@@ -562,6 +591,7 @@ class RSer extends \core\HtmlContent {
             $html .= "<caption>{$rser_c->name()} <small>({$rser_c->carClass()->name()})</small></caption>";
             $html .= "<tr><th>" . _("Team") . "</th><th>" . _("Car") . "</th><th>" . _("Drivers") . "</th></tr>";
             foreach ($this->CurrentSeason->listRegistrations($rser_c) as $rser_reg) {
+                if (!$rser_reg->active()) continue;
                 $html .= "<tr>";
 
                 if ($rser_reg->teamCar()) {
@@ -576,11 +606,33 @@ class RSer extends \core\HtmlContent {
                         $html .= $tmm->user()->html();
                     }
                     $html .= "</td>";
+
+                    // unregister team
+                    $tmm = $rser_reg->teamCar()->team()->findMember(\Core\UserManager::currentUser());
+                    if ($tmm && $tmm->permissionManage()) {
+                        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                           "RSerSeason"=>$this->CurrentSeason->id(),
+                                           "RSerRegistration"=>$rser_reg->id(),
+                                           "Action"=>"UnregisterTeamCar"]);
+                        $html .= "<td><a href=\"$url\" title=\"" . _("Unregister") . "\" class=\"Unregister\">&#x2716;</a></td>";
+                    }
+
+
                 } else {
                     $html .= "<td></td>";
                     $html .= "<td class=\"ZeroPadding\">{$rser_reg->carSkin()->html(TRUE, FALSE, TRUE)}</td>";
                     $html .= "<td>{$rser_reg->user()->nationalFlag()} {$rser_reg->user()->html()}</td>";
+
+                    // unregister driver
+                    if ($rser_reg->user() == \Core\UserManager::currentUser()) {
+                        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                           "RSerSeason"=>$this->CurrentSeason->id(),
+                                           "RSerRegistration"=>$rser_reg->id(),
+                                           "Action"=>"UnregisterDriver"]);
+                        $html .= "<td><a href=\"$url\" title=\"" . _("Unregister") . "\" class=\"Unregister\">&#x2716;</a></td>";
+                    }
                 }
+
 
                 $html .= "</tr>";
             }
