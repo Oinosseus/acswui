@@ -25,6 +25,8 @@ class UdpPluginServer(object):
                  ac_server_path,
                  realtime_json_path = None,
                  kick_illegal_occupations = False,
+                 bop_map_rser_ballasts = {},          # key=RSerClass.Id, value=ballast
+                 bop_map_rser_restrictors = {},       # key=RSerClass.Id, value=restrictor
                  bop_map_car_ballasts = {},          # key=car_model, value=ballast
                  bop_map_car_restrictors = {},       # key=car_model, value=restrictor
                  bop_map_user_ballasts = {},         # key=Steam64GUID (or OTHER), value=ballast
@@ -105,6 +107,8 @@ class UdpPluginServer(object):
             self.__entries.append(upce)
 
         # remember BOP maps
+        self.__bop_map_rser_ballasts = {key: int(bop_map_rser_ballasts[key]) for key in bop_map_rser_ballasts.keys()}
+        self.__bop_map_rser_restrictors = {key: int(bop_map_rser_restrictors[key]) for key in bop_map_rser_restrictors.keys()}
         self.__bop_map_car_ballasts = {key: int(bop_map_car_ballasts[key]) for key in bop_map_car_ballasts.keys()}
         self.__bop_map_car_restrictors = {key: int(bop_map_car_restrictors[key]) for key in bop_map_car_restrictors.keys()}
         self.__bop_map_user_ballasts = {key: int(bop_map_user_ballasts[key]) for key in bop_map_user_ballasts.keys()}
@@ -220,8 +224,14 @@ class UdpPluginServer(object):
                 else:
                     ballast_team = 0
 
+                # for RSerClass
+                if entry.RSerClass in self.__bop_map_rser_ballasts:
+                    ballast_rserclass = self.__bop_map_rser_ballasts[entry.RSerClass]
+                else:
+                    ballast_rserclass = 0
+
                 # apply ballast
-                ballast = ballast_car_model + max(ballast_user, ballast_team)
+                ballast = ballast_car_model + max(ballast_user, ballast_team) + ballast_rserclass
                 self.send_admin_command("/ballast %i %i" % (entry.Id, ballast))
                 entry.BallastCurrent = ballast
 
@@ -250,8 +260,14 @@ class UdpPluginServer(object):
                 else:
                     restrictor_team = 0
 
+                # for RSerClass
+                if entry.RSerClass in self.__bop_map_rser_restrictors:
+                    restrictor_rserclass = self.__bop_map_rser_restrictors[entry.RSerClass]
+                else:
+                    restrictor_rserclass = 0
+
                 # apply ballast
-                restrictor = restrictor_car_model + max(restrictor_user, restrictor_team)
+                restrictor = restrictor_car_model + max(restrictor_user, restrictor_team) + restrictor_rserclass
                 self.send_admin_command("/restrictor %i %i" % (entry.Id, restrictor))
                 entry.RestrictorCurrent = restrictor
 

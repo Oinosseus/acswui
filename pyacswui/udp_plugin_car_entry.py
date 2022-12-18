@@ -73,6 +73,11 @@ class UdpPluginCarEntry(object):
         if 'TeamCarId' in entry_dict:
            self.__team_car_id = int(entry_dict['TeamCarId'])
 
+        # remember RSerClass
+        self.__rser_class = 0
+        if 'RSerClass' in entry_dict:
+           self.__rser_class = int(entry_dict['RSerClass'])
+
         # It happened that completed_lap() was called, but no driver was connected.
         # In this case, count all completed laps to inform later
         self.__missed_completed_laps = 0
@@ -116,6 +121,11 @@ class UdpPluginCarEntry(object):
         if value != self.__restrictor_current:
             self.__verbosity.print("Changing restrictor on Car ID%s for driver %s (%s) from %i%% to %i%%" % (self.Id, str(self.DriverGuid), str(self.DriverName), self.__restrictor_current, value))
         self.__restrictor_current = value
+
+
+    @property
+    def RSerClass(self):
+        return self.__rser_class
 
 
     @property
@@ -259,6 +269,7 @@ class UdpPluginCarEntry(object):
                                #cuts, "cuts after", laptime, "ms")
 
         fields = {}
+        fields['RSerClass'] = self.__rser_class
         fields['Session'] = session.Id
         fields['CarSkin'] = self.__car_skin_id
         fields['User'] = self.__driver_id

@@ -68,10 +68,12 @@ class RSerSeries extends DbEntry {
         $class_names_string = implode(", ", $class_names);
 
         // information
-        $html .= "<div class=\"RSerInformation\">";
-        $html .= "<label>{$this->name()}</label>";
-        $html .= "<div class=\"RSerInfoClasses\">$class_names_string</div>";
-        $html .= "</div>";
+        if ($show_name) {
+            $html .= "<div class=\"RSerInformation\">";
+            $html .= "<label>{$this->name()}</label>";
+            $html .= "<div class=\"RSerInfoClasses\">$class_names_string</div>";
+            $html .= "</div>";
+        }
 
         // link container
         if ($include_link) {

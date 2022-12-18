@@ -107,7 +107,7 @@ class SessionSchedule extends DbEntry {
 
 
     //! @return A generated EntryList object
-    public function entryList() {
+    public function entryList() : \Core\EntryList {
 
         // create EntryList
         $el = new \Core\EntryList();

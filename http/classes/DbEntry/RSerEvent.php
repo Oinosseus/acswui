@@ -6,6 +6,8 @@ namespace DbEntry;
 //! Wrapper for database table element
 class RSerEvent extends DbEntry {
 
+    private $Order = NULL;
+
 
     /**
      * Construct a new object
@@ -13,6 +15,34 @@ class RSerEvent extends DbEntry {
      */
     protected function __construct(int $id) {
         parent::__construct("RSerEvents", $id);
+    }
+
+
+    //! @return The BOP Map that is applicable for this event
+    public function bopMap() : \Core\BopMap {
+        //! @todo TBD Respect BOP from standings
+
+        $bm = new \Core\BopMap();
+
+        foreach ($this->season()->series()->listClasses() as $rser_class) {
+            $rscc = $rser_class->carClass();
+            if ($rscc) {
+
+                // RSerClass offset
+                $bm->update($rscc->getParam("BopBallastOffset"),
+                            $rscc->getParam("BopRestrictorOffset"),
+                            $rscc);
+
+                // CarClass BOP
+                foreach ($rscc->carClass()->cars() as $car) {
+                    $ballast = $rscc->carClass()->ballast($car);
+                    $restrictor = $rscc->carClass()->restrictor($car);
+                    $bm->update($ballast, $restrictor, $car);
+                }
+            }
+        }
+
+        return $bm;
     }
 
 
@@ -74,6 +104,27 @@ class RSerEvent extends DbEntry {
     }
 
 
+    //! @return The order/number of this event
+    public function order() : int {
+        if ($this->Order === NULL) {
+            $query = "SELECT Id FROM RSerEvents WHERE Season={$this->season()->id()} ORDER BY Id ASC";
+            $this->Order = 1;
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                if ($row['Id'] == $this->id()) break;
+                $this->Order += 1;
+            }
+        }
+
+        return $this->Order;
+    }
+
+
+    //! @return The associated season of this event
+    public function season() : RSerSeason {
+        return RSerSeason::fromId((int) $this->loadColumn('Season'));
+    }
+
+
     /**
      * Change the track of the event.
      *
@@ -104,7 +155,11 @@ class RSerEvent extends DbEntry {
 
 
     //! @return The Track of this event
-    public function track() : ?Track {
-        return Track::fromId((int) $this->loadColumn("Track"));
+    public function track() : Track {
+        $t = Track::fromId((int) $this->loadColumn("Track"));
+        if ($t === NULL) {
+            $t = Track::listTracks()[0];
+        }
+        return $t;
     }
 }

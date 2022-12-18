@@ -22,7 +22,7 @@ class CronSessionAutomatic extends \Core\Cronjob {
             $session_loop_ids_per_slot_id[$ssid][] = $sl->id();
         }
 
-        // walk trhough server slots and find session loops
+        // walk trhough server slots and find scheduled items
         foreach (\Core\ServerSlot::listSlots() as $ss) {
             $ssid = $ss->id();
 
@@ -42,7 +42,6 @@ class CronSessionAutomatic extends \Core\Cronjob {
                 if ($schd->start() <= $now) {
                     $this->verboseOutput("Starting SessioSchedule $schd on $ss<br>");
                     $ss->start($schd->track(),
-                               $schd->carClass(),
                                $schd->serverPreset(),
                                $schd->entryList(),
                                $schd->bopMap(),
@@ -65,7 +64,6 @@ class CronSessionAutomatic extends \Core\Cronjob {
 
                         // start session
                         $ss->start($schd->track(),
-                                   $schd->carClass(),
                                    $preset,
                                    $schd->entryList(),
                                    $schd->bopMap());
@@ -106,7 +104,23 @@ class CronSessionAutomatic extends \Core\Cronjob {
                         if ($track && $car_class && $preset) {
                             $this->verboseOutput("Starting SessionLoop $sl on $ss<br>");
                             $sl->setLastStart(new \DateTime("now"));
-                            $ss->start($track, $car_class, $preset);
+
+                            // create EntryList
+                            $el = new \Core\EntryList();
+                            $el->addTvCar();
+                            $el->fillSkins($car_class, $track->pitboxes());
+                            $el->reverse();
+
+                            // cretae BopMap
+                            $bm = new \Core\BopMap();
+                            foreach ($car_class->cars() as $c) {
+                                $b = $car_class->ballast($c);
+                                $r = $car_class->restrictor($c);
+                                $bm->update($b, $r, $c);
+                            }
+
+                            // start
+                            $ss->start($track, $preset, $el, $bm);
                         }
 
                         // set next loop if
@@ -126,24 +140,13 @@ class CronSessionAutomatic extends \Core\Cronjob {
     /**
      * Returns the next schedule item that shall be executed
      * @param $server_slot The requested server slot for the next item (can be NULL)
-     * @return A SessionSchedule object (or NULL)
+     * @return A ScheduledItem object (or NULL)
      */
-    private function nextScheduleItem(\Core\ServerSlot $server_slot) {
-
-        // create query
+    private function nextScheduleItem(\Core\ServerSlot $server_slot) : ?\Compound\ScheduledItem {
         $now = new \DateTime("now");
         $now->sub(new \DateInterval("PT1M")); // ad one minute uncertainty
-        $now_str = \Core\Database::timestamp($now);
-        $query = "SELECT Id FROM SessionSchedule WHERE Executed < Start AND Start >= '$now_str'";
-        if ($server_slot) {
-            $query .= " AND Slot = {$server_slot->id()}";
-        }
-        $query .= "  ORDER BY Start ASC LIMIT 1;";
-
-        // get result
-        $res = \Core\Database::fetchRaw($query);
-        if (count($res) > 0) return \DbEntry\SessionSchedule::fromId($res[0]['Id']);
-
+        $items = \Compound\ScheduledItem::listItems($server_slot, $now);
+        if (count($items)) return $items[0];
         return NULL;
     }
 }

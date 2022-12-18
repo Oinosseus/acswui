@@ -8,18 +8,25 @@ namespace Core;
 class EntryListItem {
 
     private $CarSkin = NULL;
+    private $RSerClass = NULL;
     private $Users = NULL;
     private $TeamCar = NULL;
     private $ForceDriver = NULL;
-    private $Spectator = FALSE;
+    // private $Spectator = FALSE;
 
-    public function __construct(\DbEntry\CarSkin $skin) {
+    /**
+     * @param $skin The CarSkin object that shall be used for the entry list item
+     * @param $rser_class If given, this information will be added to the entry list
+     */
+    public function __construct(\DbEntry\CarSkin $skin,
+                                \DbEntry\RSerClass $rser_class=NULL) {
         $this->CarSkin = $skin;
+        $this->RSerClass = $rser_class;
     }
 
 
     /**
-     * Assign driver(s) to this cars.
+     * Assign driver(s) to this car.
      * This could be either multiple User objects,
      * or one TeamCar object.
      *
@@ -28,12 +35,18 @@ class EntryListItem {
      *
      * To add multiple users, call this multiple times.
      *
+     * If $driver is NULL, nothing is done.
+     *
      * @param $driver Either User or TeamCar object.
      */
-    public function addDriver(\DbEntry\User|\DbEntry\TeamCar $driver) {
+    public function addDriver(\DbEntry\User|\DbEntry\TeamCar|NULL $driver) {
+
+        // ignore this
+        if ($driver === NULL) {
+            return;
 
         // add a user
-        if (is_a($driver, "\DbEntry\User")) {
+        } else if (is_a($driver, "\DbEntry\User")) {
             if ($this->TeamCar) {
                 \Core\Log::error("Cannot add a user, because a team-car is already assigned!");
             } else {
@@ -75,10 +88,10 @@ class EntryListItem {
     }
 
 
-    //! @param §spectator Defines if SPECTATOR in entry list shall be set or not
-    public function setSpectator(bool $spectator) {
-        $this->Spectator = $spectator;
-    }
+    // //! @param §spectator Defines if SPECTATOR in entry list shall be set or not
+    // public function setSpectator(bool $spectator) {
+    //     $this->Spectator = $spectator;
+    // }
 
 
     //! @return A list of User objects of the occupation (can be empty)
@@ -129,6 +142,12 @@ class EntryListItem {
         } else {
             fwrite($f, "TEAM=\n");
             fwrite($f, "TeamCarId=0\n");
+        }
+
+        if ($this->RSerClass) {
+            fwrite($f, "RSerClass={$this->RSerClass->id()}\n");
+        } else {
+            fwrite($f, "RSerClass=0\n");
         }
 
         // throws error from AC-Server-Wrapper

@@ -29,10 +29,27 @@ class W_Sessions extends \core\HtmlContent {
                     sleep(2);
 
                 } else if ($_POST['Action'] == "StartSlot") {
+
+                    // basic data
                     $track = \DbEntry\Track::fromId($_POST['Track']);
                     $preset = \DbEntry\ServerPreset::fromId($_POST['ServerPreset']);
                     $car_class = \DbEntry\CarClass::fromId($_POST['CarClass']);
-                    $slot->start($track, $car_class, $preset);
+
+                    // create EntryList
+                    $el = new \Core\EntryList();
+                    $el->addTvCar();
+                    $el->fillSkins($car_class, $track->pitboxes());
+                    $el->reverse();
+
+                    // cretae BopMap
+                    $bm = new \Core\BopMap();
+                    foreach ($car_class->cars() as $c) {
+                        $b = $car_class->ballast($c);
+                        $r = $car_class->restrictor($c);
+                        $bm->update($b, $r, $c);
+                    }
+
+                    $slot->start($track, $preset, $el, $bm);
                     sleep(2);
 
                     \Core\Discord::messageManualStart($slot, $track, $car_class, $preset);

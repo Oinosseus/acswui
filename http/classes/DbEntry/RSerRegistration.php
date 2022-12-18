@@ -23,8 +23,22 @@ class RSerRegistration extends DbEntry {
 
 
     //! @return The CarSkin for this registration
-    public function carSkin() : CarSkin {
-        return CarSkin::fromId((int) $this->loadColumn("CarSkin"));
+    public function carSkin() : ?CarSkin {
+        $id = (int) $this->loadColumn("CarSkin");
+        $skin = CarSkin::fromId($id);
+        if ($skin === NULL)
+                \Core\Log::warning("Cannot find CarSKin[Id=$id] for $this!");
+        return $skin;
+    }
+
+
+    //! @return The RSerClass which has been registered for
+    public function class() : ?RSerClass {
+        $id = (int) $this->loadColumn("Class");
+        $class = RSerClass::fromId($id);
+        if ($class === NULL)
+                \Core\Log::warning("Cannot find Class[Id=$id] for $this!");
+        return $class;
     }
 
 
@@ -147,14 +161,18 @@ class RSerRegistration extends DbEntry {
      * List all registrations for a season of a certain class
      * @param $season The RSerSeason
      * @param $class The RSerClass
+     * @param $active_only If TRUE (default=FALSE), then only actrive registrations are returned
      * @return A list of RSerRegistration objects
      */
     public static function listRegistrations(RSerSeason $season,
-                                             RSerClass $class) : array {
+                                             ?RSerClass $class,
+                                             bool $active_only=FALSE) : array {
 
         $list = array();
 
-        $query = "SELECT Id FROM RSerRegistrations WHERE Season={$season->id()} AND Class={$class->id()}";
+        $query = "SELECT Id FROM RSerRegistrations WHERE Season={$season->id()}";
+        if ($class) $query .= " AND Class={$class->id()}";
+        if ($active_only) $query .= " AND Active!=0";
         $res = \Core\Database::fetchRaw($query);
         foreach ($res as $row) {
             $reg = RSerRegistration::fromId((int) $row['Id']);

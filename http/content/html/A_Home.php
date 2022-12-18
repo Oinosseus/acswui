@@ -138,47 +138,47 @@ class A_Home extends \core\HtmlContent {
         $html .= "<div id=\"UpcommingRacesOverview\">";
 
         $a_week_ago = (new \DateTime("now"))->sub(new \DateInterval("P7D"));
-        foreach (\DbEntry\SessionSchedule::listSchedules($a_week_ago) as $ss) {
-
-            $class_obsolete = ($ss->obsolete()) ? "Obsolete" : "";
-            $count_registrations = count($ss->registrations());
-            $count_pits = $ss->track()->pitboxes();
+        $items = \Compound\ScheduledItem::listItems(NULL, $a_week_ago);
+        foreach ($items as $si) {
+            $class_obsolete = ($si->obsolete()) ? "Obsolete" : "";
+            $count_registrations = $si->registrations();
+            $count_pits = $si->track()->pitboxes();
             $registration_css_class = ($count_registrations > $count_pits) ? "RegistrationsFull" : "RegistrationsAvailable";
 
             $html .= "<div class=\"$class_obsolete\">";
-            $html .= "<a href=\"" . $this->url(["SessionSchedule"=>$ss->id(), "Action"=>"ShowRoster"], "SessionSchedules") . "\">{$ss->name()}</a><br>";
-            $html .= $cuser->formatDateTimeNoSeconds($ss->start()) . "<br>";
+            $html .= $si->nameLink() . "<br>";
+            $html .= $cuser->formatDateTimeNoSeconds($si->start()) . "<br>";
             if ($luser) {
-                $srs = \DbEntry\SessionScheduleRegistration::getRegistrations($ss, $cuser);
-                if (count($srs) > 0) {
+                if ($si->registered($cuser)) {
                     $html .= "<span class=\"Registered\">" . _("Registered") . "</span>";
                 } else {
-                        $html .= "<span class=\"NotRegistered\">" . _("Not Registered") . "</span>";
+                    $html .= "<span class=\"NotRegistered\">" . _("Not Registered") . "</span>";
                 }
             }
             // $html .= " (<span class=\"$registration_css_class\">$count_registrations / $count_pits</span>)<br>";
             $html .= "</div>";
 
             $html .= "<div class=\"$class_obsolete\">";
-            $html .= $ss->track()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
+            $html .= $si->track()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
             $html .= "</div>";
 
             $html .= "<div class=\"$class_obsolete\">";
-            $html .= $ss->carClass()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
+            if ($si->getSessionSchedule()) {
+                $html .= $si->getSessionSchedule()->carClass()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
+            } else if ($si->getRSerSplit()) {
+                $html .= $si->getRSerSplit()->event()->season()->series()->html(TRUE, FALSE, TRUE);
+            }
             $html .= "</div>";
 
             $html .= "<div class=\"$class_obsolete\">";
-            $html .= "{$ss->serverSlot()->name()}<br>";
+            $html .= "{$si->serverSlot()->name()}<br>";
             $html .= _("Registrations") . ": <span class=\"$registration_css_class\">$count_registrations / $count_pits</span><br>";
-            $rwc = $ss->serverPreset()->forecastWeather($ss->start(), $ss->track()->location());
+            $rwc = $si->serverPreset()->forecastWeather($si->start(), $si->track()->location());
             if ($rwc !== NULL) $html .= $rwc->htmlImg();
             $html .= "</div>";
-
         }
 
-
         $html .= "</div>";
-
         return $html;
     }
 }

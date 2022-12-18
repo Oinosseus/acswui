@@ -344,40 +344,18 @@ class ServerSlot {
     /**
      * start the server within this slot
      * @param $track TheTrack to use
-     * @param $car_class The CarClass of the server run
      * @param $preset The ServerPreset for the server run
      * @param $el The EntryList which shall be used
      * @param $bm A BopMap object to apply BOP
      * @param $referenced_session_schedule_id The ID of the SessionSchedule object, that shall be linked to the session
      */
     public function start(\DbEntry\Track $track,
-                          \DbEntry\CarClass $car_class,
                           \DbEntry\ServerPreset $preset,
-                          \Core\EntryList $el = NULL,
-                          \Core\BopMap $bm = NULL,
+                          \Core\EntryList $el,
+                          \Core\BopMap $bm,
                           int $referenced_session_schedule_id = NULL) {
 
         $id = $this->id();
-
-        // create EntryList if not existent
-        if (!$el) {
-            $el = new \Core\EntryList();
-            $el->addTvCar();
-            $el->fillSkins($car_class, $track->pitboxes());
-            $el->reverse();
-        }
-
-        // create BOP Map if not existent
-        if (!$bm) {
-            $bm = new \Core\BopMap();
-
-            // retrieve from CarClass
-            foreach ($car_class->cars() as $c) {
-                $b = $car_class->ballast($c);
-                $r = $car_class->restrictor($c);
-                $bm->update($b, $r, $c);
-            }
-        }
 
         // configure real penalty
         $this->writeRpAcSettings($preset);
@@ -389,7 +367,7 @@ class ServerSlot {
 
         // configure ac server
         $el->writeToFile(\Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/entry_list.ini");
-        $this->writeAcServerCfg($track, $car_class, $preset, $el, $bm);
+        $this->writeAcServerCfg($track, $preset, $el, $bm);
 
         // configure ac-server-wrapper
         $this->writeAcServerWrapperParams();
@@ -522,13 +500,11 @@ class ServerSlot {
     /**
      * create server_cfg.ini for acServer
      * @param $track The Track object for the server run
-     * @param $car_class The CarClass of the server run
      * @param $preset The ServerPreset for the server run
      * @param $el An EntryList object to extract cars from
      * @param $bm A BopMap object to retrieve maximum ballast
      */
     private function writeAcServerCfg(\DbEntry\Track $track,
-                                      \DbEntry\CarClass $car_class,
                                       \DbEntry\ServerPreset $preset,
                                       \Core\EntryList $el,
                                       \Core\BopMap $bm) {
@@ -604,7 +580,6 @@ class ServerSlot {
         fwrite($f, "\n");
         //! @todo Extract from CarClass and Track
         $cars = array();
-        foreach ($car_class->cars() as $car) $cars[] = $car->model();
         foreach ($el->entries() as $e) {
             $model = $e->carSkin()->car()->model();
             if (!in_array($model, $cars)) $cars[] = $model;

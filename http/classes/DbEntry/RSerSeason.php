@@ -86,10 +86,12 @@ class RSerSeason extends DbEntry {
     /**
      * List registrations for a certain class
      * @param $class The RSerClass
+     * @param $active_only If TRUE (default=FALSE), then only actrive registrations are returned
      * @return A list of RSerRegistration objects
      */
-    public function listRegistrations(RSerClass $class) : array {
-        return RSerRegistration::listRegistrations($this, $class);
+    public function listRegistrations(?RSerClass $class,
+                                      bool $active_only=FALSE) : array {
+        return RSerRegistration::listRegistrations($this, $class, $active_only);
     }
 
 

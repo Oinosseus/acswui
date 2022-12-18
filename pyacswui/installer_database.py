@@ -144,6 +144,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt("SessionSchedule", 'ServerPreset')
         self.__db.appendColumnText("SessionSchedule", "ParameterData")
         self.__db.appendColumnTimestamp("SessionSchedule", 'Executed')
+        self.__db.appendColumnUInt("SessionSchedule", 'Slot')
 
         # check table SessionScheduleRegistrations
         Verbosity(verb).print("check database table `SessionScheduleRegistrations`")
@@ -298,6 +299,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt(table_name, "Event")
         self.__db.appendColumnUInt(table_name, "ServerSlot")
         self.__db.appendColumnTimestamp(table_name, "Start")
+        self.__db.appendColumnTimestamp(table_name, "Executed")
 
         table_name = "RSerResults"
         self.__db.appendTable(table_name)
@@ -339,6 +341,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnCurrentTimestamp(table_name, "Timestamp")
         self.__db.appendColumnUInt(table_name, "ServerSlot")
         self.__db.appendColumnUInt(table_name, 'SessionSchedule')
+        self.__db.appendColumnUInt(table_name, 'RSerSplit')
         self.__db.appendColumnUInt(table_name, "ServerPreset")
         self.__db.appendColumnBool(table_name, "FinalResultsCalculated")
 
@@ -353,9 +356,11 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt(table_name, "TotalTime")
         self.__db.appendColumnSmallInt(table_name, "Ballast")
         self.__db.appendColumnTinyInt(table_name, "Restrictor")
+        self.__db.appendColumnUInt(table_name, "RSerClass")
 
         table_name = "Laps"
         self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "RSerClass")
         self.__db.appendColumnUInt(table_name, "Session")
         self.__db.appendColumnUInt(table_name, "User")
         self.__db.appendColumnUInt(table_name, "CarSkin")

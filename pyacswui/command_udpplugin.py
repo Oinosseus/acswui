@@ -69,6 +69,8 @@ class CommandUdpPlugin(Command):
                                path_data_acserver,
                                path_realtime_json,
                                self.getIniSection('PLUGIN')['preserved_kick'].lower() in ["true", "1", "yes"],
+                               self.getIniSection('BopRSerClassBallast'),
+                               self.getIniSection('BopRSerClassRestrictor'),
                                self.getIniSection('BopCarBallast'),
                                self.getIniSection('BopCarRestrictor'),
                                self.getIniSection('BopUserBallast'),

@@ -6,6 +6,8 @@ namespace DbEntry;
 //! Wrapper for database table element
 class RSerSplit extends DbEntry {
 
+    private $Order = NULL;
+
 
     /**
      * Construct a new object
@@ -43,6 +45,34 @@ class RSerSplit extends DbEntry {
     }
 
 
+    //! @return A generated EntryList object
+    public function entryList() : \Core\EntryList {
+        //! @todo TBD Qualifications need to be respected here
+
+        // create EntryList
+        $el = new \Core\EntryList();
+
+        // add registrations
+        foreach ($this->event()->season()->listRegistrations(NULL, TRUE) as $reg) {
+            $skin = $reg->carSkin();
+            if ($skin) {
+                $eli = new \Core\EntryListItem($skin, $reg->class());
+                $eli->addDriver($reg->user());
+                $eli->addDriver($reg->teamCar());
+                $el->add($eli);
+            }
+        }
+
+        return $el;
+    }
+
+
+    //! @return The associated event
+    public function event() : RSerEvent {
+        return RSerEvent::fromId((int) $this->loadColumn('Event'));
+    }
+
+
     /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.
@@ -71,6 +101,21 @@ class RSerSplit extends DbEntry {
         }
 
         return $list;
+    }
+
+
+    //! @return The order/number of this split
+    public function order() : int {
+        if ($this->Order === NULL) {
+            $query = "SELECT Id FROM RSerSplits WHERE Event={$this->event()->id()} ORDER BY Id ASC";
+            $this->Order = 1;
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                if ($row['Id'] == $this->id()) break;
+                $this->Order += 1;
+            }
+        }
+
+        return $this->Order;
     }
 
 

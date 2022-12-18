@@ -11,6 +11,8 @@ namespace Core;
  */
 class BopMap {
 
+    private $BopRSerClassBallast = array();
+    private $BopRSerClassRestrictor = array();
     private $BopCarBallast = array();
     private $BopCarRestrictor = array();
     private $BopUserBallast = array();
@@ -38,7 +40,7 @@ class BopMap {
      * @param $driver A Car, User or TeamCar where the BOP shall be assigned to. If NULL, the BOP is assigned to foregin drivers
      */
     public function update(int $ballast, int $restrictor,
-                           \DbEntry\Car|\DbEntry\User|\DbEntry\TeamCar $driver = NULL) {
+                           \DbEntry\RSerClass|\DbEntry\Car|\DbEntry\User|\DbEntry\TeamCar $driver = NULL) {
 
         // BOP Car
         if (is_a($driver, "\DbEntry\Car")) {
@@ -54,6 +56,11 @@ class BopMap {
         } else if (is_a($driver, "\DbEntry\TeamCar")) {
             $this->BopTeamcarBallast[$driver->id()] = $ballast;
             $this->BopTeamcarRestrictor[$driver->id()] = $restrictor;
+
+        // BOP RSerClass
+        } else if (is_a($driver, "\DbEntry\RSerClass")) {
+            $this->BopRSerClassBallast[$driver->id()] = $ballast;
+            $this->BopRSerClassRestrictor[$driver->id()] = $restrictor;
 
         // BOP foreigners
         } else if ($driver === NULL) {
@@ -74,6 +81,8 @@ class BopMap {
     public function writeACswuiUdpPluginIni($file_handle) {
 
         $exports = array();
+        $exports['BopRSerClassBallast'] = $this->BopCarBallast;
+        $exports['BopRSerClassRestrictor'] = $this->BopCarRestrictor;
         $exports['BopCarBallast'] = $this->BopCarBallast;
         $exports['BopCarRestrictor'] = $this->BopCarRestrictor;
         $exports['BopUserBallast'] = $this->BopUserBallast;

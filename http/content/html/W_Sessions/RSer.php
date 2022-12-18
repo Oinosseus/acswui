@@ -48,14 +48,14 @@ class RSer extends \core\HtmlContent {
             // ----------------------------------------------------------------
             //  Add Split
 
-            if ($this->CanEdit && $_REQUEST['Action'] == "AddSplit") {
-                $rser_e = \DbEntry\RSerEvent::fromId((int) $_REQUEST['RSerEvent']);
-                \DbEntry\RSerSplit::createNew($rser_e);
-
-                $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
-                               "RSerSeason"=>$this->CurrentSeason->id(),
-                               "View"=>"SeasonEdit"]);
-            }
+            // if ($this->CanEdit && $_REQUEST['Action'] == "AddSplit") {
+            //     $rser_e = \DbEntry\RSerEvent::fromId((int) $_REQUEST['RSerEvent']);
+            //     \DbEntry\RSerSplit::createNew($rser_e);
+            //
+            //     $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
+            //                    "RSerSeason"=>$this->CurrentSeason->id(),
+            //                    "View"=>"SeasonEdit"]);
+            // }
 
 
             // ----------------------------------------------------------------
@@ -543,7 +543,7 @@ class RSer extends \core\HtmlContent {
                                 "RSerSeason"=>$this->CurrentSeason->id(),
                                 "RSerEvent"=>$events[$event_idx]->id(),
                                 "Action"=>"AddSplit"]);
-            $html .= "<tr><td><a href=\"$url\">" . _("Add Spit") . "</a></td></tr>";
+            // $html .= "<tr><td><a href=\"$url\">" . _("Add Spit") . "</a></td></tr>";
 
             $html .= "<br>";
             $html .= "</table>";
