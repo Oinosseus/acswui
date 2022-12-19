@@ -8,7 +8,7 @@ namespace Core;
 class EntryListItem {
 
     private $CarSkin = NULL;
-    private $RSerClass = NULL;
+    private $RSerRegistration = NULL;
     private $Users = NULL;
     private $TeamCar = NULL;
     private $ForceDriver = NULL;
@@ -16,12 +16,12 @@ class EntryListItem {
 
     /**
      * @param $skin The CarSkin object that shall be used for the entry list item
-     * @param $rser_class If given, this information will be added to the entry list
+     * @param $rser_registration If given, this information will be added to the entry list
      */
     public function __construct(\DbEntry\CarSkin $skin,
-                                \DbEntry\RSerClass $rser_class=NULL) {
+                                \DbEntry\RSerRegistration $rser_registration=NULL) {
         $this->CarSkin = $skin;
-        $this->RSerClass = $rser_class;
+        $this->RSerRegistration = $rser_registration;
     }
 
 
@@ -144,9 +144,11 @@ class EntryListItem {
             fwrite($f, "TeamCarId=0\n");
         }
 
-        if ($this->RSerClass) {
-            fwrite($f, "RSerClass={$this->RSerClass->id()}\n");
+        if ($this->RSerRegistration) {
+            fwrite($f, "RSerRegistration={$this->RSerRegistration->id()}\n");
+            fwrite($f, "RSerClass={$this->RSerRegistration->class()->id()}\n");
         } else {
+            fwrite($f, "RSerRegistration=0\n");
             fwrite($f, "RSerClass=0\n");
         }
 

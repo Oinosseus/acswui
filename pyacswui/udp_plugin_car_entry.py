@@ -78,6 +78,11 @@ class UdpPluginCarEntry(object):
         if 'RSerClass' in entry_dict:
            self.__rser_class = int(entry_dict['RSerClass'])
 
+        # remember RSerRegistration
+        self.__rser_registration = 0
+        if 'RSerRegistration' in entry_dict:
+           self.__rser_registration = int(entry_dict['RSerRegistration'])
+
         # It happened that completed_lap() was called, but no driver was connected.
         # In this case, count all completed laps to inform later
         self.__missed_completed_laps = 0
@@ -126,6 +131,11 @@ class UdpPluginCarEntry(object):
     @property
     def RSerClass(self):
         return self.__rser_class
+
+
+    @property
+    def RSerRegistration(self):
+        return self.__rser_registration
 
 
     @property
@@ -269,7 +279,7 @@ class UdpPluginCarEntry(object):
                                #cuts, "cuts after", laptime, "ms")
 
         fields = {}
-        fields['RSerClass'] = self.__rser_class
+        fields['RSerRegistration'] = self.__rser_registration
         fields['Session'] = session.Id
         fields['CarSkin'] = self.__car_skin_id
         fields['User'] = self.__driver_id

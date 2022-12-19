@@ -250,11 +250,11 @@ class UdpPluginSession(object):
 
             # find enhanced info
             team_car_id = 0
-            rser_class = 0
+            rser_registration = 0
             for e in entryies:
                 if e.Id == rslt_car_id:
                     team_car_id = e.TeamCarId
-                    rser_class =  e.RSerClass
+                    rser_registration =  e.RSerRegistration
                     break
 
             # list single drivers only once
@@ -276,7 +276,7 @@ class UdpPluginSession(object):
             fields['Ballast'] = rslt['BallastKG']
             fields['Restrictor'] = rslt['Restrictor']
             fields['TeamCar'] = team_car_id
-            fields['RSerClass'] = rser_class
+            fields['RSerRegistration'] = rser_registration
             self.__db.insertRow("SessionResultsAc", fields)
 
             # request to calculate final results

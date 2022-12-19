@@ -99,6 +99,15 @@ class RSerSeries extends DbEntry {
 
 
     /**
+     * List all available seasons
+     * @return A list of RSerSeason objects
+     */
+    public static function listSeasons() : array {
+        return RSerSeason::listSeasons($this);
+    }
+
+
+    /**
      * List available race series
      * @return A list of RSerSeries objects
      */

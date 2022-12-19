@@ -356,11 +356,11 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt(table_name, "TotalTime")
         self.__db.appendColumnSmallInt(table_name, "Ballast")
         self.__db.appendColumnTinyInt(table_name, "Restrictor")
-        self.__db.appendColumnUInt(table_name, "RSerClass")
+        self.__db.appendColumnUInt(table_name, "RSerRegistration")
 
         table_name = "Laps"
         self.__db.appendTable(table_name)
-        self.__db.appendColumnUInt(table_name, "RSerClass")
+        self.__db.appendColumnUInt(table_name, "RSerRegistration")
         self.__db.appendColumnUInt(table_name, "Session")
         self.__db.appendColumnUInt(table_name, "User")
         self.__db.appendColumnUInt(table_name, "CarSkin")

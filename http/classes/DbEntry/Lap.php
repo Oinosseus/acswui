@@ -72,7 +72,7 @@ class Lap extends DbEntry {
 
 
     //! @return The lap time in milliseconds
-    public function laptime() {
+    public function laptime() : int {
         return (int) $this->loadColumn("Laptime");
     }
 

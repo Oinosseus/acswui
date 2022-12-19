@@ -56,7 +56,7 @@ class RSerSplit extends DbEntry {
         foreach ($this->event()->season()->listRegistrations(NULL, TRUE) as $reg) {
             $skin = $reg->carSkin();
             if ($skin) {
-                $eli = new \Core\EntryListItem($skin, $reg->class());
+                $eli = new \Core\EntryListItem($skin, $reg);
                 $eli->addDriver($reg->user());
                 $eli->addDriver($reg->teamCar());
                 $el->add($eli);
