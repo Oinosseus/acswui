@@ -50,7 +50,7 @@ class CarClass extends DbEntry {
      * @param $car The requeted Car object
      * @return The necessary ballast for a certain car in the class
      */
-    public function ballast($car) {
+    public function ballast($car) : int {
 
         if ($this->BallastMap === NULL || !array_key_exists($car->id(), $this->BallastMap)) {
 
@@ -65,7 +65,7 @@ class CarClass extends DbEntry {
             }
         }
 
-        return $this->BallastMap[$car->id()];
+        return (int) $this->BallastMap[$car->id()];
     }
 
 
@@ -461,7 +461,7 @@ class CarClass extends DbEntry {
      * @param $car The requeted Car object
      * @return The necessary restrictor for a certain car in the class
      */
-    public function restrictor($car) {
+    public function restrictor($car) : int {
 
         if ($this->RestrictorMap === NULL || !array_key_exists($car->id(), $this->RestrictorMap)) {
 
@@ -476,7 +476,7 @@ class CarClass extends DbEntry {
             }
         }
 
-        return $this->RestrictorMap[$car->id()];
+        return (int) $this->RestrictorMap[$car->id()];
     }
 
 

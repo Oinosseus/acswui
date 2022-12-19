@@ -78,6 +78,7 @@ class CommandUdpPlugin(Command):
                                self.getIniSection('BopTeamcarBallast'),
                                self.getIniSection('BopTeamcarRestrictor'),
                                self.getIniSection('PLUGIN')['referenced_session_schedule_id'],
+                               self.getIniSection('PLUGIN')['referenced_rser_split_id'],
                                self.getIniSection('PLUGIN')['auto-dnf-level'],
                                verbosity=self._verbosity)
         udpp.process() # run once just to ensure that it does not crash immediately

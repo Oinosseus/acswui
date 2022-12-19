@@ -348,12 +348,14 @@ class ServerSlot {
      * @param $el The EntryList which shall be used
      * @param $bm A BopMap object to apply BOP
      * @param $referenced_session_schedule_id The ID of the SessionSchedule object, that shall be linked to the session
+     * @param $referenced_rser_split_id The ID of the RSerSplit object, that shall be linked to the session
      */
     public function start(\DbEntry\Track $track,
                           \DbEntry\ServerPreset $preset,
                           \Core\EntryList $el,
                           \Core\BopMap $bm,
-                          int $referenced_session_schedule_id = NULL) {
+                          int $referenced_session_schedule_id = NULL,
+                          int $referenced_rser_split_id = NULL) {
 
         $id = $this->id();
 
@@ -363,7 +365,9 @@ class ServerSlot {
         $this->writeRpSettings();
 
         // configure ACswui plugin
-        $this->writeACswuiUdpPluginIni($preset, $bm, $referenced_session_schedule_id);
+        $this->writeACswuiUdpPluginIni($preset, $bm,
+                                       $referenced_session_schedule_id,
+                                       $referenced_rser_split_id);
 
         // configure ac server
         $el->writeToFile(\Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/entry_list.ini");
@@ -450,10 +454,12 @@ class ServerSlot {
      * @param $preset The ServerPreset for the server run
      * @param $bm A BopMap object to apply BOP
      * @param $referenced_session_schedule_id The ID of the SessionSchedule object, that shall be linked to the session
+     * @param $referenced_rser_split_id The ID of the RSerSplit object, that shall be linked to the session
      */
     private function writeACswuiUdpPluginIni(\DbEntry\ServerPreset $preset,
                                              \Core\BopMap $bm,
-                                             int $referenced_session_schedule_id = NULL) {
+                                             int $referenced_session_schedule_id = NULL,
+                                             int $referenced_rser_split_id = NULL) {
         $pc = $this->parameterCollection();
         $file_path = \Core\Config::AbsPathData . "/acswui_udp_plugin/acswui_udp_plugin_" . $this->id() . ".ini";
         $f = fopen($file_path, 'w');
@@ -488,6 +494,7 @@ class ServerSlot {
         }
         fwrite($f, "preserved_kick = " . $preset->getParam("ACswuiPreservedKick") . "\n");
         fwrite($f, "referenced_session_schedule_id = $referenced_session_schedule_id\n");
+        fwrite($f, "referenced_rser_split_id = $referenced_rser_split_id\n");
         fwrite($f, "auto-dnf-level = " . $preset->getParam("AccswuiAutoDnfLevel") . "\n");
 
         $bm->writeACswuiUdpPluginIni($f);

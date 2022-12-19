@@ -25,6 +25,22 @@ class ScheduledItem {
     }
 
 
+    //! @return The string representation of the table (just info, no serialization)
+    public function __toString() {
+        if ($this->SessionSchedule) {
+            return "ScheduledItem[{$this->SessionSchedule}]";
+
+        } else if ($this->RSerSplit) {
+            return "ScheduledItem[{$this->RSerSplit}]";
+
+        } else {
+            // you should not end here
+            \Core\Log::error("Unknown type!");
+            return "ScheduledItem[???]";
+        }
+    }
+
+
     //! @return The BOP that shall be used
     public function bopMap() : \Core\BopMap {
         if ($this->SessionSchedule) {
@@ -89,6 +105,18 @@ class ScheduledItem {
     //! @return The wrapped SessionSchedule object (can be NULL)
     public function getSessionSchedule() : ?\DbEntry\SessionSchedule {
         return $this->SessionSchedule;
+    }
+
+
+    //! @return The Id of the referenced SessionSchedule element (can be 0)
+    public function idSessionSchedule() : int {
+        return ($this->SessionSchedule) ? $this->SessionSchedule->id() : 0;
+    }
+
+
+    //! @return The Id of the referenced RSerSplit element (can be 0)
+    public function idSessionRSerSplit() : int {
+        return ($this->RSerSplit) ? $this->RSerSplit->id() : 0;
     }
 
 
@@ -165,6 +193,28 @@ class ScheduledItem {
     }
 
 
+    //! @return A ServerPreset, if this schedule item has a practice- or qualification-loop before the actual event start
+    public function preloopServerPreset() : ?\DbEntry\ServerPreset {
+        $preset = NULL;
+
+        if ($this->SessionSchedule) {
+            if ($this->SessionSchedule->getParamValue("PracticeEna")) {
+                $preset = $this->SessionSchedule->parameterCollection()->child("PracticePreset")->serverPreset();
+            }
+
+        } else if ($this->RSerSplit) {
+            $series = $this->RSerSplit->event()->season()->series();
+            $preset = $series->parameterCollection()->child("SessionPresetQual")->serverPreset();
+
+        } else {
+            // you should not end here
+            \Core\Log::error("Unknown type!");
+        }
+
+        return $preset;
+    }
+
+
     /**
      * Check if a user is registered
      * @param $user The requested user
@@ -218,8 +268,8 @@ class ScheduledItem {
 
     //! @return Can be used by usort() to order ScheduledItem objects by their start time
     public static function usortByStartAsc(ScheduledItem $a, ScheduledItem $b) : int {
-        if ($a < $b) return -1;
-        else if ($a > $b) return 1;
+        if ($a->start() < $b->start()) return -1;
+        else if ($a->start() > $b->start()) return 1;
         else return 0;
     }
 

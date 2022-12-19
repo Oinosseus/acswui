@@ -34,6 +34,7 @@ class UdpPluginServer(object):
                  bop_map_teamcar_ballasts = {},      # key=TeamCarId, value=ballast
                  bop_map_teamcar_restrictors = {},   # key=TeamCarId, value=restrictor
                  referenced_session_schedule_id = None,
+                 referenced_rser_split_id = None,
                  auto_dnf_level = 0,                 # Percentage of driven laps (relative to race leader), below automatically a DNF penalty is imposed
                  verbosity=0):
 
@@ -53,6 +54,12 @@ class UdpPluginServer(object):
             self.__referenced_session_schedule_id = int(referenced_session_schedule_id)
         except:
             self.__referenced_session_schedule_id = None
+
+        # referenced_rser_split_id
+        try:
+            self.__referenced_rser_split_id = int(referenced_rser_split_id)
+        except:
+            self.__referenced_rser_split_id = None
 
         self.__auto_dnf_level = float(auto_dnf_level)
 
@@ -289,6 +296,7 @@ class UdpPluginServer(object):
                                               pkt,
                                               self.__session,
                                               self.__referenced_session_schedule_id,
+                                              self.__referenced_rser_split_id,
                                               self.__verbosity)
 
             # enable realtime update
@@ -308,6 +316,7 @@ class UdpPluginServer(object):
                                                   pkt,
                                                   self.__session,
                                                   self.__referenced_session_schedule_id,
+                                                  self.__referenced_rser_split_id,
                                                   self.__verbosity)
             else:
                 self.__session.update(pkt)

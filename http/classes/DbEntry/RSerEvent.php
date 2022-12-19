@@ -25,18 +25,18 @@ class RSerEvent extends DbEntry {
         $bm = new \Core\BopMap();
 
         foreach ($this->season()->series()->listClasses() as $rser_class) {
-            $rscc = $rser_class->carClass();
-            if ($rscc) {
+            $car_class = $rser_class->carClass();
 
-                // RSerClass offset
-                $bm->update($rscc->getParam("BopBallastOffset"),
-                            $rscc->getParam("BopRestrictorOffset"),
-                            $rscc);
+            // RSerClass offset
+            $bm->update($rser_class->getParam("BopBallastOffset"),
+                        $rser_class->getParam("BopRestrictorOffset"),
+                        $rser_class);
 
+            if ($car_class) {
                 // CarClass BOP
-                foreach ($rscc->carClass()->cars() as $car) {
-                    $ballast = $rscc->carClass()->ballast($car);
-                    $restrictor = $rscc->carClass()->restrictor($car);
+                foreach ($car_class->cars() as $car) {
+                    $ballast = $car_class->ballast($car);
+                    $restrictor = $car_class->restrictor($car);
                     $bm->update($ballast, $restrictor, $car);
                 }
             }

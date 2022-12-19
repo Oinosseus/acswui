@@ -45,28 +45,30 @@ class CronSessionAutomatic extends \Core\Cronjob {
                                $schd->serverPreset(),
                                $schd->entryList(),
                                $schd->bopMap(),
-                               $schd->id());
+                               $schd->idSessionSchedule(),
+                               $schd->idSessionRSerSplit());
                     $schd->setExecuted(new \DateTime("now"));
                     \Core\Discord::messageScheduleStart($ss, $schd);
                     continue;
                 }
 
                 // start practice loops
-                if ($schd->getParamValue("PracticeEna")) {
-                    $preset = $schd->parameterCollection()->child("PracticePreset")->serverPreset();
-                    if ($preset->finishedBefore($schd->start()->sub(new \DateInterval("PT10M")))) {
+                $preloop_preset = $schd->preloopServerPreset();
+                if ($preloop_preset) {
+                    if ($preloop_preset->finishedBefore($schd->start()->sub(new \DateInterval("PT10M")))) {
                         $this->verboseOutput("Starting SessioSchedule Practice-Loop $schd on $ss<br>");
 
-                        // reset qualifying and reace
-                        $preset->parameterCollection()->child("AcServerQualifyingTime")->setValue(0, TRUE);
-                        $preset->parameterCollection()->child("AcServerRaceLaps")->setValue(0, TRUE);
-                        $preset->parameterCollection()->child("AcServerRaceTime")->setValue(0, TRUE);
+                        // reset race
+                        $preloop_preset->parameterCollection()->child("AcServerRaceLaps")->setValue(0, TRUE);
+                        $preloop_preset->parameterCollection()->child("AcServerRaceTime")->setValue(0, TRUE);
 
                         // start session
                         $ss->start($schd->track(),
-                                   $preset,
+                                   $preloop_preset,
                                    $schd->entryList(),
-                                   $schd->bopMap());
+                                   $schd->bopMap(),
+                                   $schd->idSessionSchedule(),
+                                   $schd->idSessionRSerSplit());
                         continue;
                     }
                 }
