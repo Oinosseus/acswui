@@ -51,6 +51,8 @@ class RSerQualification extends DbEntry {
                                    RSerRegistration $registration,
                                    Lap $lap) {
 
+        //! @todo TBD verify correct BOP (ballast/restrictor)
+
         if ($lap->cuts() > 0) return;
 
         // check if already existing

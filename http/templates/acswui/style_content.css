@@ -761,6 +761,12 @@ main.RSer div.RSerPageHeader img {
     margin-right: auto;
 }
 
+main.RSer div.RSerPageHeader div.RSerSeason,
+main.RSer div.RSerPageHeader div.RSerClass {
+    font-weight: normal;
+    font-size: 0.75em;
+}
+
 main.RSer ul.RSerSeasonList {
     display: block;
     text-align: center;

@@ -310,8 +310,8 @@ class RSer extends \core\HtmlContent {
         $html .= "<div class=\"RSerPageHeader\">";
         $html .= "<img src=\"{$this->CurrentSeries->logoPath()}\"> ";
         $html .= "<div>{$this->CurrentSeries->name()}</div>";
-        if ($this->CurrentSeason) $html .= "<div>{$this->CurrentSeason->name()}</div>";
-        if ($this->CurrentClass) $html .= "<div>{$this->CurrentClass->name()}</div>";
+        if ($this->CurrentSeason) $html .= "<div class=\"RSerSeason\">" . _("Season") . " {$this->CurrentSeason->name()}</div>";
+        if ($this->CurrentClass) $html .= "<div class=\"RSerClass\">{$this->CurrentClass->name()}</div>";
         $html .= "</div>";
 
         return $html;

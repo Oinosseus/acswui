@@ -77,7 +77,10 @@ class RSerSeries extends DbEntry {
 
         // link container
         if ($include_link) {
-            $html = "<a href=\"index.php?HtmlContent=RSer&RSerSeries={$this->id()}\">$html</a>";
+            $url = "index.php?HtmlContent=RSer&RSerSeries={$this->id()}";
+            $seasons = $this->listSeasons();
+            if (count($seasons)) $url .= "&RSerSeason={$seasons[0]->id()}&View=SeasonOverview";
+            $html = "<a href=\"$url\">$html</a>";
         } else {
             $html = "<div>$html</div>";
         }
@@ -102,7 +105,7 @@ class RSerSeries extends DbEntry {
      * List all available seasons
      * @return A list of RSerSeason objects
      */
-    public static function listSeasons() : array {
+    public function listSeasons() : array {
         return RSerSeason::listSeasons($this);
     }
 
