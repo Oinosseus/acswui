@@ -652,6 +652,7 @@ class RSer extends \core\HtmlContent {
     // edit settings of a race series season
     private function getHtmlSeasonOverview() : string {
         $html = "";
+        $cu = \Core\UserManager::currentUser();
 
         // breadcrumps
         $url = $this->url(['RSerSeries'=>0]);
@@ -696,8 +697,38 @@ class RSer extends \core\HtmlContent {
             $html .= "</table>";
         }
 
-        // event results
-        $html .= "<h1>" . _("Event Results") . "</h1>";
+        // events
+        $html .= "<h1>" . _("Events") . "</h1>";
+        $html .= "<table>";
+        $html .= "<tr>";
+        $html .= "<th>" . _("ID") . "</th>";
+        $html .= "<th>" . _("Track") . "</th>";
+        $html .= "<th colspan=\"3\">" . _("Splits") . "</th>";
+        $html .= "</tr>";
+        foreach ($this->CurrentSeason->listEvents() as $rs_event) {
+            $splits = $rs_event->listSplits();
+            $rowspan = count($splits);
+            if ($rowspan == 0) $rowspan = 1;
+
+            $html .= "<tr>";
+            $html .= "<td rowspan=\"$rowspan\">E{$rs_event->order()}</td>";
+            $html .= "<td rowspan=\"$rowspan\" class=\"ZeroPadding\">{$rs_event->track()->html(TRUE, TRUE, FALSE)}</td>";
+            if (count($splits) > 0) {
+                $html .= "<td>" . _("Split") . " 1</td>";
+                $html .= "<td>{$cu->formatDateTimeNoSeconds($splits[0]->start())}</td>";
+                $html .= "<td>{$splits[0]->serverSlot()->name()}</td>";
+            }
+            $html .= "</tr>";
+
+            for ($split_idx=1; $split_idx < count($splits); ++$split_idx) {
+                $html .= "<tr>";
+                $html .= "<td>" . _("Split") . " " . ($split_idx+1) . "</td>";
+                $html .= "<td>{$cu->formatDateTimeNoSeconds($splits[$split_idx]->start())}</td>";
+                $html .= "<td>{$splits[$split_idx]->serverSlot()->name()}</td>";
+                $html .= "</tr>";
+            }
+        }
+        $html .= "</table>";
 
         // registrations
         $html .= "<h1>" . _("Registrations") . "</h1>";
