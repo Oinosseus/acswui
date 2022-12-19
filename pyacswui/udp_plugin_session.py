@@ -78,7 +78,12 @@ class UdpPluginSession(object):
             teamcar_id = row['TeamCar']
 
             # count laps of driver
-            res_laps = self.__db.fetch("Laps", ['Id'], {"Session":self.Id, 'User':user_id, 'TeamCar':teamcar_id})
+            where = {"Session":self.Id}
+            if user_id != 0:
+                where.update({'User':user_id})
+            if teamcar_id != 0:
+                where.update({'TeamCar':teamcar_id})
+            res_laps = self.__db.fetch("Laps", ['Id'], where)
             driver_laps = len(res_laps)
 
             # impose DNF if lap amount is insufficient
@@ -90,6 +95,9 @@ class UdpPluginSession(object):
                         'PenDnf': 1}
                 self.__db.insertRow("SessionPenalties", columns)
                 self.__verbosity.print("Apply auto-DNF to User=%i, TeamCar=%i" % (user_id, teamcar_id))
+
+        # request to calculate final results
+        self.__db.updateRow("Sessions", self.Id, {"FinalResultsCalculated": 0})
 
 
 

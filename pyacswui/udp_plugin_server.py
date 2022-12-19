@@ -501,7 +501,7 @@ class UdpPluginServer(object):
                     self.impose_penalty("Real-Penalty: End-Race/Seconds-Penalty",
                                         data["driver"], seconds, False)
             else:
-                print("Unexpected RP Event:", data)
+                print("Unexpected RP Event (endRace):", data)
 
         # dsq
         elif data["type"] == "dsq":
@@ -512,7 +512,7 @@ class UdpPluginServer(object):
         elif data["type"] == "newSecondsPenalty":
 
             if 'cause' not in data['penalty']:
-                print("Unexpected RP Event:", data)
+                print("Missing 'cause' in RP Event:", data)
 
             elif data['penalty']['cause'] == "missingSwaps":
                 self.impose_penalty("Real-Penalty: DSQ\n" + data['penalty']['cause'],
@@ -522,7 +522,7 @@ class UdpPluginServer(object):
                 pass
 
             else:
-                print("Unexpected RP Event:", data)
+                print("Unexpected RP Event (newSecondsPenalty):", data)
 
         # leavePit
         elif data["type"] == "leavePit":
@@ -542,7 +542,7 @@ class UdpPluginServer(object):
         # unwon type
         else:
             # this is no error, since future RP versions can implement new stuff
-            print("Unexpected RP Event:", __line__, data)
+            print("Unexpected RP Event:", data)
 
 
 
