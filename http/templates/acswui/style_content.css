@@ -762,7 +762,8 @@ main.RSer div.RSerPageHeader img {
 }
 
 main.RSer div.RSerPageHeader div.RSerSeason,
-main.RSer div.RSerPageHeader div.RSerClass {
+main.RSer div.RSerPageHeader div.RSerClass,
+main.RSer div.RSerPageHeader div.RSerEvent {
     font-weight: normal;
     font-size: 0.75em;
 }

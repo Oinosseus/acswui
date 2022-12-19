@@ -183,4 +183,10 @@ class RSerClass extends DbEntry {
         $column_data['Priority'] = $this->parameterCollection()->child("Priority")->value();
         $this->storeColumns($column_data);
     }
+
+
+    //! @return The according RSerSeries object
+    public function series() : RSerSeries {
+        return RSerSeries::fromId((int) $this->loadColumn("Series"));
+    }
 }

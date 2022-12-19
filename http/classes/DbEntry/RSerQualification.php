@@ -38,6 +38,30 @@ class RSerQualification extends DbEntry {
 
 
     /**
+     * List all qualifications
+     * @param $event The RSerEvent
+     * @param $class The RSerClass
+     * @return A list of RSerQualification objects
+     */
+    public static function listQualifications(RSerEvent $event,
+                                       RSerClass $class) : array {
+
+        $query = "SELECT RSerQualifications.Id FROM RSerQualifications";
+        $query .= " INNER JOIN RSerRegistrations ON RSerQualifications.Registration = RSerRegistrations.Id";
+        $query .= " INNER JOIN Laps ON RSerQualifications.BestLap = Laps.Id";
+        $query .= " WHERE RSerQualifications.Event={$event->id()} ";
+        $query .= " AND RSerRegistrations.Class={$class->id()}";
+        $query .= " ORDER BY Laps.Laptime ASC";
+
+        $list = array();
+        foreach (\Core\Database::fetchRaw($query) as $row) {
+            $list[] = RSerQualification::fromId((int) $row['Id']);
+        }
+        return $list;
+    }
+
+
+    /**
      * Add a qualification lap
      *
      * If for the Event and Registration already a qualification lap exists,

@@ -12,6 +12,7 @@ class RSer extends \core\HtmlContent {
     private $CurrentSeries = NULL;
     private $CurrentSeason = NULL;
     private $CurrentClass = NULL;
+    private $CurrentEvent = NULL;
 
 
     public function __construct() {
@@ -30,12 +31,22 @@ class RSer extends \core\HtmlContent {
         $this->CanCreate = \Core\UserManager::currentUser()->permitted("ServerContent_RaceSeries_Create");
 
         // get current requested series/season
-        if (array_key_exists("RSerSeries", $_REQUEST))
-                $this->CurrentSeries = \DbEntry\RSerSeries::fromId((int) $_REQUEST['RSerSeries']);
-        if (array_key_exists("RSerSeason", $_REQUEST))
+        if (array_key_exists("RSerSeries", $_REQUEST)) {
+            $this->CurrentSeries = \DbEntry\RSerSeries::fromId((int) $_REQUEST['RSerSeries']);
+        }
+        if (array_key_exists("RSerSeason", $_REQUEST)) {
             $this->CurrentSeason = \DbEntry\RSerSeason::fromId((int) $_REQUEST['RSerSeason']);
-        if (array_key_exists("RSerClass", $_REQUEST))
+            $this->CurrentSeries = $this->CurrentSeason->series();
+        }
+        if (array_key_exists("RSerClass", $_REQUEST)) {
             $this->CurrentClass = \DbEntry\RSerClass::fromId((int) $_REQUEST['RSerClass']);
+            $this->CurrentSeries = $this->CurrentClass->series();
+        }
+        if (array_key_exists("RSerEvent", $_REQUEST)) {
+            $this->CurrentEvent = \DbEntry\RSerEvent::fromId((int) $_REQUEST['RSerEvent']);
+            $this->CurrentSeason = $this->CurrentEvent->season();
+            $this->CurrentSeries = $this->CurrentSeason->series();
+        }
 
 
         // --------------------------------------------------------------------
@@ -292,12 +303,88 @@ class RSer extends \core\HtmlContent {
                     $html .= $this->getHtmlRegisterTeam();
                     break;
 
+                case "EventOverview":
+                    $html .= $this->getHtmlEventOverview();
+                    break;
+
                 default:
                     \Core\Log::error("Unknown view {$_REQUEST['View']}!");
             }
 
         } else {
             $html .= $this->gehtHtmlSeriesOverview();
+        }
+
+        return $html;
+    }
+
+
+    private function getHtmlEventOverview() {
+        $html = "";
+        $cu = \Core\UserManager::currentUser();
+
+        // breadcrumps
+        $url = $this->url(['RSerSeries'=>0]);
+        $html .= "<a href=\"$url\">" . _("Race Series List") . "</a> &lt;&lt; ";
+        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
+        $html .= "<a href=\"$url\">" . _("Race Series Overview") . "</a> &lt;&lt; ";
+        $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                           "RSerSeason"=>$this->CurrentSeason->id(),
+                           "View"=>"SeasonOverview"]);
+        $html .= "<a href=\"$url\">" . _("Season") . " {$this->CurrentSeason->name()}</a> &lt;&lt; ";
+        $html .= _("Event") . " E{$this->CurrentEvent->order()}";
+        $html .= "<br>";
+
+        // header
+        $html .= $this->getHtmlPageHeader();
+
+        // permission check
+        if ($this->CurrentEvent === NULL) return "";
+
+        // qualifying
+        $html .= "<h1>" . _("Qualifications") . "</h1>";
+        foreach ($this->CurrentSeries->listClasses() as $rs_class) {
+            $html .= "<h2>{$rs_class->name()}</h2>";
+            $html .= "<table>";
+            $html .= "<tr>";
+            $html .= "<th>" . _("Pos") . "</th>";
+            $html .= "<th colspan=\"2\">" . _("Entry") . "</th>";
+            $html .= "<th>" . _("Lap") . "</th>";
+            $html .= "<th>" . _("BOP") . "</th>";
+            $html .= "</tr>";
+
+            $pos = 1;
+            foreach ($this->CurrentEvent->listQualifications($rs_class) as $rs_qual) {
+                $reg = $rs_qual->registration();
+                $lap = $rs_qual->lap();
+
+                $html .= "<tr>";
+                $html .= "<td>$pos</td>";
+
+                if ($reg->teamCar()) {
+                    $html .= "<td class=\"ZeroPadding\">{$reg->teamCar()->team()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
+                    $html .= "<td>";
+                    $drivers = $reg->teamCar()->drivers();
+                    for ($i=0; $i < count($drivers); ++$i) {
+                        $tmm = $drivers[$i];
+                        if ($i > 0) $html .= ",<br>";
+                        $html .= $tmm->user()->nationalFlag() . " ";
+                        $html .= $tmm->user()->html();
+                    }
+                    $html .= "</td>";
+                } else {
+                    $html .= "<td></td>";
+                    $html .= "<td>{$reg->user()->nationalFlag()} {$reg->user()->html()}</td>";
+                }
+
+                $html .= "<td>{$cu->formatLaptime($lap->laptime())}</td>";
+                $html .= "<td>" . sprintf("%+dkg, %+d&percnt;", $lap->ballast(), $lap->restrictor()) . "</td>";
+
+                $html .= "</tr>";
+                ++$pos;
+            }
+
+            $html .= "</table>";
         }
 
         return $html;
@@ -312,6 +399,7 @@ class RSer extends \core\HtmlContent {
         $html .= "<div>{$this->CurrentSeries->name()}</div>";
         if ($this->CurrentSeason) $html .= "<div class=\"RSerSeason\">" . _("Season") . " {$this->CurrentSeason->name()}</div>";
         if ($this->CurrentClass) $html .= "<div class=\"RSerClass\">{$this->CurrentClass->name()}</div>";
+        if ($this->CurrentEvent) $html .= "<div class=\"RSerEvent\">E{$this->CurrentEvent->order()} {$this->CurrentEvent->track()->name()}</div>";
         $html .= "</div>";
 
         return $html;
@@ -588,6 +676,25 @@ class RSer extends \core\HtmlContent {
 
         // standings
         $html .= "<h1>" . _("Standings") . "</h1>";
+
+        foreach ($this->CurrentSeries->listClasses() as $rs_class) {
+            $html .= "<h2>{$rs_class->name()}</h2>";
+            $html .= "<table>";
+            // $html .= "<caption>{$rser_c->name()} <small>({$rser_c->carClass()->name()})</small></caption>";
+            $html .= "<tr>";
+            $html .= "<th>" . _("Pos") . "</th>";
+            $html .= "<th>" . _("Entry") . "</th>";
+            foreach ($this->CurrentSeason->listEvents() as $rs_event) {
+                $url = $this->url(["RSerEvent"=>$rs_event->id(),
+                                    "View"=>"EventOverview"]);
+                $html .= "<th><a href=\"$url\">E{$rs_event->order()}</a></th>";
+            }
+            $html .= "<th>" . _("Points") . "</th>";
+            $html .= "<th>" . _("BOP") . "</th>";
+            $html .= "</tr>";
+
+            $html .= "</table>";
+        }
 
         // event results
         $html .= "<h1>" . _("Event Results") . "</h1>";

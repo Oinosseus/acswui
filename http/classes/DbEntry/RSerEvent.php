@@ -104,6 +104,15 @@ class RSerEvent extends DbEntry {
     }
 
 
+    /**
+     * List all qualifications
+     * @param $class The RSerClass
+     * @return A list of RSerQualification objects
+     */
+    public function listQualifications(RSerClass $class) : array {
+        return RSerQualification::listQualifications($this, $class);
+    }
+
     //! @return The order/number of this event
     public function order() : int {
         if ($this->Order === NULL) {
