@@ -486,12 +486,18 @@ class SessionOverview extends \core\HtmlContent {
         // information datalets
         $html .= "<div id=\"SessionInformationDatalets\">";
 
+            $html .= "<div>";
             if ($this->CurrentSession->serverSlot()) {
-                $html .= "<div>";
                 $html .= "<strong>" . _("Server Slot") . "</strong>";
                 $html .= $this->CurrentSession->serverSlot()->name();
-                $html .= "</div>";
+                $html .= "<br>";
             }
+            if ($this->CurrentSession->scheduleItem()) {
+                $html .= "<br>";
+                $html .= "<strong>" . _("Event") . "</strong>";
+                $html .= $this->CurrentSession->scheduleItem()->nameLink();
+            }
+            $html .= "</div>";
 
             $html .= "<div>";
             $html .= "<strong>" . _("Grip") . "</strong>";

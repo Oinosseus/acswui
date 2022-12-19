@@ -165,7 +165,7 @@ class ScheduledItem {
     //! @return A HTML string including the name and a link
     public function nameLink() : string {
         if ($this->SessionSchedule) {
-            $url = "index.php?HtmlContent=SessionSchedules&Action=ShowRoster";
+            $url = "index.php?HtmlContent=SessionSchedules&SessionSchedule={$this->SessionSchedule->id()}&Action=ShowRoster";
             $label = $this->SessionSchedule->name();
             return "<a href=\"$url\">$label</a>";
 

@@ -245,7 +245,6 @@ class Session extends DbEntry {
     }
 
 
-
 //     /**
 //      * @return The newest Session (can be NULL)
 //      */
@@ -260,7 +259,6 @@ class Session extends DbEntry {
 //
 //         return Session::$LatestSession;
 //     }
-
 
 
     //! @return A two-element array with minimum and maximum grip at the session
@@ -387,6 +385,28 @@ class Session extends DbEntry {
     //! @return The session object which was directly followed by this session
     public function predecessor() {
         return Session::fromId($this->loadColumn("Predecessor"));
+    }
+
+
+    //! @return If this session is related to a scheduled session, a ScheduledItem is returned (else NULL)
+    public function scheduleItem() : ?\Compound\ScheduledItem {
+
+        // SessionSchedule
+        $id = (int) $this->loadColumn("SessionSchedule");
+        $obj = SessionSchedule::fromId($id);
+        if ($id > 0 && $obj !== NULL) {
+            return \Compound\ScheduledItem::fromSessionSchedule($obj);
+        }
+
+        // RSerSplit
+        $id = (int) $this->loadColumn("RSerSplit");
+        $obj = RSerSplit::fromId($id);
+        if ($id > 0 && $obj !== NULL) {
+            return \Compound\ScheduledItem::fromRSerSplit($obj);
+        }
+
+        // nothing
+        return NULL;
     }
 
 
