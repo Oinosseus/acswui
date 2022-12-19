@@ -245,7 +245,7 @@ class CommandInstall(Command):
                 self.mkdirs(path_data_acserver_slot_cfg_cm_content)
 
             # prepare cfg files (to save ownership)
-            for filename in ["entry_list.ini", "server_cfg.ini", "server_cfg.ini.tmp", "welcome.txt", os.path.join("cm_content", "content.json")]:
+            for filename in ["entry_list.ini", "server_cfg.ini", "server_cfg.ini.tmp", "welcome.txt"]:#, os.path.join("cm_content", "content.json")]:
                 path_file = os.path.join(path_data_acserver_slot_cfg, filename)
                 with open(path_file, "w") as f:
                     f.write("\n")
