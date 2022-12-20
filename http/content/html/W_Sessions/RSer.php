@@ -107,9 +107,22 @@ class RSer extends \core\HtmlContent {
                 $user = \Core\UserManager::loggedUser();
                 $carskin = \DbEntry\CarSkin::fromId((int) $_POST['RegistrationCarSkin']);
 
-                \DbEntry\RSerRegistration::createNew($this->CurrentSeason,
-                                                     $this->CurrentClass,
-                                                     NULL, $user, $carskin);
+                // check if already occupied
+                $already_occupied = FALSE;
+                foreach ($this->CurrentSeason->listRegistrations(NULL, TRUE) as $reg) {
+                    if ($reg->carSkin() == $carskin) {
+                        $already_occupied = TRUE;
+                        break;
+                    }
+                }
+
+                if ($already_occupied) {
+                    \Core\Log::warning("Prevent over-occupation of $carskin from $user");
+                } else {
+                    \DbEntry\RSerRegistration::createNew($this->CurrentSeason,
+                                                        $this->CurrentClass,
+                                                        NULL, $user, $carskin);
+                }
 
                 $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
                                "RSerSeason"=>$this->CurrentSeason->id(),
@@ -377,7 +390,7 @@ class RSer extends \core\HtmlContent {
                     $html .= "<td>{$reg->user()->nationalFlag()} {$reg->user()->html()}</td>";
                 }
 
-                $html .= "<td>{$cu->formatLaptime($lap->laptime())}</td>";
+                $html .= "<td>{$lap->html()}</td>";
                 $html .= "<td>" . sprintf("%+dkg, %+d&percnt;", $lap->ballast(), $lap->restrictor()) . "</td>";
 
                 $html .= "</tr>";
@@ -434,6 +447,12 @@ class RSer extends \core\HtmlContent {
         $html .= "<button type=\"submit\" name=\"Action\" value=\"RegisterDriver\">" . _("Save Registration") . "</button>";
         $html .= "<br>";
 
+        // list already occupied skins
+        $occupied_skins = array();
+        foreach ($this->CurrentSeason->listRegistrations(NULL, TRUE) as $reg) {
+            $occupied_skins[] = $reg->carSkin();
+        }
+
         // cars for driver registration
         foreach ($this->CurrentClass->carClass()->cars() as $car) {
 
@@ -442,7 +461,7 @@ class RSer extends \core\HtmlContent {
 
                 // skip already occupied skins
                 //! @todo TBD Filter already occupied cars
-                // if ($ss->carSkinOccupied($skin)) continue;
+                if (in_array($skin, $occupied_skins)) continue;
 
                 // skip owned skins
                 if ($skin->owner() && $skin->owner()->id() != \Core\UserManager::currentUser()->id()) continue;
@@ -711,7 +730,11 @@ class RSer extends \core\HtmlContent {
             if ($rowspan == 0) $rowspan = 1;
 
             $html .= "<tr>";
-            $html .= "<td rowspan=\"$rowspan\">E{$rs_event->order()}</td>";
+
+            $url = $this->url(["RSerEvent"=>$rs_event->id(),
+                                "View"=>"EventOverview"]);
+            $html .= "<td rowspan=\"$rowspan\"><a href=\"$url\">E{$rs_event->order()}</a></td>";
+
             $html .= "<td rowspan=\"$rowspan\" class=\"ZeroPadding\">{$rs_event->track()->html(TRUE, TRUE, FALSE)}</td>";
             if (count($splits) > 0) {
                 $html .= "<td>" . _("Split") . " 1</td>";

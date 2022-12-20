@@ -71,6 +71,23 @@ class Lap extends DbEntry {
     }
 
 
+    /**
+     * @param $label_time If TRUE (default), the laptime will be used as label, if FALSE then the lap-id will be shown
+     * @return The laptime including a link to the session where this lap was driven
+     */
+    public function html(bool $label_time=TRUE) : string {
+        $url = "index.php?HtmlContent=SessionOverview&SessionId={$this->session()->id()}";
+        $title = "Session ID {$this->session()->id()}\nLap ID {$this->id()}";
+
+        if ($label_time)
+            $label = \Core\UserManager::currentUser()->formatLaptime($this->laptime());
+        else
+            $label = $this->id();
+
+        return "<a href=\"$url\" title=\"$title\">$label</a>";
+    }
+
+
     //! @return The lap time in milliseconds
     public function laptime() : int {
         return (int) $this->loadColumn("Laptime");
