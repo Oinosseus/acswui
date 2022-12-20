@@ -102,7 +102,11 @@ class RSerResult extends DbEntry {
             }
 
             // update positions in database
-            $query = "SELECT Id, Points FROM RSerResults WHERE Event={$event->id()} ORDER BY Points DESC;";
+            $query = "SELECT RSerResults.Id, RSerResults.Points FROM RSerResults";
+            $query .= " INNER JOIN RSerRegistrations ON RSerRegistrations.Id = RSerResults.Registration";
+            $query .= " WHERE Event={$event->id()}";
+            $query .= " AND RSerRegistrations.Class={$rs_class->id()}";
+            $query .= " ORDER BY RSerResults.Points DESC;";
             $next_position = 1;
             $last_points = NULL;
             $last_position = 1;
@@ -117,6 +121,10 @@ class RSerResult extends DbEntry {
                 ++$next_position;
             }
         }
+
+
+        // update standings
+        RSerStanding::calculateFromSeason($event->season());
     }
 
 
@@ -137,13 +145,34 @@ class RSerResult extends DbEntry {
 
 
     /**
+     * Get a single result
+     * @param $event The RSerEvent
+     * @param $registration The RSerRegistration
+     * @return The requested RSerResult object
+     */
+    public static function getResult(RSerEvent $event,
+                                     RSerRegistration $registration) : ?RSerResult {
+        $list = array();
+
+        $query = "SELECT Id FROM RSerResults";
+        $query .= " WHERE Registration={$registration->id()}";
+        $query .= " AND Event={$event->id()} LIMIT 1;";
+        $res = \Core\Database::fetchRaw($query);
+        if (count($res) > 0)
+            return RSerResult::fromId((int) $res[0]['Id']);
+        else
+            return NULL;
+    }
+
+
+    /**
      * List all results
      * @param $event The RSerEvent
      * @param $class The RSerClass
      * @return A list of RSerResult objects, ordered by position
      */
     public static function listResults(RSerEvent $event,
-                                RSerClass $class) : array {
+                                       RSerClass $class) : array {
         $list = array();
 
         $query = "SELECT RSerResults.Id FROM RSerResults";

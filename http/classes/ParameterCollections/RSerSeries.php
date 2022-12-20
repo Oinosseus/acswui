@@ -87,6 +87,22 @@ class RSerSeries extends \Parameter\Collection {
         $p->setMax(999);
 
 
+        // --------------------------------------------------------------------
+        //  General BOP
+        // --------------------------------------------------------------------
+
+        $pc = new \Parameter\Collection(NULL, $this,
+                                        "BOP",
+                                        _("Ballance Of Performance"),
+                                        _("General BOP settings"));
+
+        new \Parameter\ParamBool(NULL, $pc,
+                                 "BopIncremental",
+                                 _("Slow Incremental"),
+                                 _("If deactivated, the full BOP is applied after the first event. If activated, the BOP increases step by step per event."),
+                                 "", TRUE);
+
+
         // set all deriveable and visible
         // $this->setAllAccessible();
    }

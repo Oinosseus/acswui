@@ -20,11 +20,14 @@ class RSerClass extends DbEntry {
 
     /**
      * @param $position The season position
+     * @param $include_class_offset If TRUE (default) then the full BOP is returned, else the class offset is ignored.
      * @return the ballast for a certain season position
      */
-    public function bopBallast(int $position) {
+    public function bopBallast(int $position,
+                               bool $include_class_offset=TRUE) {
         $bop = 0;
-        $bop += $this->getParam("BopBallastOffset");
+        if ($include_class_offset)
+            $bop += $this->getParam("BopBallastOffset");
 
         $pos_relative = $this->getParam("BopBallastPosition") - $position + 1;
         if ($pos_relative > 0) $bop += $pos_relative * $this->getParam("BopBallastGain");
@@ -35,11 +38,14 @@ class RSerClass extends DbEntry {
 
     /**
      * @param $position The season position
+     * @param $include_class_offset If TRUE (default) then the full BOP is returned, else the class offset is ignored.
      * @return the restrictor for a certain season position
      */
-    public function bopRestrictor(int $position) {
+    public function bopRestrictor(int $position,
+                                  bool $include_class_offset=TRUE) {
         $bop = 0;
-        $bop += $this->getParam("BopRestrictorOffset");
+        if ($include_class_offset)
+            $bop += $this->getParam("BopRestrictorOffset");
 
         $pos_relative = $this->getParam("BopRestrictorPosition") - $position + 1;
         if ($pos_relative > 0) $bop += $pos_relative * $this->getParam("BopRestrictorGain");

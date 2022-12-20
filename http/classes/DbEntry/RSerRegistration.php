@@ -22,6 +22,58 @@ class RSerRegistration extends DbEntry {
     }
 
 
+    /**
+     * @param $include_class_offset If TRUE (default) then the full BOP is returned, else the class offset is ignored.
+     * @return The ballast for the next race
+     */
+    public function bopBallast(bool $include_class_offset=TRUE) {
+        $bop = 0;
+        $standing = $this->season()->getStanding($this);
+        if ($standing) {
+            $position = $standing->position();
+
+            // slow incremental BOP
+            if ($this->season()->series()->getParam("BopIncremental")) {
+                $event_count = $this->season()->countResultedEvents();
+                $bop_start_pos = $this->class()->getParam("BopBallastPosition");
+                if ($bop_start_pos > $event_count) {
+                    $position = $position - $event_count + $bop_start_pos;
+                }
+            }
+
+            $bop = $this->class()->bopBallast($position, $include_class_offset);
+        }
+
+        return $bop;
+    }
+
+
+    /**
+     * @param $include_class_offset If TRUE (default) then the full BOP is returned, else the class offset is ignored.
+     * @return The restrictor for the next race
+     */
+    public function bopRestrictor(bool $include_class_offset=TRUE) {
+        $bop = 0;
+        $standing = $this->season()->getStanding($this);
+        if ($standing) {
+            $position = $standing->position();
+
+            // slow incremental BOP
+            if ($this->season()->series()->getParam("BopIncremental")) {
+                $event_count = $this->season()->countResultedEvents();
+                $bop_start_pos = $this->class()->getParam("BopRestrictorPosition");
+                if ($bop_start_pos > $event_count) {
+                    $position = $position - $event_count + $bop_start_pos;
+                }
+            }
+
+            $bop = $this->class()->bopRestrictor($position, $include_class_offset);
+        }
+
+        return $bop;
+    }
+
+
     //! @return The CarSkin for this registration
     public function carSkin() : ?CarSkin {
         $id = (int) $this->loadColumn("CarSkin");
@@ -180,6 +232,12 @@ class RSerRegistration extends DbEntry {
         }
 
         return $list;
+    }
+
+
+    //! @return THe registered RSerSeason object
+    public function season() : RSerSeason {
+        return RSerSeason::fromId((int) $this->loadColumn("Season"));
     }
 
 

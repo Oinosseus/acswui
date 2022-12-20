@@ -78,6 +78,16 @@ class RSerEvent extends DbEntry {
 
 
     /**
+     * List a single result
+     * @param $registration The RSerRegistration
+     * @return The requested RSerResult object
+     */
+    public function getResult(RSerRegistration $registration) : ?RSerResult {
+        return RSerResult::getResult($this, $registration);
+    }
+
+
+    /**
      * List all available events
      * @param $rser_season All events of this season are returned
      * @return A list of RSerEvent objects

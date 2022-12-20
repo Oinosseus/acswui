@@ -7,6 +7,9 @@ namespace DbEntry;
 class RSerSeason extends DbEntry {
 
 
+    private $CacheResultedEventCount = NULL;
+
+
     /**
      * Construct a new object
      * @param $id Database table id
@@ -17,6 +20,21 @@ class RSerSeason extends DbEntry {
 
 
     /**
+     * @warning This function is cached and will work wrong if events change during lifetime of this object
+     * @return The number of events where results are available
+     */
+    public function countResultedEvents() : int {
+        if ($this->CacheResultedEventCount === NULL) {
+            $query = "SELECT DISTINCT(RSerResults.Event) FROM RSerEvents INNER JOIN RSerResults ON RSerResults.Event = RSerEvents.Id WHERE RSerEvents.Season={$this->id()};";
+            $res = \Core\Database::fetchRaw($query);
+            $this->CacheResultedEventCount = count($res);
+        }
+
+        return $this->CacheResultedEventCount;
+    }
+
+
+   /**
      * Creates a new season for a series.
      *
      * @param $rser_series The race series which this season shall be added to
@@ -41,6 +59,16 @@ class RSerSeason extends DbEntry {
      */
     public static function fromId(int $id) : ?RSerSeason {
         return parent::getCachedObject("RSerSeasons", "RSerSeason", $id);
+    }
+
+
+    /**
+     * Get a stading
+     * @param $registration The RSerRegistration
+     * @return A RSerStanding object
+     */
+    public function getStanding(RSerRegistration $registration) : RSerStanding {
+        return RSerStanding::getStanding($this, $registration);
     }
 
 
@@ -113,6 +141,17 @@ class RSerSeason extends DbEntry {
         }
 
         return $list;
+    }
+
+
+
+    /**
+     * List all stadings
+     * @param $class The RSerClass
+     * @return A list of RSerStanding objects, ordered by position
+     */
+    public function listStandings(RSerClass $class) : array {
+        return RSerStanding::listStandings($this, $class);
     }
 
 

@@ -351,7 +351,7 @@ class RSer extends \core\HtmlContent {
         $url = $this->url(['RSerSeries'=>0]);
         $html .= "<a href=\"$url\">" . _("Race Series List") . "</a> &lt;&lt; ";
         $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
-        $html .= "<a href=\"$url\">" . _("Race Series Overview") . "</a> &lt;&lt; ";
+        $html .= "<a href=\"$url\">{$this->CurrentSeries->name()}</a> &lt;&lt; ";
         $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
                            "RSerSeason"=>$this->CurrentSeason->id(),
                            "View"=>"SeasonOverview"]);
@@ -647,7 +647,7 @@ class RSer extends \core\HtmlContent {
         $url = $this->url(['RSerSeries'=>0]);
         $html .= "<a href=\"$url\">" . _("Race Series List") . "</a> &lt;&lt; ";
         $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
-        $html .= "<a href=\"$url\">" . _("Race Series Overview") . "</a> &lt;&lt; ";
+        $html .= "<a href=\"$url\">{$this->CurrentSeries->name()}</a> &lt;&lt; ";
         $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
                            "RSerSeason"=>$this->CurrentSeason->id(),
                            "View"=>"SeasonOverview"]);
@@ -760,7 +760,7 @@ class RSer extends \core\HtmlContent {
         $url = $this->url(['RSerSeries'=>0]);
         $html .= "<a href=\"$url\">" . _("Race Series List") . "</a> &lt;&lt; ";
         $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
-        $html .= "<a href=\"$url\">" . _("Race Series Overview") . "</a> &lt;&lt; ";
+        $html .= "<a href=\"$url\">{$this->CurrentSeries->name()}</a> &lt;&lt; ";
         $html .= _("Season") . " ";
         $html .= $this->CurrentSeason->name();
         $html .= "<br>";
@@ -786,7 +786,7 @@ class RSer extends \core\HtmlContent {
             // $html .= "<caption>{$rser_c->name()} <small>({$rser_c->carClass()->name()})</small></caption>";
             $html .= "<tr>";
             $html .= "<th>" . _("Pos") . "</th>";
-            $html .= "<th>" . _("Entry") . "</th>";
+            $html .= "<th colspan=\"2\">" . _("Entry") . "</th>";
             foreach ($this->CurrentSeason->listEvents() as $rs_event) {
                 $url = $this->url(["RSerEvent"=>$rs_event->id(),
                                     "View"=>"EventOverview"]);
@@ -795,6 +795,42 @@ class RSer extends \core\HtmlContent {
             $html .= "<th>" . _("Points") . "</th>";
             $html .= "<th>" . _("BOP") . "</th>";
             $html .= "</tr>";
+
+            foreach ($this->CurrentSeason->listStandings($rs_class) as $std) {
+                $reg = $std->registration();
+                if (!$reg->active()) continue;
+
+                $html .= "<tr>";
+                $html .= "<td>{$std->position()}</td>";
+
+                if ($reg->teamCar()) {
+                    $html .= "<td class=\"ZeroPadding\">{$reg->teamCar()->team()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
+                    $html .= "<td>";
+                    $drivers = $reg->teamCar()->drivers();
+                    for ($i=0; $i < count($drivers); ++$i) {
+                        $tmm = $drivers[$i];
+                        if ($i > 0) $html .= ",<br>";
+                        $html .= $tmm->user()->nationalFlag() . " ";
+                        $html .= $tmm->user()->html();
+                    }
+                    $html .= "</td>";
+                } else {
+                    $html .= "<td></td>";
+                    $html .= "<td>{$reg->user()->nationalFlag()} {$reg->user()->html()}</td>";
+                }
+
+                foreach ($this->CurrentSeason->listEvents() as $rs_event) {
+                    $html .= "<td>";
+                    $rslt = $rs_event->getResult($reg);
+                    if ($rslt) $html .= $rslt->points();
+                    $html .= "</td>";
+                }
+
+                $html .= "<td>{$std->points()}</td>";
+                $html .= "<td>{$reg->bopBallast()}kg / {$reg->bopRestrictor()}&percnt;</td>";
+
+                $html .= "</tr>";
+            }
 
             $html .= "</table>";
         }
@@ -924,7 +960,7 @@ class RSer extends \core\HtmlContent {
         $url = $this->url(['RSerSeries'=>0]);
         $html .= "<a href=\"$url\">" . _("Race Series List") . "</a> &lt;&lt; ";
         $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id()]);
-        $html .= "<a href=\"$url\">" . _("Race Series Overview") . "</a> &lt;&lt; ";
+        $html .= "<a href=\"$url\">{$this->CurrentSeries->name()}</a> &lt;&lt; ";
         $html .= _("Race Series Edit");
         $html .= "<br>";
 
@@ -1042,7 +1078,7 @@ class RSer extends \core\HtmlContent {
         // breadcrumps
         $url = $this->url(['RSerSeries'=>0]);
         $html .= "<a href=\"$url\">" . _("Race Series List") . "</a> &lt;&lt; ";
-        $html .= _("Race Series Overview");
+        $html .= $this->CurrentSeries->name();
         $html .= "<br>";
 
         // Header
