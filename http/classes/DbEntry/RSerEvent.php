@@ -20,10 +20,9 @@ class RSerEvent extends DbEntry {
 
     //! @return The BOP Map that is applicable for this event
     public function bopMap() : \Core\BopMap {
-        //! @todo TBD Respect BOP from standings
-
         $bm = new \Core\BopMap();
 
+        // from car classes
         foreach ($this->season()->series()->listClasses() as $rser_class) {
             $car_class = $rser_class->carClass();
 
@@ -39,6 +38,19 @@ class RSerEvent extends DbEntry {
                     $restrictor = $car_class->restrictor($car);
                     $bm->update($ballast, $restrictor, $car);
                 }
+            }
+        }
+
+        // from standings
+        foreach ($this->season()->listRegistrations($rser_class) as $reg) {
+            if ($reg->user()) {
+                $bm->update($reg->bopBallast(FALSE),
+                            $reg->bopRestrictor(FALSE),
+                            $reg->user());
+            } else if ($reg->teamCar()) {
+                $bm->update($reg->bopBallast(FALSE),
+                            $reg->bopRestrictor(FALSE),
+                            $reg->teamCar());
             }
         }
 
