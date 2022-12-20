@@ -150,9 +150,12 @@ class RSer extends \core\HtmlContent {
             if (\Core\UserManager::loggedUser() && $_REQUEST['Action'] == "RegisterTeam") {
                 $teamcar = \DbEntry\TeamCar::fromId((int) $_POST['RegisterTeamCar']);
 
-                \DbEntry\RSerRegistration::createNew($this->CurrentSeason,
-                                                     $this->CurrentClass,
-                                                     $teamcar);
+                // only matching carclass
+                if ($teamcar->carClass()->carClass() === $this->CurrentClass->carClass()) {
+                    \DbEntry\RSerRegistration::createNew($this->CurrentSeason,
+                                                        $this->CurrentClass,
+                                                        $teamcar);
+                }
 
                 $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
                                "RSerSeason"=>$this->CurrentSeason->id(),
@@ -525,6 +528,10 @@ class RSer extends \core\HtmlContent {
             $html .= "<h1>{$tm->name()}</h1>";
 
             foreach ($tm->cars() as $tc) {
+
+                // only matching carclass
+                if ($tc->carClass()->carClass() != $this->CurrentClass->carClass()) continue;
+
                 $skin_img = $tc->html();
                 $checked = FALSE;
                 $disabled = FALSE;

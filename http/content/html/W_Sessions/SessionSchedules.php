@@ -43,8 +43,11 @@ class SessionSchedules extends \core\HtmlContent {
                     } else if ($_POST['RegistrationType'] == "Team" && $this->CurrentSchedule->getParamValue("AllowTeams")) {
                         if (array_key_exists('RegistrationTeamCar', $_POST)) {
                             $team_car = \DbEntry\TeamCar::fromId($_POST["RegistrationTeamCar"]);
-                            \DbEntry\SessionScheduleRegistration::register(schedule:$this->CurrentSchedule,
-                                                                        team_car:$team_car);
+
+                            if ($team_car->carClass()->carClass() === $this->CurrentSchedule->carClass()) {
+                                \DbEntry\SessionScheduleRegistration::register(schedule:$this->CurrentSchedule,
+                                                                            team_car:$team_car);
+                            }
                         }
                     }
                 }
@@ -371,6 +374,10 @@ class SessionSchedules extends \core\HtmlContent {
             $html .= "<h1>{$tm->name()}</h1>";
 
             foreach ($tm->cars() as $tc) {
+
+                // only matching carclass
+                if ($tc->carClass()->carClass() != $ss->carClass()) continue;
+
                 $skin_img = $tc->html();
                 $checked = FALSE;
                 $disabled = FALSE;

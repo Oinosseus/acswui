@@ -125,7 +125,17 @@ class Teams extends \core\HtmlContent {
                 if (array_key_exists("TeamCarClass", $_POST) && array_key_exists("CarSkinId", $_POST)) {
                     if ($tcc = \DbEntry\TeamCarClass::fromId($_POST['TeamCarClass'])) {
                         if ($cs = \DbEntry\CarSkin::fromId($_POST['CarSkinId'])) {
-                            \DbEntry\TeamCar::createNew($tcc, $cs);
+
+                            // list carskins which are already in use
+                            $assigned_carskins = array();
+                            foreach (\DbEntry\TeamCar::listTeamCars(NULL, NULL, $tcc->carClass()) as $tc) {
+                                $assigned_carskins[] = $tc->carSkin();
+                            }
+
+                            // assign carskin if not already in use
+                            if (!in_array($cs, $assigned_carskins)) {
+                                \DbEntry\TeamCar::createNew($tcc, $cs);
+                            }
                         }
                     }
                 }
@@ -414,10 +424,17 @@ class Teams extends \core\HtmlContent {
         $html .= "<input type=\"hidden\" name=\"Id\" value=\"{$this->CurrentTeam->id()}\">";
         $html .= "<input type=\"hidden\" name=\"TeamCarClass\" value=\"{$tcc->id()}\">";
 
+        // get list of already assigned cars
+        $assigned_carskins = array();
+        foreach (\DbEntry\TeamCar::listTeamCars(NULL, NULL, $tcc->carClass()) as $tc) {
+            $assigned_carskins[] = $tc->carSkin();
+        }
+
         // get list of owned cars for a certain carclass
         $car_skin_list = array();
         $car_skin_list_raw = \DbEntry\CarSkin::listOwnedSkins(\Core\UserManager::currentUser());
         foreach ($car_skin_list_raw as $cs) {
+            if (in_array($cs, $assigned_carskins)) continue;
             if ($tcc->carClass()->validCar($cs->car())) $car_skin_list[] = $cs;
         }
 
