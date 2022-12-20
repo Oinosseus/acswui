@@ -40,6 +40,12 @@ class RSerClass extends \Parameter\Collection {
         $p->setMin(0);
         $p->setMax(9);
 
+        new \Parameter\ParamBool(NULL, $pc,
+                                 "FillEntries",
+                                 _("Fill Entrylist"),
+                                 _("If activated, empty pitboxes are filled with random cars of this class"),
+                                 "", FALSE);
+
 
         // --------------
         //  Registration

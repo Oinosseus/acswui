@@ -47,19 +47,57 @@ class RSerSplit extends DbEntry {
 
     //! @return A generated EntryList object
     public function entryList() : \Core\EntryList {
-        //! @todo TBD Qualifications need to be respected here
-
         // create EntryList
         $el = new \Core\EntryList();
 
-        // add registrations
+        // add from qualifications
+        $entered_registrations = array();
+        foreach ($this->event()->season()->series()->listClasses() as $rs_class) {
+            foreach ($this->event()->listQualifications($rs_class) as $qual) {
+                $reg = $qual->registration();
+                if (!$reg->active()) continue;
+                $entered_registrations[] = $reg;
+                $skin = $reg->carSkin();
+                if ($skin) {
+                    $eli = new \Core\EntryListItem($skin, $reg);
+                    $eli->addDriver($reg->user());
+                    $eli->addDriver($reg->teamCar());
+                    $el->add($eli);
+                }
+            }
+        }
+
+        // add remaining registrations
         foreach ($this->event()->season()->listRegistrations(NULL, TRUE) as $reg) {
+            if (in_array($reg, $entered_registrations)) continue;
             $skin = $reg->carSkin();
             if ($skin) {
                 $eli = new \Core\EntryListItem($skin, $reg);
                 $eli->addDriver($reg->user());
                 $eli->addDriver($reg->teamCar());
                 $el->add($eli);
+            }
+        }
+
+        // TV Car
+        $el->addTvCar();
+
+        // find car classes with entrylist auto-fill
+        $rs_classes = array();
+        foreach ($this->event()->season()->series()->listClasses() as $rs_class) {
+            if ($rs_class->getParam("FillEntries")) {
+                $rs_classes[] = $rs_class;
+            }
+        }
+
+        // fill skins
+        if (count($rs_classes)) {
+            $pits = $this->event()->track()->pitboxes();
+            $remaining = $pits - $el->count();
+            $per_class = ceil($remaining / count($rs_classes));
+            foreach ($rs_classes as $rs_class) {
+                $el->fillSkins($rs_class->carClass(),
+                               min($pits, $el->count() + $per_class));
             }
         }
 

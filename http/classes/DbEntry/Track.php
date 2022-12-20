@@ -356,7 +356,7 @@ class Track extends DbEntry {
 
 
     //! @return Amount of pitboxes
-    public function pitboxes() {
+    public function pitboxes() : int {
         if ($this->Pitboxes === NULL) $this->Pitboxes = (int) $this->loadColumn("Pitboxes");
         return $this->Pitboxes;
     }

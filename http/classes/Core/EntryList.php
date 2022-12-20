@@ -90,7 +90,7 @@ class EntryList {
 
 
     //! @return The amount of EntryListItems
-    public function count() {
+    public function count() : int {
         return count($this->ListItems);
     }
 
