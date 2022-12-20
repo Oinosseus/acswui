@@ -422,6 +422,7 @@ class InstallerDatabase(object):
         # self.__db.appendColumnInt(table_name, "PenPts")
         self.__db.appendColumnBool(table_name, "PenDsq")
         self.__db.appendColumnBool(table_name, "PenDnf")
+        self.__db.appendColumnUInt(table_name, "RSerRegistration")
 
 
     def _tables_teams(self):

@@ -33,7 +33,7 @@ class SessionResultFinal extends DbEntry {
 
 
         // iterate over raw session results and create a preliminary final result
-        $query = "SELECT Position, User, CarSkin, TeamCar, TotalTime, BestLap";
+        $query = "SELECT Position, User, CarSkin, TeamCar, TotalTime, BestLap, RSerRegistration";
         $query .= " FROM SessionResultsAc WHERE Session={$session->id()} AND TotalTime>0";
         $query .= " ORDER BY Position ASC;";
         foreach (\Core\Database::fetchRaw($query) as $row) {
@@ -51,6 +51,7 @@ class SessionResultFinal extends DbEntry {
             $new_result_columns['PenDsq'] = 0;
             $new_result_columns['RankingPoints'] = new \Core\DriverRankingPoints();
             $new_result_columns['BestLaptime'] = (int) $row['BestLap'];
+            $new_result_columns['RSerRegistration'] = (int) $row['RSerRegistration'];
             $new_result_columns['AmountsCuts'] = 0;
             $new_result_columns['Driver'] = new \Compound\SessionEntry($session,
                                                                        \DbEntry\TeamCar::fromId($new_result_columns['TeamCar']),
@@ -211,6 +212,7 @@ class SessionResultFinal extends DbEntry {
             $columns['RankingPoints'] = $rslt['RankingPoints'];
             $columns['PenDnf'] = $rslt['PenDnf'];
             $columns['PenDsq'] = $rslt['PenDsq'];
+            $columns['RSerRegistration'] = $rslt['RSerRegistration'];
             \Core\Database::insert("SessionResultsFinal", $columns);
         }
 
@@ -294,6 +296,12 @@ class SessionResultFinal extends DbEntry {
     public function rankingPoints() : \Core\DriverRankingPoints {
         $rp = $this->loadColumn("RankingPoints");
         return new \Core\DriverRankingPoints($rp);
+    }
+
+
+    //! @return The associated RSerRegistration (if existent)
+    public function rserRegistration() : ?RSerRegistration {
+        return RSerRegistration::fromId((int) $this->loadColumn('RSerRegistration'));
     }
 
 

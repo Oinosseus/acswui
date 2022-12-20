@@ -142,6 +142,20 @@ class RSerSplit extends DbEntry {
     }
 
 
+    //! @return A list of Session objects which where races of this split
+    public function listRaces() : array {
+        $list = array();
+
+        $t = \Enums\SessionType::Race->value;
+        $query = "SELECT Id FROM Sessions WHERE RSerSplit={$this->id()} AND Type=$t ORDER BY Id ASC";
+        foreach (\Core\Database::fetchRaw($query) as $row) {
+            $list[] = Session::fromId((int) $row['Id']);
+        }
+
+        return $list;
+    }
+
+
     //! @return The order/number of this split
     public function order() : int {
         if ($this->Order === NULL) {

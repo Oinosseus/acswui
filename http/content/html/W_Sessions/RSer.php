@@ -81,6 +81,14 @@ class RSer extends \core\HtmlContent {
 
 
             // ----------------------------------------------------------------
+            //  Update Results
+
+            if ($this->CanEdit && $_REQUEST['Action'] == "UpdateEventResults") {
+                \DbEntry\RSerResult::calculateFromEvent($this->CurrentEvent);
+            }
+
+
+            // ----------------------------------------------------------------
             //  Create New Series
             if ($this->CanCreate && $_REQUEST['Action'] == "CreateNewSeries") {
                 $this->CurrentSeries = \DbEntry\RSerSeries::createNew();
@@ -356,6 +364,17 @@ class RSer extends \core\HtmlContent {
 
         // permission check
         if ($this->CurrentEvent === NULL) return "";
+
+        // update results
+        if ($this->CanEdit) {
+            $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                "RSerSeason"=>$this->CurrentSeason->id(),
+                                "RSerEvent"=>$this->CurrentEvent->id(),
+                                "Action"=>"UpdateEventResults",
+                                "View"=>"EventOverview"]);
+            $html .= "<a href=\"$url\">" . _("Update Results") . "</a> ";
+            $html .= "<br><br>";
+        }
 
         // qualifying
         $html .= "<h1>" . _("Qualifications") . "</h1>";

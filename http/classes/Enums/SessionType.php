@@ -9,5 +9,4 @@ enum SessionType : int {
     case Practice = 1;
     case Qualifying = 2;
     case Race = 3;
-
 }
