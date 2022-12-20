@@ -415,7 +415,7 @@ class SessionOverview extends \core\HtmlContent {
         $html .= "<tr>";
         $html .= "<th rowspan=\"2\">"  . _("Position") . "</th>";
         $html .= "<th rowspan=\"2\">"  . _("Driver") . "</th>";
-        $html .= "<th rowspan=\"2\">"  . _("Car") . "</th>";
+        $html .= "<th rowspan=\"2\" colspan=\"2\">"  . _("Car") . "</th>";
         $html .= "<th rowspan=\"2\">"  . _("Best Lap") . "</th>";
         $html .= "<th colspan=\"3\">"  . _("Driven") . "</th>";
         // $html .= "<th rowspan=\"2\">"  . _("Cuts") . "</th>";
@@ -442,6 +442,9 @@ class SessionOverview extends \core\HtmlContent {
             $html .= "<td>" . $r->driver()->getHtml() . "</td>";
 
             $html .= "<td class=\"SessionResultsCarSkinCell\">" . $r->carSkin()->html(TRUE, FALSE) ."</td>";
+            if ($r->rserClass()) $html .= "<td>{$r->rserClass()->name()}</td>";
+            else $html .= "<td></td>";
+
             $html .= "<td>" . $user->formatLaptime($r->bestLaptime()) . "</td>";
             $html .= "<td>" . $user->formatLaptime($r->finalTime()) . "</td>";
             $html .= "<td>" . $r->finalLaps() . "</td>";

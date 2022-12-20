@@ -357,6 +357,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnSmallInt(table_name, "Ballast")
         self.__db.appendColumnTinyInt(table_name, "Restrictor")
         self.__db.appendColumnUInt(table_name, "RSerRegistration")
+        self.__db.appendColumnUInt(table_name, "RSerClass")
 
         table_name = "Laps"
         self.__db.appendTable(table_name)
@@ -422,7 +423,9 @@ class InstallerDatabase(object):
         # self.__db.appendColumnInt(table_name, "PenPts")
         self.__db.appendColumnBool(table_name, "PenDsq")
         self.__db.appendColumnBool(table_name, "PenDnf")
+        self.__db.appendColumnInt(table_name, "PenPts")
         self.__db.appendColumnUInt(table_name, "RSerRegistration")
+        self.__db.appendColumnUInt(table_name, "RSerClass")
 
 
     def _tables_teams(self):

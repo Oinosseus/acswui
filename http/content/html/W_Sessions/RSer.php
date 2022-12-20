@@ -376,6 +376,63 @@ class RSer extends \core\HtmlContent {
             $html .= "<br><br>";
         }
 
+        // race results
+        $html .= "<h1>" . _("Race Results") . "</h1>";
+        foreach ($this->CurrentSeries->listClasses() as $rs_class) {
+            $result_list = $this->CurrentEvent->listResults($rs_class);
+
+            $html .= "<h2>{$rs_class->name()}</h2>";
+            $html .= _("Races") . ": ";
+            $session_list = array();
+            foreach ($this->CurrentEvent->listSplits() as $split) {
+                foreach ($split->listRaces() as $session) {
+                    $session_list[] = $session->htmlName();
+                }
+            }
+
+            if (count($result_list) > 0) {
+
+                $html .= implode(", ", $session_list);
+                $html .= "<br>";
+
+                $html .= "<table>";
+                $html .= "<tr>";
+                $html .= "<th>" . _("Pos") . "</th>";
+                $html .= "<th colspan=\"2\">" . _("Entry") . "</th>";
+                $html .= "<th>" . _("Points") . "</th>";
+                $html .= "</tr>";
+
+                foreach ($result_list as $rslt) {
+                    $reg = $rslt->registration();
+                    if (!$reg->active()) continue;
+
+                    $html .= "<tr>";
+                    $html .= "<td>{$rslt->position()}</td>";
+
+                    if ($reg->teamCar()) {
+                        $html .= "<td class=\"ZeroPadding\">{$reg->teamCar()->team()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
+                        $html .= "<td>";
+                        $drivers = $reg->teamCar()->drivers();
+                        for ($i=0; $i < count($drivers); ++$i) {
+                            $tmm = $drivers[$i];
+                            if ($i > 0) $html .= ",<br>";
+                            $html .= $tmm->user()->nationalFlag() . " ";
+                            $html .= $tmm->user()->html();
+                        }
+                        $html .= "</td>";
+                    } else {
+                        $html .= "<td></td>";
+                        $html .= "<td>{$reg->user()->nationalFlag()} {$reg->user()->html()}</td>";
+                    }
+                    $html .= "<td>{$rslt->points()}</td>";
+
+                    $html .= "</tr>";
+                }
+
+                $html .= "</table>";
+            }
+        }
+
         // qualifying
         $html .= "<h1>" . _("Qualifications") . "</h1>";
         foreach ($this->CurrentSeries->listClasses() as $rs_class) {

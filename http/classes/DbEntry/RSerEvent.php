@@ -98,6 +98,16 @@ class RSerEvent extends DbEntry {
     }
 
 
+    /**
+     * List all results
+     * @param $class The RSerClass
+     * @return A list of RSerResult objects, ordered by position
+     */
+    public function listResults(RSerClass $class) : array {
+        return \DbEntry\RSerResult::listResults($this, $class);
+    }
+
+
     //! @return A list of RSerSplit objects
     public function listSplits() : array {
         return RSerSplit::listSplits($this);

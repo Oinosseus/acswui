@@ -50,6 +50,7 @@ class RSerResult extends DbEntry {
 
                     $position = 1;
                     foreach (SessionResultFinal::listResults($session) as $srslt) {
+
                         $rs_reg = $srslt->rserRegistration();
                         if ($rs_reg) {
 
@@ -62,7 +63,10 @@ class RSerResult extends DbEntry {
                             }
 
                             // add points
-                            $registrations[$rs_reg]['Pts'] += $event->season()->series()->raceResultPoints($postion + $last_position_of_previous_split);
+                            if (!$srslt->dnf() && !$srslt->dsq()) {
+                                $registrations[$rs_reg->id()]['Pts'] += $event->season()->series()->raceResultPoints($position + $last_position_of_previous_split);
+                            }
+                            $registrations[$rs_reg->id()]['Pts'] += $srslt->penPts();
                             $position += 1;
                             if ($position > $split_highest_position)
                                     $split_highest_position = $position;
@@ -73,10 +77,45 @@ class RSerResult extends DbEntry {
                 $last_position_of_previous_split = $split_highest_position;
             }
 
-            // assign positions
-            usort($registrations, "\\DbEntry\\RSerResult::usortRegistrationArrayByPoints");
-            for ($idx=0; $idx < count($registrations); ++$idx)
-                $registrations[$idx]['Pos'] = $idx + 1;
+            // save into database
+            foreach ($registrations as $idx=>$data) {
+
+                // find existing result
+                $query = "SELECT Id FROM RSerResults WHERE Event={$event->id()} AND Registration={$data['Reg']->id()} LIMIT 1;";
+                $res = \Core\Database::fetchRaw($query);
+                $id = NULL;
+                if (count($res) > 0) $id = (int) $res[0]['Id'];
+
+                // prepare data
+                $columns = array();
+                $columns['Event'] = $event->id();
+                $columns['Registration'] = $data['Reg']->id();
+                $columns['Position'] = 0;
+                $columns['Points'] = $data['Pts'];
+
+                // update DB
+                if ($id) {
+                    \Core\Database::update("RSerResults", $id, $columns);
+                } else {
+                    \Core\Database::insert("RSerResults", $columns);
+                }
+            }
+
+            // update positions in database
+            $query = "SELECT Id, Points FROM RSerResults WHERE Event={$event->id()} ORDER BY Points DESC;";
+            $next_position = 1;
+            $last_points = NULL;
+            $last_position = 1;
+            foreach (\Core\Database::fetchRaw($query) as $row) {
+                if ($row['Points'] == $last_points) {
+                    \Core\Database::update("RSerResults", (int) $row['Id'], ['Position'=>$last_position]);
+                } else {
+                    \Core\Database::update("RSerResults", (int) $row['Id'], ['Position'=>$next_position]);
+                    $last_position = $next_position;
+                    $last_points = (int) $row['Points'];
+                }
+                ++$next_position;
+            }
         }
     }
 
@@ -94,6 +133,30 @@ class RSerResult extends DbEntry {
      */
     public static function fromId(int $id) : ?RSerResult {
         return parent::getCachedObject("RSerResults", "RSerResult", $id);
+    }
+
+
+    /**
+     * List all results
+     * @param $event The RSerEvent
+     * @param $class The RSerClass
+     * @return A list of RSerResult objects, ordered by position
+     */
+    public static function listResults(RSerEvent $event,
+                                RSerClass $class) : array {
+        $list = array();
+
+        $query = "SELECT RSerResults.Id FROM RSerResults";
+        $query .= " INNER JOIN RSerRegistrations ON RSerRegistrations.Id = RSerResults.Registration";
+        $query .= " WHERE RSerRegistrations.Class={$class->id()}";
+        $query .= " AND RSerResults.Event={$event->id()}";
+        $query .= " ORDER BY Position ASC";
+
+        foreach (\Core\Database::fetchRaw($query) as $row) {
+            $list[] = RSerResult::fromId((int) $row['Id']);
+        }
+
+        return $list;
     }
 
 

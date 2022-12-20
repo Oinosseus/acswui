@@ -33,7 +33,7 @@ class SessionResultFinal extends DbEntry {
 
 
         // iterate over raw session results and create a preliminary final result
-        $query = "SELECT Position, User, CarSkin, TeamCar, TotalTime, BestLap, RSerRegistration";
+        $query = "SELECT Position, User, CarSkin, TeamCar, TotalTime, BestLap, RSerRegistration, RSerClass";
         $query .= " FROM SessionResultsAc WHERE Session={$session->id()} AND TotalTime>0";
         $query .= " ORDER BY Position ASC;";
         foreach (\Core\Database::fetchRaw($query) as $row) {
@@ -49,13 +49,28 @@ class SessionResultFinal extends DbEntry {
             $new_result_columns['FinalTime'] = (int) $row['TotalTime'];
             $new_result_columns['PenDnf'] = 0;
             $new_result_columns['PenDsq'] = 0;
+            $new_result_columns['PenPts'] = 0;
             $new_result_columns['RankingPoints'] = new \Core\DriverRankingPoints();
             $new_result_columns['BestLaptime'] = (int) $row['BestLap'];
             $new_result_columns['RSerRegistration'] = (int) $row['RSerRegistration'];
+            $new_result_columns['RSerClass'] = (int) $row['RSerClass'];
             $new_result_columns['AmountsCuts'] = 0;
             $new_result_columns['Driver'] = new \Compound\SessionEntry($session,
                                                                        \DbEntry\TeamCar::fromId($new_result_columns['TeamCar']),
                                                                        \DbEntry\User::fromId($new_result_columns['User']));
+
+            // automatic registering for race series
+            if ($session->scheduleItem() &&
+                $session->scheduleItem()->getRSerSplit() &&
+                $new_result_columns['RSerClass'] != 0 &&
+                $new_result_columns['RSerRegistration'] == 0) {
+                    $reg = RSerRegistration::createNew($session->scheduleItem()->getRSerSplit()->event()->season(),
+                                                       RSerClass::fromId($new_result_columns['RSerClass']),
+                                                       ($new_result_columns['TeamCar'] == 0) ? NULL : TeamCar::fromId($new_result_columns['TeamCar']),
+                                                       ($new_result_columns['TeamCar'] == 0) ? User::fromId($new_result_columns['User']) : NULL,
+                                                       ($new_result_columns['TeamCar'] == 0) ? CarSkin::fromId($new_result_columns['CarSkin']) : NULL);
+                    $new_result_columns['RSerRegistration'] = $reg->id();
+            }
 
             // count laps
             $new_result_columns['FinalLaps'] = count($session->laps($new_result_columns['Driver']));
@@ -74,6 +89,7 @@ class SessionResultFinal extends DbEntry {
                 $new_result_columns['FinalTime'] += $spen->penTime() * 1000;
                 $new_result_columns['FinalLaps'] += $spen->penLaps();
                 $new_result_columns['RankingPoints']->addSfPen($spen->penSf());
+                $new_result_columns['PenPts'] += $spen->penPts();
             }
 
             // store result
@@ -212,7 +228,9 @@ class SessionResultFinal extends DbEntry {
             $columns['RankingPoints'] = $rslt['RankingPoints'];
             $columns['PenDnf'] = $rslt['PenDnf'];
             $columns['PenDsq'] = $rslt['PenDsq'];
+            $columns['PenPts'] = $rslt['PenPts'];
             $columns['RSerRegistration'] = $rslt['RSerRegistration'];
+            $columns['RSerClass'] = $rslt['RSerClass'];
             \Core\Database::insert("SessionResultsFinal", $columns);
         }
 
@@ -286,6 +304,12 @@ class SessionResultFinal extends DbEntry {
     }
 
 
+    //! @return Additional penalty points for race series
+    public function penPts() : int {
+        return (int) $this->loadColumn("PenPts");
+    }
+
+
     //! @return The position of the driver in the session (1==leader)
     public function position() : int {
         return (int) $this->loadColumn("Position");
@@ -296,6 +320,12 @@ class SessionResultFinal extends DbEntry {
     public function rankingPoints() : \Core\DriverRankingPoints {
         $rp = $this->loadColumn("RankingPoints");
         return new \Core\DriverRankingPoints($rp);
+    }
+
+
+    //! @return A RSerClass object or NULL
+    public function rserClass() : ?RSerClass {
+        return RSerClass::fromId((int) $this->loadColumn("RSerClass"));
     }
 
 
