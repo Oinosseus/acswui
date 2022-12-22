@@ -67,7 +67,7 @@ class RSerSeason extends DbEntry {
      * @param $registration The RSerRegistration
      * @return A RSerStanding object
      */
-    public function getStanding(RSerRegistration $registration) : RSerStanding {
+    public function getStanding(RSerRegistration $registration) : ?RSerStanding {
         return RSerStanding::getStanding($this, $registration);
     }
 

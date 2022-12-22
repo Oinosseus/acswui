@@ -124,7 +124,7 @@ class RSerStanding extends DbEntry {
      * @return A RSerStanding object
      */
     public static function getStanding(RSerSeason $season,
-                                       RSerRegistration $registration) : RSerStanding {
+                                       RSerRegistration $registration) : ?RSerStanding {
         $query = "SELECT Id FROM RSerStandings";
         $query .= " WHERE Registration={$registration->id()}";
         $query .= " AND Season={$season->id()}";
