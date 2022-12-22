@@ -58,4 +58,24 @@ class Helper {
             }
         }
     }
+
+
+    /**
+     * Finds the most N-maximum values in a list of numbers (int|float)
+     * and returns the sum of them.
+     *
+     * If N=0, then 0 is returned
+     * If N is less than count($list), then the sum of all is returned.
+     *
+     * @param $n The number of elements to sum
+     * @param $list An array of numbers
+     * @return The sum of the N-maximum elements
+     */
+    public static function maxNSum(int $n, array $list) : int|float {
+        $sum = 0;
+        sort($list,  SORT_NUMERIC);
+        for ($i=0; $i<count($list) && $i<$n; ++$i)
+            $sum += $list[$i];
+        return $sum;
+    }
 }

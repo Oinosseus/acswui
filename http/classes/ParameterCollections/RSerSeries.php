@@ -86,6 +86,17 @@ class RSerSeries extends \Parameter\Collection {
         $p->setMin(0);
         $p->setMax(999);
 
+        $p = new \Parameter\ParamEnum(NULL, $pc,
+                                     "PtsClassSum",
+                                     _("Class Sum"),
+                                     _("This defines how team car points are summarized within a class for overall ranking."));
+        new \Parameter\EnumItem($p, "B1", _("Best Result"));
+        new \Parameter\EnumItem($p, "B2", _("Best two Results"));
+        new \Parameter\EnumItem($p, "B3", _("Best three Results"));
+        new \Parameter\EnumItem($p, "B4", _("Best four Results"));
+        new \Parameter\EnumItem($p, "AVRG", _("Average"));
+        $p->setValue("B2");
+
 
         // --------------------------------------------------------------------
         //  General BOP

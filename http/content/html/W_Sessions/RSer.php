@@ -483,6 +483,61 @@ class RSer extends \core\HtmlContent {
     }
 
 
+
+    private function getHtmlOverallStandings(\DbEntry\RSerSeason $season) : string {
+        $html = "";
+
+        $html .= "<table>";
+        $html .= "<tr>";
+        $html .= "<th>" . _("Pos") . "</th>";
+        $html .= "<th>" . _("Team") . "</th>";
+        $html .= "<th>" . _("Driver") . "</th>";
+        $html .= "<th>" . _("Points") . "</th>";
+        $html .= "</tr>";
+        $position = 1;
+        $position_last = 1;
+        $points_last = 0;
+        foreach (\Compound\RSerTeamStanding::listStadnings($season) as $rs_ts) {
+            if ($rs_ts->points() == $points_last) {
+                $local_position = $position_last;
+            } else {
+                $local_position = $position;
+                $position_last = $position;
+            }
+
+            $html .= "<tr>";
+            $html .= "<td>$local_position</td>";
+
+            if (is_a($rs_ts->entry(), "\\DbEntry\\User")) {
+                $html .= "<td></td>";
+                $html .= "<td>{$rs_ts->entry()->nationalFlag()} {$rs_ts->entry()->html()}</td>";
+            } else if (is_a($rs_ts->entry(), "\\DbEntry\\Team")) {
+                $drivers = "";
+                foreach ($season->listRegistrations(NULL, TRUE) as $reg) {
+                    if (!$reg->teamCar() || $reg->teamCar()->team() != $rs_ts->entry()) continue;
+                    foreach ($reg->teamCar()->drivers() as $d) {
+                        $drivers = $d->user();
+                        if (strlen($drivers) > 0) $drivers .= ",<br>";
+                        $drivers .= $d->user()->nationalFlag() . " ";
+                        $drivers .= $d->user()->html();
+                    }
+                }
+                $html .= "<td class=\"ZeroPadding\">{$rs_ts->entry()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
+                $html .= "<td>$drivers</td>";
+            }
+
+            $html .= "<td><span title=\"" . sprintf("%0.2f", $rs_ts->points()) . "\">" . round($rs_ts->points()) . "</span></td>";
+            $html .= "</tr>";
+
+            ++$position;
+            $points_last = $rs_ts->points();
+        }
+        $html .= "</table>";
+
+        return $html;
+    }
+
+
     private function getHtmlPageHeader() {
         $html = "";
 
@@ -780,6 +835,10 @@ class RSer extends \core\HtmlContent {
         // standings
         $html .= "<h1>" . _("Standings") . "</h1>";
 
+        // overall standings
+        $html .= $this->getHtmlOverallStandings($this->CurrentSeason);
+
+        // per class
         foreach ($this->CurrentSeries->listClasses() as $rs_class) {
             $html .= "<h2>{$rs_class->name()}</h2>";
             $html .= "<table>";
@@ -1097,6 +1156,14 @@ class RSer extends \core\HtmlContent {
                 $html .= "<a href=\"$url\">" . _("Create New Season") . "</a> ";
             }
         }
+
+        // overall standings
+        $seasons = $this->CurrentSeries->listSeasons();
+        if (count($seasons)) {
+            $html .= "<h1>" . _("Standings") . " {$seasons[0]->name()}</h1>";
+            $html .= $this->getHtmlOverallStandings($seasons[0]);
+        }
+
 
         // list seasons
         $html .= "<h1>" . _("Seasons") . "</h1>";
