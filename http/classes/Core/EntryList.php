@@ -69,7 +69,7 @@ class EntryList {
                     // add entry
                     $eli = new EntryListItem($carskin);
                     $eli->forceDriver("ACswui TV Car", \Core\ACswui::getParam('TVCarGuids'));
-                    $eli->setSpectator(TRUE);
+                    // $eli->setSpectator(TRUE);
                     $this->add($eli);
                 }
             }
