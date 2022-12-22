@@ -250,6 +250,6 @@ class RSerRegistration extends DbEntry {
     //! @return The User (if not a teamcar registration)
     public function user() : ?User {
         $id = (int) $this->loadColumn("User");
-        return ($id == 0) ? NULL : User::fromId();
+        return ($id == 0) ? NULL : User::fromId($id);
     }
 }
