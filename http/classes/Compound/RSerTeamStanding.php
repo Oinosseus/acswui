@@ -25,22 +25,7 @@ class RSerTeamStanding {
     }
 
     public static function listStadnings(\DbEntry\RSerSeason $season) {
-
-        // // group all active registrations
-        // $listed_users = array();  // vector of user objects
-        // $listed_teams = array();  // vector of team objects
-        // foreach ($season->listRegistrations(NULL, TRUE) as $rs_reg) {
-        //     if ($rs_reg->teamCar()) {
-        //         $team = $rs_reg->teamCar()->team();
-        //         if (!in_array($team, $listed_teams)) {
-        //             $listed_teams[] = $team;
-        //         }
-        //     } else if ($rs_reg->user()) {
-        //         $listed_users[] = $rs_reg->user();
-        //     } else {
-        //         \Core\Log::error("Unexpected type of $rs_reg");
-        //     }
-        // }
+        $obj_list = array();
 
         // summarize points per class
         $points_per_team = array();  // key=Team.Id, value= points
@@ -113,7 +98,6 @@ class RSerTeamStanding {
             }
 
             // instantiate obejects
-            $obj_list = array();
             foreach ($points_per_team as $team_id=>$points) {
                 $team = \DbEntry\Team::fromId($team_id);
                 $obj_list[] = new RSerTeamStanding($team, $points);
@@ -122,13 +106,11 @@ class RSerTeamStanding {
                 $user = \DbEntry\User::fromId($user_id);
                 $obj_list[] = new RSerTeamStanding($user, $points);
             }
-
-            // sort and return
-            usort($obj_list, "\\Compound\\RSerTeamStanding::usortByPoints");
-            return $obj_list;
         }
 
-        return $list;
+        // sort and return
+        usort($obj_list, "\\Compound\\RSerTeamStanding::usortByPoints");
+        return $obj_list;
     }
 
 
