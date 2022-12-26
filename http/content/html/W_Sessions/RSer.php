@@ -516,7 +516,6 @@ class RSer extends \core\HtmlContent {
                 foreach ($season->listRegistrations(NULL, TRUE) as $reg) {
                     if (!$reg->teamCar() || $reg->teamCar()->team() != $rs_ts->entry()) continue;
                     foreach ($reg->teamCar()->drivers() as $d) {
-                        $drivers = $d->user();
                         if (strlen($drivers) > 0) $drivers .= ",<br>";
                         $drivers .= $d->user()->nationalFlag() . " ";
                         $drivers .= $d->user()->html();

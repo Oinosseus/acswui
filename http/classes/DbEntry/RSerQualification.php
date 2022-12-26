@@ -44,7 +44,7 @@ class RSerQualification extends DbEntry {
      * @return A list of RSerQualification objects
      */
     public static function listQualifications(RSerEvent $event,
-                                       RSerClass $class) : array {
+                                              RSerClass $class) : array {
 
         $query = "SELECT RSerQualifications.Id FROM RSerQualifications";
         $query .= " INNER JOIN RSerRegistrations ON RSerQualifications.Registration = RSerRegistrations.Id";
