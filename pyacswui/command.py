@@ -34,6 +34,10 @@ class Command(object):
         self.__argparse.add_argument(*args, **kwargs)
 
 
+    def cleanDir(self, dir_path):
+        shutil.rmtree(dir_path)
+        self.mkdirs(dir_path)
+
 
     def parseArgs(self, args):
         self.__args = args

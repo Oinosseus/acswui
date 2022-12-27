@@ -4,16 +4,9 @@ class Verbosity(object):
 
     def __init__(self, verbosity=0, group_prefix=""):
 
-        #Verbosity.CurrentIndentLevel += 1
-        self._verbose_level = 0
-        self._indent_level = 0
-
         # parent
-        self._parent = None
         if isinstance(verbosity, Verbosity):
-            self._parent = verbosity
-            self._verbose_level = self._parent._verbose_level - 1
-            self._indent_level = self._parent._indent_level + 1
+            self._verbose_level = self._parent._verbose_level + 1
         else:
             self._verbose_level = int(verbosity)
 
@@ -22,11 +15,10 @@ class Verbosity(object):
             self._verbose_level = 0
 
         # group prefix
-        self._group_prefix = str(group_prefix)
-        if self._group_prefix == "" and self._parent is not None:
-            self._group_prefix = self._parent._group_prefix + "."
-
-        self._anything_printed = False
+        if isinstance(verbosity, Verbosity):
+            self._group_prefix = verbosity._group_prefix + "." + str(group_prefix)
+        else:
+            self._group_prefix = str(group_prefix)
 
 
     def __del__(self):
@@ -39,22 +31,19 @@ class Verbosity(object):
 
     def print(self, *args, **kwargs):
 
-        # if self._verbose_level > 0:
+        # timestamp
+        t = datetime.datetime.now()
+        print(t.strftime("%H:%M:%S") + "  ", end="")
 
-            # timestamp
-            t = datetime.datetime.now()
-            print(t.strftime("%H:%M:%S") + "  ", end="")
+        # indent
+        print("    " * self._verbose_level, end="")
 
-            # indent
-            print("    " * self._indent_level, end="")
+        # group_prefix
+        if len(self._group_prefix) > 0:
+            print("[" + self._group_prefix + "] ", end="")
 
-            # group_prefix
-            if self._group_prefix:
-                print("[" + self._group_prefix + "] ", end="")
-
-            # print message
-            print(*args, **kwargs)
-            self._anything_printed = True
+        # print message
+        print(*args, **kwargs)
 
 
 
