@@ -6,7 +6,7 @@ class Verbosity(object):
 
         # parent
         if isinstance(verbosity, Verbosity):
-            self._verbose_level = self._parent._verbose_level + 1
+            self._verbose_level = verbosity._verbose_level + 1
         else:
             self._verbose_level = int(verbosity)
 
