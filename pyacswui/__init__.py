@@ -7,3 +7,4 @@ from .command_install          import CommandInstall
 from .command_updatelocales    import CommandUpdateLocales
 from .command_udpplugin        import CommandUdpPlugin
 from .command_backup           import CommandBackup
+from .command_restore          import CommandRestore

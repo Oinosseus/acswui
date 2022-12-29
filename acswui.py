@@ -9,7 +9,7 @@ import argparse
 import os
 import sys
 import json
-from pyacswui import CommandPackage, CommandInstall, CommandSrvrun, CommandDbCleanup, CommandUpdateLocales, CommandUdpPlugin, CommandBackup
+from pyacswui import CommandPackage, CommandInstall, CommandSrvrun, CommandDbCleanup, CommandUpdateLocales, CommandUdpPlugin, CommandBackup, CommandRestore
 
 
 
@@ -32,6 +32,7 @@ CommandDbCleanup(argparsersubs)
 CommandUpdateLocales(argparsersubs)
 CommandUdpPlugin(argparsersubs)
 CommandBackup(argparsersubs)
+CommandRestore(argparsersubs)
 
 
 # ---------------------

@@ -2,7 +2,7 @@ import datetime
 
 class Verbosity(object):
 
-    def __init__(self, verbosity=0, group_prefix=""):
+    def __init__(self, verbosity=0, group_prefix=None):
 
         # parent
         if isinstance(verbosity, Verbosity):
@@ -15,7 +15,9 @@ class Verbosity(object):
             self._verbose_level = 0
 
         # group prefix
-        if isinstance(verbosity, Verbosity):
+        if group_prefix is None:
+            self._group_prefix = ""
+        elif isinstance(verbosity, Verbosity):
             self._group_prefix = verbosity._group_prefix + "." + str(group_prefix)
         else:
             self._group_prefix = str(group_prefix)
