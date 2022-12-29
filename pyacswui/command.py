@@ -1,6 +1,7 @@
 import configparser
 import os.path
 import shutil
+import subprocess
 from .verbosity import Verbosity
 
 
@@ -102,4 +103,5 @@ class Command(object):
             if os.path.isdir(entry_src):
                 self.copytree(entry_src, entry_dst)
             elif os.path.isfile(entry_src):
-                shutil.copy(entry_src, entry_dst)
+                # shutil.copy(entry_src, entry_dst)  # <- somehow shutil.copy does cause issues with permissions
+                subprocess.run(['cp', entry_src, entry_dst], check=True)  # cp command works best

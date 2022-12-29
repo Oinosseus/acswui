@@ -41,6 +41,7 @@ class A_Home extends \core\HtmlContent {
         $tracklocationss_with_no_download = array();
         $tracklocationss_with_no_geolocation = array();
         $cars_with_no_download = array();
+        $schedule_items_with_invalid_server_slot = array();
 
         // search session loops
         foreach (\DbEntry\SessionLoop::listLoops() as $sl) {
@@ -101,6 +102,13 @@ class A_Home extends \core\HtmlContent {
             }
         }
 
+        // search for invalid server-slots
+        foreach (\Compound\ScheduledItem::listItems(NULL, new \DateTime("now")) as $si) {
+            if ($si->serverSlot() === NULL)
+                $schedule_items_with_invalid_server_slot[] = $si;
+        }
+
+
         // show suspicious items
         $html .= "<h1>" . _("Suspects of Maladministrations") . "</h1>";
 
@@ -123,6 +131,15 @@ class A_Home extends \core\HtmlContent {
             foreach ($cars_with_no_download as $c) {
                 $html .= $c->html();
             }
+        }
+
+        if (count($schedule_items_with_invalid_server_slot) > 0) {
+            $html .= "<h2>" . _("Schedules with invalid Server-Slot") . "</h2>";
+            $html .= "<ul>";
+            foreach ($schedule_items_with_invalid_server_slot as $si) {
+                $html .= "<li>{$si->nameLink()}</li>";
+            }
+            $html .= "</ul>";
         }
 
         return $html;
@@ -171,7 +188,8 @@ class A_Home extends \core\HtmlContent {
             $html .= "</div>";
 
             $html .= "<div class=\"$class_obsolete\">";
-            $html .= "{$si->serverSlot()->name()}<br>";
+            if ($si->serverSlot()) $html .= "{$si->serverSlot()->name()}<br>";
+            else $html .= "Server-Slot ???<br>";
             $html .= _("Registrations") . ": <span class=\"$registration_css_class\">$count_registrations / $count_pits</span><br>";
             $rwc = $si->serverPreset()->forecastWeather($si->start(), $si->track()->location());
             if ($rwc !== NULL) $html .= $rwc->htmlImg();
