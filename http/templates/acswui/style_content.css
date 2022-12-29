@@ -725,6 +725,16 @@ main.RSer table#RSerSeriesEditGeneralSetup img {
     height: 4em;
 }
 
+main.RSer table td div.DbEntryHtml {
+    background: transparent;
+    border: none;
+    margin: 0;
+}
+
+main.RSer table td div.DbEntryHtml img {
+    height: 2em;
+}
+
 main.RSer div#RaceResultPointsList {
 }
 
