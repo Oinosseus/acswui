@@ -6,6 +6,7 @@ class ServerSlot {
 
     private static $SlotObjectCache = array();  // key=slot-id, value=ServerSlot-object
 
+    private $InvalidDummy = FALSE;
     private $Id = NULL;
     private $ParameterCollection = NULL;
 
@@ -88,17 +89,23 @@ class ServerSlot {
 
 
     //! @return A ServerSlot object, retreived by Slot-ID ($id=0 will return a base preset)
-    public static function fromId(int $slot_id) {
+    public static function fromId(int $slot_id) : ServerSlot {
         $ss = NULL;
 
-        if ($slot_id > \Core\Config::ServerSlotAmount) {
-            \Core\Log::error("Deny requesting slot-id '$slot_id' at maximum slot amount of '" . \Core\Config::ServerSlotAmount . "'!");
-            return NULL;
-        } else if ($slot_id < 0) {
-            \Core\Log::error("Deny requesting negative slot-id '$slot_id'!");
-            return NULL;
-        } else if (array_key_exists($slot_id, ServerSlot::$SlotObjectCache)) {
+        if (array_key_exists($slot_id, ServerSlot::$SlotObjectCache)) {
             $ss = ServerSlot::$SlotObjectCache[$slot_id];
+        } else if ($slot_id > \Core\Config::ServerSlotAmount) {
+            \Core\Log::debug("Deny requesting slot-id '$slot_id' at maximum slot amount of '" . \Core\Config::ServerSlotAmount . "'!");
+            $ss = new ServerSlot();
+            $ss->Id = -1;
+            $ss->InvalidDummy = TRUE;
+            ServerSlot::$SlotObjectCache[$ss->id()] = $ss;
+        } else if ($slot_id < 0) {
+            \Core\Log::warning("Deny requesting negative slot-id '$slot_id'!");
+            $ss = new ServerSlot();
+            $ss->Id = -1;
+            $ss->InvalidDummy = TRUE;
+            ServerSlot::$SlotObjectCache[$ss->id()] = $ss;
         } else {
             $ss = new ServerSlot();
             $ss->Id = $slot_id;
@@ -110,8 +117,14 @@ class ServerSlot {
 
 
     //! @return The ID of the slot (number)
-    public function id() {
+    public function id() : int {
         return $this->Id;
+    }
+
+
+    //! @return TRUE when this object is invalid
+    public function invalid() : bool {
+        return $this->InvalidDummy;
     }
 
 
@@ -126,7 +139,8 @@ class ServerSlot {
 
     //! @return The name of the preset
     public function name() {
-        if ($this->id() === 0) return _("Base Settings");
+        if ($this->InvalidDummy) return "<div class=\"InvalidConfiguration\">Invalid-Server-Slot</div>";
+        else if ($this->id() === 0) return _("Base Settings");
         else return $this->parameterCollection()->child("AcServerGeneralName")->valueLabel();
     }
 

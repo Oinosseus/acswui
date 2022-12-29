@@ -104,7 +104,7 @@ class A_Home extends \core\HtmlContent {
 
         // search for invalid server-slots
         foreach (\Compound\ScheduledItem::listItems(NULL, new \DateTime("now")) as $si) {
-            if ($si->serverSlot() === NULL)
+            if ($si->serverSlot()->invalid())
                 $schedule_items_with_invalid_server_slot[] = $si;
         }
 
@@ -188,8 +188,7 @@ class A_Home extends \core\HtmlContent {
             $html .= "</div>";
 
             $html .= "<div class=\"$class_obsolete\">";
-            if ($si->serverSlot()) $html .= "{$si->serverSlot()->name()}<br>";
-            else $html .= "Server-Slot ???<br>";
+            $html .= "{$si->serverSlot()->name()}<br>";
             $html .= _("Registrations") . ": <span class=\"$registration_css_class\">$count_registrations / $count_pits</span><br>";
             $rwc = $si->serverPreset()->forecastWeather($si->start(), $si->track()->location());
             if ($rwc !== NULL) $html .= $rwc->htmlImg();
