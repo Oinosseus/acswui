@@ -18,6 +18,52 @@ class VEvent {
 
 
     /**
+     * Creates a ICalendar object from a ScheduledItem object
+     * @param $si The ScheduledItem object
+     * @param $user A user to dervie settings from (if NULL, the current logged user will be used)
+     * @return A ICalendar object
+     */
+    public static function fromScheduledItem(\Compound\ScheduledItem $si, $user = NULL) {
+        if ($user === NULL) $user = \Core\UserManager::currentUser();
+        $ical = new VEvent();
+
+        // start
+        $ical->DtStart = $si->start();
+        $ical->DtStart->setTimezone(new \DateTimezone("UTC"));
+
+        // UID
+        $ical->Uid = "{$_SERVER['HTTP_HOST']}_{$si}";
+
+        // find all attendees
+//         foreach ($ss->registrations() as $ssr) {
+//             $ical->Attendees[] = $ssr->user()->name();
+//         }
+        $ical->Attendees[] = "{$si->registrations()} " . _("Drivers");
+
+        // summary
+        $ical->Summary = $si->name();
+
+        // location
+        $ical->Location = $si->track()->name();
+
+        // time schedule / description
+        $ical->Description = "";
+        $t = $si->start();
+        $schedules = $si->serverPreset()->schedule($si->track());
+        for ($i = 0; $i < count($schedules); ++$i) {
+            [$interval, $uncertainty, $type, $name] = $schedules[$i];
+            if ($type == \Enums\SessionType::Invalid && ($i+1) < count($schedules)) continue; // do not care for intermediate break
+            $ical->Description .= $user->formatTimeNoSeconds($t) . " - $name\\n";
+            $t->add($interval->toDateInterval());
+        }
+        $ical->DtEnd = $t;
+        $ical->DtEnd->setTimezone(new \DateTimezone("UTC"));
+
+        return $ical;
+    }
+
+
+    /**
      * Creates a ICalendar object from a SessionSchedule object
      * @param $ss The SessionSchedule object
      * @param $user A user to dervie settings from (if NULL, the current logged user will be used)

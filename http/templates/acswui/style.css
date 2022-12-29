@@ -450,3 +450,16 @@ div.SvgChart svg g.Axes g.Grid polyline {
 iframe.OsmEmbed {
   border: None;
 }
+
+
+div.InvalidConfiguration {
+  background-color: #fff;
+  color: #f00;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-decoration: underline wavy #f00;
+  text-shadow:  1px  1px 3px #fff,
+               -1px  1px 3px #fff,
+               -1px -1px 3px #fff,
+                1px -1px 3px #fff;
+}

@@ -61,8 +61,8 @@ textdomain("acswui");
 // load events
 header("Content-type:text/calendar");
 $vcal = new \Core\VCalendar();
-foreach (\DbEntry\SessionSchedule::listSchedules() as $ss) {
-    $vev = \Core\VEvent::fromSessionSchedule($ss, $user);
+foreach (\Compound\ScheduledItem::listItems(NULL) as $si) {
+    $vev = \Core\VEvent::fromScheduledItem($si, $user);
     $vcal->addEvent($vev);
 }
 echo $vcal->ics();

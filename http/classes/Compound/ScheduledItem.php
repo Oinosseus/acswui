@@ -162,6 +162,26 @@ class ScheduledItem {
     }
 
 
+    //! @return The name
+    public function name() : string {
+        if ($this->SessionSchedule) {
+            return $this->SessionSchedule->name();
+
+        } else if ($this->RSerSplit) {
+            $split = $this->RSerSplit;
+            $event = $split->event();
+            $season = $event->season();
+            $series = $season->series();
+            return "{$series->name()} / {$season->name()} / E{$event->order()}/S{$split->order()}";
+
+        } else {
+            // you should not end here
+            \Core\Log::error("Unknown type!");
+            return "";
+        }
+    }
+
+
     //! @return A HTML string including the name and a link
     public function nameLink() : string {
         if ($this->SessionSchedule) {

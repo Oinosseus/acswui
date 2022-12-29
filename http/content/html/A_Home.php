@@ -152,8 +152,12 @@ class A_Home extends \core\HtmlContent {
 
         $html = "";
         $html .= "<h1>" . _("Upcomming Races") . "</h1>";
-        $html .= "<div id=\"UpcommingRacesOverview\">";
 
+        // iCalendar link
+        $url = "./ACswuiCalendar.php?UserId=" . \Core\UserManager::currentUser()->id();
+        $html .= "<a href=\"$url\">" . _("iCalendar Link") . "</a><br>";
+
+        $html .= "<div id=\"UpcommingRacesOverview\">";
         $a_week_ago = (new \DateTime("now"))->sub(new \DateInterval("P7D"));
         $items = \Compound\ScheduledItem::listItems(NULL, $a_week_ago);
         foreach ($items as $si) {
