@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-22 12:23+0100\n"
-"PO-Revision-Date: 2022-12-22 12:46+0100\n"
+"POT-Creation-Date: 2022-12-30 20:35+0100\n"
+"PO-Revision-Date: 2022-12-30 20:36+0100\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -275,7 +275,7 @@ msgstr "Fahrer:innen gewinnen an Erfahrung durch Absolvieren von Runden."
 
 #: http/classes/Core/ACswui.php:110 http/classes/DbEntry/ServerPreset.php:355
 #: http/content/html/Z_About/AboutDriverRanking.php:46
-#: http/content/html/W_Sessions/SessionOverview.php:536
+#: http/content/html/W_Sessions/SessionOverview.php:538
 msgid "Practice"
 msgstr "Training"
 
@@ -289,7 +289,7 @@ msgstr "Erfahrungspunkte durch Trainingsrunden"
 #: http/classes/DbEntry/ServerPreset.php:723
 #: http/content/html/Z_About/AboutDriverRanking.php:47
 #: http/content/html/Z_About/AboutDriverRanking.php:74
-#: http/content/html/W_Sessions/SessionOverview.php:540
+#: http/content/html/W_Sessions/SessionOverview.php:542
 msgid "Qualifying"
 msgstr "Qualifikation"
 
@@ -303,7 +303,7 @@ msgstr "Erfahrung von gefahrener Qualifikationsdistanz"
 #: http/classes/DbEntry/ServerPreset.php:726
 #: http/content/html/Z_About/AboutDriverRanking.php:48
 #: http/content/html/Z_About/AboutDriverRanking.php:75
-#: http/content/html/W_Sessions/SessionOverview.php:544
+#: http/content/html/W_Sessions/SessionOverview.php:546
 msgid "Race"
 msgstr "Rennen"
 
@@ -389,7 +389,7 @@ msgstr "Einstellungen für Strafpunkte die Fahrer:innen bekommen"
 
 #: http/classes/Core/ACswui.php:138 http/content/json/SessionData.php:128
 #: http/content/html/Z_About/AboutDriverRanking.php:88
-#: http/content/html/W_Sessions/SessionOverview.php:246
+#: http/content/html/W_Sessions/SessionOverview.php:248
 msgid "Cuts"
 msgstr "Schnitte"
 
@@ -487,7 +487,7 @@ msgid "Settings for a driver ranking group"
 msgstr "Einstellungen für die Fahrerwertung"
 
 #: http/classes/Core/ACswui.php:170 http/classes/Core/ACswui.php:174
-#: http/classes/Core/ACswui.php:190 http/classes/Core/ServerSlot.php:154
+#: http/classes/Core/ACswui.php:190 http/classes/Core/ServerSlot.php:168
 #: http/classes/ParameterCollections/RSerClass.php:33
 #: http/classes/DbEntry/ServerPreset.php:277
 #: http/classes/DbEntry/ServerPreset.php:349
@@ -503,7 +503,7 @@ msgstr "Einstellungen für die Fahrerwertung"
 #: http/content/html/B_User/Polls.php:490
 #: http/content/html/T_Settings/ServerSlots.php:111
 #: http/content/html/W_Sessions/SessionLoops.php:156
-#: http/content/html/W_Sessions/RSer.php:1049 http/content/html/B_User.php:91
+#: http/content/html/W_Sessions/RSer.php:1053 http/content/html/B_User.php:91
 msgid "Name"
 msgstr "Name"
 
@@ -562,8 +562,8 @@ msgstr "Die Fahrzeugklasse mit der gefahren wird"
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:8
 #: http/content/html/B_User/Polls.php:379
 #: http/content/html/W_Sessions/SessionLoops.php:160
-#: http/content/html/W_Sessions/RSer.php:754
-#: http/content/html/W_Sessions/RSer.php:902
+#: http/content/html/W_Sessions/RSer.php:758
+#: http/content/html/W_Sessions/RSer.php:906
 msgid "Track"
 msgstr "Strecke"
 
@@ -580,8 +580,8 @@ msgid "Allow to register teams"
 msgstr "Teamanmeldung Erlauben"
 
 #: http/classes/Core/ACswui.php:196 http/content/html/W_Sessions/RSer.php:359
-#: http/content/html/W_Sessions/RSer.php:748
-#: http/content/html/W_Sessions/SessionOverview.php:500
+#: http/content/html/W_Sessions/RSer.php:752
+#: http/content/html/W_Sessions/SessionOverview.php:502
 msgid "Event"
 msgstr "Veranstaltung"
 
@@ -622,10 +622,10 @@ msgid "Select the server preset for the event"
 msgstr "Wähle das Server-Preset für die Veranstaltung"
 
 #: http/classes/Core/ACswui.php:201 http/classes/Core/Discord.php:53
-#: http/classes/Core/ServerSlot.php:144
+#: http/classes/Core/ServerSlot.php:158
 #: http/content/html/T_Settings/ServerSlots.php:110
-#: http/content/html/W_Sessions/RSer.php:762
-#: http/content/html/W_Sessions/SessionOverview.php:494
+#: http/content/html/W_Sessions/RSer.php:766
+#: http/content/html/W_Sessions/SessionOverview.php:496
 msgid "Server Slot"
 msgstr "Server Slot"
 
@@ -641,7 +641,7 @@ msgstr "Trainingsschleife"
 msgid "Setup a session loop for practice"
 msgstr "Eine Trainingsschleife aufsetzen"
 
-#: http/classes/Core/ACswui.php:204 http/classes/Core/ServerSlot.php:193
+#: http/classes/Core/ACswui.php:204 http/classes/Core/ServerSlot.php:207
 #: http/classes/DbEntry/ServerPreset.php:559
 #: http/classes/DbEntry/ServerPreset.php:611
 #: http/content/html/W_Sessions/SessionLoops.php:155
@@ -942,7 +942,7 @@ msgid "Place"
 msgstr "Platz"
 
 #: http/classes/Core/ACswui.php:286 http/classes/DbEntry/ServerPreset.php:703
-#: http/content/html/W_Sessions/SessionOverview.php:408
+#: http/content/html/W_Sessions/SessionOverview.php:410
 msgid "Gap"
 msgstr "Abstand"
 
@@ -975,93 +975,93 @@ msgstr "Täglich"
 msgid "Time Zone"
 msgstr "Zeitzone"
 
-#: http/classes/Core/ServerSlot.php:129
+#: http/classes/Core/ServerSlot.php:143
 msgid "Base Settings"
 msgstr "Basiseinstellungen"
 
-#: http/classes/Core/ServerSlot.php:144
+#: http/classes/Core/ServerSlot.php:158
 msgid "Collection of server slot settings"
 msgstr "Sammlung von Server-Slot Einstellungen"
 
-#: http/classes/Core/ServerSlot.php:150
+#: http/classes/Core/ServerSlot.php:164
 msgid "acServer"
 msgstr "AC-Server"
 
-#: http/classes/Core/ServerSlot.php:150 http/classes/Core/ServerSlot.php:191
+#: http/classes/Core/ServerSlot.php:164 http/classes/Core/ServerSlot.php:205
 msgid "Settings for the actual acServer"
 msgstr "Einstellungen für den eigentlichen Assetto-Corsa-Server"
 
-#: http/classes/Core/ServerSlot.php:153 http/classes/Core/ServerSlot.php:214
+#: http/classes/Core/ServerSlot.php:167 http/classes/Core/ServerSlot.php:228
 #: http/classes/ParameterCollections/RSerClass.php:28
 #: http/content/html/B_User/Polls.php:487
 msgid "General Settings"
 msgstr "Allgemeine Einstellungen"
 
-#: http/classes/Core/ServerSlot.php:153 http/classes/Core/ServerSlot.php:214
+#: http/classes/Core/ServerSlot.php:167 http/classes/Core/ServerSlot.php:228
 msgid "General settings for Real Penalty"
 msgstr "Allgemeine Einstellungen für Real-Penalty"
 
-#: http/classes/Core/ServerSlot.php:154
+#: http/classes/Core/ServerSlot.php:168
 msgid "An arbitrary name for the server (shown in lobby)"
 msgstr "Ein beliebiger Name für den Server (wird in der Lobby angezeigt)"
 
-#: http/classes/Core/ServerSlot.php:155 http/classes/Core/ServerSlot.php:220
+#: http/classes/Core/ServerSlot.php:169 http/classes/Core/ServerSlot.php:234
 msgid "Admin Passwort"
 msgstr "Administrator Passwort"
 
-#: http/classes/Core/ServerSlot.php:155
+#: http/classes/Core/ServerSlot.php:169
 msgid "acServer admin passwort"
 msgstr "Assetto Corsa Server Administrator Passwort"
 
-#: http/classes/Core/ServerSlot.php:158 http/classes/Core/ServerSlot.php:246
+#: http/classes/Core/ServerSlot.php:172 http/classes/Core/ServerSlot.php:260
 msgid "Internet Ports"
 msgstr "Internet Ports"
 
-#: http/classes/Core/ServerSlot.php:158
+#: http/classes/Core/ServerSlot.php:172
 msgid "Internet protocol port numbers for the AC server"
 msgstr "Internet Protokoll Nummern für den AC-Server"
 
-#: http/classes/Core/ServerSlot.php:159
+#: http/classes/Core/ServerSlot.php:173
 msgid "UDP port number: open this port on your server's firewall"
 msgstr "UDP Port: Öffne diesen in deiner Server Firewall"
 
-#: http/classes/Core/ServerSlot.php:162
+#: http/classes/Core/ServerSlot.php:176
 msgid "TCP port number: open this port on your server's firewall"
 msgstr "TCP Port: Öffne diesen in deiner Server Firewall"
 
-#: http/classes/Core/ServerSlot.php:165
+#: http/classes/Core/ServerSlot.php:179
 msgid ""
 "Lobby port number: open these ports (both UDP and TCP) on your server's "
 "firewall"
 msgstr "Lobby Port: Öffne beide (TCP/UDP) in deiner Server Firewall"
 
-#: http/classes/Core/ServerSlot.php:170 http/classes/Core/ServerSlot.php:231
-#: http/classes/Core/ServerSlot.php:259
+#: http/classes/Core/ServerSlot.php:184 http/classes/Core/ServerSlot.php:245
+#: http/classes/Core/ServerSlot.php:273
 msgid "Plugin Ports"
 msgstr "Plugin Ports"
 
-#: http/classes/Core/ServerSlot.php:170 http/classes/Core/ServerSlot.php:231
-#: http/classes/Core/ServerSlot.php:259
+#: http/classes/Core/ServerSlot.php:184 http/classes/Core/ServerSlot.php:245
+#: http/classes/Core/ServerSlot.php:273
 msgid "UDP plugin port settings"
 msgstr "UDP Plugin Port Einstellungen"
 
-#: http/classes/Core/ServerSlot.php:172
+#: http/classes/Core/ServerSlot.php:186
 msgid "Remote UDP port for external plugins"
 msgstr "Fernzugriffs-Port für externe Plugins"
 
-#: http/classes/Core/ServerSlot.php:177
+#: http/classes/Core/ServerSlot.php:191
 msgid "Performance"
 msgstr "Leistung"
 
-#: http/classes/Core/ServerSlot.php:177
+#: http/classes/Core/ServerSlot.php:191
 msgid "Settings that affect the transfer performance / quality"
 msgstr "Einstellungen welche die Transferleistung / Qualität beeinflussen"
 
-#: http/classes/Core/ServerSlot.php:178
+#: http/classes/Core/ServerSlot.php:192
 msgid "Client Interval"
 msgstr "Client Frequenz"
 
-#: http/classes/Core/ServerSlot.php:178
+#: http/classes/Core/ServerSlot.php:192
 msgid ""
 "Refresh rate of packet sending by the server. 10Hz = ~100ms. Higher number = "
 "higher MP quality = higher bandwidth resources needed. Really high values "
@@ -1071,27 +1071,27 @@ msgstr ""
 "Größere Werte bedeuten bessere Qualität, benötigen aber auch mehr Bandbreite."
 "Sehr hohe Werte können Verbindungsprobleme herbeiführen:"
 
-#: http/classes/Core/ServerSlot.php:181
+#: http/classes/Core/ServerSlot.php:195
 msgid "Number of Threads"
 msgstr "Anzahl der Threads"
 
-#: http/classes/Core/ServerSlot.php:181
+#: http/classes/Core/ServerSlot.php:195
 msgid "Number of threads to run on"
 msgstr "Anzahl der CPU Threads, die vom AC-Server verwendet werden sollen."
 
-#: http/classes/Core/ServerSlot.php:184
+#: http/classes/Core/ServerSlot.php:198
 msgid "Max Clients"
 msgstr "Maximale Spieler"
 
-#: http/classes/Core/ServerSlot.php:184
+#: http/classes/Core/ServerSlot.php:198
 msgid "Max number of clients"
 msgstr "Maximale Anzahl an Spielern"
 
-#: http/classes/Core/ServerSlot.php:191
+#: http/classes/Core/ServerSlot.php:205
 msgid "AC Server Wrapper"
 msgstr "AC Server Wrapper"
 
-#: http/classes/Core/ServerSlot.php:193
+#: http/classes/Core/ServerSlot.php:207
 msgid ""
 "Use ac-server-wrapper to start AC sevrer (enables enhanced information when "
 "clients use content manager)"
@@ -1099,15 +1099,15 @@ msgstr ""
 "Den AC-Server-Wrapper nutzen um den AC server zu starten (ermöglicht die "
 "Anzeige von zusätzlichen Information bei Benutzung des Content Managers)"
 
-#: http/classes/Core/ServerSlot.php:195
+#: http/classes/Core/ServerSlot.php:209
 msgid "HTTP port for AC Server Wrapper"
 msgstr "HTTP Port für den AC Server Wrapper"
 
-#: http/classes/Core/ServerSlot.php:199
+#: http/classes/Core/ServerSlot.php:213
 msgid "Download Limit"
 msgstr "Download Begrenzung"
 
-#: http/classes/Core/ServerSlot.php:199
+#: http/classes/Core/ServerSlot.php:213
 msgid ""
 "Limit download speed to keep online smooth. Set to 0 to avoid limiting. Just "
 "in case."
@@ -1115,45 +1115,45 @@ msgstr ""
 "Download Geschwindigkeit begrenzen um den Server nicht zu stark zu belasten. "
 "Der Wert '0' deaktiviert die Begrenzung."
 
-#: http/classes/Core/ServerSlot.php:203
+#: http/classes/Core/ServerSlot.php:217
 msgid "Download Password"
 msgstr "Download Passwort"
 
-#: http/classes/Core/ServerSlot.php:203
+#: http/classes/Core/ServerSlot.php:217
 msgid "Do not allow to download content without a password (if set)."
 msgstr "Download von Inhalten ohne Password verbieten (wenn gesetzt)."
 
-#: http/classes/Core/ServerSlot.php:205
+#: http/classes/Core/ServerSlot.php:219
 #: http/classes/DbEntry/ServerPreset.php:305
 msgid "Welcome Message"
 msgstr "Willkommen-Nachricht"
 
-#: http/classes/Core/ServerSlot.php:205
+#: http/classes/Core/ServerSlot.php:219
 msgid ""
 "The introduction message that shall be shown at first (BBCode supported)"
 msgstr "Die Wilkommensnachricht, die zuerst angezeigt wird (BBCode support)"
 
-#: http/classes/Core/ServerSlot.php:211
+#: http/classes/Core/ServerSlot.php:225
 msgid "Real Penalty Plugin"
 msgstr "Real-Penalty Plugin"
 
-#: http/classes/Core/ServerSlot.php:211
+#: http/classes/Core/ServerSlot.php:225
 msgid "Settings for the Real Penalty plugin"
 msgstr "Einstellungen für das Real-Penalty-Plugin"
 
-#: http/classes/Core/ServerSlot.php:216
+#: http/classes/Core/ServerSlot.php:230
 msgid "Enable RP"
 msgstr "Aktiviere RP"
 
-#: http/classes/Core/ServerSlot.php:216
+#: http/classes/Core/ServerSlot.php:230
 msgid "Wheather to use Real Penalty for this slot or not"
 msgstr "Ob Real-Penalty für diesen Server-Slot verwendet werden soll."
 
-#: http/classes/Core/ServerSlot.php:218
+#: http/classes/Core/ServerSlot.php:232
 msgid "Product Key"
 msgstr "Produkt Schlüssel"
 
-#: http/classes/Core/ServerSlot.php:218
+#: http/classes/Core/ServerSlot.php:232
 msgid ""
 "Personal key, received after the Patreon subscription: https://www.patreon."
 "com/DavideBolognesi"
@@ -1161,15 +1161,15 @@ msgstr ""
 "Persönlicher Schlüssel, der nach Patreon Abbonnement erhalten wird: https://"
 "www.patreon.com/DavideBolognesi"
 
-#: http/classes/Core/ServerSlot.php:220
+#: http/classes/Core/ServerSlot.php:234
 msgid "Password only for app 'Real Penalty - admin'"
 msgstr "Passwort, nur für die 'Real Penalty - admin' App"
 
-#: http/classes/Core/ServerSlot.php:222
+#: http/classes/Core/ServerSlot.php:236
 msgid "First Check"
 msgstr "Erste Prüfung"
 
-#: http/classes/Core/ServerSlot.php:222
+#: http/classes/Core/ServerSlot.php:236
 msgid ""
 "Delay (seconds) after connection of new driver for the first check (app + "
 "sol). Default 5"
@@ -1177,43 +1177,43 @@ msgstr ""
 "Verzögerung (Sekunden) nachder bei neuen Fahrer:innen die App und SOL das "
 "erste mal geprüft wird."
 
-#: http/classes/Core/ServerSlot.php:226
+#: http/classes/Core/ServerSlot.php:240
 msgid "Check Frequency"
 msgstr "Überprüfungsfrequenz"
 
-#: http/classes/Core/ServerSlot.php:226
+#: http/classes/Core/ServerSlot.php:240
 msgid "Frequency (second) for APP, SOL and CSP check. Default 60"
 msgstr "Überprüfungsfrequenz (Sekunden) für die App, SOL und CSP."
 
-#: http/classes/Core/ServerSlot.php:233 http/classes/Core/ServerSlot.php:261
+#: http/classes/Core/ServerSlot.php:247 http/classes/Core/ServerSlot.php:275
 msgid "Local UDP port to communicate with the acServer"
 msgstr "Lokaler UDP Port um mit dem AC-Server zu kommunizieren"
 
-#: http/classes/Core/ServerSlot.php:237
+#: http/classes/Core/ServerSlot.php:251
 msgid "Remote UDP port for additional plugins"
 msgstr "Entfernter UDP Port für zusätzliche Plugins"
 
-#: http/classes/Core/ServerSlot.php:241
+#: http/classes/Core/ServerSlot.php:255
 msgid "UDP port for the ACswui plugin to recieve RP evenrs"
 msgstr "UDP Port für das ACswui Plugin im Events von RP zu empfangen"
 
-#: http/classes/Core/ServerSlot.php:246
+#: http/classes/Core/ServerSlot.php:260
 msgid "Port settings open to the internet"
 msgstr "Einstellungen für offen Internet-Ports"
 
-#: http/classes/Core/ServerSlot.php:248
+#: http/classes/Core/ServerSlot.php:262
 msgid "UDP to communicate with RP client app"
 msgstr "UDP Port zur Kommunikation mit der RP Spieler-App"
 
-#: http/classes/Core/ServerSlot.php:256
+#: http/classes/Core/ServerSlot.php:270
 msgid "ACswui Plugin"
 msgstr "ACswui Plugin"
 
-#: http/classes/Core/ServerSlot.php:256
+#: http/classes/Core/ServerSlot.php:270
 msgid "Settings for the ACswui plugin"
 msgstr "Einstellungen für das ACswui Plugin"
 
-#: http/classes/Core/ServerSlot.php:265
+#: http/classes/Core/ServerSlot.php:279
 msgid "Local UDP port of RP where it receives event-listen-start requests"
 msgstr ""
 "Lokaler UDP Port von RP auf dem Event-Listen-Start Anfragen empfangen werden"
@@ -1238,8 +1238,9 @@ msgstr "Zeile Löschen"
 msgid "Not Delete Row Entry"
 msgstr "Zeile nicht Löschen"
 
-#: http/classes/Core/VEvent.php:41 http/content/html/B_User/DriverList.php:8
-#: http/content/html/W_Sessions/RSer.php:944
+#: http/classes/Core/VEvent.php:41 http/classes/Core/VEvent.php:87
+#: http/content/html/B_User/DriverList.php:8
+#: http/content/html/W_Sessions/RSer.php:948
 msgid "Drivers"
 msgstr "Fahrer "
 
@@ -1248,7 +1249,7 @@ msgstr "Fahrer "
 #: http/content/html/W_Sessions/SessionSchedules.php:269
 #: http/content/html/W_Sessions/SessionSchedules.php:471
 #: http/content/html/W_Sessions/SessionSchedules.php:480
-#: http/content/html/W_Sessions/SessionOverview.php:516
+#: http/content/html/W_Sessions/SessionOverview.php:518
 msgid "Ambient"
 msgstr "Umgebung"
 
@@ -1257,7 +1258,7 @@ msgstr "Umgebung"
 #: http/content/html/W_Sessions/SessionSchedules.php:270
 #: http/content/html/W_Sessions/SessionSchedules.php:472
 #: http/content/html/W_Sessions/SessionSchedules.php:481
-#: http/content/html/W_Sessions/SessionOverview.php:517
+#: http/content/html/W_Sessions/SessionOverview.php:519
 msgid "Road"
 msgstr "Strecke"
 
@@ -1652,7 +1653,7 @@ msgid "Server preset for qualification"
 msgstr "Server-Preset for Qualifikationen"
 
 #: http/classes/ParameterCollections/RSerSeries.php:46
-#: http/content/html/W_Sessions/RSer.php:1069
+#: http/content/html/W_Sessions/RSer.php:1073
 msgid "Race Result Points"
 msgstr "Rennergebnis Punkte"
 
@@ -1662,31 +1663,31 @@ msgstr "Einstellungen für Punkte in Rennen"
 
 #: http/classes/ParameterCollections/RSerSeries.php:51
 msgid "Gain Factor"
-msgstr "Verstärkung "
+msgstr "Anstieg Faktor"
 
 #: http/classes/ParameterCollections/RSerSeries.php:52
 msgid "Linear factor of significant point increase"
 msgstr "Linearer Anstieg für deutlichen Punktezuwachs"
 
 #: http/classes/ParameterCollections/RSerSeries.php:59
-msgid "Gain Position"
-msgstr "Anstieg Position"
+msgid "Gain Start"
+msgstr "Anstieg Start"
 
 #: http/classes/ParameterCollections/RSerSeries.php:60
 msgid "Position where significant point increase starts"
 msgstr "Position ab welcher der deutliche Punktezuwachs beginnt"
 
 #: http/classes/ParameterCollections/RSerSeries.php:67
-msgid "Linear Position"
-msgstr "Lineare Position"
+msgid "Increment Start"
+msgstr "Inkrement Start"
 
 #: http/classes/ParameterCollections/RSerSeries.php:68
 msgid "Position where incrementation of points starts"
 msgstr "Position ab welcher der Punkteanstieg beginnt"
 
 #: http/classes/ParameterCollections/RSerSeries.php:75
-msgid "Consolation Position"
-msgstr "Trostpunkte"
+msgid "Last Consolation"
+msgstr "Letzter Trostpunkt"
 
 #: http/classes/ParameterCollections/RSerSeries.php:76
 msgid "Last position wich will earn a single consolation point"
@@ -1700,8 +1701,8 @@ msgstr "Streichergebnisse"
 msgid ""
 "Amount of weakest events which will not be considered for final results."
 msgstr ""
-"Die Anzahl der schlechtesten Veranstaltungen, die nicht in die finale Wertung"
-" eingehen."
+"Die Anzahl der schlechtesten Veranstaltungen, die nicht in die finale "
+"Wertung eingehen."
 
 #: http/classes/ParameterCollections/RSerSeries.php:91
 msgid "Class Sum"
@@ -1712,7 +1713,8 @@ msgid ""
 "This defines how team car points are summarized within a class for overall "
 "ranking."
 msgstr ""
-"Dies definiert wie Punkte für Teams innerhalb einer Klasse aufsummiert werden."
+"Dies definiert wie Punkte für Teams innerhalb einer Klasse aufsummiert "
+"werden."
 
 #: http/classes/ParameterCollections/RSerSeries.php:93
 msgid "Best Result"
@@ -1751,9 +1753,10 @@ msgid ""
 "If deactivated, the full BOP is applied after the first event. If activated, "
 "the BOP increases step by step per event."
 msgstr ""
-"Wenn deaktiviert, wird das BOP bereits nach der ersten Veranstaltung voll"
-" angewendet.\n"
-"Wenn aktiviert, wird das BOP pro Veranstaltung Schritt für Schritt eingeführt."
+"Wenn deaktiviert, wird das BOP bereits nach der ersten Veranstaltung voll "
+"angewendet.\n"
+"Wenn aktiviert, wird das BOP pro Veranstaltung Schritt für Schritt "
+"eingeführt."
 
 #: http/classes/ParameterCollections/RSerClass.php:10
 msgid "Race Series Class"
@@ -1780,8 +1783,8 @@ msgid ""
 "Defines which class is most important (0) and which are less important "
 "(higher values)"
 msgstr ""
-"Legt fest, welche Klasse die höchste Priorität hat (0) und welche Klassen"
-" weniger wichtig sind (>0)."
+"Legt fest, welche Klasse die höchste Priorität hat (0) und welche Klassen "
+"weniger wichtig sind (>0)."
 
 #: http/classes/ParameterCollections/RSerClass.php:45
 msgid "Fill Entrylist"
@@ -1790,8 +1793,8 @@ msgstr "Entrylist füllen"
 #: http/classes/ParameterCollections/RSerClass.php:46
 msgid "If activated, empty pitboxes are filled with random cars of this class"
 msgstr ""
-"Wenn aktiviert, werden freie Boxenplätze mit zufälligen Autos aus dieser"
-" Klasse aufgefüllt."
+"Wenn aktiviert, werden freie Boxenplätze mit zufälligen Autos aus dieser "
+"Klasse aufgefüllt."
 
 #: http/classes/ParameterCollections/RSerClass.php:55
 #: http/content/html/W_Sessions/SessionSchedules.php:523
@@ -1809,8 +1812,8 @@ msgstr "Minimale Punkte"
 #: http/classes/ParameterCollections/RSerClass.php:61
 msgid "Minimum points from last season which driver needs for registration"
 msgstr ""
-"Minimaler Punktestand aus der letzten Saison, die ein Fahrer haben muss um"
-" sich anmelden zu können."
+"Minimaler Punktestand aus der letzten Saison, die ein Fahrer haben muss um "
+"sich anmelden zu können."
 
 #: http/classes/ParameterCollections/RSerClass.php:70
 msgid "BOP Settings"
@@ -1858,7 +1861,7 @@ msgstr "Das Zusatzgewicht pro Position"
 #: http/classes/ParameterCollections/RSerClass.php:119
 #: http/content/html/T_Settings/ServerPresets.php:117
 #: http/content/html/T_Settings/ServerPresets.php:154
-#: http/content/html/W_Sessions/RSer.php:762
+#: http/content/html/W_Sessions/RSer.php:766
 #: http/content/html/W_Sessions.php:74 http/content/html/W_Sessions.php:119
 msgid "Start"
 msgstr "Start"
@@ -1868,7 +1871,8 @@ msgid ""
 "The position in the current season results, where the ballast is started to "
 "be applied"
 msgstr ""
-"Die Position innerhalb der Saisontabelle, ab der Zusatzgewicht auferlegt wird."
+"Die Position innerhalb der Saisontabelle, ab der Zusatzgewicht auferlegt "
+"wird."
 
 #: http/classes/ParameterCollections/RSerClass.php:112
 msgid "Incremental Restrictor"
@@ -2434,7 +2438,7 @@ msgstr "Name der Session"
 #: http/classes/DbEntry/ServerPreset.php:368
 #: http/classes/DbEntry/ServerPreset.php:385
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation.php:100
-#: http/content/html/W_Sessions/SessionOverview.php:427
+#: http/content/html/W_Sessions/SessionOverview.php:429
 msgid "Time"
 msgstr "Zeit"
 
@@ -2498,8 +2502,8 @@ msgstr "Einstellungen für die Renn-Session"
 #: http/classes/DbEntry/ServerPreset.php:382
 #: http/content/json/ListPopularCarClasses.php:22
 #: http/content/json/ListPopularTracks.php:28
-#: http/content/html/W_Sessions/SessionOverview.php:404
-#: http/content/html/W_Sessions/SessionOverview.php:428
+#: http/content/html/W_Sessions/SessionOverview.php:406
+#: http/content/html/W_Sessions/SessionOverview.php:430
 msgid "Laps"
 msgstr "Runden"
 
@@ -3061,7 +3065,7 @@ msgid "Enable Penalty"
 msgstr "Strafe Aktivieren"
 
 #: http/classes/DbEntry/ServerPreset.php:567
-#: http/content/html/W_Sessions/SessionOverview.php:168
+#: http/content/html/W_Sessions/SessionOverview.php:170
 msgid "Penalty Time"
 msgstr "Strafzeit"
 
@@ -3681,13 +3685,13 @@ msgstr "Kollision ID"
 #: http/content/json/SessionData.php:125 http/content/json/TrackRecords.php:48
 #: http/content/json/CarClassRecords.php:48
 #: http/content/html/W_Sessions/RSer.php:444
-#: http/content/html/W_Sessions/SessionOverview.php:250
+#: http/content/html/W_Sessions/SessionOverview.php:252
 msgid "Lap"
 msgstr "Runde"
 
 #: http/content/json/SessionData.php:126 http/content/json/TrackRecords.php:40
 #: http/content/json/CarClassRecords.php:40
-#: http/content/html/W_Sessions/SessionOverview.php:244
+#: http/content/html/W_Sessions/SessionOverview.php:246
 msgid "Laptime"
 msgstr "Rundenzeit"
 
@@ -3697,7 +3701,7 @@ msgstr "Abstand zur Bestzeit der Session"
 
 #: http/content/json/SessionData.php:127 http/content/json/TrackRecords.php:41
 #: http/content/json/CarClassRecords.php:41
-#: http/content/html/W_Sessions/SessionOverview.php:245
+#: http/content/html/W_Sessions/SessionOverview.php:247
 msgid "Delta"
 msgstr "Differenz"
 
@@ -3708,9 +3712,9 @@ msgstr "Differenz"
 #: http/content/html/W_Sessions/SessionSchedules.php:519
 #: http/content/html/W_Sessions/RSer.php:494
 #: http/content/html/W_Sessions/SessionOverview.php:137
-#: http/content/html/W_Sessions/SessionOverview.php:243
-#: http/content/html/W_Sessions/SessionOverview.php:328
-#: http/content/html/W_Sessions/SessionOverview.php:417
+#: http/content/html/W_Sessions/SessionOverview.php:245
+#: http/content/html/W_Sessions/SessionOverview.php:330
+#: http/content/html/W_Sessions/SessionOverview.php:419
 msgid "Driver"
 msgstr "Fahrer"
 
@@ -3719,18 +3723,18 @@ msgstr "Fahrer"
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:119
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:152
 #: http/content/html/W_Sessions/SessionSchedules.php:520
-#: http/content/html/W_Sessions/RSer.php:944
-#: http/content/html/W_Sessions/SessionOverview.php:247
-#: http/content/html/W_Sessions/SessionOverview.php:418
+#: http/content/html/W_Sessions/RSer.php:948
+#: http/content/html/W_Sessions/SessionOverview.php:249
+#: http/content/html/W_Sessions/SessionOverview.php:420
 msgid "Car"
 msgstr "Auto"
 
 #: http/content/json/SessionData.php:131 http/content/json/TrackRecords.php:44
 #: http/content/json/CarClassRecords.php:44
 #: http/content/html/W_Sessions/RSer.php:445
-#: http/content/html/W_Sessions/RSer.php:855
-#: http/content/html/W_Sessions/RSer.php:1106
-#: http/content/html/W_Sessions/SessionOverview.php:248
+#: http/content/html/W_Sessions/RSer.php:859
+#: http/content/html/W_Sessions/RSer.php:1110
+#: http/content/html/W_Sessions/SessionOverview.php:250
 msgid "BOP"
 msgstr "Ausgleich"
 
@@ -3744,15 +3748,15 @@ msgstr "Runde ID"
 
 #: http/content/json/TrackRecords.php:39
 #: http/content/json/CarClassRecords.php:39
-#: http/content/html/W_Sessions/SessionOverview.php:406
-#: http/content/html/W_Sessions/SessionOverview.php:416
+#: http/content/html/W_Sessions/SessionOverview.php:408
+#: http/content/html/W_Sessions/SessionOverview.php:418
 msgid "Position"
 msgstr "Position"
 
 #: http/content/json/TrackRecords.php:45
 #: http/content/json/CarClassRecords.php:45
-#: http/content/html/W_Sessions/SessionOverview.php:249
-#: http/content/html/W_Sessions/SessionOverview.php:506
+#: http/content/html/W_Sessions/SessionOverview.php:251
+#: http/content/html/W_Sessions/SessionOverview.php:508
 msgid "Grip"
 msgstr "Traktion"
 
@@ -3767,7 +3771,7 @@ msgid "Pits"
 msgstr "Boxen"
 
 #: http/content/json/ListPopularTracks.php:24
-#: http/content/html/W_Sessions/SessionOverview.php:420
+#: http/content/html/W_Sessions/SessionOverview.php:422
 msgid "Driven"
 msgstr "Gefahren"
 
@@ -4283,7 +4287,7 @@ msgid "Abbreviation"
 msgstr "Abkürzung"
 
 #: http/content/html/ServerContent/Teams.php:239
-#: http/content/html/W_Sessions/RSer.php:1054
+#: http/content/html/W_Sessions/RSer.php:1058
 msgid "Logo"
 msgstr "Logo"
 
@@ -4347,7 +4351,7 @@ msgstr "Eigentümer"
 
 #: http/content/html/ServerContent/Teams.php:393
 #: http/content/html/W_Sessions/SessionSchedules.php:278
-#: http/content/html/W_Sessions/RSer.php:935 http/content/html/A_Home.php:175
+#: http/content/html/W_Sessions/RSer.php:939 http/content/html/A_Home.php:196
 msgid "Registrations"
 msgstr "Anmeldungen"
 
@@ -4533,7 +4537,7 @@ msgstr "Ergebnis Strecken"
 #: http/content/html/W_Sessions/RSer.php:400
 #: http/content/html/W_Sessions/RSer.php:442
 #: http/content/html/W_Sessions/RSer.php:492
-#: http/content/html/W_Sessions/RSer.php:847
+#: http/content/html/W_Sessions/RSer.php:851
 msgid "Pos"
 msgstr "Pos"
 
@@ -4727,7 +4731,7 @@ msgstr "Preset speichern um den Zeitplan zu aktualisieren."
 #: http/content/html/T_Settings/ServerPresets.php:155
 #: http/content/html/W_Sessions/RSer.php:401
 #: http/content/html/W_Sessions/RSer.php:443
-#: http/content/html/W_Sessions/RSer.php:848
+#: http/content/html/W_Sessions/RSer.php:852
 msgid "Entry"
 msgstr "Eintrag"
 
@@ -4819,19 +4823,20 @@ msgid "Delete"
 msgstr "löschen"
 
 #: http/content/html/W_Sessions/SessionSchedules.php:226
+#: http/content/html/A_Home.php:158
 msgid "iCalendar Link"
 msgstr "iCalendar Link"
 
 #: http/content/html/W_Sessions/SessionSchedules.php:242
 #: http/content/html/W_Sessions/SessionSchedules.php:497
-#: http/content/html/A_Home.php:153
+#: http/content/html/A_Home.php:174
 msgid "Registered"
 msgstr "Angemeldet"
 
 #: http/content/html/W_Sessions/SessionSchedules.php:244
 #: http/content/html/W_Sessions/SessionSchedules.php:498
 #: http/content/html/W_Sessions/SessionSchedules.php:563
-#: http/content/html/A_Home.php:155
+#: http/content/html/A_Home.php:176
 msgid "Not Registered"
 msgstr "Nicht Angemeldet"
 
@@ -4848,15 +4853,15 @@ msgstr "Neues Zeitplanelement Erstellen"
 #: http/content/html/W_Sessions/SessionSchedules.php:343
 #: http/content/html/W_Sessions/SessionSchedules.php:367
 #: http/content/html/W_Sessions/SessionSchedules.php:399
-#: http/content/html/W_Sessions/RSer.php:581
-#: http/content/html/W_Sessions/RSer.php:618
-#: http/content/html/W_Sessions/RSer.php:652
-#: http/content/html/W_Sessions/RSer.php:689
+#: http/content/html/W_Sessions/RSer.php:585
+#: http/content/html/W_Sessions/RSer.php:622
+#: http/content/html/W_Sessions/RSer.php:656
+#: http/content/html/W_Sessions/RSer.php:693
 msgid "Save Registration"
 msgstr "Anmeldung Speichern"
 
 #: http/content/html/W_Sessions/SessionSchedules.php:392
-#: http/content/html/W_Sessions/RSer.php:682
+#: http/content/html/W_Sessions/RSer.php:686
 msgid ""
 "You either have no permission to manage a team or none of your teams has a "
 "car in the correct class"
@@ -4889,7 +4894,7 @@ msgid "Register Driver"
 msgstr "Fahrer Anmelden"
 
 #: http/content/html/W_Sessions/SessionSchedules.php:508
-#: http/content/html/W_Sessions/RSer.php:998
+#: http/content/html/W_Sessions/RSer.php:1002
 msgid "Register Team"
 msgstr "Team Anmelden"
 
@@ -4942,18 +4947,18 @@ msgid "Create new Race Series"
 msgstr "Neue Rennserie Erstellen"
 
 #: http/content/html/W_Sessions/RSer.php:352
-#: http/content/html/W_Sessions/RSer.php:703
-#: http/content/html/W_Sessions/RSer.php:816
-#: http/content/html/W_Sessions/RSer.php:1020
-#: http/content/html/W_Sessions/RSer.php:1139
+#: http/content/html/W_Sessions/RSer.php:707
+#: http/content/html/W_Sessions/RSer.php:820
+#: http/content/html/W_Sessions/RSer.php:1024
+#: http/content/html/W_Sessions/RSer.php:1143
 msgid "Race Series List"
 msgstr "Rennserien Liste"
 
 #: http/content/html/W_Sessions/RSer.php:358
-#: http/content/html/W_Sessions/RSer.php:547
-#: http/content/html/W_Sessions/RSer.php:709
-#: http/content/html/W_Sessions/RSer.php:727
-#: http/content/html/W_Sessions/RSer.php:819
+#: http/content/html/W_Sessions/RSer.php:551
+#: http/content/html/W_Sessions/RSer.php:713
+#: http/content/html/W_Sessions/RSer.php:731
+#: http/content/html/W_Sessions/RSer.php:823
 msgid "Season"
 msgstr "Saison"
 
@@ -4971,7 +4976,7 @@ msgstr "Rennen"
 
 #: http/content/html/W_Sessions/RSer.php:402
 #: http/content/html/W_Sessions/RSer.php:495
-#: http/content/html/W_Sessions/RSer.php:854
+#: http/content/html/W_Sessions/RSer.php:858
 msgid "Points"
 msgstr "Punkte"
 
@@ -4980,103 +4985,103 @@ msgid "Qualifications"
 msgstr "Qualifikationen"
 
 #: http/content/html/W_Sessions/RSer.php:493
-#: http/content/html/W_Sessions/RSer.php:944
+#: http/content/html/W_Sessions/RSer.php:948
 msgid "Team"
 msgstr "Team"
 
-#: http/content/html/W_Sessions/RSer.php:563
-#: http/content/html/W_Sessions/RSer.php:633
+#: http/content/html/W_Sessions/RSer.php:567
+#: http/content/html/W_Sessions/RSer.php:637
 msgid "Season Overview"
 msgstr "Saisonübersicht"
 
-#: http/content/html/W_Sessions/RSer.php:710
+#: http/content/html/W_Sessions/RSer.php:714
 msgid "Season Edit"
 msgstr "Saison Bearbeiten"
 
-#: http/content/html/W_Sessions/RSer.php:738
+#: http/content/html/W_Sessions/RSer.php:742
 msgid "Add Event"
 msgstr "Veranstaltung Hinzufügen"
 
-#: http/content/html/W_Sessions/RSer.php:742
-#: http/content/html/W_Sessions/RSer.php:898
+#: http/content/html/W_Sessions/RSer.php:746
+#: http/content/html/W_Sessions/RSer.php:902
 msgid "Events"
 msgstr "Veranstaltungen"
 
-#: http/content/html/W_Sessions/RSer.php:762
 #: http/content/html/W_Sessions/RSer.php:766
-#: http/content/html/W_Sessions/RSer.php:918
-#: http/content/html/W_Sessions/RSer.php:926
+#: http/content/html/W_Sessions/RSer.php:770
+#: http/content/html/W_Sessions/RSer.php:922
+#: http/content/html/W_Sessions/RSer.php:930
 msgid "Split"
 msgstr "Split"
 
-#: http/content/html/W_Sessions/RSer.php:801
+#: http/content/html/W_Sessions/RSer.php:805
 msgid "Save Season"
 msgstr "Saison Speichern"
 
-#: http/content/html/W_Sessions/RSer.php:831
+#: http/content/html/W_Sessions/RSer.php:835
 msgid "Edit Season"
 msgstr "Saison Bearbeiten"
 
-#: http/content/html/W_Sessions/RSer.php:836
-#: http/content/html/W_Sessions/RSer.php:1163
+#: http/content/html/W_Sessions/RSer.php:840
+#: http/content/html/W_Sessions/RSer.php:1167
 msgid "Standings"
 msgstr "Klassement"
 
-#: http/content/html/W_Sessions/RSer.php:901 http/content/html/B_User.php:90
+#: http/content/html/W_Sessions/RSer.php:905 http/content/html/B_User.php:90
 msgid "ID"
 msgstr "ID"
 
-#: http/content/html/W_Sessions/RSer.php:903
+#: http/content/html/W_Sessions/RSer.php:907
 msgid "Splits"
 msgstr "Splits"
 
-#: http/content/html/W_Sessions/RSer.php:969
-#: http/content/html/W_Sessions/RSer.php:984
+#: http/content/html/W_Sessions/RSer.php:973
+#: http/content/html/W_Sessions/RSer.php:988
 msgid "Unregister"
 msgstr "Abmelden"
 
-#: http/content/html/W_Sessions/RSer.php:1005
+#: http/content/html/W_Sessions/RSer.php:1009
 msgid "Register Single Driver"
 msgstr "Einzelfahrer Anmelden"
 
-#: http/content/html/W_Sessions/RSer.php:1023
+#: http/content/html/W_Sessions/RSer.php:1027
 msgid "Race Series Edit"
 msgstr "Rennserie Bearbeiten"
 
-#: http/content/html/W_Sessions/RSer.php:1042
-#: http/content/html/W_Sessions/RSer.php:1044
+#: http/content/html/W_Sessions/RSer.php:1046
+#: http/content/html/W_Sessions/RSer.php:1048
 msgid "General Setup"
 msgstr "Allgemeine Einstellungen"
 
-#: http/content/html/W_Sessions/RSer.php:1066
+#: http/content/html/W_Sessions/RSer.php:1070
 msgid "Parameters"
 msgstr "Parameter"
 
-#: http/content/html/W_Sessions/RSer.php:1083
+#: http/content/html/W_Sessions/RSer.php:1087
 msgid "Classes"
 msgstr "Klassen"
 
-#: http/content/html/W_Sessions/RSer.php:1086
+#: http/content/html/W_Sessions/RSer.php:1090
 msgid "Add Car Class"
 msgstr "Fahrzeugklasse Hinzufügen"
 
-#: http/content/html/W_Sessions/RSer.php:1101
+#: http/content/html/W_Sessions/RSer.php:1105
 msgid "Remove Class"
 msgstr "Klasse Entfernen"
 
-#: http/content/html/W_Sessions/RSer.php:1124
+#: http/content/html/W_Sessions/RSer.php:1128
 msgid "Save Race Series"
 msgstr "Rennserie Speichern"
 
-#: http/content/html/W_Sessions/RSer.php:1150
+#: http/content/html/W_Sessions/RSer.php:1154
 msgid "Edit Race Series"
 msgstr "Rennserie Bearbeiten"
 
-#: http/content/html/W_Sessions/RSer.php:1156
+#: http/content/html/W_Sessions/RSer.php:1160
 msgid "Create New Season"
 msgstr "Neue Saison Erstellen"
 
-#: http/content/html/W_Sessions/RSer.php:1169
+#: http/content/html/W_Sessions/RSer.php:1173
 msgid "Seasons"
 msgstr "Saisons"
 
@@ -5084,145 +5089,145 @@ msgstr "Saisons"
 msgid "Overview"
 msgstr "Übersicht"
 
-#: http/content/html/W_Sessions/SessionOverview.php:153
-#: http/content/html/W_Sessions/SessionOverview.php:330
+#: http/content/html/W_Sessions/SessionOverview.php:155
+#: http/content/html/W_Sessions/SessionOverview.php:332
 msgid "Cause"
 msgstr "Ursache"
 
-#: http/content/html/W_Sessions/SessionOverview.php:161
+#: http/content/html/W_Sessions/SessionOverview.php:163
 msgid "Penalty Safety Points"
 msgstr "Sicherheitsstrafpunkte"
 
-#: http/content/html/W_Sessions/SessionOverview.php:175
+#: http/content/html/W_Sessions/SessionOverview.php:177
 msgid "Penalty Laps"
 msgstr "Straf-Runden"
 
-#: http/content/html/W_Sessions/SessionOverview.php:182
+#: http/content/html/W_Sessions/SessionOverview.php:184
 msgid "Penalty Points"
 msgstr "Strafpunkte"
 
-#: http/content/html/W_Sessions/SessionOverview.php:189
+#: http/content/html/W_Sessions/SessionOverview.php:191
 msgid "Penalty DNF"
 msgstr "Strafe DNF"
 
-#: http/content/html/W_Sessions/SessionOverview.php:196
+#: http/content/html/W_Sessions/SessionOverview.php:198
 msgid "Penalty DSQ"
 msgstr "Strafe DSQ"
 
-#: http/content/html/W_Sessions/SessionOverview.php:203
+#: http/content/html/W_Sessions/SessionOverview.php:205
 msgid "Save Penalty"
 msgstr "Strafe Speichern"
 
-#: http/content/html/W_Sessions/SessionOverview.php:228
+#: http/content/html/W_Sessions/SessionOverview.php:230
 msgid "Best Laps"
 msgstr "Beste Runden"
 
-#: http/content/html/W_Sessions/SessionOverview.php:232
+#: http/content/html/W_Sessions/SessionOverview.php:234
 msgid "Laptime Distribution Diagram"
 msgstr "Rundenzeitenverteilungsdiagramm"
 
-#: http/content/html/W_Sessions/SessionOverview.php:233
+#: http/content/html/W_Sessions/SessionOverview.php:235
 msgid "Driven laps [in percent]"
 msgstr "Gefahrene Runden [in Prozent]"
 
-#: http/content/html/W_Sessions/SessionOverview.php:234
+#: http/content/html/W_Sessions/SessionOverview.php:236
 msgid "Laptime distance to best lap in session [in seconds]"
 msgstr "Abstand zur Besten Rundenzeit der Session [in Sekunden]"
 
-#: http/content/html/W_Sessions/SessionOverview.php:289
-#: http/content/html/W_Sessions/SessionOverview.php:293
+#: http/content/html/W_Sessions/SessionOverview.php:291
+#: http/content/html/W_Sessions/SessionOverview.php:295
 msgid "Load Laptime Distribution Data"
 msgstr "Rundenzeitenverteilung laden"
 
-#: http/content/html/W_Sessions/SessionOverview.php:308
+#: http/content/html/W_Sessions/SessionOverview.php:310
 msgid "Collisions"
 msgstr "Kollisionen"
 
-#: http/content/html/W_Sessions/SessionOverview.php:309
+#: http/content/html/W_Sessions/SessionOverview.php:311
 msgid "Load Collisions"
 msgstr "Kollisionen Laden"
 
-#: http/content/html/W_Sessions/SessionOverview.php:316
+#: http/content/html/W_Sessions/SessionOverview.php:318
 msgid "All Laps"
 msgstr "Alle Runden"
 
-#: http/content/html/W_Sessions/SessionOverview.php:317
+#: http/content/html/W_Sessions/SessionOverview.php:319
 msgid "Load Laps"
 msgstr "Runden Laden"
 
-#: http/content/html/W_Sessions/SessionOverview.php:324
+#: http/content/html/W_Sessions/SessionOverview.php:326
 msgid "Session Penalties"
 msgstr "Session Strafen"
 
-#: http/content/html/W_Sessions/SessionOverview.php:329
+#: http/content/html/W_Sessions/SessionOverview.php:331
 msgid "Penalty"
 msgstr "Strafe"
 
-#: http/content/html/W_Sessions/SessionOverview.php:331
+#: http/content/html/W_Sessions/SessionOverview.php:333
 msgid "Officer"
 msgstr "Kommissar"
 
-#: http/content/html/W_Sessions/SessionOverview.php:387
+#: http/content/html/W_Sessions/SessionOverview.php:389
 msgid "Add Penalty"
 msgstr "Strafe Hinzufügen"
 
-#: http/content/html/W_Sessions/SessionOverview.php:396
+#: http/content/html/W_Sessions/SessionOverview.php:398
 msgid "Session Results"
 msgstr "Session Ergebnisse"
 
-#: http/content/html/W_Sessions/SessionOverview.php:403
+#: http/content/html/W_Sessions/SessionOverview.php:405
 msgid "Session Position Diagram"
 msgstr "Session Positionsdiagramm"
 
-#: http/content/html/W_Sessions/SessionOverview.php:404
+#: http/content/html/W_Sessions/SessionOverview.php:406
 msgid "Minutes"
 msgstr "Minuten"
 
-#: http/content/html/W_Sessions/SessionOverview.php:419
+#: http/content/html/W_Sessions/SessionOverview.php:421
 msgid "Best Lap"
 msgstr "Beste Runde"
 
-#: http/content/html/W_Sessions/SessionOverview.php:423
+#: http/content/html/W_Sessions/SessionOverview.php:425
 msgid "Result"
 msgstr "Ergebnis"
 
-#: http/content/html/W_Sessions/SessionOverview.php:429
+#: http/content/html/W_Sessions/SessionOverview.php:431
 msgid "Distance"
 msgstr "Entfernung"
 
-#: http/content/html/W_Sessions/SessionOverview.php:432
+#: http/content/html/W_Sessions/SessionOverview.php:434
 msgid "Rank"
 msgstr "Rang"
 
-#: http/content/html/W_Sessions/SessionOverview.php:433
+#: http/content/html/W_Sessions/SessionOverview.php:435
 msgid "Pen"
 msgstr "Strafe"
 
-#: http/content/html/W_Sessions/SessionOverview.php:480
+#: http/content/html/W_Sessions/SessionOverview.php:482
 msgid "Session Information"
 msgstr "Session Informationen"
 
-#: http/content/html/W_Sessions/SessionOverview.php:507
+#: http/content/html/W_Sessions/SessionOverview.php:509
 msgid "Max"
 msgstr "Max"
 
-#: http/content/html/W_Sessions/SessionOverview.php:508
+#: http/content/html/W_Sessions/SessionOverview.php:510
 msgid "Min"
 msgstr "Min"
 
-#: http/content/html/W_Sessions/SessionOverview.php:514
+#: http/content/html/W_Sessions/SessionOverview.php:516
 msgid "Weahter"
 msgstr "Wetter"
 
-#: http/content/html/W_Sessions/SessionOverview.php:515
+#: http/content/html/W_Sessions/SessionOverview.php:517
 msgid "Graphics"
 msgstr "Grafik"
 
-#: http/content/html/W_Sessions/SessionOverview.php:546
+#: http/content/html/W_Sessions/SessionOverview.php:548
 msgid "Apply Filter"
 msgstr "Filter Anwenden"
 
-#: http/content/html/W_Sessions/SessionOverview.php:552
+#: http/content/html/W_Sessions/SessionOverview.php:554
 msgid "Session Select"
 msgstr "Session Auswählen"
 
@@ -5234,23 +5239,27 @@ msgstr "Startseite"
 msgid "Please login with your steam account"
 msgstr "Bitte melde dich mit deinem Steam Account an"
 
-#: http/content/html/A_Home.php:105
+#: http/content/html/A_Home.php:113
 msgid "Suspects of Maladministrations"
 msgstr "Verdacht auf Fehlkonfigurationen"
 
-#: http/content/html/A_Home.php:108
+#: http/content/html/A_Home.php:116
 msgid "Tracks with suspicious Geo-Location"
 msgstr "Strecken ohne Geo-Koordinaten"
 
-#: http/content/html/A_Home.php:115
+#: http/content/html/A_Home.php:123
 msgid "Tracks with no download url"
 msgstr "Strecken ohne Download-URL"
 
-#: http/content/html/A_Home.php:122
+#: http/content/html/A_Home.php:130
 msgid "Cars with no download url"
 msgstr "Fahrzeuge ohne Download-URL"
 
 #: http/content/html/A_Home.php:137
+msgid "Schedules with invalid Server-Slot"
+msgstr ""
+
+#: http/content/html/A_Home.php:154
 msgid "Upcomming Races"
 msgstr "Anstehende Rennen"
 
@@ -5319,6 +5328,19 @@ msgid "Privacy settings of the user does not allow to show any information."
 msgstr ""
 "Privatsphäreneinstellung des Benutzers erlaubt keine Darstellung von "
 "Informationen."
+
+#~ msgid "Gain Position"
+#~ msgstr "Anstieg Position"
+
+#, fuzzy
+#~ msgid "Incremental Position"
+#~ msgstr "Ansteigender Begrenzer"
+
+#~ msgid "Consolation Position"
+#~ msgstr "Trostpunkte"
+
+#~ msgid "Linear Position"
+#~ msgstr "Lineare Position"
 
 #~ msgid "Total Time"
 #~ msgstr "Gesamtzeit"

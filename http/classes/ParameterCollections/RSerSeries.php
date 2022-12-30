@@ -56,7 +56,7 @@ class RSerSeries extends \Parameter\Collection {
 
         $p = new \Parameter\ParamInt(NULL, $pc,
                                      "PtsGainPos",
-                                     _("Gain Position"),
+                                     _("Gain Start"),
                                      _("Position where significant point increase starts"),
                                      "pts", 3);
         $p->setMin(0);
@@ -64,7 +64,7 @@ class RSerSeries extends \Parameter\Collection {
 
         $p = new \Parameter\ParamInt(NULL, $pc,
                                      "PtsPosInc",
-                                     _("Linear Position"),
+                                     _("Increment Start"),
                                      _("Position where incrementation of points starts"),
                                      "pos", 15);
         $p->setMin(0);
@@ -72,7 +72,7 @@ class RSerSeries extends \Parameter\Collection {
 
         $p = new \Parameter\ParamInt(NULL, $pc,
                                      "PtsPosCons",
-                                     _("Consolation Position"),
+                                     _("Last Consolation"),
                                      _("Last position wich will earn a single consolation point"),
                                      "pos", 20);
         $p->setMin(0);
