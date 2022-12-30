@@ -69,7 +69,8 @@ class LaptimeDistributionData extends \Core\JsonContent {
     private function laptimeDeltas($session, $user, $max_delta=NULL) {
         $data = array();
         $besttime = $session->lapBest()->laptime();
-        foreach ($session->laps($user, TRUE) as $lap) {
+        $se = new \Compound\SessionEntry($session, NULL, $user);
+        foreach ($session->laps($se, TRUE) as $lap) {
             $delta = $lap->laptime() - $besttime;
             if ($max_delta !== NULL && $delta > $max_delta) continue;
             $data[] = $delta;
