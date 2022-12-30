@@ -39,6 +39,7 @@ class RSerResult extends DbEntry {
 
             // find all splits
             $split_nr = 0;
+            $race_count = 0;
             $last_position_of_previous_split = 0;
             foreach ($event->listSplits() as $rs_split) {
                 ++$split_nr;
@@ -47,6 +48,7 @@ class RSerResult extends DbEntry {
                 $split_highest_position = 0;
 
                 foreach ($rs_split->listRaces() as $session) {
+                    ++$race_count;
 
                     $position = 1;
                     foreach (SessionResultFinal::listResults($session) as $srslt) {
@@ -78,47 +80,53 @@ class RSerResult extends DbEntry {
             }
 
             // save into database
-            foreach ($registrations as $idx=>$data) {
+            if ($race_count == 0) {
+                // delete all results if no races are present
+                \Core\Database::query("DELETE FROM RSerResults WHERE Event={$event->id()}");
 
-                // find existing result
-                $query = "SELECT Id FROM RSerResults WHERE Event={$event->id()} AND Registration={$data['Reg']->id()} LIMIT 1;";
-                $res = \Core\Database::fetchRaw($query);
-                $id = NULL;
-                if (count($res) > 0) $id = (int) $res[0]['Id'];
+            } else {
+                foreach ($registrations as $idx=>$data) {
 
-                // prepare data
-                $columns = array();
-                $columns['Event'] = $event->id();
-                $columns['Registration'] = $data['Reg']->id();
-                $columns['Position'] = 0;
-                $columns['Points'] = $data['Pts'];
+                    // find existing result
+                    $query = "SELECT Id FROM RSerResults WHERE Event={$event->id()} AND Registration={$data['Reg']->id()} LIMIT 1;";
+                    $res = \Core\Database::fetchRaw($query);
+                    $id = NULL;
+                    if (count($res) > 0) $id = (int) $res[0]['Id'];
 
-                // update DB
-                if ($id) {
-                    \Core\Database::update("RSerResults", $id, $columns);
-                } else {
-                    \Core\Database::insert("RSerResults", $columns);
+                    // prepare data
+                    $columns = array();
+                    $columns['Event'] = $event->id();
+                    $columns['Registration'] = $data['Reg']->id();
+                    $columns['Position'] = 0;
+                    $columns['Points'] = $data['Pts'];
+
+                    // update DB
+                    if ($id) {
+                        \Core\Database::update("RSerResults", $id, $columns);
+                    } else {
+                        \Core\Database::insert("RSerResults", $columns);
+                    }
                 }
-            }
 
-            // update positions in database
-            $query = "SELECT RSerResults.Id, RSerResults.Points FROM RSerResults";
-            $query .= " INNER JOIN RSerRegistrations ON RSerRegistrations.Id = RSerResults.Registration";
-            $query .= " WHERE Event={$event->id()}";
-            $query .= " AND RSerRegistrations.Class={$rs_class->id()}";
-            $query .= " ORDER BY RSerResults.Points DESC;";
-            $next_position = 1;
-            $last_points = NULL;
-            $last_position = 1;
-            foreach (\Core\Database::fetchRaw($query) as $row) {
-                if ($row['Points'] == $last_points) {
-                    \Core\Database::update("RSerResults", (int) $row['Id'], ['Position'=>$last_position]);
-                } else {
-                    \Core\Database::update("RSerResults", (int) $row['Id'], ['Position'=>$next_position]);
-                    $last_position = $next_position;
-                    $last_points = (int) $row['Points'];
+                // update positions in database
+                $query = "SELECT RSerResults.Id, RSerResults.Points FROM RSerResults";
+                $query .= " INNER JOIN RSerRegistrations ON RSerRegistrations.Id = RSerResults.Registration";
+                $query .= " WHERE Event={$event->id()}";
+                $query .= " AND RSerRegistrations.Class={$rs_class->id()}";
+                $query .= " ORDER BY RSerResults.Points DESC;";
+                $next_position = 1;
+                $last_points = NULL;
+                $last_position = 1;
+                foreach (\Core\Database::fetchRaw($query) as $row) {
+                    if ($row['Points'] == $last_points) {
+                        \Core\Database::update("RSerResults", (int) $row['Id'], ['Position'=>$last_position]);
+                    } else {
+                        \Core\Database::update("RSerResults", (int) $row['Id'], ['Position'=>$next_position]);
+                        $last_position = $next_position;
+                        $last_points = (int) $row['Points'];
+                    }
+                    ++$next_position;
                 }
-                ++$next_position;
             }
         }
 
