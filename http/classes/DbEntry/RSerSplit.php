@@ -96,7 +96,7 @@ class RSerSplit extends DbEntry {
             $remaining = $pits - $el->count();
             $per_class = ceil($remaining / count($rs_classes));
             foreach ($rs_classes as $rs_class) {
-                $el->fillSkins($rs_class->carClass(),
+                $el->fillSkins($rs_class,
                                min($pits, $el->count() + $per_class));
             }
         }

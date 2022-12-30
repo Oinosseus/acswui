@@ -12,6 +12,7 @@ class EntryListItem {
     private $Users = NULL;
     private $TeamCar = NULL;
     private $ForceDriver = NULL;
+    private $ForceRSerClass = NULL;
     // private $Spectator = FALSE;
 
     /**
@@ -74,6 +75,14 @@ class EntryListItem {
     //! @return The CarSkin object of the occupation
     public function carSkin() : \DbEntry\CarSkin {
         return $this->CarSkin;
+    }
+
+
+    /**
+     * Forces the entry to this RSerClass
+     */
+    public function forceClass(\DbEntry\RSerClass $class) {
+        $this->ForceRSerClass = $class;
     }
 
 
@@ -144,13 +153,17 @@ class EntryListItem {
             fwrite($f, "TeamCarId=0\n");
         }
 
-        if ($this->RSerRegistration) {
-            fwrite($f, "RSerRegistration={$this->RSerRegistration->id()}\n");
+        if ($this->ForceRSerClass)
+            fwrite($f, "RSerClass={$this->ForceRSerClass->id()}\n");
+        else if ($this->RSerRegistration)
             fwrite($f, "RSerClass={$this->RSerRegistration->class()->id()}\n");
-        } else {
-            fwrite($f, "RSerRegistration=0\n");
+        else
             fwrite($f, "RSerClass=0\n");
-        }
+
+        if ($this->RSerRegistration)
+            fwrite($f, "RSerRegistration={$this->RSerRegistration->id()}\n");
+        else
+            fwrite($f, "RSerRegistration=0\n");
 
         // throws error from AC-Server-Wrapper
         // if ($this->Spectator) {

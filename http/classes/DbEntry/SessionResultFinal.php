@@ -60,8 +60,7 @@ class SessionResultFinal extends DbEntry {
                                                                        \DbEntry\User::fromId($new_result_columns['User']));
 
             // automatic registering for race series
-            if ($session->scheduleItem() &&
-                $session->scheduleItem()->getRSerSplit() &&
+            if ($session->rserSplit() &&
                 $new_result_columns['RSerClass'] != 0 &&
                 $new_result_columns['RSerRegistration'] == 0) {
                     $reg = RSerRegistration::createNew($session->scheduleItem()->getRSerSplit()->event()->season(),

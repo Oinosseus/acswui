@@ -110,11 +110,15 @@ class EntryList {
      * @param $cc The CarClass object where to get the cars from
      * @param $max_count The number of entries that shall be in the EntryList afterwards
      */
-    public function fillSkins(\DbEntry\CarClass $cc, int $max_count) {
+    public function fillSkins(\DbEntry\CarClass|\DbEntry\RSerClass $cc,
+                              int $max_count) {
+        $cars = array();
+        if (is_a($cc, "\\DbEntry\\CarClass")) $cars = $cc->cars();
+        if (is_a($cc, "\\DbEntry\\RSerClass")) $cars = $cc->carClass()->cars();
 
         // list available skins for each car
         $available_carskins = array(); // $available_carskins[Car->id()] = [CarSkin, CarSkin, ...]
-        foreach ($cc->cars() as $car) {
+        foreach ($cars as $car) {
             $available_skins = array();
             foreach ($car->skins() as $cskin) {
 
@@ -145,6 +149,7 @@ class EntryList {
         foreach ($serial_skin_list as $cskin) {
             if ($this->count() >= $max_count) break;
             $eli = new \Core\EntryListItem($cskin);
+            if (is_a($cc, "\\DbEntry\\RSerClass")) $eli->forceClass($cc);
             $this->add($eli);
         }
     }
