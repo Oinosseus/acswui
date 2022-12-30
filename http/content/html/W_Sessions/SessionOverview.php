@@ -86,7 +86,6 @@ class SessionOverview extends \core\HtmlContent {
 
                     // re-calculate final results
                     \DbEntry\SessionResultFinal::calculate($this->CurrentSession);
-
                     $this->reload(["SessionId"=>$this->CurrentSession->id()]);
                 }
 
@@ -124,8 +123,9 @@ class SessionOverview extends \core\HtmlContent {
 
         // begin form
         $html .= $this->newHtmlForm("POST");
-        if ($this->CurrentPenalty) {
-            $html .= "<input type=\"hidden\" name=\"PenaltyId\" value=\"{$this->CurrentPenalty->id()}\">";
+        $html .= "<input type=\"hidden\" name=\"SessionId\" value=\"{$this->CurrentSession->id()}\">";
+        if ($spen) {
+            $html .= "<input type=\"hidden\" name=\"PenaltyId\" value=\"{$spen->id()}\">";
         } else {
             $html .= "<input type=\"hidden\" name=\"PenaltyId\" value=\"NEW\">";
         }
@@ -135,18 +135,20 @@ class SessionOverview extends \core\HtmlContent {
         // select driver
         $html .= "<tr>";
         $html .= "<th>" . _("Driver") . "</th>";
-        $html .= "<td><select name=\"SessionEntry\">";
-        foreach ($this->CurrentSession->entries() as $entry) {
-            $selected = ($spen && $spen->entry() == $entry) ? "selected=\"yes\"": "";
-
-            // hide other drivers when penalty already exists
-            if ($this->CurrentPenalty && $entry != $spen->entry()) continue;
-
-            $html .= "<option value=\"{$entry->id()}\" $selected>";
-            $html .= $entry->name();
-            $html .= "</option>";
+        if ($spen) {
+            $html .= "<td>{$spen->entry()->name()}</td>";
+            $html .= "<input type=\"hidden\" name=\"SessionEntry\" value=\"{$spen->entry()->id()}\">";
+        } else {
+            $html .= "<td><select name=\"SessionEntry\">";
+            foreach ($this->CurrentSession->entries() as $entry) {
+                $selected = ($spen && $spen->entry()->entry() == $entry->entry()) ? "selected=\"yes\"": "";
+                $html .= "<option value=\"{$entry->id()}\" $selected>";
+                $html .= $entry->name();
+                $html .= "</option>";
+            }
+            $html .= "</select></td>";
         }
-        $html .= "</select></td></tr>";
+        $html .= "</tr>";
 
         // cause
         $html .= "<tr>";

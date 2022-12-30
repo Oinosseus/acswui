@@ -115,8 +115,10 @@ class Team extends DbEntry {
 
         // label
         $html .= "<label for=\"Team{$this->id()}\">";
-        if ($show_name) {
+        if ($show_name && $show_abbreviation) {
             $html .= "<strong>{$this->abbreviation()}</strong><br>";
+            $html .= $this->name();
+        } else if ($show_name) {
             $html .= $this->name();
         } else if ($show_abbreviation) {
             $html .= $this->abbreviation();

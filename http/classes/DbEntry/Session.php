@@ -388,6 +388,14 @@ class Session extends DbEntry {
     }
 
 
+    //! @return A RSerSplit object
+    public function rserSplit() : ?RSerSplit {
+        $id = (int) $this->loadColumn("RSerSplit");
+        if ($id == 0) return NULL;
+        else return RSerSplit::fromId($id);
+    }
+
+
     //! @return If this session is related to a scheduled session, a ScheduledItem is returned (else NULL)
     public function scheduleItem() : ?\Compound\ScheduledItem {
 

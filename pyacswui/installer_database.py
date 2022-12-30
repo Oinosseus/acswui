@@ -402,11 +402,10 @@ class InstallerDatabase(object):
         self.__db.appendColumnText(table_name, "Cause")
         self.__db.appendColumnInt(table_name, "PenSf")
         self.__db.appendColumnInt(table_name, "PenTime")
-        self.__db.appendColumnUInt(table_name, "PenLaps")
+        self.__db.appendColumnInt(table_name, "PenLaps")
         self.__db.appendColumnInt(table_name, "PenPts")
         self.__db.appendColumnBool(table_name, "PenDsq")
         self.__db.appendColumnBool(table_name, "PenDnf")
-        self.__db.appendColumnBool(table_name, "Ignored")
 
         table_name = "SessionResultsFinal"
         self.__db.appendTable(table_name)

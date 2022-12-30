@@ -511,6 +511,7 @@ class RSer extends \core\HtmlContent {
             if (is_a($rs_ts->entry(), "\\DbEntry\\User")) {
                 $html .= "<td></td>";
                 $html .= "<td>{$rs_ts->entry()->nationalFlag()} {$rs_ts->entry()->html()}</td>";
+
             } else if (is_a($rs_ts->entry(), "\\DbEntry\\Team")) {
                 $drivers = "";
                 foreach ($season->listRegistrations(NULL, TRUE) as $reg) {
@@ -522,7 +523,11 @@ class RSer extends \core\HtmlContent {
                     }
                 }
                 $html .= "<td class=\"ZeroPadding\">{$rs_ts->entry()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
-                $html .= "<td>$drivers</td>";
+
+                $html .= "<td>";
+                $html .= "{$rs_ts->entry()->html(TRUE, TRUE, FALSE, FALSE)}<br>";
+                $html .= "<small>$drivers</small>";
+                $html .= "</td>";
             }
 
             $html .= "<td><span title=\"" . sprintf("%0.2f", $rs_ts->points()) . "\">" . round($rs_ts->points()) . "</span></td>";

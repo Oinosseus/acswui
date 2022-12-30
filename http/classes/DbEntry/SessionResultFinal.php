@@ -236,6 +236,12 @@ class SessionResultFinal extends DbEntry {
 
         // set result as calculated
         \Core\Database::update("Sessions", $session->id(), ['FinalResultsCalculated'=>1]);
+
+        // call related race series event calculation
+        $rser_split = $session->rserSplit();
+        if ($rser_split !== NULL) {
+            RSerResult::calculateFromEvent($rser_split->event());
+        }
     }
 
 
