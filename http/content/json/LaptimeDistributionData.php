@@ -83,7 +83,8 @@ class LaptimeDistributionData extends \Core\JsonContent {
         // count laptimes
         $buckets = array();
         $besttime = $session->lapBest()->laptime();
-        $laps_of_user = $session->laps($user, TRUE);
+        $se = new \Compound\SessionEntry($session, NULL, $user);
+        $laps_of_user = $session->laps($se, TRUE);
         $lap_bucket_increment = 100 / count($laps_of_user);
         foreach ($laps_of_user as $lap) {
             $delta = $lap->laptime() - $besttime;
