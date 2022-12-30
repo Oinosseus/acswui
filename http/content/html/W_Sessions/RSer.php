@@ -1147,7 +1147,10 @@ class RSer extends \core\HtmlContent {
         // Header
         $html .= $this->getHtmlPageHeader();
 
-        // edit option
+        // --------------------------------------------------------------------
+        //  Edit Option
+        // --------------------------------------------------------------------
+
         if ($this->CanEdit) {
             $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
                                'View'=>"SeriesEdit"]);
@@ -1161,7 +1164,71 @@ class RSer extends \core\HtmlContent {
             }
         }
 
-        // overall standings
+        // --------------------------------------------------------------------
+        //  Submission
+        // --------------------------------------------------------------------
+
+        $html .= "<h1>" . _("Submission") . "</h1>";
+
+        // result points
+        $html .= "<div id=\"RaceResultPointsList\">";
+        $html .= _("Race Result Points") . ": ";
+        for ($position=1; TRUE; ++$position) {
+            $points = $this->CurrentSeries->raceResultPoints($position);
+            $html .= "<div>$position: <strong>{$points}</strong>pts</div>";
+            if ($points <= 0) break;
+        }
+        $html .= "</div>";
+
+        // class BOP
+        foreach ($this->CurrentSeries->listClasses() as $rser_c) {
+            $html .= "<div id=\"RaceResultPointsList\">";
+            $html .= _("BOP") . " {$rser_c->name()}: ";
+            $pos_end = 1 + max($rser_c->getParam("BopRestrictorPosition"), $rser_c->getParam("BopBallastPosition"));
+            for ($position=1; $position <= $pos_end; ++$position) {
+                $ballast= $rser_c->bopBallast($position);
+                $restrictor= $rser_c->bopRestrictor($position);
+                $html .= "<div>$position: <strong>{$ballast}kg {$restrictor}&percnt;</strong></div>";
+            }
+            $html .= "</div>";
+        }
+
+        // team assessment
+        $html .= "<div id=\"TeamAssessmentInfo\">" . _("In-Class team assessment") . ": ";
+        $html .= "<div>{$this->CurrentSeries->parameterCollection()->child('PtsClassSum')->valueLabel()}</div>";
+        $html .= "</div>";
+
+        // schedule
+        $schedule = $this->CurrentSeries->parameterCollection()->child("SessionPresetRace")->serverPreset()->schedule();
+        $html .= "<table id=\"EstimatedSchedule\">";
+        $html .= "<caption>" . _("Estimated Schedule") . "</caption>";
+        $html .= "<tr>";
+        $html .= "<th>" . _("Start") . "</th>";
+        // $html .= "<th>" . _("Entry") . "</th>";
+        $html .= "<th>" . _("Duration") . "</th>";
+        $html .= "</tr>";
+        $preset_offset = new \Core\TimeInterval();
+        $preset_offset_delay = new \Core\TimeInterval();
+        foreach ($schedule as [$interval, $uncertainty, $type, $name]) {
+
+            if ($type != \Enums\SessionType::Invalid) {
+                $html .= "<tr>";
+                $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeInterval($preset_offset) . "</td>";
+                $html .= "<td>$name</td>";
+                $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeInterval($interval) . "</td>";
+                $html .= "</tr>";
+            }
+
+            $preset_offset->add($interval);
+            $preset_offset_delay->add($uncertainty);
+        }
+        $html .= "</table>";
+
+
+        // --------------------------------------------------------------------
+        //  Overall Standings
+        // --------------------------------------------------------------------
+
         $seasons = $this->CurrentSeries->listSeasons();
         if (count($seasons)) {
             $html .= "<h1>" . _("Standings") . " {$seasons[0]->name()}</h1>";
@@ -1169,7 +1236,10 @@ class RSer extends \core\HtmlContent {
         }
 
 
-        // list seasons
+        // --------------------------------------------------------------------
+        //  List Seasons
+        // --------------------------------------------------------------------
+
         $html .= "<h1>" . _("Seasons") . "</h1>";
         $html .= "<ul class=\"RSerSeasonList\">";
         foreach (\DbEntry\RSerSeason::listSeasons($this->CurrentSeries) as $rser_s) {

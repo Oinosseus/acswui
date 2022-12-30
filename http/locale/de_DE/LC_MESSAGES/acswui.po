@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-30 20:35+0100\n"
-"PO-Revision-Date: 2022-12-30 20:36+0100\n"
+"POT-Creation-Date: 2022-12-31 00:11+0100\n"
+"PO-Revision-Date: 2022-12-31 00:13+0100\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -1654,6 +1654,7 @@ msgstr "Server-Preset for Qualifikationen"
 
 #: http/classes/ParameterCollections/RSerSeries.php:46
 #: http/content/html/W_Sessions/RSer.php:1073
+#: http/content/html/W_Sessions/RSer.php:1175
 msgid "Race Result Points"
 msgstr "Rennergebnis Punkte"
 
@@ -1862,6 +1863,7 @@ msgstr "Das Zusatzgewicht pro Position"
 #: http/content/html/T_Settings/ServerPresets.php:117
 #: http/content/html/T_Settings/ServerPresets.php:154
 #: http/content/html/W_Sessions/RSer.php:766
+#: http/content/html/W_Sessions/RSer.php:1206
 #: http/content/html/W_Sessions.php:74 http/content/html/W_Sessions.php:119
 msgid "Start"
 msgstr "Start"
@@ -3734,6 +3736,7 @@ msgstr "Auto"
 #: http/content/html/W_Sessions/RSer.php:445
 #: http/content/html/W_Sessions/RSer.php:859
 #: http/content/html/W_Sessions/RSer.php:1110
+#: http/content/html/W_Sessions/RSer.php:1186
 #: http/content/html/W_Sessions/SessionOverview.php:250
 msgid "BOP"
 msgstr "Ausgleich"
@@ -4737,6 +4740,7 @@ msgstr "Eintrag"
 
 #: http/content/html/T_Settings/ServerPresets.php:119
 #: http/content/html/T_Settings/ServerPresets.php:156
+#: http/content/html/W_Sessions/RSer.php:1208
 msgid "Duration"
 msgstr "Dauer"
 
@@ -5023,7 +5027,7 @@ msgid "Edit Season"
 msgstr "Saison Bearbeiten"
 
 #: http/content/html/W_Sessions/RSer.php:840
-#: http/content/html/W_Sessions/RSer.php:1167
+#: http/content/html/W_Sessions/RSer.php:1234
 msgid "Standings"
 msgstr "Klassement"
 
@@ -5073,15 +5077,27 @@ msgstr "Klasse Entfernen"
 msgid "Save Race Series"
 msgstr "Rennserie Speichern"
 
-#: http/content/html/W_Sessions/RSer.php:1154
+#: http/content/html/W_Sessions/RSer.php:1157
 msgid "Edit Race Series"
 msgstr "Rennserie Bearbeiten"
 
-#: http/content/html/W_Sessions/RSer.php:1160
+#: http/content/html/W_Sessions/RSer.php:1163
 msgid "Create New Season"
 msgstr "Neue Saison Erstellen"
 
-#: http/content/html/W_Sessions/RSer.php:1173
+#: http/content/html/W_Sessions/RSer.php:1171
+msgid "Submission"
+msgstr "Ausschreibung"
+
+#: http/content/html/W_Sessions/RSer.php:1197
+msgid "In-Class team assessment"
+msgstr "Klasseninterne Teamwertung"
+
+#: http/content/html/W_Sessions/RSer.php:1204
+msgid "Estimated Schedule"
+msgstr "Ungefährer Zeitplan"
+
+#: http/content/html/W_Sessions/RSer.php:1243
 msgid "Seasons"
 msgstr "Saisons"
 
@@ -5257,7 +5273,7 @@ msgstr "Fahrzeuge ohne Download-URL"
 
 #: http/content/html/A_Home.php:137
 msgid "Schedules with invalid Server-Slot"
-msgstr ""
+msgstr "Planungen mit invalidem Server-Slot"
 
 #: http/content/html/A_Home.php:154
 msgid "Upcomming Races"
@@ -5414,9 +5430,6 @@ msgstr ""
 
 #~ msgid "Profile"
 #~ msgstr "Profil"
-
-#~ msgid "Default Schedule"
-#~ msgstr "Standardzeitplan"
 
 #~ msgid "User Options"
 #~ msgstr "Benutzeroptionen"

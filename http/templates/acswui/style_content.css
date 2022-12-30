@@ -738,7 +738,8 @@ main.RSer table td div.DbEntryHtml img {
 main.RSer div#RaceResultPointsList {
 }
 
-main.RSer div#RaceResultPointsList div {
+main.RSer div#RaceResultPointsList div,
+main.RSer div#TeamAssessmentInfo div {
     display: inline-block;
     background-color: var(--color-bg-elements);
     border-radius: 1em;
@@ -748,11 +749,15 @@ main.RSer div#RaceResultPointsList div {
     font-size: 0.8em;
 }
 
-main.RSer div#RaceResultPointsList div strong {
+main.RSer div#RaceResultPointsList div strong,
+main.RSer div#TeamAssessmentInfo div {
     font-size: 1.3em;
     font-weight: bold;
 }
 
+main.RSer table#EstimatedSchedule {
+    margin: 1em 0;
+}
 
 /* RSer Logo in Heading */
 main.RSer div.RSerPageHeader {
