@@ -329,12 +329,10 @@ class ScheduledItem {
 
     //! @return A DateTime object with the information when this item is planned to start
     public function start() : \DateTime {
-        if ($this->Start === NULL) {
-            if ($this->SessionSchedule) $this->Start = $this->SessionSchedule->start();
-            if ($this->RSerSplit) $this->Start = $this->RSerSplit->start();
-        }
+        if ($this->SessionSchedule) return $this->SessionSchedule->start();
+        if ($this->RSerSplit) return $this->RSerSplit->start();
 
-        return $this->Start;
+        return NULL; // should never reach here
     }
 
 
