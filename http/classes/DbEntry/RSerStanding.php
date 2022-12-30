@@ -34,7 +34,6 @@ class RSerStanding extends DbEntry {
 
             // list points of each event
             $event_list = $season->listEvents();
-            $event_count = count($event_list);
             foreach ($event_list as $event) {
                 foreach ($event->listResults($rs_class) as $rslt) {
                     $registrations[$rslt->registration()->id()]['Pts'][] = $rslt->points();
@@ -42,6 +41,7 @@ class RSerStanding extends DbEntry {
             }
 
             // strike results
+            $event_count = $season->countResultedEvents();
             $strike_results = (int) $season->series()->getParam('PtsStrikeRslt');
             if ($strike_results >= $event_count) $strike_results = $event_count - 1;
             if ($strike_results > 0) {
