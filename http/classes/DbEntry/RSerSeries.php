@@ -78,8 +78,15 @@ class RSerSeries extends DbEntry {
         // link container
         if ($include_link) {
             $url = "index.php?HtmlContent=RSer&RSerSeries={$this->id()}";
-            $seasons = $this->listSeasons();
-            if (count($seasons)) $url .= "&RSerSeason={$seasons[0]->id()}&View=SeasonOverview";
+            $next_split = $this->nextSplit();
+            if ($next_split) {
+                $url .= "&RSerSeason={$next_split->event()->season()->id()}&View=SeasonOverview";
+            } else {
+                $seasons = $this->listSeasons();
+                if (count($seasons)) {
+                    $url .= "&RSerSeason={$seasons[0]->id()}&View=SeasonOverview";
+                }
+            }
             $html = "<a href=\"$url\">$html</a>";
         } else {
             $html = "<div>$html</div>";
@@ -139,6 +146,20 @@ class RSerSeries extends DbEntry {
     //! @return The name of the team
     public function name() : string {
         return $this->loadColumn("Name");
+    }
+
+
+    //! @return The RSerSplit which is driven next
+    public function nextSplit() : ?RSerSplit {
+        $query = "SELECT RSerSplits.Id, RSerSplits.Start FROM `RSerSplits`";
+        $query .= " INNER JOIN RSerEvents ON RSerEvents.Id=RSerSplits.Event";
+        $query .= " INNER JOIN RSerSeasons ON RSerSeasons.Id=RSerEvents.Season";
+        $query .= " INNER JOIN RSerSeries ON RSerSeries.Id=RSerSeasons.Series";
+        $query .= " WHERE RSerSeries.Id={$this->id()}";
+        $query .= " ORDER BY RSerSplits.Start ASC LIMIT 1;";
+        $res = \Core\Database::fetchRaw($query);
+        if (count($res) > 0) return RSerSplit::fromId((int) $res[0]['Id']);
+        else return NULL;
     }
 
 
