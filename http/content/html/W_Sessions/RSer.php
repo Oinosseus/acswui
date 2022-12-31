@@ -492,6 +492,7 @@ class RSer extends \core\HtmlContent {
         $html = "";
 
         $html .= "<table>";
+        $html .= "<caption>" . _("Standings") . " " . _("Season") . " {$season->name()}</caption>";
         $html .= "<tr>";
         $html .= "<th>" . _("Pos") . "</th>";
         $html .= "<th>" . _("Team") . "</th>";
@@ -848,6 +849,19 @@ class RSer extends \core\HtmlContent {
 
         // per class
         foreach ($this->CurrentSeries->listClasses(active_only:FALSE) as $rs_class) {
+
+            $standings = $this->CurrentSeason->listStandings($rs_class);
+
+            // skip classes without active registrations
+            $has_active_registrations = FALSE;
+            foreach ($standings as $std) {
+                if ($std->registration()->active()) {
+                    $has_active_registrations = TRUE;
+                    break;
+                }
+            }
+            if (!$has_active_registrations) continue;
+
             $html .= "<h2>{$rs_class->name()}</h2>";
             $html .= "<table>";
             // $html .= "<caption>{$rser_c->name()} <small>({$rser_c->carClass()->name()})</small></caption>";
@@ -863,7 +877,7 @@ class RSer extends \core\HtmlContent {
             $html .= "<th>" . _("BOP") . "</th>";
             $html .= "</tr>";
 
-            foreach ($this->CurrentSeason->listStandings($rs_class) as $std) {
+            foreach ($standings as $std) {
                 $reg = $std->registration();
                 if (!$reg->active()) continue;
 
@@ -1264,6 +1278,4 @@ class RSer extends \core\HtmlContent {
 
         return $html;
     }
-
 }
-

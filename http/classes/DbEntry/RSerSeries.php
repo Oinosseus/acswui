@@ -67,10 +67,28 @@ class RSerSeries extends DbEntry {
         foreach ($this->listClasses() as $c) $class_names[] = $c->name();
         $class_names_string = implode(", ", $class_names);
 
+        // find current season
+        $current_season = NULL;
+        $next_split = $this->nextSplit();
+        if ($next_split) {
+            $current_season = $next_split->event()->season();
+        } else {
+            $seasons = $this->listSeasons();
+            if (count($seasons)) {
+                $current_season = $seasons[0];
+            }
+        }
+
         // information
         if ($show_name) {
             $html .= "<div class=\"RSerInformation\">";
             $html .= "<label>{$this->name()}</label>";
+            if ($current_season) {
+                $html .= "<div class=\"RSerInfoRegistrations\">";
+                $html .= count($current_season->listRegistrations(NULL));
+                $html .= " " . _("Registrations");
+                $html .= "</div>";
+            }
             $html .= "<div class=\"RSerInfoClasses\">$class_names_string</div>";
             $html .= "</div>";
         }
@@ -78,14 +96,8 @@ class RSerSeries extends DbEntry {
         // link container
         if ($include_link) {
             $url = "index.php?HtmlContent=RSer&RSerSeries={$this->id()}";
-            $next_split = $this->nextSplit();
-            if ($next_split) {
-                $url .= "&RSerSeason={$next_split->event()->season()->id()}&View=SeasonOverview";
-            } else {
-                $seasons = $this->listSeasons();
-                if (count($seasons)) {
-                    $url .= "&RSerSeason={$seasons[0]->id()}&View=SeasonOverview";
-                }
+            if ($current_season) {
+                $url .= "&RSerSeason={$current_season->id()}&View=SeasonOverview";
             }
             $html = "<a href=\"$url\">$html</a>";
         } else {

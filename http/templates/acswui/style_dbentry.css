@@ -169,10 +169,20 @@ div.DbEntryHtmlRSerSeries img {
     margin-right: 2em;
 }
 
+div.DbEntryHtmlRSerSeries div.RSerInformation label {
+    margin-bottom: 0.8em;
+}
+
+div.DbEntryHtmlRSerSeries div.RSerInformation div.RSerInfoRegistrations,
 div.DbEntryHtmlRSerSeries div.RSerInformation div.RSerInfoClasses {
-    margin-top: 0.8em;
+    margin-top: 0.1em;
     font-weight: normal;
     font-size: 0.8em;
+}
+
+div.DbEntryHtmlRSerSeries div.RSerInformation div.RSerInfoClasses {
+/*     font-weight: bold; */
+    font-style: italic;
 }
 
 
