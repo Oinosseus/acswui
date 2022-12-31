@@ -18,6 +18,12 @@ class RSerClass extends DbEntry {
     }
 
 
+    //! @return TRUE, if this class is active and can be used for new registrations
+    public function active() : bool {
+        return ($this->loadColumn("Active") == 0) ? FALSE : TRUE;
+    }
+
+
     /**
      * @param $position The season position
      * @param $include_class_offset If TRUE (default) then the full BOP is returned, else the class offset is ignored.

@@ -21,7 +21,7 @@ class RSerStanding extends DbEntry {
      * @param $season The RSerSeason
      */
     public static function calculateFromSeason(RSerSeason $season) {
-        foreach ($season->series()->listClasses() as $rs_class) {
+        foreach ($season->series()->listClasses(active_only:FALSE) as $rs_class) {
 
             // scan all registrations for the class
             $registrations = array();

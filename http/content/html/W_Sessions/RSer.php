@@ -126,6 +126,8 @@ class RSer extends \core\HtmlContent {
 
                 if ($already_occupied) {
                     \Core\Log::warning("Prevent over-occupation of $carskin from $user");
+                } else if (!$this->CurrentClass->active()) {
+                    \Core\Log::warning("Prevent occupation of inactive class {$this->CurrentClass} from $user");
                 } else {
                     \DbEntry\RSerRegistration::createNew($this->CurrentSeason,
                                                         $this->CurrentClass,
@@ -159,7 +161,9 @@ class RSer extends \core\HtmlContent {
                 $teamcar = \DbEntry\TeamCar::fromId((int) $_POST['RegisterTeamCar']);
 
                 // only matching carclass
-                if ($teamcar->carClass()->carClass() === $this->CurrentClass->carClass()) {
+                if (!$this->CurrentClass->active()) {
+                    \Core\Log::warning("Prevent occupation of inactive class {$this->CurrentClass} from $user");
+                } else if ($teamcar->carClass()->carClass() === $this->CurrentClass->carClass()) {
                     \DbEntry\RSerRegistration::createNew($this->CurrentSeason,
                                                         $this->CurrentClass,
                                                         $teamcar);
@@ -378,7 +382,7 @@ class RSer extends \core\HtmlContent {
 
         // race results
         $html .= "<h1>" . _("Race Results") . "</h1>";
-        foreach ($this->CurrentSeries->listClasses() as $rs_class) {
+        foreach ($this->CurrentSeries->listClasses(active_only:FALSE) as $rs_class) {
             $result_list = $this->CurrentEvent->listResults($rs_class);
 
             $html .= "<h2>{$rs_class->name()}</h2>";
@@ -435,7 +439,7 @@ class RSer extends \core\HtmlContent {
 
         // qualifying
         $html .= "<h1>" . _("Qualifications") . "</h1>";
-        foreach ($this->CurrentSeries->listClasses() as $rs_class) {
+        foreach ($this->CurrentSeries->listClasses(active_only:FALSE) as $rs_class) {
             $html .= "<h2>{$rs_class->name()}</h2>";
             $html .= "<table>";
             $html .= "<tr>";
@@ -843,7 +847,7 @@ class RSer extends \core\HtmlContent {
         $html .= $this->getHtmlOverallStandings($this->CurrentSeason);
 
         // per class
-        foreach ($this->CurrentSeries->listClasses() as $rs_class) {
+        foreach ($this->CurrentSeries->listClasses(active_only:FALSE) as $rs_class) {
             $html .= "<h2>{$rs_class->name()}</h2>";
             $html .= "<table>";
             // $html .= "<caption>{$rser_c->name()} <small>({$rser_c->carClass()->name()})</small></caption>";
@@ -994,19 +998,23 @@ class RSer extends \core\HtmlContent {
             }
             $html .= "</table>";
 
-            // register team
-            $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
-                                "RSerSeason"=>$this->CurrentSeason->id(),
-                                "RSerClass"=>$rser_c->id(),
-                                "View"=>"SeasonRegisterTeam"]);
-            $html .= "<a href=\"$url\">" . _("Register Team") . "</a> ";
+            // registration
+            if ($rser_c->active()) {
 
-            // register driver
-            $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
-                                "RSerSeason"=>$this->CurrentSeason->id(),
-                                "RSerClass"=>$rser_c->id(),
-                                "View"=>"SeasonRegisterDriver"]);
-            $html .= "<a href=\"$url\">" . _("Register Single Driver") . "</a> ";
+                // teams
+                $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                    "RSerSeason"=>$this->CurrentSeason->id(),
+                                    "RSerClass"=>$rser_c->id(),
+                                    "View"=>"SeasonRegisterTeam"]);
+                $html .= "<a href=\"$url\">" . _("Register Team") . "</a> ";
+
+                // signle driver
+                $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                    "RSerSeason"=>$this->CurrentSeason->id(),
+                                    "RSerClass"=>$rser_c->id(),
+                                    "View"=>"SeasonRegisterDriver"]);
+                $html .= "<a href=\"$url\">" . _("Register Single Driver") . "</a> ";
+            }
 
             $html .= "</div>";
         }

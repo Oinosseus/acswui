@@ -23,7 +23,7 @@ class RSerResult extends DbEntry {
     public static function calculateFromEvent(RSerEvent $event) {
 
         // iterate over all car classes
-        foreach ($event->season()->series()->listClasses() as $rs_class) {
+        foreach ($event->season()->series()->listClasses(active_only:FALSE) as $rs_class) {
 
             // start postion assignment
             $position = 1;
@@ -97,7 +97,6 @@ class RSerResult extends DbEntry {
                     $columns = array();
                     $columns['Event'] = $event->id();
                     $columns['Registration'] = $data['Reg']->id();
-                    $columns['Position'] = 0;
                     $columns['Points'] = $data['Pts'];
 
                     // update DB

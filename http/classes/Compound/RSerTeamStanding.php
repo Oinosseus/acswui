@@ -40,7 +40,7 @@ class RSerTeamStanding {
         $obj_map = array();
 
         // summarize points per class
-        foreach ($season->series()->listClasses() as $rs_class) {
+        foreach ($season->series()->listClasses(active_only:FALSE) as $rs_class) {
 
             $points_per_team = array();  // key=Team.Id, value= points
             $points_per_user = array();  // key=User.Id, value= points

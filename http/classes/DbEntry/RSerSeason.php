@@ -91,7 +91,7 @@ class RSerSeason extends DbEntry {
         $classes = $this->series()->listClasses();
 
         // get inactive classes which have active registrations
-        $query = "SELECT RSerRegistrations.Class FROM RSerRegistrations";
+        $query = "SELECT DISTINCT(RSerRegistrations.Class) FROM RSerRegistrations";
         $query .= " INNER JOIN RSerClasses ON RSerRegistrations.Class=RSerClasses.Id";
         $query .= " WHERE RSerRegistrations.Season={$this->id()}";
         $query .= " AND RSerRegistrations.Active!=0";
