@@ -47,6 +47,10 @@ main.A_Home .Registered {
     color: var(--color-functional-success);
 }
 
+main.A_Home div#NoMaladminFound {
+    color: var(--color-functional-success);
+}
+
 
 
 /******************************************************************************

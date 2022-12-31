@@ -111,8 +111,10 @@ class A_Home extends \core\HtmlContent {
 
         // show suspicious items
         $html .= "<h1>" . _("Suspects of Maladministrations") . "</h1>";
+        $any_maladmin_found = FALSE;
 
         if (count($tracklocationss_with_no_geolocation) > 0) {
+            $any_maladmin_found = TRUE;
             $html .= "<h2>" . _("Tracks with suspicious Geo-Location") . "</h2>";
             foreach ($tracklocationss_with_no_geolocation as $t) {
                 $html .= $t->html();
@@ -120,6 +122,7 @@ class A_Home extends \core\HtmlContent {
         }
 
         if (count($tracklocationss_with_no_download) > 0) {
+            $any_maladmin_found = TRUE;
             $html .= "<h2>" . _("Tracks with no download url") . "</h2>";
             foreach ($tracklocationss_with_no_download as $t) {
                 $html .= $t->html();
@@ -127,6 +130,7 @@ class A_Home extends \core\HtmlContent {
         }
 
         if (count($cars_with_no_download) > 0) {
+            $any_maladmin_found = TRUE;
             $html .= "<h2>" . _("Cars with no download url") . "</h2>";
             foreach ($cars_with_no_download as $c) {
                 $html .= $c->html();
@@ -134,12 +138,17 @@ class A_Home extends \core\HtmlContent {
         }
 
         if (count($schedule_items_with_invalid_server_slot) > 0) {
+            $any_maladmin_found = TRUE;
             $html .= "<h2>" . _("Schedules with invalid Server-Slot") . "</h2>";
             $html .= "<ul>";
             foreach ($schedule_items_with_invalid_server_slot as $si) {
                 $html .= "<li>{$si->nameLink()}</li>";
             }
             $html .= "</ul>";
+        }
+
+        if (!$any_maladmin_found) {
+            $html .= "<div id=\"NoMaladminFound\">" . _("all okay") . "</div>";
         }
 
         return $html;
