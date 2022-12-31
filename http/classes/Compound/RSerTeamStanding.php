@@ -13,10 +13,13 @@ class RSerTeamStanding {
 
     /**
      */
-    private function __construct(\DbEntry\User|\DbEntry\Team $entry,
-                                 int|float $points) {
+    private function __construct(\DbEntry\User|\DbEntry\Team $entry) {
         $this->Entry = $entry;
-        $this->Points = $points;
+    }
+
+
+    public function addPoints(int $points) {
+        $this->Points += $points;
     }
 
 
@@ -24,14 +27,23 @@ class RSerTeamStanding {
         return $this->Entry;
     }
 
+
+    public function id() : string {
+        $id = "???";
+        if (is_a($this->Entry, "\\DbEntry\\User")) $id = "User={$this->Entry->id()}";
+        if (is_a($this->Entry, "\\DbEntry\\Team")) $id = "Team={$this->Entry->id()}";
+        return "RSerTeamStanding[{$id}]";
+    }
+
+
     public static function listStadnings(\DbEntry\RSerSeason $season) {
-        $obj_list = array();
+        $obj_map = array();
 
         // summarize points per class
-        $points_per_team = array();  // key=Team.Id, value= points
-        $points_per_user = array();  // key=User.Id, value= points
         foreach ($season->series()->listClasses() as $rs_class) {
 
+            $points_per_team = array();  // key=Team.Id, value= points
+            $points_per_user = array();  // key=User.Id, value= points
             $points_per_class_per_team = array();  // key=Team.Id, value= list of points
 
             foreach ($season->listStandings($rs_class) as $rs_sdg) {
@@ -100,15 +112,23 @@ class RSerTeamStanding {
             // instantiate obejects
             foreach ($points_per_team as $team_id=>$points) {
                 $team = \DbEntry\Team::fromId($team_id);
-                $obj_list[] = new RSerTeamStanding($team, $points);
+                $obj = new RSerTeamStanding($team);
+                if (array_key_exists($obj->id(), $obj_map)) $obj = $obj_map[$obj->id()];
+                else $obj_map[$obj->id()] = $obj;
+                $obj_map[$obj->id()]->addPoints($points);
             }
             foreach ($points_per_user as $user_id=>$points) {
                 $user = \DbEntry\User::fromId($user_id);
-                $obj_list[] = new RSerTeamStanding($user, $points);
+                $obj = new RSerTeamStanding($user, $points);
+                if (array_key_exists($obj->id(), $obj_map)) $obj = $obj_map[$obj->id()];
+                else $obj_map[$obj->id()] = $obj;
+                $obj_map[$obj->id()]->addPoints($points);
             }
         }
 
-        // sort and return
+        // serialize, sort and return
+        $obj_list = array();
+        foreach ($obj_map as $id=>$obj) $obj_list[] = $obj;
         usort($obj_list, "\\Compound\\RSerTeamStanding::usortByPoints");
         return $obj_list;
     }
