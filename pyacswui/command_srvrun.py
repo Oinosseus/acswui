@@ -45,7 +45,8 @@ class CommandSrvrun(Command):
         acswui_udpp_cmd = []
         acswui_udpp_cmd.append(os.path.join(path_acswui, "acswui.py"))
         acswui_udpp_cmd.append("udpplugin")
-        acswui_udpp_cmd.append("-" + ("v"*self._verbosity.level()))
+        if self._verbosity.level() > 0:
+            acswui_udpp_cmd.append("-" + ("v"*self._verbosity.level()))
         acswui_udpp_cmd.append(path_acswui_udpp_ini)
         try:
             stdout_log_acswuiplugin = open(path_log_acswuiudpp, "w")
