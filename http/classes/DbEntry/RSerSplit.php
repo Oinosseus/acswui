@@ -179,6 +179,16 @@ class RSerSplit extends DbEntry {
     }
 
 
+    /**
+     * Set the SessionSchedule as executed
+     * @param $t DateTime object of when the item has been executed
+     */
+    public function setExecuted(\DateTime $t) {
+        $t_str = \Core\Database::timestamp($t);
+        $this->storeColumns(["Executed"=>$t_str]);
+    }
+
+
     //! @param $server_slot Assign a new server slot where this split shall be run on.
     public function setServerSlot(\Core\ServerSlot $server_slot) {
         $this->storeColumns(["ServerSlot"=>$server_slot->id()]);

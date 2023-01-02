@@ -83,13 +83,13 @@ class RSerSeries extends DbEntry {
         if ($show_name) {
             $html .= "<div class=\"RSerInformation\">";
             $html .= "<label>{$this->name()}</label>";
+            $html .= "<div class=\"RSerInfoClasses\">$class_names_string</div>";
             if ($current_season) {
                 $html .= "<div class=\"RSerInfoRegistrations\">";
                 $html .= count($current_season->listRegistrations(NULL));
                 $html .= " " . _("Registrations");
                 $html .= "</div>";
             }
-            $html .= "<div class=\"RSerInfoClasses\">$class_names_string</div>";
             $html .= "</div>";
         }
 

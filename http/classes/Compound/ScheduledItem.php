@@ -57,6 +57,62 @@ class ScheduledItem {
     }
 
 
+    //! @return A message that is transmitted to discord at the event start
+    public function discordMessage() : string {
+        $msg = "";
+
+        // head
+        if ($this->RSerSplit) {
+            $msg .= "**{$this->RSerSplit->event()->season()->series()->name()}**\n";
+            $msg .= _("Season") . ": {$this->RSerSplit->event()->season()->name()}\n";
+            $msg .= "*E{$this->RSerSplit->event()->order()} S{$this->RSerSplit->order()}*\n";
+        }
+        if ($this->SessionSchedule) {
+            $msg .= "**{$this->SessionSchedule->name()}**\n";
+        }
+
+        // settings
+        $msg .= "\n";
+        $msg .= "*" . _("Server Slot") . ": {$this->serverSlot()->name()}*\n";
+        $msg .= "*" . _("Server Preset") . ": {$this->serverPreset()->name()}*\n";
+        $msg .= "*" . _("Track") . ": {$this->track()->name()}*\n";
+        if ($this->SessionSchedule)
+            $msg .= "*" . _("Car Class") . ": {$this->SessionSchedule->carClass()->name()}*\n";
+
+        // get carclass (if available)
+        $carclass = NULL;
+        if ($this->SessionSchedule)
+            $carclass = $this->SessionSchedule->carClass();
+
+        // schedule
+        $schedules = $this->serverPreset()->schedule($this->track(), $carclass);
+        $time = new \DateTime("now");
+        for ($i = 0; $i < count($schedules); ++$i) {
+            [$interval, $uncertainty, $type, $name] = $schedules[$i];
+
+            if ($type == \Enums\SessionType::Invalid && ($i+1) < count($schedules)) continue; // do not care for intermediate break
+
+            $content_line = \Core\UserManager::currentUser()->formatTimeNoSeconds($time) . " - $name";
+            if (($i + 1) == count($schedules)) {
+                $msg .= "*$content_line*";
+            } else if ($type == \Enums\SessionType::Race) {
+                $msg .= "**$content_line**";
+            } else {
+                $msg .= $content_line;
+            }
+
+            if (($i + 1) < count($schedules))
+                $msg .= " *(" . \Core\UserManager::currentUser()->formatTimeInterval($interval) . ")*";
+            $msg .= "\n";
+            $time->add($interval->toDateInterval());
+        }
+        $msg .= "\n*" . _("Time Zone") . ": " . \Core\UserManager::currentUser()->getParam("UserTimezone") . "*\n";
+
+        // done
+        return $msg;
+    }
+
+
     //! @return The entry list object to be used
     public function entryList() : \Core\EntryList {
         if ($this->SessionSchedule) {
@@ -323,6 +379,24 @@ class ScheduledItem {
             // you should not end here
             \Core\Log::error("Unknown type!");
             return NULL;
+        }
+    }
+
+
+    /**
+     * Set the SessionSchedule as executed
+     * @param $t DateTime object of when the item has been executed
+     */
+    public function setExecuted(\DateTime $t) {
+        if ($this->SessionSchedule) {
+            return $this->SessionSchedule->setExecuted($t);
+
+        } else if ($this->RSerSplit) {
+            return $this->RSerSplit->setExecuted($t);
+
+        } else {
+            // you should not end here
+            \Core\Log::error("Unknown type!");
         }
     }
 

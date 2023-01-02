@@ -43,23 +43,6 @@ class Discord {
 
 
     /**
-     * @return The settings as string
-     */
-    private static function createContentSettings(\Core\ServerSlot $ss,
-                                                  \DbEntry\Track $t,
-                                                  \DbEntry\CarClass $cc,
-                                                  \DbEntry\ServerPreset $sp) {
-        $content = "";
-        $content .= "*" . _("Server Slot") . ": {$ss->name()}*\n";
-        $content .= "*" . _("Server Preset") . ": {$sp->name()}*\n";
-        $content .= "*" . _("Car Class") . ": {$cc->name()}*\n";
-        $content .= "*" . _("Track") . ": {$t->name()}*\n";
-        $content .= "\n";
-        return $content;
-    }
-
-
-    /**
      * Inform about a manually started session
      * @param $ss The ServerSlot object of the started session
      * @param $t The Track object of the started session
@@ -83,7 +66,10 @@ class Discord {
         $content .= "**$uname**\n\n";
 
         // settings message
-        $content .= Discord::createContentSettings($ss, $t, $cc, $sp);
+        $content .= "*" . _("Server Slot") . ": {$ss->name()}*\n";
+        $content .= "*" . _("Server Preset") . ": {$sp->name()}*\n";
+        $content .= "*" . _("Car Class") . ": {$cc->name()}*\n";
+        $content .= "*" . _("Track") . ": {$t->name()}*\n";
 
         // schedule message
         $schedules = $sp->schedule($t, $cc);
@@ -97,10 +83,10 @@ class Discord {
     /**
      * Inform about a manually started session
      * @param $ss The ServerSlot object of the started session
-     * @param $schd The SessionSchedule object that has been started
+     * @param $schd The \Compound\ScheduledItem object that has been started
      */
     public static function messageScheduleStart(\Core\ServerSlot $ss,
-                                                \DbEntry\SessionSchedule $schd) {
+                                                \Compound\ScheduledItem $schd) {
 
         // get configuration
         $webhook_url = \Core\ACswui::getParam("DiscordScheduleWebhookUrl");
@@ -110,17 +96,9 @@ class Discord {
         // head message
         $content = "";
         if ($mention_group != "") $content .= "<@&$mention_group> ";
-        $content .= "**{$schd->name()}**\n\n";
 
         // settings message
-        $content .= Discord::createContentSettings($ss,
-                                                   $schd->track(),
-                                                   $schd->carClass(),
-                                                   $schd->serverPreset());
-
-        // schedule message
-        $schedules = $schd->serverPreset()->schedule($schd->track(), $schd->carClass());
-        $content .= Discord::createContentSchedule($schedules);
+        $content .= $schd->discordMessage();
 
         // send message
         Discord::sendWebhook($webhook_url, $content);
