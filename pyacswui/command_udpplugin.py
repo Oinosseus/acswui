@@ -86,8 +86,12 @@ class CommandUdpPlugin(Command):
         # run server
         self._verbosity.print("Processing ...")
         while True:
-            udpp.process()
+            anything_processed = udpp.process()
             sys.stdout.flush()
+
+            # reduce CUP load
+            if not anything_processed:
+                time.sleep(0.001)
 
             # quit at termination
             if __TERMINATION_REQUESTED__ and not udpp.ActiveSession:

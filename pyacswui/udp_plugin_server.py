@@ -81,7 +81,8 @@ class UdpPluginServer(object):
             msg += " on port %i!" % self.__port_plugin
             msg += "\n%s" % str(be)
             raise BaseException(msg)
-        self.__sock.settimeout(0.01)
+        self.__sock.setblocking(False)
+        self.__sock.settimeout(0)
 
         # bind UDP socket for RP event listening
         self.__port_rp_events_tx = int(port_rp_events_tx)
@@ -102,7 +103,8 @@ class UdpPluginServer(object):
                 msg += " on port %i!" % self.__port_plugin
                 msg += "\n%s" % str(be)
                 raise BaseException(msg)
-            self.__sock_rp_events.settimeout(0.01)
+            self.__sock_rp_events.setblocking(False)
+            self.__sock_rp_events.settimeout(0)
 
         # parse car entries
         self.__entry_list = ConfigParser()
@@ -151,28 +153,40 @@ class UdpPluginServer(object):
         """ This must be called periodically
         """
 
+        anything_processed = False;
+
         # read from AC Server
-        new_data = False
         try:
+            something_received = False
             data, addr = self.__sock.recvfrom(2**12)
-            pkt = UdpPacket(data, addr)
-            self.parse_packet(pkt)
-            new_data = True
+            something_received = True
         except socket.timeout:
             pass
+        except BlockingIOError:
+            pass
+        if something_received:
+            pkt = UdpPacket(data, addr)
+            self.parse_packet(pkt)
+            anything_processed |= True
 
-        # update real time data
-        if new_data and self.__session is not None and self.__session.IsActive:
-            self.dump_realtime_json()
+            # # update real time data
+            # if self.__session is not None and self.__session.IsActive:
+            #     self.dump_realtime_json()
 
 
         # readfrom RP
         if self.__sock_rp_events is not None:
             try:
+                something_received = False
                 data, addr = self.__sock_rp_events.recvfrom(2**12)
-                self.parse_rp_data(data)
+                something_received = True
             except socket.timeout:
                 pass
+            except BlockingIOError:
+                pass
+            if something_received:
+                self.parse_rp_data(data)
+                anything_processed |= True
 
 
         # send start request to RP
@@ -277,6 +291,9 @@ class UdpPluginServer(object):
                 restrictor = restrictor_car_model + max(restrictor_user, restrictor_team) + restrictor_rserclass
                 self.send_admin_command("/restrictor %i %i" % (entry.Id, restrictor))
                 entry.RestrictorCurrent = restrictor
+
+
+        return anything_processed
 
 
 

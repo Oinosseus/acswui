@@ -401,7 +401,7 @@ class ServerSlot {
         // start server
         $datetime_str = (new \DateTime("now", new \DateTimezone("UTC")))->format(\DateTimeInterface::ATOM);
         $cmd_ret = 0;
-        $cmd = "nohup ". \Core\Config::AbsPathAcswui . "/acswui.py srvrun -vvvvvvvvvv";
+        $cmd = "nohup ". \Core\Config::AbsPathAcswui . "/acswui.py srvrun";
         $cmd .= " \"" . \Core\Config::AbsPathData . "/acswui_udp_plugin/acswui_udp_plugin_$id.ini\" ";
         $cmd .= " --slot $id";
         if ($this->parameterCollection()->child("RPGeneralEnable")->value()) {
