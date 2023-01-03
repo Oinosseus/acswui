@@ -168,6 +168,7 @@ class RSerSeries extends DbEntry {
         $query .= " INNER JOIN RSerSeasons ON RSerSeasons.Id=RSerEvents.Season";
         $query .= " INNER JOIN RSerSeries ON RSerSeries.Id=RSerSeasons.Series";
         $query .= " WHERE RSerSeries.Id={$this->id()}";
+        $query .= " AND RSerSplits.Start>=RSerSplits.Executed";
         $query .= " ORDER BY RSerSplits.Start ASC LIMIT 1;";
         $res = \Core\Database::fetchRaw($query);
         if (count($res) > 0) return RSerSplit::fromId((int) $res[0]['Id']);
