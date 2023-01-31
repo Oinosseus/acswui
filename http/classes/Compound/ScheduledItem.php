@@ -180,7 +180,7 @@ class ScheduledItem {
      * List ScheduledItem objects
      *
      * @param $server_slot If given, only items for this slot are listed
-     * @param $start_after Only items which are starting after this date are listed
+     * @param $start_after Only items which are starting after this date are listed (NULL means all items)
      * @param $only_not_executed If TRUE (default FALSE), then only items which are not already executed are returned
      * @return A list of all schedule events
      */

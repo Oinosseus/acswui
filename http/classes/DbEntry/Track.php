@@ -381,7 +381,7 @@ class Track extends DbEntry {
 
 
     //! @return TRUE if a track-INI-file for real penalty is present (else FALSE)
-    public function rpTrackfile() {
+    public function rpTrackfile() : bool {
         return ($this->loadColumn("RpTrackfile") == 0) ? FALSE : TRUE;
     }
 

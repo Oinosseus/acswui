@@ -42,6 +42,7 @@ class A_Home extends \core\HtmlContent {
         $tracklocationss_with_no_geolocation = array();
         $cars_with_no_download = array();
         $schedule_items_with_invalid_server_slot = array();
+        $tracks_without_real_penalty_trackfile = array();
 
         // search session loops
         foreach (\DbEntry\SessionLoop::listLoops() as $sl) {
@@ -61,6 +62,10 @@ class A_Home extends \core\HtmlContent {
                         }
                     }
                 }
+                if ($sl->track()->rpTrackfile() != TRUE && !in_array($sl->track(), $tracks_without_real_penalty_trackfile)) {
+                    echo "HERE<br>";
+                    $tracks_without_real_penalty_trackfile[] = $sl->track();
+                }
 
                 // cars
                 foreach ($sl->carClass()->cars() as $car) {
@@ -74,7 +79,7 @@ class A_Home extends \core\HtmlContent {
         }
 
         // search in session schedules
-        foreach (\DbEntry\SessionSchedule::listSchedules() as $ss) {
+        foreach (\Compound\ScheduledItem::listItems(NULL, new \DateTime("now")) as $ss) {
 
 
             // tracks
@@ -92,11 +97,27 @@ class A_Home extends \core\HtmlContent {
                 }
             }
 
+            // echo $ss->track()->name() . "=" . $ss->track()->rpTrackfile() . "<br>";
+            if ($ss->track()->rpTrackfile() != TRUE && !in_array($ss->track(), $tracks_without_real_penalty_trackfile)) {
+                $tracks_without_real_penalty_trackfile[] = $ss->track();
+            }
+
             // cars
-            foreach ($ss->carClass()->cars() as $car) {
-                if (!$car->kunosOriginal() && strlen($car->downloadUrl()) == 0) {
-                    if (!in_array($car, $cars_with_no_download)) {
-                        $cars_with_no_download[] = $car;
+            $car_classes = array();
+            if ($ss->getSessionSchedule()) {
+                $car_classes[] = $ss->getSessionSchedule()->carClass();
+            }
+            if ($ss->getRSerSplit()) {
+                foreach ($ss->getRSerSplit()->event()->season()->series()->listClasses() as $rsc) {
+                    $car_classes[] = $rsc->carClass();
+                }
+            }
+            foreach ($car_classes as $car_class) {
+                foreach ($car_class->cars() as $car) {
+                    if (!$car->kunosOriginal() && strlen($car->downloadUrl()) == 0) {
+                        if (!in_array($car, $cars_with_no_download)) {
+                            $cars_with_no_download[] = $car;
+                        }
                     }
                 }
             }
@@ -145,6 +166,14 @@ class A_Home extends \core\HtmlContent {
                 $html .= "<li>{$si->nameLink()}</li>";
             }
             $html .= "</ul>";
+        }
+
+        if (count($tracks_without_real_penalty_trackfile) > 0) {
+            $any_maladmin_found = TRUE;
+            $html .= "<h2>" . _("Missing trackfiles for Real Penalty") . "</h2>";
+            foreach ($tracks_without_real_penalty_trackfile as $t) {
+                $html .= $t->html();
+            }
         }
 
         if (!$any_maladmin_found) {
