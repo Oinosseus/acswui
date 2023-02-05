@@ -176,6 +176,21 @@ class ScheduledItem {
     }
 
 
+    //! @return A list of CarClass objects that were used in this scheduled item
+    public function listCarClasses() : array {
+        $car_classes = array();
+        if ($this->SessionSchedule) {
+            $car_classes[] = $this->SessionSchedule->carClass();
+        }
+        if ($this->RSerSplit) {
+            foreach ($this->RSerSplit->event()->season()->series()->listClasses() as $rsc) {
+                $car_classes[] = $rsc->carClass();
+            }
+        }
+        return $car_classes;
+    }
+
+
     /**
      * List ScheduledItem objects
      *

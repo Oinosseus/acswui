@@ -63,7 +63,6 @@ class A_Home extends \core\HtmlContent {
                     }
                 }
                 if ($sl->track()->rpTrackfile() != TRUE && !in_array($sl->track(), $tracks_without_real_penalty_trackfile)) {
-                    echo "HERE<br>";
                     $tracks_without_real_penalty_trackfile[] = $sl->track();
                 }
 
@@ -103,16 +102,7 @@ class A_Home extends \core\HtmlContent {
             }
 
             // cars
-            $car_classes = array();
-            if ($ss->getSessionSchedule()) {
-                $car_classes[] = $ss->getSessionSchedule()->carClass();
-            }
-            if ($ss->getRSerSplit()) {
-                foreach ($ss->getRSerSplit()->event()->season()->series()->listClasses() as $rsc) {
-                    $car_classes[] = $rsc->carClass();
-                }
-            }
-            foreach ($car_classes as $car_class) {
+            foreach ($ss->listCarClasses() as $car_class) {
                 foreach ($car_class->cars() as $car) {
                     if (!$car->kunosOriginal() && strlen($car->downloadUrl()) == 0) {
                         if (!in_array($car, $cars_with_no_download)) {
@@ -234,6 +224,36 @@ class A_Home extends \core\HtmlContent {
             $html .= _("Registrations") . ": <span class=\"$registration_css_class\">$count_registrations / $count_pits</span><br>";
             $rwc = $si->serverPreset()->forecastWeather($si->start(), $si->track()->location());
             if ($rwc !== NULL) $html .= $rwc->htmlImg();
+            $html .= "</div>";
+
+            // download links
+            $html .= "<div class=\"$class_obsolete\">";
+            $html .= "<strong>" . _("Downloads") . "</strong><br>";
+            // track
+            $url = $si->track()->location()->downloadUrl();
+            if ($url !== "") {
+                $html .= _("Track Location") . ": <a href=\"$url\">" . $si->track()->location()->name() . "</a><br>";
+            }
+            // cars
+            $cars = array();
+            foreach ($si->listCarClasses() as $cc) {
+                foreach ($cc->cars() as $c) {
+                    if (!in_array($c, $cars) && $c->downloadUrl() != "") $cars[] = $c;
+                }
+            }
+            if (count($cars)) {
+                $html .= _("Cars") . ": ";
+                $urls = array();
+                foreach ($cars as $c) {
+                    $url = $c->downloadUrl();
+                    if (in_array($url, $urls)) continue;
+                    if (count($urls)) $html .= ", ";
+                    $html .= "<a href=\"$url\">{$c->name()}</a>";
+                    $urls[] = $url;
+                }
+                $html .= "<br>";
+            }
+
             $html .= "</div>";
         }
 

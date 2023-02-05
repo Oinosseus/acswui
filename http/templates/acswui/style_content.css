@@ -5,7 +5,7 @@
 
 main.A_Home div#UpcommingRacesOverview {
     display: inline-grid;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(5, auto);
     margin-top: 2em;
 }
 
