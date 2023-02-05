@@ -341,6 +341,25 @@ class ScheduledItem {
     }
 
 
+    //! @return A list of CarSkin objects that are used for registrations
+    public function registeredCarSkins() : array {
+        $carskins = array();
+
+        if ($this->SessionSchedule) {
+            foreach (\DbEntry\SessionScheduleRegistration::listRegistrations($this->SessionSchedule) as $reg) {
+                $carskins[] = $reg->carSkin();
+            }
+        } else if ($this->RSerSplit) {
+            $rser_season = $this->RSerSplit->event()->season();
+            foreach ($rser_season->listRegistrations(NULL, TRUE) as $rser_reg) {
+                $carskins[] = $rser_reg->carSkin();
+            }
+        }
+
+        return $carskins;
+    }
+
+
     //! @return The amount of drivers who are registered
     public function registrations() : int {
         if ($this->SessionSchedule) {

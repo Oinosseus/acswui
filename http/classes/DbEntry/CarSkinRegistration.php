@@ -138,6 +138,17 @@ class CarSkinRegistration extends DbEntry {
     }
 
 
+    /**
+     * @param $existing_only If TRUE (default) NULL will be returned, if the packaged file does not exist.
+     * @return The full qualified file path to the packaged skin
+     */
+    public function packagedDownloadLink($existing_only = TRUE) {
+        $path = \Core\Config::RelPathHtdata . "/owned_carskin_packages/{$this->packagedFileName()}";
+        if (!$existing_only) return $path;
+        return (is_file($path)) ? $path : NULL;
+    }
+
+
     //! @return The name of the skin package
     public function packagedFileName() : string {
         return "{$this->carSkin()->skin()}_{$this->id()}.7z";

@@ -253,7 +253,24 @@ class A_Home extends \core\HtmlContent {
                 }
                 $html .= "<br>";
             }
-
+            // skins
+            $skins_registrations = array();
+            foreach ($si->registeredCarSkins() as $s) {
+                $sreg = \DbEntry\CarSkinRegistration::fromCarSkinLatest($s);
+                if ($sreg && !in_array($sreg, $skins_registrations)) $skins_registrations[] = $sreg;
+            }
+            if (count($skins_registrations)) {
+                $html .= _("Car Skins") . ": ";
+                $urls = array();
+                foreach ($skins_registrations as $sreg) {
+                    $url = $sreg->packagedDownloadLink();
+                    if ($url == NULL || in_array($url, $urls)) continue;
+                    if (count($urls)) $html .= ", ";
+                    $html .= "<a href=\"$url\">{$sreg->carSkin()->skin()}</a>";
+                    $urls[] = $url;
+                }
+                $html .= "<br>";
+            }
             $html .= "</div>";
         }
 

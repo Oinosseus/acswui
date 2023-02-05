@@ -169,6 +169,10 @@ class CarSkin extends \core\HtmlContent {
             $html .= $csr->info();
             $html .= "</td></tr>";
 
+            $html .= "<tr><th>" . _("Download") . "</th><td>";
+            $html .= "<a href=\"{$csr->packagedDownloadLink()}\">{$this->CurrentCarSkin->skin()}</a>";
+            $html .= "</td></tr>";
+
             $html .= "</table>";
         }
 
