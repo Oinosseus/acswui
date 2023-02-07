@@ -43,14 +43,7 @@ class DriverRankingData extends \Core\JsonContent {
 
         // add latest ranking
         $data['Ranking'] = array();
-        $now = new \DateTime("now");
-        foreach (\DbEntry\DriverRanking::listLatest() as $rnk) {
-            if ($rnk->user() !== NULL && $rnk->user()->id() == $user->id()) {
-                $diff = \Core\TimeInterval::fromDateInterval($now->diff($rnk->timestamp()));
-                $data['Ranking'][] = array('x'=>$diff->days(), 'y'=>$rnk->points());
-                break;
-            }
-        }
+        $data['Ranking'][] = array('x'=>0, 'y'=>$user->rankingLatestPoints());
 
         // request database
         $now = new \DateTime("now");

@@ -5,8 +5,10 @@ namespace Core;
 
 class DriverRankingPoints {
 
+    private static $GroupThresholds = NULL;
     private $RankingPoints = NULL;
     private $CountBt = 0;
+    private $IdealGroup = NULL;
 
 
     /**
@@ -20,12 +22,13 @@ class DriverRankingPoints {
         if ($json_string !== NULL) {
 
             $initial_data = json_decode($json_string, TRUE);
-
-            foreach(array_keys($this->RankingPoints) as $key_group) {
-                if (!array_key_exists($key_group, $initial_data)) continue;
-                foreach(array_keys($this->RankingPoints[$key_group]) as $key_value) {
-                    if (!array_key_exists($key_value, $initial_data[$key_group])) continue;
-                    $this->RankingPoints[$key_group][$key_value] = (float) $initial_data[$key_group][$key_value];
+            if (is_array($initial_data)) {
+                foreach(array_keys($this->RankingPoints) as $key_group) {
+                    if (!array_key_exists($key_group, $initial_data)) continue;
+                    foreach(array_keys($this->RankingPoints[$key_group]) as $key_value) {
+                        if (!array_key_exists($key_value, $initial_data[$key_group])) continue;
+                        $this->RankingPoints[$key_group][$key_value] = (float) $initial_data[$key_group][$key_value];
+                    }
                 }
             }
         }
@@ -136,6 +139,94 @@ class DriverRankingPoints {
         $ret['SF'] = array('CT'=>0, 'CE'=>0, 'CC'=>0, 'PEN'=>0);
         return $ret;
     }
+
+
+    /**
+     * Returns the minimum required ranking-points threshold of a certain group
+     * If a driver is below this threshold he will be down rated,
+     * if he is above he will be promoted
+     * @param $group The requested ranking group
+     * @return The points threshold
+     */
+    public static function groupThreshold(int $group) : ?float {
+
+        // update cache
+        if (DriverRankingPoints::$GroupThresholds === NULL) {
+            DriverRankingPoints::$GroupThresholds = array();
+
+            $type = \Core\ACswui::getPAram("DriverRankingGroupType");
+            switch ($type) {
+                case "points":
+                    $g = \Core\Config::DriverRankingGroups - 1;
+                    for (; $g > 0; --$g) {
+                        DriverRankingPoints::$GroupThresholds[$g] = \Core\ACswui::getPAram("DriverRankingGroup{$g}Thld");
+                    }
+                    DriverRankingPoints::$GroupThresholds[$g] = NULL;
+                    break;
+
+                case "percent":
+                    $most_points = DriverRankingPoints::listLatest()[0]->points();
+                    $g = \Core\Config::DriverRankingGroups - 1;
+                    for (; $g > 0; --$g) {
+                        DriverRankingPoints::$GroupThresholds[$g] = $most_points * \Core\ACswui::getPAram("DriverRankingGroup{$g}Thld") / 100;
+                    }
+                    DriverRankingPoints::$GroupThresholds[$g] = NULL;
+                    break;
+
+                case "drivers":
+                    $ranking_list = DriverRankingPoints::listLatest();
+                    $ranking_index = 0;//count($ranking_list);
+                    $g = \Core\Config::DriverRankingGroups - 1;
+                    for (; $g > 0; --$g) {
+
+                        $ranking_index += \Core\ACswui::getPAram("DriverRankingGroup{$g}Thld");
+                        if ($ranking_index <= 0) {
+                            DriverRankingPoints::$GroupThresholds[$g] = $ranking_list[0]->points() + 1.0;
+                        } else if ($ranking_index < count($ranking_list)) {
+                            DriverRankingPoints::$GroupThresholds[$g] = $ranking_list[$ranking_index - 1]->points();
+                        } else {
+                            DriverRankingPoints::$GroupThresholds[$g] = NULL;
+                        }
+                    }
+                    DriverRankingPoints::$GroupThresholds[$g] = NULL;
+                    break;
+
+                default:
+                    \Core\Log::error("Unknown type '$type'!");
+            }
+        }
+
+        // check-return
+        if (array_key_exists($group, DriverRankingPoints::$GroupThresholds)) {
+            return DriverRankingPoints::$GroupThresholds[$group];
+        } else {
+            \Core\Log::error("Undefined group '$group'!");
+            return NULL;
+        }
+    }
+
+
+    /**
+     * @return The group, this points idally can be assigned to
+     */
+    public function idealGroup() : int{
+
+        // update cache
+        if ($this->IdealGroup === NULL) {
+            $pts = $this->points();
+            for ($g = \Core\Config::DriverRankingGroups - 1; $g >= 0; --$g) {
+                $thld = self::groupThreshold($g);
+                if ($pts >= $thld) {
+                    $this->IdealGroup = $g;
+                    break;
+                }
+            }
+        }
+
+        // return from cache
+        return $this->IdealGroup;
+    }
+
 
 
     //! @return The json encoded data

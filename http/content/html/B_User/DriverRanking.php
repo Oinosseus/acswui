@@ -45,8 +45,8 @@ class DriverRanking extends \core\HtmlContent {
             $mean_values['XP'] = array('P'=>0,  'Q'=>0,  'R'=>0);
             $mean_values['SX'] = array('RT'=>0, 'Q'=>0,  'R'=>0, 'BT'=>0);
             $mean_values['SF'] = array('CT'=>0, 'CE'=>0, 'CC'=>0);
-            $latest_ranks = \DbEntry\DriverRanking::listLatest($rnk_grp);
-            foreach ($latest_ranks as $rnk) {
+            foreach (\DbEntry\User::listByRankingGroup($rnk_grp) as $user) {
+                $rnk = $user->rankingLatest();
                 $pos += 1;
 
                 $html .= "<tr>";
@@ -55,8 +55,8 @@ class DriverRanking extends \core\HtmlContent {
                 $html .= "<td>$pos</td>";
 
                 // driver
-                $html .= "<td class=\"DriverFlagCell\">" . $rnk->user()->parameterCollection()->child("UserCountry")->valueLabel() . "</td>";
-                $html .= "<td>" . $rnk->user()->html() . "</td>";
+                $html .= "<td class=\"DriverFlagCell\">" . $user->parameterCollection()->child("UserCountry")->valueLabel() . "</td>";
+                $html .= "<td>" . $user->html() . "</td>";
 
                 // XP
                 $title = sprintf("P = %0.1f\nQ = %0.1f\nR = %0.1f",
@@ -84,21 +84,21 @@ class DriverRanking extends \core\HtmlContent {
                 $html .= "<td>";
                 $title = sprintf("%0.1f", $rnk->points());
                 $html .= "<span title=\"$title\">" . round($rnk->points()) . "</span>";
-                $points_increase = $rnk->points() - $rnk->user()->rankingPoints();
+                $points_increase = $rnk->points() - $user->rankingPoints();
                 if (abs($points_increase) >= 0.1) {
                     $css_class = ($points_increase > 0) ? "TrendRising" : "TrendFalling";
                     $html .= " <small class=\"$css_class\">(" . sprintf("%+0.1f", $points_increase) . ")</small>";
                 }
-                if ($rnk->groupNext() > $rnk->user()->rankingGroup()) {
+                if ($rnk->idealGroup() > $user->rankingGroup()) {
                     $html .= " <span title=\"" . _("Driver will rise to next group") . "\" class=\"TrendRising\">&#x2b06;</span>";
-                } else if ($rnk->groupNext() < $rnk->user()->rankingGroup()) {
+                } else if ($rnk->idealGroup() < $user->rankingGroup()) {
                     $html .= " <span title=\"" . _("Driver will fall to previous group") . "\" class=\"TrendFalling\">&#x2b07;</span>";
                 }
                 $html .= "</td>";
 
-                if ($current_user->id() != $rnk->user()->id()) {
+                if ($current_user->id() != $user->id()) {
                     $html .= "<td>";
-                    $html .= "<button type=\"button\" onclick=\"loadDriverRankingData({$rnk->user()->id()}, this)\" title=\"" . _("Load Diagram Data") . "\">";
+                    $html .= "<button type=\"button\" onclick=\"loadDriverRankingData({$user->id()}, this)\" title=\"" . _("Load Diagram Data") . "\">";
                     $html .= "&#x1f4c8;</button> ";
                     $html .= "</td>";
                 }

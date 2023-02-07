@@ -75,6 +75,8 @@ class InstallerDatabase(object):
         self.__db.appendColumnDateTime(table_name, 'LastLogin')
         self.__db.appendColumnUInt(table_name, "RankingGroup")
         self.__db.appendColumnFloat(table_name, "RankingPoints")
+        self.__db.appendColumnText(table_name, "RankingLatestData")
+        self.__db.appendColumnFloat(table_name, "RankingLatestPoints")
 
         table_name = "Groups"
         self.__db.appendTable(table_name)

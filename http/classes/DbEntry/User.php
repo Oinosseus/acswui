@@ -465,6 +465,35 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    /**
+     * Scan for all users that belong to a certain ranking group
+     * @param $ranking_group The requested ranking group.
+     * @return A list of User objects, orderd by most latest ranking points (DESC)
+     */
+    public static function listByRankingGroup(int $ranking_group) : array {
+        $ret = array();
+
+        $t_thld = new \DateTime("now");
+        $days = \Core\ACswui::getParam("CommunityLastLoginDays");
+        $delta_t = new \DateInterval("P" . $days . "D");
+        $t_thld = $t_thld->sub($delta_t);
+        $t_thld = \Core\Database::timestamp($t_thld);
+
+        // create query
+        $query = "SELECT Id FROM Users ";
+        $query .= "WHERE RankingGroup = $ranking_group ";
+        $query .= "AND LastLogin >= '$t_thld' ";
+        $query .= "ORDER BY RankingLatestPoints DESC";
+
+        // execute
+        foreach (\Core\Database::fetchRaw($query) as $row) {
+            $ret[] = User::fromId((int) $row['Id']);
+        }
+
+        return $ret;
+    }
+
+
     //! @return A list of all users
     public static function listUsers() {
 
@@ -659,6 +688,17 @@ class User extends DbEntry { #implements JsonSerializable {
         if ($grp < 0) $grp = 0;
 
         return $grp;
+    }
+
+
+    public function rankingLatest() : \Core\DriverRankingPoints {
+        return new \Core\DriverRankingPoints($this->loadColumn("RankingLatestData"));
+    }
+
+
+    public function rankingLatestPoints() : float {
+        $pts = (float) $this->loadColumn("RankingLatestPoints");
+        return $pts;
     }
 
 
