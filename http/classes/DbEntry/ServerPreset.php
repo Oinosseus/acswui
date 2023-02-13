@@ -473,16 +473,16 @@ class ServerPreset extends DbEntry {
 
                 // dynamic track
                 $coll = new \Parameter\Collection(NULL, $coll_group, "AcServerRealismDynamicTrack", _("Dynamic Track"), _("Dynamic Grip Level of the Track"));
-                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerDynamicTrackSessionStart", _("Start Grip"), _("Amount of Grip at session start"), "&percnt;", 96);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerDynamicTrackSessionStart", _("Start Grip"), _("Amount of Grip at session start"), "&percnt;", 98);
                 $p->setMin(0);
                 $p->setMax(100);
-                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerDynamicTrackRandomness", _("Randomness"), _("Level of randomness added to the start grip"), "&percnt;", 2);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "AcServerDynamicTrackRandomness", _("Randomness"), _("Level of randomness added to the start grip"), "&percnt;", 0.25);
                 $p->setMin(0);
                 $p->setMax(100);
-                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerDynamicTrackLapGain", _("Lap Gain"), _("How many laps are needed to increase the grip by 1%"), "Laps", 20);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerDynamicTrackLapGain", _("Lap Gain"), _("How many laps are needed to increase the grip by 1%"), "Laps", 200);
                 $p->setMin(0);
                 $p->setMax(999);
-                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerDynamicTrackSessionTransfer", _("Session Transfer"), _("How much of the gained grip is to be added to the next session 100 -> all the gained grip. Example: difference between starting (90) and ending (96) grip in the session = 6%, with session_transfer = 50 then the next session is going to start with 93."), "&percnt;", 50);
+                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerDynamicTrackSessionTransfer", _("Session Transfer"), _("How much of the gained grip is to be added to the next session 100 -> all the gained grip. Example: difference between starting (90) and ending (96) grip in the session = 6%, with session_transfer = 50 then the next session is going to start with 93."), "&percnt;", 80);
                 $p->setMin(0);
                 $p->setMax(100);
 
