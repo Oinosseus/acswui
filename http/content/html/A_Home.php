@@ -207,10 +207,12 @@ class A_Home extends \core\HtmlContent {
             // $html .= " (<span class=\"$registration_css_class\">$count_registrations / $count_pits</span>)<br>";
             $html .= "</div>";
 
+            // track
             $html .= "<div class=\"$class_obsolete\">";
             $html .= $si->track()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
             $html .= "</div>";
 
+            // crar class / race series
             $html .= "<div class=\"$class_obsolete\">";
             if ($si->getSessionSchedule()) {
                 $html .= $si->getSessionSchedule()->carClass()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
@@ -219,11 +221,15 @@ class A_Home extends \core\HtmlContent {
             }
             $html .= "</div>";
 
+            // registration / weather
             $html .= "<div class=\"$class_obsolete\">";
             $html .= "{$si->serverSlot()->name()}<br>";
             $html .= _("Registrations") . ": <span class=\"$registration_css_class\">$count_registrations / $count_pits</span><br>";
             $rwc = $si->serverPreset()->forecastWeather($si->start(), $si->track()->location());
-            if ($rwc !== NULL) $html .= $rwc->htmlImg();
+            if ($rwc !== NULL) {
+                $html .= $rwc->htmlImg();
+                $html .= sprintf("%0.1f°C", $rwc->temperature());
+            }
             $html .= "</div>";
 
             // download links

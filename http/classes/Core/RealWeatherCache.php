@@ -114,10 +114,8 @@ class RealWeatherCache {
 
         // ensure if interpolation is possible
         if ($rwc_before === NULL) return NULL;
-        if ($rwc_after === NULL) return NULL;
-
-        $rwc = RealWeatherCondition::interpolate($dt_unix, $rwc_before, $rwc_after);
-        return $rwc;
+        else if ($rwc_after === NULL) return $rwc_before;
+        else return RealWeatherCondition::interpolate($dt_unix, $rwc_before, $rwc_after);
     }
 
 
