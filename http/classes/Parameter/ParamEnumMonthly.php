@@ -95,4 +95,35 @@ class ParamEnumMonthly extends ParamEnumMulti {
     protected function cloneXtraAttributes($base) {
         // overload to prevent copying enum itmes
     }
+
+
+    /**
+     * Check if the current date does match the value of this enum (time is ignored)
+     * @param $t The requested date (time is ignored)
+     * @return True if the day of the date does match to this enum, else False
+     */
+    public function dayMatches(\DateTime $t) : bool {
+
+        // get some facts
+        $day_in_month = $t->format("j");
+        $count_weekdays_in_month = ceil($day_in_month / 7);  // how many often is this day present in month
+        $day_name3 = $t->format("D");
+        $even_odd = (($t->format("W") % 2) == 0) ? "Even" : "Odd";
+        $month_keys = $this->valueList();
+
+        // check if day is the requested day
+        $is_requested_day = FALSE;
+        if (in_array($day_in_month, $month_keys)) {  // check specific day
+            $is_requested_day = TRUE;
+        }
+        if (in_array($count_weekdays_in_month . $day_name3, $month_keys)) {  // check x-th day in month (eg 4Mon, 3Tue)
+            $is_requested_day = TRUE;
+        }
+        if (in_array($day_name3 . $even_odd, $month_keys)) {  // check bi-weekly (eg. FriEven, SunOdd)
+            $is_requested_day = TRUE;
+        }
+
+        // done
+        return $is_requested_day;
+    }
 }

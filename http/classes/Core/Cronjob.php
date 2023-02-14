@@ -331,27 +331,7 @@ abstract class Cronjob {
 
             // ready once a month
             if ($this->ExecutionInterval & Cronjob::IntervalMonthly) {
-                $month_keys = $this->ExecutionIntervalMonthly->valueList();
-                $now = new \DateTime("now");
-                $day_in_month = $now->format("j");
-                $count_weekdays_in_month = ceil($day_in_month / 7);  // how many often is this day present in month
-                $day_name3 = $now->format("D");
-                $even_odd = (($now->format("W") % 2) == 0) ? "Even" : "Odd";
-
-                // check if today is the requested day
-                $is_requested_day = FALSE;
-                if (in_array($day_in_month, $month_keys)) {  // check specific day
-                    $is_requested_day = TRUE;
-                }
-                if (in_array($count_weekdays_in_month . $day_name3, $month_keys)) {  // check x-th day in month (eg 4Mon, 3Tue)
-                    $is_requested_day = TRUE;
-                }
-                if (in_array($day_name3 . $even_odd, $month_keys)) {  // check bi-weekly (eg. FriEven, SunOdd)
-                    $is_requested_day = TRUE;
-                }
-
-                // determine ideal start time for daily cronjobs
-                if ($is_requested_day) {
+                if ($this->ExecutionIntervalMonthly->dayMatches(new \DateTime("now"))) {
                     $ideal_time = new \DateTime("now");
                     $ideal_time->setTime(0, 0);
                     $t = explode(":", \Core\ACswui::getPAram("CronjobDailyExecutionTime"));

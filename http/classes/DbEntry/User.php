@@ -708,6 +708,22 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    //! @return The amount of DriverRankingPoints when the DriverRankingGroup was assigned
+    public function rankingPointsLast() : float {
+        return $this->rankingPoints();
+    }
+
+    //! @return The current amount of DriverRankingPoints
+    public function rankingPointsCurrent() : float {
+        return $this->rankingLatestPoints();
+    }
+
+    //! @return The amount of DriverRankingPoints when the DriverRankingGroup will be assigned next time
+    public function rankingPointsNext() : float {
+        return (float) $this->loadColumn("RankingPointsNext");
+    }
+
+
     /**
      * Saves the current values of the users parameterCollection.
      * Remember to retrieve enventally posted changes before.

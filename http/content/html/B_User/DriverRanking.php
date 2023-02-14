@@ -84,10 +84,10 @@ class DriverRanking extends \core\HtmlContent {
                 $html .= "<td>";
                 $title = sprintf("%0.1f", $rnk->points());
                 $html .= "<span title=\"$title\">" . round($rnk->points()) . "</span>";
-                $points_increase = $rnk->points() - $user->rankingPoints();
-                if (abs($points_increase) >= 0.1) {
-                    $css_class = ($points_increase > 0) ? "TrendRising" : "TrendFalling";
-                    $html .= " <small class=\"$css_class\">(" . sprintf("%+0.1f", $points_increase) . ")</small>";
+                $trend = $user->rankingPointsCurrent() + $user->rankingPointsNext() - 2*$user->rankingPointsLast();
+                if (abs($trend) >= 0.1) {
+                    $css_class = ($trend > 0) ? "TrendRising" : "TrendFalling";
+                    $html .= " <small class=\"$css_class\">(" . sprintf("%+0.1f", $trend) . ")</small>";
                 }
                 if ($rnk->idealGroup() > $user->rankingGroup()) {
                     $html .= " <span title=\"" . _("Driver will rise to next group") . "\" class=\"TrendRising\">&#x2b06;</span>";
