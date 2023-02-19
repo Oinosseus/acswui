@@ -789,6 +789,7 @@ class ServerSlot {
                 $car_model = $eli->carSkin()->car()->model();
                 if (!array_key_exists($car_model, $data_array['cars'])) {
                     $data_array['cars'][$car_model] = array();
+                    $data_array['cars'][$car_model]['skins'] = array();
                 }
 
                 // add url
