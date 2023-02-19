@@ -27,49 +27,58 @@ class CarSkin extends \core\HtmlContent {
             $this->CanEditSkin = $this->CanCreateSkin && $this->CurrentCarSkin->owner() == \Core\UserManager::currentUser();
         }
 
-        // save car skin changes
-        if (array_key_exists("Action", $_POST) && ($_POST['Action'] == "Save" || $_POST['Action'] == "SaveAndRegister")) {
-            if ($this->CurrentCarSkin === NULL) {
-                \Core\Log::warning("Cannot edit undefined CarSkin by user" . \Core\UserManager::currentUser()->id() . "!");
-            } else if (!$this->CanEditSkin) {
-                \Core\Log::warning("Not permitted editing of CarSkin {$this->CurrentCarSkin->id()} from user " . \Core\UserManager::currentUser()->id() . "!");
-            } else {
-                // get values from request
-                $skin_name = $_POST['CarSkinName'];
-                $skin_number = $_POST['CarSkinNumber'];
+        // check for actions
+        if (array_key_exists("Action", $_POST)) {
 
-                // save values
-                $this->CurrentCarSkin->saveName($skin_name);
-                $this->CurrentCarSkin->saveNumber($skin_number);
+            // ask deprecate car
+            if ($_POST['Action'] == "AskDeprecateCar") {
 
-                // delete files
-                $file_count = count($this->CurrentCarSkin->files());
-                for ($i=0; $i<$file_count; ++$i) {
-                    if (array_key_exists("CarkSkinDeleteFileNr$i", $_POST)) {
-                        $this->CurrentCarSkin->deleteUploadedFile($_POST["CarkSkinDeleteFileName$i"]);
-                    }
-                }
-
-                // upload file
-                if (array_key_exists("CarSkinFile", $_FILES) && strlen($_FILES['CarSkinFile']['name']) > 0) {
-                    $this->CurrentCarSkin->addUploadedFile($_FILES['CarSkinFile']['tmp_name'], $_FILES['CarSkinFile']['name']);
-                }
-
-                // define skin as deprecated
-                $this->CurrentCarSkin->setDeprecated(True);
-
-                // request registration
-                if ($_POST['Action'] == "SaveAndRegister") {
-                    \DbEntry\CarSkinRegistration::create($this->CurrentCarSkin);
-                }
-
-                // refresh page
+                if ($this->CanEditSkin) $this->CurrentCarSkin->setDeprecated(TRUE);
                 $this->reload(['Id'=>$this->CurrentCarSkin->id()]);  // reload page to prevent resubmission of form
+
+            // save car skin changes
+            } else if ($_POST['Action'] == "Save" || $_POST['Action'] == "SaveAndRegister") {
+                if ($this->CurrentCarSkin === NULL) {
+                    \Core\Log::warning("Cannot edit undefined CarSkin by user" . \Core\UserManager::currentUser()->id() . "!");
+                } else if (!$this->CanEditSkin) {
+                    \Core\Log::warning("Not permitted editing of CarSkin {$this->CurrentCarSkin->id()} from user " . \Core\UserManager::currentUser()->id() . "!");
+                } else {
+                    // get values from request
+                    $skin_name = $_POST['CarSkinName'];
+                    $skin_number = $_POST['CarSkinNumber'];
+
+                    // save values
+                    $this->CurrentCarSkin->saveName($skin_name);
+                    $this->CurrentCarSkin->saveNumber($skin_number);
+
+                    // delete files
+                    $file_count = count($this->CurrentCarSkin->files());
+                    for ($i=0; $i<$file_count; ++$i) {
+                        if (array_key_exists("CarkSkinDeleteFileNr$i", $_POST)) {
+                            $this->CurrentCarSkin->deleteUploadedFile($_POST["CarkSkinDeleteFileName$i"]);
+                        }
+                    }
+
+                    // upload file
+                    if (array_key_exists("CarSkinFile", $_FILES) && strlen($_FILES['CarSkinFile']['name']) > 0) {
+                        $this->CurrentCarSkin->addUploadedFile($_FILES['CarSkinFile']['tmp_name'], $_FILES['CarSkinFile']['name']);
+                    }
+
+                    // define skin as deprecated
+                    $this->CurrentCarSkin->setDeprecated(True);
+
+                    // request registration
+                    if ($_POST['Action'] == "SaveAndRegister") {
+                        \DbEntry\CarSkinRegistration::create($this->CurrentCarSkin);
+                    }
+
+                    // refresh page
+                    $this->reload(['Id'=>$this->CurrentCarSkin->id()]);  // reload page to prevent resubmission of form
+                }
             }
-        }
 
         // create new carskin
-        if (array_key_exists("CreateNewCarSkin", $_REQUEST)) {
+        } else if (array_key_exists("CreateNewCarSkin", $_REQUEST)) {
             if ($this->CanCreateSkin !== TRUE) {
                 \Core\Log::warning("User ID '" . \Core\UserManager::currentUser()->id() . "' is not permitted to create new car skins!");
             } else {
@@ -82,10 +91,9 @@ class CarSkin extends \core\HtmlContent {
                     $this->reload(['Id'=>$this->CurrentCarSkin->id()]);  // reload page to prevent resubmission of form
                 }
             }
-        }
 
         // show carskin
-        if ($this->CurrentCarSkin !== NULL) {
+        } else if ($this->CurrentCarSkin !== NULL) {
             $html .= $this->getHtmlCarSkin();
         } else {
             \Core\Log::warning("No Id parameter given!");
@@ -221,6 +229,11 @@ class CarSkin extends \core\HtmlContent {
                 \DbEntry\CarSkinRegistration::fromCarSkinPending($this->CurrentCarSkin) === NULL) {
                 $html .= "<br><br><button type=\"submit\" name=\"Action\" value=\"SaveAndRegister\">" . _("Save and Request Car Registration") . "</button>";
             }
+
+            if (!$this->CurrentCarSkin->deprecated()) {
+                $html .= "<br><br><button type=\"submit\" name=\"Action\" value=\"AskDeprecateCar\">" . _("Put Car out of Operation") . "</button>";
+            }
+
             $html .= "</form>";
         }
 

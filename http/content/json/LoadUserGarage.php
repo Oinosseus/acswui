@@ -20,8 +20,15 @@ class LoadUserGarage extends \Core\JsonContent {
             return "";
         }
 
+        $deprectaed = NULL;
+        if (array_key_exists("Deprecated", $_REQUEST))
+            $deprectaed = boolval($_REQUEST["Deprecated"]);
+
         // scan CarSkins
-        $query = "SELECT Id FROM CarSkins WHERE Owner = {$user->id()} ORDER By Car ASC;";
+        $query = "SELECT Id FROM CarSkins WHERE Owner = {$user->id()}";
+        if ($deprectaed === TRUE) $query .= " AND Deprecated=1";
+        else if ($deprectaed === FALSE) $query .= " AND Deprecated=0";
+        $query .= " ORDER By Car ASC;";
         $res = \Core\Database::fetchRaw($query);
         $html = "";
         $last_car_id = NULL;

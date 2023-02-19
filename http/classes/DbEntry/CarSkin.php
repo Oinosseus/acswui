@@ -143,7 +143,7 @@ class CarSkin extends DbEntry {
 
 
     //! @return TRUE when this skin is deprecated
-    public function deprecated() {
+    public function deprecated() : bool {
         return ($this->loadColumn('Deprecated') == 0) ? FALSE : TRUE;
     }
 

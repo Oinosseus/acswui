@@ -44,8 +44,12 @@ class B_User extends \core\HtmlContent {
         $html = "";
 
         $html .= "<h1>" . _("Garage") . "</h1>";
-        $html .= "<button type=\"button\" onclick=\"LoadGarage(this)\" userId=\"{$this->ProfileUser->id()}\">" . _("Load Cars") . "</button>";
+        $html .= "<button type=\"button\" onclick=\"LoadGarage(this, 'GarageCars', 0)\" userId=\"{$this->ProfileUser->id()}\">" . _("Load Cars") . "</button>";
         $html .= "<div id=\"GarageCars\"></div>";
+
+        $html .= "<h1>" . _("Scrapyard") . "</h1>";
+        $html .= "<button type=\"button\" onclick=\"LoadGarage(this, 'ScrapyardCars', 1)\" userId=\"{$this->ProfileUser->id()}\">" . _("Load Cars") . "</button>";
+        $html .= "<div id=\"ScrapyardCars\"></div>";
 
         return $html;
     }
