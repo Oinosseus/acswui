@@ -228,11 +228,14 @@ class CarSkin extends DbEntry {
     /**
      * Find all CarSkin objects that are owned by a certain user
      * @param $owner The User object of the requested CarSkin owner
+     * @param $deprecated If set to FALSE (default), then deprecated carskins are ignored
      * @return A list of CarSkin objects
      */
-    public static function listOwnedSkins(User $owner) : array {
+    public static function listOwnedSkins(User $owner, bool $deprecated=FALSE) : array {
         $carskins = array();
-        $query = "SELECT CarSkins.Id FROM CarSkins INNER JOIN Cars ON CarSkins.Car=Cars.Id WHERE CarSkins.Owner={$owner->id()} ORDER BY Cars.Id ASC;";
+        $query = "SELECT CarSkins.Id FROM CarSkins INNER JOIN Cars ON CarSkins.Car=Cars.Id WHERE CarSkins.Owner={$owner->id()}";
+        if ($deprecated === FALSE) $query .= " AND CarSkins.Deprecated=0";
+        $query .= " ORDER BY Cars.Id ASC;";
         $res = \Core\Database::fetchRaw($query);
         foreach ($res as $row) {
             $carskins[] = CarSkin::fromId((int) $row['Id']);
