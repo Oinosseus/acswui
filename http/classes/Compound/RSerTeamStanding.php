@@ -18,7 +18,7 @@ class RSerTeamStanding {
     }
 
 
-    public function addPoints(int $points) {
+    public function addPoints(int|float $points) {
         $this->Points += $points;
     }
 
@@ -109,7 +109,7 @@ class RSerTeamStanding {
                 }
             }
 
-            // instantiate obejects
+            // instantiate objects
             foreach ($points_per_team as $team_id=>$points) {
                 $team = \DbEntry\Team::fromId($team_id);
                 $obj = new RSerTeamStanding($team);
@@ -128,7 +128,10 @@ class RSerTeamStanding {
 
         // serialize, sort and return
         $obj_list = array();
-        foreach ($obj_map as $id=>$obj) $obj_list[] = $obj;
+        foreach ($obj_map as $id=>$obj) {
+            if ($obj->points() > 0)
+                $obj_list[] = $obj;
+        }
         usort($obj_list, "\\Compound\\RSerTeamStanding::usortByPoints");
         return $obj_list;
     }

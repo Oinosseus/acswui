@@ -278,9 +278,18 @@ class RSer extends \core\HtmlContent {
                     }
                 }
 
-                // deactivate
                 if ($valid) {
+                    // deactivate class
                     $rser_c->deactivate();
+
+                    // disable registrations from all seasons with future splits
+                    foreach ($this->CurrentSeries->listSeasons() as $season) {
+                        foreach ($season->listRegistrations($rser_c, TRUE) as $reg) {
+                            $reg->deactivate();
+                        }
+                    }
+
+                    // reload
                     $this->reload(['RSerSeries'=>$this->CurrentSeries->id(),
                                    'View'=>"SeriesEdit"]);
                 }
