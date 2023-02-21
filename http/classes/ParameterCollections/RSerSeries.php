@@ -94,6 +94,10 @@ class RSerSeries extends \Parameter\Collection {
         new \Parameter\EnumItem($p, "B2", _("Best two Results"));
         new \Parameter\EnumItem($p, "B3", _("Best three Results"));
         new \Parameter\EnumItem($p, "B4", _("Best four Results"));
+        new \Parameter\EnumItem($p, "L1", _("Least Result"));
+        new \Parameter\EnumItem($p, "L2", _("Least two Results"));
+        new \Parameter\EnumItem($p, "L3", _("Least three Results"));
+        new \Parameter\EnumItem($p, "L4", _("Least four Results"));
         new \Parameter\EnumItem($p, "AVRG", _("Average"));
         $p->setValue("B2");
 

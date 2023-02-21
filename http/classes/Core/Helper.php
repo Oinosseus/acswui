@@ -78,4 +78,24 @@ class Helper {
             $sum += $list[$i];
         return $sum;
     }
+
+    /**
+     * Finds the least N-minimum values in a list of numbers (int|float)
+     * and returns the sum of them.
+     *
+     * If N=0, then 0 is returned
+     * If N is less than count($list), then the sum of all is returned.
+     *
+     * @param $n The number of elements to sum
+     * @param $list An array of numbers
+     * @return The sum of the N-minimum elements
+     */
+    public static function minNSum(int $n, array $list) : int|float {
+        $sum = 0;
+        sort($list,  SORT_NUMERIC);
+        $list = array_reverse($list);
+        for ($i=0; $i<count($list) && $i<$n; ++$i)
+            $sum += $list[$i];
+        return $sum;
+    }
 }

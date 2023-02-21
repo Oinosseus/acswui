@@ -100,6 +100,22 @@ class RSerTeamStanding {
                         $points_per_team[$team_id] += \Core\Helper::maxNSum(1, $poin_list);
                         break;
 
+                    case "L1":
+                        $points_per_team[$team_id] += \Core\Helper::minNSum(1, $poin_list);
+                        break;
+
+                    case "L2":
+                        $points_per_team[$team_id] += \Core\Helper::minNSum(2, $poin_list);
+                        break;
+
+                    case "L3":
+                        $points_per_team[$team_id] += \Core\Helper::minNSum(3, $poin_list);
+                        break;
+
+                    case "L4":
+                        $points_per_team[$team_id] += \Core\Helper::minNSum(4, $poin_list);
+                        break;
+
                     case "AVRG":
                         $points_per_team[$team_id] += array_sum($poin_list) / count($poin_list);
                         break;
