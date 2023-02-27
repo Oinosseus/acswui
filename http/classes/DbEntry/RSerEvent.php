@@ -42,15 +42,17 @@ class RSerEvent extends DbEntry {
         }
 
         // from standings
-        foreach ($this->season()->listRegistrations($rser_class) as $reg) {
-            if ($reg->user()) {
-                $bm->update($reg->bopBallast(FALSE),
-                            $reg->bopRestrictor(FALSE),
-                            $reg->user());
-            } else if ($reg->teamCar()) {
-                $bm->update($reg->bopBallast(FALSE),
-                            $reg->bopRestrictor(FALSE),
-                            $reg->teamCar());
+        foreach ($this->season()->series()->listClasses() as $rser_class) {
+            foreach ($this->season()->listRegistrations($rser_class) as $reg) {
+                if ($reg->user()) {
+                    $bm->update($reg->bopBallast(FALSE),
+                                $reg->bopRestrictor(FALSE),
+                                $reg->user());
+                } else if ($reg->teamCar()) {
+                    $bm->update($reg->bopBallast(FALSE),
+                                $reg->bopRestrictor(FALSE),
+                                $reg->teamCar());
+                }
             }
         }
 

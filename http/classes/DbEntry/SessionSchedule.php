@@ -30,11 +30,12 @@ class SessionSchedule extends DbEntry {
                       NULL);
 
         // retrieve from user ranking
-        foreach (\DbEntry\DriverRanking::listLatest() as $drvrnk) {
-            $group = $drvrnk->user()->rankingGroup();
-            $ballast = $this->getParamValue("BopDrvRnkGrpBallast$group");
-            $restrictor = $this->getParamValue("BopDrvRnkGrpRestrictor$group");
-            $bopm->update($ballast, $restrictor, $drvrnk->user());
+        for ($rnk_grp = \Core\Config::DriverRankingGroups - 1; $rnk_grp >= 0; --$rnk_grp) {
+            foreach (\DbEntry\User::listByRankingGroup($rnk_grp) as $user) {
+                $ballast = $this->getParamValue("BopDrvRnkGrpBallast$rnk_grp");
+                $restrictor = $this->getParamValue("BopDrvRnkGrpRestrictor$rnk_grp");
+                $bopm->update($ballast, $restrictor, $user);
+            }
         }
 
         // retrieve from explicit settings in registration
