@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-21 20:36+0100\n"
-"PO-Revision-Date: 2023-02-21 20:41+0100\n"
+"POT-Creation-Date: 2023-02-28 20:49+0100\n"
+"PO-Revision-Date: 2023-02-28 20:51+0100\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -4692,23 +4692,31 @@ msgstr "Pos."
 msgid "Sum"
 msgstr "Summe"
 
-#: http/content/html/B_User/DriverRanking.php:93
+#: http/content/html/B_User/DriverRanking.php:41
+msgid "Prognosis at next group assignment"
+msgstr "Prognose bei der nächsten Gruppierung"
+
+#: http/content/html/B_User/DriverRanking.php:41
+msgid "Trend"
+msgstr "Trend"
+
+#: http/content/html/B_User/DriverRanking.php:97
 msgid "Driver will rise to next group"
 msgstr "Fahrer wird eine Gruppe aufsteigen"
 
-#: http/content/html/B_User/DriverRanking.php:95
+#: http/content/html/B_User/DriverRanking.php:99
 msgid "Driver will fall to previous group"
 msgstr "Fahrer wird eine Gruppe absteigen"
 
-#: http/content/html/B_User/DriverRanking.php:101
+#: http/content/html/B_User/DriverRanking.php:106
 msgid "Load Diagram Data"
 msgstr "Lade Diagrammdaten"
 
-#: http/content/html/B_User/DriverRanking.php:132
+#: http/content/html/B_User/DriverRanking.php:137
 msgid "Mean Value"
 msgstr "Mittelwert"
 
-#: http/content/html/B_User/DriverRanking.php:164
+#: http/content/html/B_User/DriverRanking.php:169
 msgid "Minimum points required for this Group"
 msgstr "Erforderliche Mindespunkte für diese Gruppe"
 

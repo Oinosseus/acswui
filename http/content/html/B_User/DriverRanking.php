@@ -38,6 +38,7 @@ class DriverRanking extends \core\HtmlContent {
             $html .= "<th><span title=\"" . _("Success") . "\">SX</span></th>";
             $html .= "<th><span title=\"" . _("Safety") . "\">SF</span></th>";
             $html .= "<th><span title=\"" . _("Sum") . "\">&#x2211;</span></th>";
+            $html .= "<th><span title=\"" . _("Prognosis at next group assignment") . "\">" . _("Trend") . "</span></th>";
             $html .= "</tr>";
 
             $pos = 0;
@@ -84,11 +85,14 @@ class DriverRanking extends \core\HtmlContent {
                 $html .= "<td>";
                 $title = sprintf("%0.1f", $rnk->points());
                 $html .= "<span title=\"$title\">" . round($rnk->points()) . "</span>";
-                $trend = $user->rankingPointsCurrent() + $user->rankingPointsNext() - 2*$user->rankingPointsLast();
-                if (abs($trend) >= 0.1) {
-                    $css_class = ($trend > 0) ? "TrendRising" : "TrendFalling";
-                    $html .= " <small class=\"$css_class\">(" . sprintf("%+0.1f", $trend) . ")</small>";
-                }
+                $html .= "</td>";
+
+                // trend
+                $html .= "<td>";
+                $rp_next = $user->rankingPointsNext();
+                $rp_last = $user->rankingPointsLast();
+                $css_class = ($rp_next >= $rp_last) ? "TrendRising" : "TrendFalling";
+                $html .= " <small class=\"$css_class\">" . sprintf("%0.1f", $rp_next) . "</small>";
                 if ($rnk->idealGroup() > $user->rankingGroup()) {
                     $html .= " <span title=\"" . _("Driver will rise to next group") . "\" class=\"TrendRising\">&#x2b06;</span>";
                 } else if ($rnk->idealGroup() < $user->rankingGroup()) {
@@ -96,6 +100,7 @@ class DriverRanking extends \core\HtmlContent {
                 }
                 $html .= "</td>";
 
+                // diagram button
                 if ($current_user->id() != $user->id()) {
                     $html .= "<td>";
                     $html .= "<button type=\"button\" onclick=\"loadDriverRankingData({$user->id()}, this)\" title=\"" . _("Load Diagram Data") . "\">";
