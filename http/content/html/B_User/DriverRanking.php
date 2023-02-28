@@ -91,11 +91,12 @@ class DriverRanking extends \core\HtmlContent {
                 $html .= "<td>";
                 $rp_next = $user->rankingPointsNext();
                 $rp_last = $user->rankingPointsLast();
+                $group_next = \Core\DriverRankingPoints::calculateGroup($rp_next);
                 $css_class = ($rp_next >= $rp_last) ? "TrendRising" : "TrendFalling";
                 $html .= " <small class=\"$css_class\">" . sprintf("%0.1f", $rp_next) . "</small>";
-                if ($rnk->idealGroup() > $user->rankingGroup()) {
+                if ($group_next > $user->rankingGroup()) {
                     $html .= " <span title=\"" . _("Driver will rise to next group") . "\" class=\"TrendRising\">&#x2b06;</span>";
-                } else if ($rnk->idealGroup() < $user->rankingGroup()) {
+                } else if ($group_next < $user->rankingGroup()) {
                     $html .= " <span title=\"" . _("Driver will fall to previous group") . "\" class=\"TrendFalling\">&#x2b07;</span>";
                 }
                 $html .= "</td>";

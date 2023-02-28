@@ -131,6 +131,25 @@ class DriverRankingPoints {
     }
 
 
+
+    /**
+     * Calculate the ranking group from a given amount of ranking points
+     * @param $points The amount of ranking points
+     * @return The ranking group
+     */
+    public static function calculateGroup(float $points) : int {
+        $group = NULL;
+        for ($g = \Core\Config::DriverRankingGroups - 1; $g >= 0; --$g) {
+            $thld = self::groupThreshold($g);
+            if ($points >= $thld) {
+                $group = $g;
+                break;
+            }
+        }
+        return $group;
+    }
+
+
     /**
      * Calculate Driver ranking points for all drivers since a certain date
      * @warning: Time intense function call!
@@ -277,29 +296,6 @@ class DriverRankingPoints {
             return NULL;
         }
     }
-
-
-    /**
-     * @return The group, this points idally can be assigned to
-     */
-    public function idealGroup() : int{
-
-        // update cache
-        if ($this->IdealGroup === NULL) {
-            $pts = $this->points();
-            for ($g = \Core\Config::DriverRankingGroups - 1; $g >= 0; --$g) {
-                $thld = self::groupThreshold($g);
-                if ($pts >= $thld) {
-                    $this->IdealGroup = $g;
-                    break;
-                }
-            }
-        }
-
-        // return from cache
-        return $this->IdealGroup;
-    }
-
 
 
     //! @return The json encoded data

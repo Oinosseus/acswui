@@ -27,13 +27,13 @@ class CronDriverRankingGroupAssignment extends \Core\Cronjob {
 
             $processed_user_ids[] = $u->id();
             $group_current = $u->rankingGroup();
-            $group_ideal = $u->rankingLatest()->idealGroup();
+            $group_next = \Core\DriverRankingPoints::calculateGroup($u->rankingLatest()->points());
 
             // check for pro-/demotion
             $group_change = 0;
-            if ($group_ideal > $group_current && $group_current < (\Core\Config::DriverRankingGroups - 1)) {
+            if ($group_next > $group_current && $group_current < (\Core\Config::DriverRankingGroups - 1)) {
                 $group_change = 1;
-            } else if ($group_ideal < $group_current && $group_current > 0) {
+            } else if ($group_next < $group_current && $group_current > 0) {
                 $group_change = -1;
             }
 
