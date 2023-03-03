@@ -153,7 +153,7 @@ class DriverRankingPoints {
     /**
      * Calculate Driver ranking points for all drivers since a certain date
      * @warning: Time intense function call!
-     * @return An acciciative array of UserId=>DriverRankingPoints
+     * @return An accociative array of UserId=>DriverRankingPoints
      */
     public static function calculateSince(\DateTime $since) : array {
 

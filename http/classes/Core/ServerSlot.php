@@ -885,6 +885,7 @@ class ServerSlot {
         fwrite($f, "NORMALIZED_LIGHT_OFF_POSITION = " . $ppc->child("RpAcsScNormLightOff")->value() . "\n");
         fwrite($f, "NORMALIZED_START_POSITION = " . $ppc->child("RpAcsScNormStart")->value() . "\n");
         fwrite($f, "GREEN_LIGHT_DELAY = " . $ppc->child("RpAcsScGreenDelay")->value() . "\n");
+        // fwrite($f, "too_slow_delta = " . $ppc->child("RpAcsScTooSlowDelta")->value() . "\n");
 
         //! @todo New features not supported yet
         // fwrite($f, "vsc_reference_lap_name = \n");

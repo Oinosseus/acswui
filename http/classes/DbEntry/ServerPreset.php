@@ -519,6 +519,9 @@ class ServerPreset extends DbEntry {
                 $p = new \Parameter\ParamFloat(NULL, $coll, "RpAcsScGreenDelay", _("Green Light Delay"), _("Rolling start: delay of the green light after red signal (seconds). Default 2.5"), "", 2.5);
                 $p->setMin(0);
                 $p->setMax(60);
+                // $p = new \Parameter\ParamInt(NULL, $coll, "RpAcsScTooSlowDelta", _("Too Slow Delta"), _("If delta (VSC and FCY) > this value at restart or entering the pit lane --> log on the server for Race Direction. If = 0, the delta for every driver ist written in the log."), "", 999999999);
+                // $p->setMin(0);
+                // $p->setMax(999999999);
 
                 // No Penalty
                 $coll = new \Parameter\Collection(NULL, $coll_group, "RPAcsNp", _("No Penalty"), "");
