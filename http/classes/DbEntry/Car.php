@@ -374,7 +374,7 @@ class Car extends DbEntry {
         if (!array_key_exists($restrictor, $this->PowerCurve)) {
             $this->PowerCurve[$restrictor] = array();
             foreach($this->PowerCurve[0] as [$rpm, $pwr]) {
-                $pwr *= $this->restrictorFactor($restrictor, $rpm);
+                $pwr *= $this->restrictorFactor($restrictor, (int) round($rpm));
                 $this->PowerCurve[$restrictor][] = [$rpm, $pwr];
             }
         }
@@ -445,7 +445,7 @@ class Car extends DbEntry {
         if (!array_key_exists($restrictor, $this->TorqueCurve)) {
             $this->TorqueCurve[$restrictor] = array();
             foreach($this->TorqueCurve[0] as [$rpm, $trq]) {
-                $trq *= $this->restrictorFactor($restrictor, $rpm);
+                $trq *= $this->restrictorFactor($restrictor, (int) round($rpm));
                 $this->TorqueCurve[$restrictor][] = [$rpm, $trq];
             }
         }
