@@ -213,7 +213,7 @@ class InstallerDatabase(object):
         table_name = "CarSkins"
         self.__db.appendTable(table_name)
         self.__db.appendColumnUInt(table_name, "Car")
-        self.__db.appendColumnString(table_name, "Skin", 50)
+        self.__db.appendColumnString(table_name, "Skin", 70)
         self.__db.appendColumnTinyInt(table_name, "Deprecated")
         self.__db.appendColumnString(table_name, "Number", 20)
         self.__db.appendColumnString(table_name, "Name", 80)
