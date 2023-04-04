@@ -415,8 +415,8 @@ class SessionOverview extends \core\HtmlContent {
         $html .= "<table>";
         $html .= "<tr>";
         $html .= "<th rowspan=\"2\">"  . _("Position") . "</th>";
+        $html .= "<th rowspan=\"2\" colspan=\"3\">"  . _("Car") . "</th>";
         $html .= "<th rowspan=\"2\">"  . _("Driver") . "</th>";
-        $html .= "<th rowspan=\"2\" colspan=\"2\">"  . _("Car") . "</th>";
         $html .= "<th rowspan=\"2\">"  . _("Best Lap") . "</th>";
         $html .= "<th colspan=\"3\">"  . _("Driven") . "</th>";
         // $html .= "<th rowspan=\"2\">"  . _("Cuts") . "</th>";
@@ -439,12 +439,21 @@ class SessionOverview extends \core\HtmlContent {
             $html .= "<tr>";
             $html .= "<td>" . $r->position() ."</td>";
 
+            // car
+            if (is_a($r->driver()->entry(), "\\DbEntry\\TeamCar")) {
+                $team = $r->driver()->entry()->team();
+                $html .= "<td class=\"SessionResultsCarSkinCell\">{$team->html(TRUE, FALSE, TRUE, FALSE)}</td>";
+            } else {
+                $html .= "<td></td>";
+            }
+            $html .= "<td class=\"SessionResultsCarSkinCell\">" . $r->carSkin()->html(TRUE, FALSE) ."</td>";
+            $html .= "<td>";
+            $html .= $r->carSkin()->name() . "<br>";
+            if ($r->rserClass()) $html .= $r->rserClass()->name();
+            $html .= "</td>";
+
             // driver
             $html .= "<td class=\"DriverCell\">" . $r->driver()->getHtml() . "</td>";
-
-            $html .= "<td class=\"SessionResultsCarSkinCell\">" . $r->carSkin()->html(TRUE, FALSE) ."</td>";
-            if ($r->rserClass()) $html .= "<td>{$r->rserClass()->name()}</td>";
-            else $html .= "<td></td>";
 
             $html .= "<td>" . $user->formatLaptime($r->bestLaptime()) . "</td>";
             $html .= "<td>" . $user->formatLaptime($r->finalTime()) . "</td>";
