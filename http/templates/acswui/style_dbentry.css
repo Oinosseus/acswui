@@ -139,7 +139,6 @@ div.DbEntryHtmlTeam {
 div.DbEntryHtmlTeam img.TeamLogoImage {
     height: 3em;
     float: left;
-    margin-right: 1em;
 }
 
 div.DbEntryHtmlTeam a,
@@ -149,6 +148,9 @@ div.DbEntryHtmlTeam label {
     overflow: hidden;
 }
 
+div.DbEntryHtmlTeam label {
+    padding-left: 1em;
+}
 
 /* -----------------------------------------------------------------------------
  *                                DbEntryHtmlRSerSeries

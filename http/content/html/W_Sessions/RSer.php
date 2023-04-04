@@ -539,7 +539,7 @@ class RSer extends \core\HtmlContent {
                 $html .= "<td class=\"ZeroPadding\">{$rs_ts->entry()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
 
                 $html .= "<td>";
-                $html .= "{$rs_ts->entry()->html(TRUE, TRUE, FALSE, FALSE)}<br>";
+                // $html .= "{$rs_ts->entry()->html(TRUE, TRUE, FALSE, FALSE)}<br>";
                 $html .= "<small>$drivers</small>";
                 $html .= "</td>";
             }
@@ -894,7 +894,7 @@ class RSer extends \core\HtmlContent {
                 $html .= "<td>{$std->position()}</td>";
 
                 if ($reg->teamCar()) {
-                    $html .= "<td class=\"ZeroPadding\">{$reg->teamCar()->team()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
+                    $html .= "<td class=\"ZeroPadding\">{$reg->teamCar()->team()->html(TRUE, FALSE, FALSE, TRUE)}</td>";
                     $html .= "<td>";
                     $drivers = $reg->teamCar()->drivers();
                     for ($i=0; $i < count($drivers); ++$i) {

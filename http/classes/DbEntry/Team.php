@@ -114,16 +114,20 @@ class Team extends DbEntry {
         if ($show_img) $html .= "<img class=\"TeamLogoImage\" src=\"{$this->logoPath()}\" id=\"Team{$this->id()}\" alt=\"{$this->abbreviation()}\" title=\"{$this->name()}\">";
 
         // label
-        $html .= "<label for=\"Team{$this->id()}\">";
         if ($show_name && $show_abbreviation) {
+            $html .= "<label for=\"Team{$this->id()}\">";
             $html .= "<strong>{$this->abbreviation()}</strong><br>";
             $html .= $this->name();
+            $html .= "</label>";
         } else if ($show_name) {
+            $html .= "<label for=\"Team{$this->id()}\">";
             $html .= $this->name();
+            $html .= "</label>";
         } else if ($show_abbreviation) {
+            $html .= "<label for=\"Team{$this->id()}\">";
             $html .= $this->abbreviation();
+            $html .= "</label>";
         }
-        $html .= "</label>";
 
         if ($include_link) {
             $html = "<a href=\"index.php?HtmlContent=Teams&Id={$this->id()}\">$html</a>";
