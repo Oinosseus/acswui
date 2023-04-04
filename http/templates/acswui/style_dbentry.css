@@ -148,7 +148,7 @@ div.DbEntryHtmlTeam label {
     overflow: hidden;
 }
 
-div.DbEntryHtmlTeam label {
+div.DbEntryHtmlTeam img + label {
     padding-left: 1em;
 }
 

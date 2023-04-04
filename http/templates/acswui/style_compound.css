@@ -20,9 +20,12 @@ div.CompoundSessionPenaltiesSum span.PenaltyBad {
 
 div.CompoundDriver {
     display: inline-block;
+    vertical-align: baseline;
 }
 
 div.CompoundDriver img,
 div.CompoundDriver div {
     display: inline-block;
+    margin: 0;
+    overflow: hidden;
 }

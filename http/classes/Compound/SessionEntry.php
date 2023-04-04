@@ -72,20 +72,29 @@ class SessionEntry {
     //! @return A HTML string, representing the driver
     public function getHtml() : string {
         $html = "";
+        $user_list = $this->users();
 
         // image
         if ($this->TeamCar) {
-            $html .= $this->TeamCar->team()->html(TRUE, FALSE, TRUE, FALSE);
-        } else if ($this->User) {
-            $html .= $this->User->parameterCollection()->child("UserCountry")->valueLabel();
-        } else {
-            $html .= _("Invalid Entry");
+            if (count($user_list) > 1) {
+                $html .= $this->TeamCar->team()->html(TRUE, FALSE, TRUE, FALSE) . " ";
+            } else {
+                $html .= "<small>" . $this->TeamCar->team()->html(TRUE, FALSE, FALSE, TRUE) . "</small> ";
+            }
+        // } else {
+        //     $html .= _("Invalid Entry") . " ";
         }
 
         // drivers list
         $users_array = array();
-        foreach ($this->users() as $u) $users_array[] = $u->html();
-        $html .= "<div>" . implode(", ", $users_array) . "</div>";
+        foreach ($user_list as $u) {
+            $users_array[] = $u->parameterCollection()->child("UserCountry")->valueLabel() . " " . $u->html();
+        }
+        if (count($user_list) > 1) {
+            $html .= "<div><small>" . implode(", ", $users_array) . "</small></div>";
+        } else {
+            $html .= "<div>" . implode(", ", $users_array) . "</div>";
+        }
 
         return "<div class=\"CompoundDriver\">{$html}</div>";;
     }

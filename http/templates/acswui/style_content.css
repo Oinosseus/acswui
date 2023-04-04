@@ -416,6 +416,10 @@ main.SessionOverview span.PenaltyBad {
     color: var(--color-functional-fail);
 }
 
+main.SessionOverview td.DriverCell {
+    text-align: left;
+}
+
 
 
 /*****************************************************************************

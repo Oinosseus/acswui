@@ -272,8 +272,7 @@ class SessionOverview extends \core\HtmlContent {
             $html .= "<tr class=\"$tr_css_class\">";
 
             $html .= "<td class=\"Driver\">";
-            $html .= $lap->user()->parameterCollection()->child("UserCountry")->valueLabel();
-            $html .= $lap->user()->html();
+            $html .= $lap->entry()->getHtml();
             $html .= "</td>";
 
             $html .= "<td>" . $user->formatLaptime($lap->laptime()) . "</td>";
@@ -441,7 +440,7 @@ class SessionOverview extends \core\HtmlContent {
             $html .= "<td>" . $r->position() ."</td>";
 
             // driver
-            $html .= "<td>" . $r->driver()->getHtml() . "</td>";
+            $html .= "<td class=\"DriverCell\">" . $r->driver()->getHtml() . "</td>";
 
             $html .= "<td class=\"SessionResultsCarSkinCell\">" . $r->carSkin()->html(TRUE, FALSE) ."</td>";
             if ($r->rserClass()) $html .= "<td>{$r->rserClass()->name()}</td>";
