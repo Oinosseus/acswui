@@ -51,6 +51,7 @@ class RSerQualification extends DbEntry {
         $query .= " INNER JOIN Laps ON RSerQualifications.BestLap = Laps.Id";
         $query .= " WHERE RSerQualifications.Event={$event->id()} ";
         $query .= " AND RSerRegistrations.Class={$class->id()}";
+        $query .= " AND RSerRegistrations.Active!=0";
         $query .= " ORDER BY Laps.Laptime ASC";
 
         $list = array();

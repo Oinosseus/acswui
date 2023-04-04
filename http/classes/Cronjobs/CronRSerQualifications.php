@@ -23,7 +23,7 @@ class CronRSerQualifications extends \Core\Cronjob {
 
             if (!in_array($s->event(), $events)) $events[] = $s->event();
 
-            foreach ($s->event()->season()->listRegistrations(NULL, TRUE) as $reg) {
+            foreach ($s->event()->season()->listRegistrations(NULL, FALSE) as $reg) {
                 if (!in_array($reg, $registrations)) $registrations[] = $reg;
             }
         }
