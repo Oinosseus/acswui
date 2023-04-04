@@ -693,9 +693,9 @@ class UdpPluginServer(object):
             print("WARNING", "At imposing penalty Entry.DriverGuid '%s' is not equal to RP guid '%s'" % (entry.DriverGuid, guid))
 
         # enhancing cause by driver
-        cause_drescription += "\nDriver: " + driver['Driver name']
-        cause_drescription += "\nCar: " + driver['car model']
-        cause_drescription += "\nSkin: " + driver['car skin']
+        cause_drescription += "\nDriver: " + (driver['Driver name'] if 'Driver name' in driver else "???")
+        cause_drescription += "\nCar: " + (driver['car model'] if 'car model' in driver else "???")
+        cause_drescription += "\nSkin: " + (driver['car skin'] if 'car skin' in driver else "???")
 
         columns = {'Session': self.__session.Id,
                    'Cause': cause_drescription,
