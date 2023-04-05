@@ -860,7 +860,7 @@ class ServerPreset extends DbEntry {
                     $name = _("Wait Time");
                     $interval = new \Core\TimeInterval($wt);
                     $uncertainty = new \Core\TimeInterval(0);
-                    $schedule[] = array($interval, $uncertainty, \Enums\SessionType::Invalid, $name);
+                    $schedule[] = array($interval, $uncertainty, \Enums\SessionType::QualiRaceWait, $name);
                 }
 
                 // race
@@ -898,7 +898,7 @@ class ServerPreset extends DbEntry {
         $name = _("End");
         $interval = new \Core\TimeInterval();
         $uncertainty = new \Core\TimeInterval();
-        $schedule[] = array($interval, $uncertainty, \Enums\SessionType::Invalid, $name);
+        $schedule[] = array($interval, $uncertainty, \Enums\SessionType::SessionFinish, $name);
 
         return $schedule;
     }

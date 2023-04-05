@@ -820,3 +820,14 @@ main.RSer a.Unregister {
     color: var(--color-red-accent);
     text-decoration: none;
 }
+
+main.RSer table#PenaltySettings,
+main.RSer table#ServerSettings {
+    display: inline-block;
+    margin-right: 2em;
+    vertical-align: top;
+}
+
+main.RSer table#CarClasses {
+    margin-top: 2em;
+}

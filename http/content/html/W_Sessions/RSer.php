@@ -1178,6 +1178,18 @@ class RSer extends \core\HtmlContent {
         // Header
         $html .= $this->getHtmlPageHeader();
 
+        // get some informations
+        $next_event = $this->CurrentSeries->nextSplit()->event();
+        $server_preset = $this->CurrentSeries->parameterCollection()->child("SessionPresetRace")->serverPreset();
+        $any_slot_uses_real_penalty = FALSE;
+        foreach ($next_event->listSplits() as $split) {
+            if ($split->serverSlot()->parameterCollection()->child("RPGeneralEnable")->value()) {
+                $any_slot_uses_real_penalty = TRUE;
+                break;
+            }
+        }
+
+
         // --------------------------------------------------------------------
         //  Edit Option
         // --------------------------------------------------------------------
@@ -1201,20 +1213,39 @@ class RSer extends \core\HtmlContent {
 
         $html .= "<h1>" . _("Submission") . "</h1>";
 
-        // result points
-        $html .= "<div id=\"RaceResultPointsList\">";
-        $html .= _("Race Result Points") . ": ";
+        $html .= "<table id=\"Points\">";
+        $html .= "<caption>" . _("Result Assessment") . "</caption>";
+        $html .= "<tr>";
+        $html .= "<th>" . _("Race Result Points") . "</th>";
+        $html .= "<td>";
+        // $html .= "<div id=\"RaceResultPointsList\">";
         for ($position=1; TRUE; ++$position) {
             $points = $this->CurrentSeries->raceResultPoints($position);
             $html .= "<div>$position: <strong>{$points}</strong>pts</div>";
             if ($points <= 0) break;
         }
-        $html .= "</div>";
+        // $html .= "</div>";
+        $html .= "</td>";
+        $html .= "</tr>";
+        $html .= "<tr>";
+        $html .= "<th>" . _("In-Class team assessment") . "</th>";
+        $html .= "<td>{$this->CurrentSeries->parameterCollection()->child('PtsClassSum')->valueLabel()}</td>";
+        $html .= "</tr>";
 
-        // class BOP
+        // car classes
+        $html .= "<table id=\"CarClasses\">";
+        $html .= "<caption>" . _("Car Classes") . "</caption>";
+        $html .= "<tr>";
+        $html .= "<th>" . _("Class") . "</th>";
+        $html .= "<th>" . _("Preview") . "</th>";
+        $html .= "<th>" . _("BOP") . "</th>";
+        $html .= "</tr>";
         foreach ($this->CurrentSeries->listClasses() as $rser_c) {
+            $html .= "<tr>";
+            $html .= "<td>{$rser_c->name()}</td>";
+            $html .= "<td>{$rser_c->carClass()->html(TRUE, FALSE, TRUE)}</td>";
+            $html .= "<td>";
             $html .= "<div id=\"RaceResultPointsList\">";
-            $html .= _("BOP") . " {$rser_c->name()}: ";
             $pos_end = 1 + max($rser_c->getParam("BopRestrictorPosition"), $rser_c->getParam("BopBallastPosition"));
             for ($position=1; $position <= $pos_end; ++$position) {
                 $ballast= $rser_c->bopBallast($position);
@@ -1222,48 +1253,155 @@ class RSer extends \core\HtmlContent {
                 $html .= "<div>$position: <strong>{$ballast}kg {$restrictor}&percnt;</strong></div>";
             }
             $html .= "</div>";
-        }
-
-        // team assessment
-        $html .= "<div id=\"TeamAssessmentInfo\">" . _("In-Class team assessment") . ": ";
-        $html .= "<div>{$this->CurrentSeries->parameterCollection()->child('PtsClassSum')->valueLabel()}</div>";
-        $html .= "</div>";
-
-        // schedule
-        $schedule = $this->CurrentSeries->parameterCollection()->child("SessionPresetRace")->serverPreset()->schedule();
-        $html .= "<table id=\"EstimatedSchedule\">";
-        $html .= "<caption>" . _("Estimated Schedule") . "</caption>";
-        $html .= "<tr>";
-        $html .= "<th>" . _("Start") . "</th>";
-        // $html .= "<th>" . _("Entry") . "</th>";
-        $html .= "<th>" . _("Duration") . "</th>";
-        $html .= "</tr>";
-        $preset_offset = new \Core\TimeInterval();
-        $preset_offset_delay = new \Core\TimeInterval();
-        foreach ($schedule as [$interval, $uncertainty, $type, $name]) {
-
-            if ($type != \Enums\SessionType::Invalid) {
-                $html .= "<tr>";
-                $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeInterval($preset_offset) . "</td>";
-                $html .= "<td>$name</td>";
-                $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeInterval($interval) . "</td>";
-                $html .= "</tr>";
-            }
-
-            $preset_offset->add($interval);
-            $preset_offset_delay->add($uncertainty);
+            $html .= "</td>";
+            $html .= "</tr>";
         }
         $html .= "</table>";
 
 
+
         // --------------------------------------------------------------------
-        //  Overall Standings
+        //  Settings
         // --------------------------------------------------------------------
 
-        $seasons = $this->CurrentSeries->listSeasons();
-        if (count($seasons)) {
-            $html .= "<h1>" . _("Standings") . " {$seasons[0]->name()}</h1>";
-            $html .= $this->getHtmlOverallStandings($seasons[0]);
+        $html .= "<h1>" . _("Settings") . "</h1>";
+
+        $html .= "<table id=\"ServerSettings\">";
+        $html .= "<caption>" . _("Server Settings") . "</caption>";
+
+        // damage
+        $html .= "<tr>";
+        $html .= "<td>" . _("Damage Multiplier") . "</td>";
+        $html .= "<td>{$server_preset->parameterCollection()->child("AcServerDamageMultiplier")->valueLabel()} &percnt;</td>";
+        $html .= "</tr>";
+
+        // // fuel
+        // $html .= "<tr>";
+        // $html .= "<td>" . _("Fuel Rate") . "</td>";
+        // $html .= "<td>{$server_preset->parameterCollection()->child("AcServerFuelRate")->valueLabel()} &percnt;</td>";
+        // $html .= "</tr>";
+
+        // // tyres
+        // $html .= "<tr>";
+        // $html .= "<td>" . _("Tyre Wear Rate") . "</td>";
+        // $html .= "<td>{$server_preset->parameterCollection()->child("AcServerTyreWearRate")->valueLabel()} &percnt;</td>";
+        // $html .= "</tr>";
+
+        // pit window
+        $html .= "<tr>";
+        $html .= "<td>" . _("Pit Window") . "</td>";
+        $html .= "<td>{$server_preset->parameterCollection()->child("AcServerPitWinOpen")->valueLabel()} ... ";
+        $html .= "{$server_preset->parameterCollection()->child("AcServerPitWinClose")->valueLabel() }</td>";
+        $html .= "</tr>";
+
+        // Extra Lap
+        $html .= "<tr>";
+        $html .= "<td>" . _("Extra Lap") . "</td>";
+        $html .= "<td>{$server_preset->parameterCollection()->child("AcServerExtraLap")->valueLabel()}</td>";
+        $html .= "</tr>";
+
+        // Reversed Grid
+        $html .= "<tr>";
+        $html .= "<td>" . _("Reversed Grid") . "</td>";
+        $html .= "<td>{$server_preset->parameterCollection()->child("AcServerReversedGrid")->valueLabel()}</td>";
+        $html .= "</tr>";
+
+        $html .= "</table>";
+
+
+        $html .= "<table id=\"PenaltySettings\">";
+        $html .= "<caption>" . _("Penalty Settings") . "</caption>";
+
+        // Min Laps
+        $html .= "<tr>";
+        $html .= "<td>" . _("DNF Mininum Laps") . "</td>";
+        $html .= "<td>{$server_preset->parameterCollection()->child("AccswuiAutoDnfLevel")->valueLabel()} &percnt;</td>";
+        $html .= "</tr>";
+
+        // Allowed Tyres Out
+        $html .= "<tr>";
+        $html .= "<td>" . _("Allowed Tyres Out") . "</td>";
+        $html .= "<td>{$server_preset->parameterCollection()->child("AcServerTyresOut")->valueLabel()} " . _("Tyres") . "</td>";
+        $html .= "</tr>";
+
+        if ($any_slot_uses_real_penalty) {
+
+            // Laps To Take Penalty
+            $html .= "<tr>";
+            $html .= "<td>" . _("Laps To Take Penalty") . "</td>";
+            $html .= "<td>{$server_preset->parameterCollection()->child("RpPsGeneralLapsToTake")->valueLabel()} " . _("Laps") . "</td>";
+            $html .= "</tr>";
+
+            // Total Cut Warnings
+            $html .= "<tr>";
+            $html .= "<td>" . _("Total Cut Warnings") . "</td>";
+            $html .= "<td>{$server_preset->parameterCollection()->child("RpPsCuttingTotCtWarn")->valueLabel()}</td>";
+            $html .= "</tr>";
+
+            // Pit Speed Limit
+            $html .= "<tr>";
+            $html .= "<td>" . _("Pit Speed Limit") . "</td>";
+            $html .= "<td>{$server_preset->parameterCollection()->child("RpPsSpeedingPitLaneSpeed")->valueLabel()} km/h</td>";
+            $html .= "</tr>";
+
+            // Minimum Pit Speed Penalty
+            $html .= "<tr>";
+            $html .= "<td>" . _("Minimum Pit Speed Penalty") . "</td>";
+            $html .= "<td>{$server_preset->parameterCollection()->child("RpPsSpeedingPenType0")->valueLabel()}</td>";
+            $html .= "</tr>";
+        }
+
+        $html .= "</table>";
+
+
+        // --------------------------------------------------------------------
+        //  Schedule
+        // --------------------------------------------------------------------
+
+        $html .= "<h1>" . _("Schedule") . "</h1>";
+
+        $html .= "<p>";
+        $html .= _("Virtual session start time") . ": ";
+        $html .= $server_preset->parameterCollection()->child("SessionStartTime")->valueLabel();
+        $html .= " (" . _("Time Factor") . " x";
+        $html .= $server_preset->parameterCollection()->child("AcServerTimeMultiplier")->valueLabel();
+        $html .= ")";
+        $html .= "</p>";
+
+        $html .= "<p>";
+        $html .= _("The following table(s) show the schedule for the next event.");
+        $html .= "</p>";
+
+        // list schedule for all splits of next event
+        foreach ($next_event->listSplits() as $split) {
+
+            $schedule = $server_preset->schedule();
+            $html .= "<table id=\"EstimatedSchedule\">";
+            $html .= "<caption>{$next_event->season()->name()} E{$next_event->order()}S{$split->order()}</caption>";
+            $html .= "<tr>";
+            $html .= "<th>" . _("Start") . "</th>";
+            $html .= "<th>" . _("Entry") . "</th>";
+            $html .= "<th>" . _("Duration") . "</th>";
+            $html .= "</tr>";
+
+            // iterate over schedule items
+            $time = $split->start();
+            foreach ($schedule as [$interval, $uncertainty, $type, $name]) {
+
+                // only show short schedule
+                if ($type != \Enums\SessionType::Invalid) {
+                    $html .= "<tr>";
+                    $html .= "<td>" . \Core\UserManager::currentUser()->formatDateTimeNoSeconds($time) . "</td>";
+                    $html .= "<td>$name</td>";
+                    $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeInterval($interval) . "</td>";
+                    $html .= "</tr>";
+                }
+
+                // add duration to next start time
+                $time->add($interval->toDateInterval());
+            }
+
+            $html .= "</table>";
         }
 
 
@@ -1272,17 +1410,19 @@ class RSer extends \core\HtmlContent {
         // --------------------------------------------------------------------
 
         $html .= "<h1>" . _("Seasons") . "</h1>";
-        $html .= "<ul class=\"RSerSeasonList\">";
+        $is_first = TRUE;
         foreach (\DbEntry\RSerSeason::listSeasons($this->CurrentSeries) as $rser_s) {
+
+            if (!$is_first) $html .= ", ";
 
             $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
                                 "RSerSeason"=>$rser_s->id(),
                                 "View"=>"SeasonOverview"]);
 
-            $html .= "<li><a href=\"$url\">{$rser_s->name()}</a></li>";
+            $html .= "<a href=\"$url\">{$rser_s->name()}</a>";
 
+            $is_first &= FALSE;
         }
-        $html .= "</ul>";
 
 
         return $html;
