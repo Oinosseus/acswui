@@ -43,35 +43,27 @@ class EntryList {
     /**
      * This will add the TV car to the entry list.
      *
-     * When TVCarEna in ACswui settings is not activated, this call will have no effect.
+     * When TVCarSkinId in  ACswui settings is zero, this call will have no effect.
      * When the TV-Car already has been added, this has no effect.
      */
     public function addTvCar() {
 
         // check if TVCar is activated
-        if (\Core\ACswui::getParam('TVCarEna') && !$this->TVCarAdded) {
+        if (\Core\ACswui::getParam('TVCarSkinId') != 0 && !$this->TVCarAdded) {
             $this->TVCarAdded = TRUE;  // if it failes, it will also fail in future, so adding can be assumed
 
             // get car
-            $model_name = \Core\ACswui::getParam('TVCarModel');
-            $car = \DbEntry\Car::fromModel($model_name);
-            if ($car === NULL) {
-                \Core\Log::warning("Model '$model_name' for TV Car not found!");
+            $carskin_id = (int) \Core\ACswui::getParam('TVCarSkinId');
+            $carskin = \DbEntry\CarSkin::fromId($carskin_id);
+            if ($carskin === NULL) {
+                \Core\Log::error("No CarSkin with ID $carskin_id found!");
             } else {
 
-                // get skin
-                $skin_name = \Core\ACswui::getParam('TVCarSkin');
-                $carskin = \DbEntry\CarSkin::fromSkin($car, $skin_name);
-                if ($carskin === NULL) {
-                    \Core\Log::warning("Skin '$skin_name' for TV Car model '$model_name' not found!");
-                } else {
-
-                    // add entry
-                    $eli = new EntryListItem($carskin);
-                    $eli->forceDriver("ACswui TV Car", \Core\ACswui::getParam('TVCarGuids'));
-                    // $eli->setSpectator(TRUE);
-                    $this->add($eli);
-                }
+                // add entry
+                $eli = new EntryListItem($carskin);
+                $eli->forceDriver("ACswui TV Car", \Core\ACswui::getParam('TVCarGuids'));
+                // $eli->setSpectator(TRUE);
+                $this->add($eli);
             }
         }
     }

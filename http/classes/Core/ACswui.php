@@ -71,10 +71,10 @@ class ACswui  {
             // TV Car
             $pc2 = new \Parameter\Collection(NULL, $pc, "TVCar", _("TV Car"), _("TV Car Settings"));
 
-            $p = new \Parameter\ParamBool(NULL, $pc2, "TVCarEna", _("Reserve Slot"), _("When activated, each session will get one car slot reserved for a TV Car. Attention: This occupies one available pit of the track."), "", FALSE);
+            $p = new \Parameter\ParamInt(NULL, $pc2, "TVCarSkinId", _("CarSkin ID"), _("The database ID of the car skin (0 means disabling TV-Car)"), "", 0);
+            $p->setMin(1);
+            $p->setMax(999999999);
             $p = new \Parameter\ParamString(NULL, $pc2, "TVCarGuids", _("GUIDs"), _("List of the Steam GUIDs (seperated by a semicolon) that get presevred for the TV Car slot"), "", "");
-            $p = new \Parameter\ParamString(NULL, $pc2, "TVCarModel", _("Model"), _("The name of the subfolder under content/cars/"), "", "lotus_elise_sc");
-            $p = new \Parameter\ParamString(NULL, $pc2, "TVCarSkin", _("Skin"), _("The name of the subfolder under content/cars/*model*/skins/"), "", "solid_yellow");
 
 
             ////////////
