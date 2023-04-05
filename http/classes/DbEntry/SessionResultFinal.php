@@ -68,6 +68,11 @@ class SessionResultFinal extends DbEntry {
                                                        ($new_result_columns['TeamCar'] == 0) ? NULL : TeamCar::fromId($new_result_columns['TeamCar']),
                                                        ($new_result_columns['TeamCar'] == 0) ? User::fromId($new_result_columns['User']) : NULL,
                                                        ($new_result_columns['TeamCar'] == 0) ? CarSkin::fromId($new_result_columns['CarSkin']) : NULL);
+
+                    // This avoids duplicated driver registrations (eg. when the driver is already registered with another car)
+                    // But since the registration does exist, the driver can re-register lateron and keeps his history
+                    $reg->deactivate();
+
                     $new_result_columns['RSerRegistration'] = $reg->id();
             }
 
