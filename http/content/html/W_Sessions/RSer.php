@@ -1188,6 +1188,8 @@ class RSer extends \core\HtmlContent {
                 break;
             }
         }
+        $race_is_lap_based = ($server_preset->parameterCollection()->child("AcServerRaceLaps")->value() > 0) ? TRUE : FALSE;
+
 
 
         // --------------------------------------------------------------------
@@ -1291,7 +1293,9 @@ class RSer extends \core\HtmlContent {
         $html .= "<tr>";
         $html .= "<td>" . _("Pit Window") . "</td>";
         $html .= "<td>{$server_preset->parameterCollection()->child("AcServerPitWinOpen")->valueLabel()} ... ";
-        $html .= "{$server_preset->parameterCollection()->child("AcServerPitWinClose")->valueLabel() }</td>";
+        $html .= "{$server_preset->parameterCollection()->child("AcServerPitWinClose")->valueLabel() } ";
+        $html .= ($race_is_lap_based) ? _("Laps") : _("Minutes");
+        $html .= "</td>";
         $html .= "</tr>";
 
         // Extra Lap

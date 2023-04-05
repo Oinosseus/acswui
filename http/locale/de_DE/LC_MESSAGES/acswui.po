@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-05 21:48+0200\n"
-"PO-Revision-Date: 2023-04-05 21:51+0200\n"
+"POT-Creation-Date: 2023-04-05 22:47+0200\n"
+"PO-Revision-Date: 2023-04-05 22:48+0200\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -143,46 +143,25 @@ msgid "TV Car Settings"
 msgstr "TV Fahrzeugeinstellungen"
 
 #: http/classes/Core/ACswui.php:74
-msgid "Reserve Slot"
-msgstr "Slot Reservieren"
+msgid "CarSkin ID"
+msgstr "Lackierung ID"
 
 #: http/classes/Core/ACswui.php:74
-msgid ""
-"When activated, each session will get one car slot reserved for a TV Car. "
-"Attention: This occupies one available pit of the track."
+msgid "The database ID of the car skin (0 means disabling TV-Car)"
 msgstr ""
-"Wenn aktiviert wird für jede Session ein Slot für ein TV Fahrzeug "
-"reserviert. Achtung: Dadurch wird auf der Strecke eine zusätzliche Box "
-"belegt."
 
-#: http/classes/Core/ACswui.php:75 http/classes/DbEntry/ServerPreset.php:528
+#: http/classes/Core/ACswui.php:77 http/classes/DbEntry/ServerPreset.php:528
 #: http/classes/DbEntry/ServerPreset.php:533
 msgid "GUIDs"
 msgstr "GUIDs"
 
-#: http/classes/Core/ACswui.php:75
+#: http/classes/Core/ACswui.php:77
 msgid ""
 "List of the Steam GUIDs (seperated by a semicolon) that get presevred for "
 "the TV Car slot"
 msgstr ""
 "Liste von Steam GUIDs (getrennt durch Semikolon), die für den TV Fahrzeug "
 "Slot reserviert werden sollen."
-
-#: http/classes/Core/ACswui.php:76
-msgid "Model"
-msgstr "Fahrzeugmodell"
-
-#: http/classes/Core/ACswui.php:76
-msgid "The name of the subfolder under content/cars/"
-msgstr "Der Name des Unterordners unter content/cars/"
-
-#: http/classes/Core/ACswui.php:77
-msgid "Skin"
-msgstr "Lackierung"
-
-#: http/classes/Core/ACswui.php:77
-msgid "The name of the subfolder under content/cars/*model*/skins/"
-msgstr "Der Name des Unterordners unter content/cars/*model*/skins/"
 
 #: http/classes/Core/ACswui.php:82
 msgid "Discord"
@@ -1663,7 +1642,7 @@ msgstr "Server-Preset for Qualifikationen"
 
 #: http/classes/ParameterCollections/RSerSeries.php:46
 #: http/content/html/W_Sessions/RSer.php:1104
-#: http/content/html/W_Sessions/RSer.php:1219
+#: http/content/html/W_Sessions/RSer.php:1221
 msgid "Race Result Points"
 msgstr "Rennergebnis Punkte"
 
@@ -1888,7 +1867,7 @@ msgstr "Das Zusatzgewicht pro Position"
 #: http/content/html/T_Settings/ServerPresets.php:117
 #: http/content/html/T_Settings/ServerPresets.php:154
 #: http/content/html/W_Sessions/RSer.php:780
-#: http/content/html/W_Sessions/RSer.php:1382
+#: http/content/html/W_Sessions/RSer.php:1386
 #: http/content/html/W_Sessions.php:74 http/content/html/W_Sessions.php:119
 msgid "Start"
 msgstr "Start"
@@ -2236,7 +2215,7 @@ msgstr ""
 "Fahrer:innen reserviert ist."
 
 #: http/classes/DbEntry/ServerPreset.php:279
-#: http/content/html/W_Sessions/RSer.php:1317
+#: http/content/html/W_Sessions/RSer.php:1321
 msgid "DNF Mininum Laps"
 msgstr "DNF Minimum Runden"
 
@@ -2537,7 +2516,8 @@ msgstr "Einstellungen für die Renn-Session"
 #: http/classes/DbEntry/ServerPreset.php:382
 #: http/content/json/ListPopularCarClasses.php:22
 #: http/content/json/ListPopularTracks.php:28
-#: http/content/html/W_Sessions/RSer.php:1332
+#: http/content/html/W_Sessions/RSer.php:1297
+#: http/content/html/W_Sessions/RSer.php:1336
 #: http/content/html/W_Sessions/SessionOverview.php:405
 #: http/content/html/W_Sessions/SessionOverview.php:429
 msgid "Laps"
@@ -2593,7 +2573,7 @@ msgid "Pit window closes at lap/minute (depends on the race mode)"
 msgstr "Wann das Boxenfenster schließt (Runde/Minute)"
 
 #: http/classes/DbEntry/ServerPreset.php:405
-#: http/content/html/W_Sessions/RSer.php:1305
+#: http/content/html/W_Sessions/RSer.php:1309
 msgid "Reversed Grid"
 msgstr "Invertierter Start"
 
@@ -2622,7 +2602,7 @@ msgid "Positions"
 msgstr "Positionen"
 
 #: http/classes/DbEntry/ServerPreset.php:410
-#: http/content/html/W_Sessions/RSer.php:1299
+#: http/content/html/W_Sessions/RSer.php:1303
 msgid "Extra Lap"
 msgstr "Extra Runde"
 
@@ -2693,7 +2673,7 @@ msgid "Drivethru"
 msgstr "Drive-Thru"
 
 #: http/classes/DbEntry/ServerPreset.php:429
-#: http/content/html/W_Sessions/RSer.php:1323
+#: http/content/html/W_Sessions/RSer.php:1327
 msgid "Allowed Tyres Out"
 msgstr "Streckenbegrenzung"
 
@@ -2703,7 +2683,7 @@ msgstr ""
 "Anzahl der Reifen, die sich außerhalb der Streckenbegrenzung befinden dürfen"
 
 #: http/classes/DbEntry/ServerPreset.php:429
-#: http/content/html/W_Sessions/RSer.php:1324
+#: http/content/html/W_Sessions/RSer.php:1328
 msgid "Tyres"
 msgstr "Reifen"
 
@@ -2819,7 +2799,7 @@ msgstr ""
 "Spritverbrauch in Prozent (100% entspricht dem realistischen Verbrauch)"
 
 #: http/classes/DbEntry/ServerPreset.php:467
-#: http/content/html/W_Sessions/RSer.php:1274
+#: http/content/html/W_Sessions/RSer.php:1276
 msgid "Damage Multiplier"
 msgstr "Schaden"
 
@@ -3176,12 +3156,12 @@ msgid "Race Enabled"
 msgstr "Rennen Aktiviert"
 
 #: http/classes/DbEntry/ServerPreset.php:595
-#: http/content/html/W_Sessions/RSer.php:1313
+#: http/content/html/W_Sessions/RSer.php:1317
 msgid "Penalty Settings"
 msgstr "Straf-Einstellungen"
 
 #: http/classes/DbEntry/ServerPreset.php:599
-#: http/content/html/W_Sessions/RSer.php:1331
+#: http/content/html/W_Sessions/RSer.php:1335
 msgid "Laps To Take Penalty"
 msgstr "Runden zur Büße"
 
@@ -3243,7 +3223,7 @@ msgid "During Safety Car"
 msgstr "Während Safety Car"
 
 #: http/classes/DbEntry/ServerPreset.php:616
-#: http/content/html/W_Sessions/RSer.php:1337
+#: http/content/html/W_Sessions/RSer.php:1341
 msgid "Total Cut Warnings"
 msgstr "Anzahl Warnungen"
 
@@ -3778,7 +3758,7 @@ msgstr "Auto"
 #: http/content/html/W_Sessions/RSer.php:458
 #: http/content/html/W_Sessions/RSer.php:886
 #: http/content/html/W_Sessions/RSer.php:1141
-#: http/content/html/W_Sessions/RSer.php:1241
+#: http/content/html/W_Sessions/RSer.php:1243
 #: http/content/html/W_Sessions/SessionOverview.php:250
 msgid "BOP"
 msgstr "Ausgleich"
@@ -4086,14 +4066,14 @@ msgstr ""
 
 #: http/content/html/T_Settings.php:8
 #: http/content/html/B_User/UserSettings.php:8
-#: http/content/html/W_Sessions/RSer.php:1267
+#: http/content/html/W_Sessions/RSer.php:1269
 msgid "Settings"
 msgstr "Einstellungen"
 
 #: http/content/html/ServerContent/AvailableCarClasses.php:10
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:131
 #: http/content/html/B_User/Polls.php:551
-#: http/content/html/W_Sessions/RSer.php:1237
+#: http/content/html/W_Sessions/RSer.php:1239
 msgid "Car Classes"
 msgstr "Fahrzeugklassen"
 
@@ -4772,7 +4752,7 @@ msgstr "Preset Speichern"
 
 #: http/content/html/T_Settings/ServerPresets.php:112
 #: http/content/html/W_Sessions/SessionSchedules.php:12
-#: http/content/html/W_Sessions/RSer.php:1361
+#: http/content/html/W_Sessions/RSer.php:1365
 msgid "Schedule"
 msgstr "Zeitplan"
 
@@ -4789,13 +4769,13 @@ msgstr "Preset speichern um den Zeitplan zu aktualisieren."
 #: http/content/html/W_Sessions/RSer.php:414
 #: http/content/html/W_Sessions/RSer.php:456
 #: http/content/html/W_Sessions/RSer.php:879
-#: http/content/html/W_Sessions/RSer.php:1383
+#: http/content/html/W_Sessions/RSer.php:1387
 msgid "Entry"
 msgstr "Eintrag"
 
 #: http/content/html/T_Settings/ServerPresets.php:119
 #: http/content/html/T_Settings/ServerPresets.php:156
-#: http/content/html/W_Sessions/RSer.php:1384
+#: http/content/html/W_Sessions/RSer.php:1388
 msgid "Duration"
 msgstr "Dauer"
 
@@ -5124,63 +5104,68 @@ msgstr "Klasse Entfernen"
 msgid "Save Race Series"
 msgstr "Rennserie Speichern"
 
-#: http/content/html/W_Sessions/RSer.php:1200
+#: http/content/html/W_Sessions/RSer.php:1202
 msgid "Edit Race Series"
 msgstr "Rennserie Bearbeiten"
 
-#: http/content/html/W_Sessions/RSer.php:1206
+#: http/content/html/W_Sessions/RSer.php:1208
 msgid "Create New Season"
 msgstr "Neue Saison Erstellen"
 
-#: http/content/html/W_Sessions/RSer.php:1214
+#: http/content/html/W_Sessions/RSer.php:1216
 msgid "Submission"
 msgstr "Ausschreibung"
 
-#: http/content/html/W_Sessions/RSer.php:1217
+#: http/content/html/W_Sessions/RSer.php:1219
 msgid "Result Assessment"
 msgstr "Wertung"
 
-#: http/content/html/W_Sessions/RSer.php:1231
+#: http/content/html/W_Sessions/RSer.php:1233
 msgid "In-Class team assessment"
 msgstr "Klasseninterne Teamwertung"
 
-#: http/content/html/W_Sessions/RSer.php:1239
+#: http/content/html/W_Sessions/RSer.php:1241
 msgid "Class"
 msgstr "Klasse"
 
-#: http/content/html/W_Sessions/RSer.php:1240
+#: http/content/html/W_Sessions/RSer.php:1242
 msgid "Preview"
 msgstr "Vorschau"
 
-#: http/content/html/W_Sessions/RSer.php:1270
+#: http/content/html/W_Sessions/RSer.php:1272
 msgid "Server Settings"
 msgstr "Server Einstellungen"
 
-#: http/content/html/W_Sessions/RSer.php:1292
+#: http/content/html/W_Sessions/RSer.php:1294
 msgid "Pit Window"
 msgstr "Boxenfenster"
 
-#: http/content/html/W_Sessions/RSer.php:1343
+#: http/content/html/W_Sessions/RSer.php:1297
+#: http/content/html/W_Sessions/SessionOverview.php:405
+msgid "Minutes"
+msgstr "Minuten"
+
+#: http/content/html/W_Sessions/RSer.php:1347
 msgid "Pit Speed Limit"
 msgstr "Boxengeschwindigkeit"
 
-#: http/content/html/W_Sessions/RSer.php:1349
+#: http/content/html/W_Sessions/RSer.php:1353
 msgid "Minimum Pit Speed Penalty"
 msgstr "Minimale Strafe für Boxengeschwindigkeit"
 
-#: http/content/html/W_Sessions/RSer.php:1364
+#: http/content/html/W_Sessions/RSer.php:1368
 msgid "Virtual session start time"
 msgstr "Virtuelle Session Startzeit"
 
-#: http/content/html/W_Sessions/RSer.php:1366
+#: http/content/html/W_Sessions/RSer.php:1370
 msgid "Time Factor"
 msgstr "Zeitfaktor"
 
-#: http/content/html/W_Sessions/RSer.php:1372
+#: http/content/html/W_Sessions/RSer.php:1376
 msgid "The following table(s) show the schedule for the next event."
 msgstr ""
 
-#: http/content/html/W_Sessions/RSer.php:1412
+#: http/content/html/W_Sessions/RSer.php:1416
 msgid "Seasons"
 msgstr "Saisons"
 
@@ -5277,10 +5262,6 @@ msgstr "Session Ergebnisse"
 #: http/content/html/W_Sessions/SessionOverview.php:404
 msgid "Session Position Diagram"
 msgstr "Session Positionsdiagramm"
-
-#: http/content/html/W_Sessions/SessionOverview.php:405
-msgid "Minutes"
-msgstr "Minuten"
 
 #: http/content/html/W_Sessions/SessionOverview.php:420
 msgid "Best Lap"
@@ -5443,6 +5424,29 @@ msgid "Privacy settings of the user does not allow to show any information."
 msgstr ""
 "Privatsphäreneinstellung des Benutzers erlaubt keine Darstellung von "
 "Informationen."
+
+#~ msgid "Reserve Slot"
+#~ msgstr "Slot Reservieren"
+
+#~ msgid ""
+#~ "When activated, each session will get one car slot reserved for a TV Car. "
+#~ "Attention: This occupies one available pit of the track."
+#~ msgstr ""
+#~ "Wenn aktiviert wird für jede Session ein Slot für ein TV Fahrzeug "
+#~ "reserviert. Achtung: Dadurch wird auf der Strecke eine zusätzliche Box "
+#~ "belegt."
+
+#~ msgid "Model"
+#~ msgstr "Fahrzeugmodell"
+
+#~ msgid "The name of the subfolder under content/cars/"
+#~ msgstr "Der Name des Unterordners unter content/cars/"
+
+#~ msgid "Skin"
+#~ msgstr "Lackierung"
+
+#~ msgid "The name of the subfolder under content/cars/*model*/skins/"
+#~ msgstr "Der Name des Unterordners unter content/cars/*model*/skins/"
 
 #~ msgid "Invalid Entry"
 #~ msgstr "Ungültiger Eintrag"
