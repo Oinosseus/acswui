@@ -670,6 +670,12 @@ class RSer extends \core\HtmlContent {
         $html .= "<button type=\"submit\" name=\"Action\" value=\"RegisterTeam\">" . _("Save Registration") . "</button>";
         $html .= "<br>";
 
+        // list already registered carskin IDs
+        $already_registered_carskin_ids = [];
+        foreach ($this->CurrentSeason->listRegistrations($this->CurrentClass, TRUE) as $reg) {
+            $already_registered_carskin_ids[] = $reg->carSkin()->id();
+        }
+
         // cars for team registration
         $html .= "<div id=\"RegistrationTypeTeamCars\">";
         $any_team_car_found = FALSE;
@@ -681,8 +687,12 @@ class RSer extends \core\HtmlContent {
                 // only matching carclass
                 if ($tc->carClass()->carClass() != $this->CurrentClass->carClass()) continue;
 
+                // check if car is already registered
+                if (in_array($tc->carSkin()->id(), $already_registered_carskin_ids)) continue;
+
+
                 $skin_img = $tc->html();
-                $checked = FALSE;
+                $checked = ($any_team_car_found == FALSE) ? TRUE : FALSE;
                 $disabled = FALSE;
                 $html .= $this->newHtmlContentRadio("RegisterTeamCar",
                                                     (string) $tc->id(),
@@ -699,6 +709,8 @@ class RSer extends \core\HtmlContent {
             $html .= "<br><br>";
             $html .= _("You either have no permission to manage a team or none of your teams has a car in the correct class");
             $html .= "<br><br>";
+            $html .= _("Checkout the tems here") . ": ";
+            $html .= "<a href=\"{$this->url([], 'Teams')}\">" . _("Teams") . "</a>";
         }
 
         // save button
@@ -1238,8 +1250,7 @@ class RSer extends \core\HtmlContent {
         $html .= "<table id=\"CarClasses\">";
         $html .= "<caption>" . _("Car Classes") . "</caption>";
         $html .= "<tr>";
-        $html .= "<th>" . _("Class") . "</th>";
-        $html .= "<th>" . _("Preview") . "</th>";
+        $html .= "<th colspan=\"2\">" . _("Car Class") . "</th>";
         $html .= "<th>" . _("BOP") . "</th>";
         $html .= "</tr>";
         foreach ($this->CurrentSeries->listClasses() as $rser_c) {

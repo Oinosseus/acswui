@@ -278,11 +278,11 @@ class Teams extends \core\HtmlContent {
         }
         if ($this->IsManager || $this->IsOwner) {
             $html .= "<tr><td><select name=\"AddTeamMember\">";
-            $html .= "<option value=\"\" selected=\"yes\"></option>";
+            $html .= "<option value=\"\" selected=\"yes\">-- " . _("Add Team Member") . " --</option>";
             foreach (\DbEntry\User::listDrivers() as $drv) {
                 $html .= "<option value=\"{$drv->id()}\">{$drv->name()}</option>";
             }
-            $html .= "</select></td><td colspan=\"3\">" . _("add new team member") . "</td></tr>";
+            $html .= "</select></td></tr>";
         }
         $html .= "</table>";
 
@@ -311,7 +311,7 @@ class Teams extends \core\HtmlContent {
 
             // add new class
             $html .= "<tr><td><select name=\"AddCarClass\">";
-            $html .= "<option value=\"\" selected=\"yes\"></option>";
+            $html .= "<option value=\"\" selected=\"yes\">-- " . _("Add Car Class") . " --</option>";
             foreach (\DbEntry\CarClass::listClasses() as $cc) {
                 $html .= "<option value=\"{$cc->id()}\">{$cc->name()}</option>";
             }
@@ -369,7 +369,7 @@ class Teams extends \core\HtmlContent {
                 if ($this->IsManager) {
                     $html .= "<tr><td colspan=\"2\">";
                     $html .= "<select name=\"AddTeamCarDriver_{$tc->id()}\">";
-                    $html .= "<option value=\"\" selected=\"yes\"></option>";
+                    $html .= "<option value=\"\" selected=\"yes\">-- " . _("Add Driver") . " --</option>";
                     foreach ($tm->members() as $tmm) {
                         if (in_array($tmm, $listed_drivers)) continue;
                         $html .= "<option value=\"{$tmm->id()}\">{$tmm->user()->name()}</option>";
