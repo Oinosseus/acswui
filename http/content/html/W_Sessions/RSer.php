@@ -454,11 +454,12 @@ class RSer extends \core\HtmlContent {
             $html .= "<tr>";
             $html .= "<th>" . _("Pos") . "</th>";
             $html .= "<th colspan=\"2\">" . _("Entry") . "</th>";
-            $html .= "<th>" . _("Lap") . "</th>";
+            $html .= "<th colspan=\"2\">" . _("Laptime") . "</th>";
             $html .= "<th>" . _("BOP") . "</th>";
             $html .= "</tr>";
 
             $pos = 1;
+            $best_laptime = NULL;
             foreach ($this->CurrentEvent->listQualifications($rs_class) as $rs_qual) {
                 $reg = $rs_qual->registration();
                 $lap = $rs_qual->lap();
@@ -467,7 +468,7 @@ class RSer extends \core\HtmlContent {
                 $html .= "<td>$pos</td>";
 
                 if ($reg->teamCar()) {
-                    $html .= "<td class=\"ZeroPadding\">{$reg->teamCar()->team()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
+                    $html .= "<td class=\"ZeroPadding\">{$reg->teamCar()->team()->html(TRUE, FALSE, FALSE, TRUE)}</td>";
                     $html .= "<td>";
                     $drivers = $reg->teamCar()->drivers();
                     for ($i=0; $i < count($drivers); ++$i) {
@@ -483,10 +484,15 @@ class RSer extends \core\HtmlContent {
                 }
 
                 $html .= "<td>{$lap->html()}</td>";
+                if ($best_laptime === NULL) $html .= "<td></td>";
+                else $html .= "<td>{$cu->formatLaptimeDelta($lap->laptime() - $best_laptime)}</td>";
                 $html .= "<td>" . sprintf("%+dkg, %+d&percnt;", $lap->ballast(), $lap->restrictor()) . "</td>";
 
                 $html .= "</tr>";
                 ++$pos;
+
+                // remember best laptime
+                if ($best_laptime === NULL) $best_laptime = $lap->laptime();
             }
 
             $html .= "</table>";
