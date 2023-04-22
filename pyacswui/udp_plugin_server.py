@@ -122,8 +122,8 @@ class UdpPluginServer(object):
         self.__bop_map_car_restrictors = {key: int(bop_map_car_restrictors[key]) for key in bop_map_car_restrictors.keys()}
         self.__bop_map_user_ballasts = {key: int(bop_map_user_ballasts[key]) for key in bop_map_user_ballasts.keys()}
         self.__bop_map_user_restrictors = {key: int(bop_map_user_restrictors[key]) for key in bop_map_user_restrictors.keys()}
-        self.__bop_map_teamcar_ballasts = {key: int(bop_map_teamcar_ballasts[key]) for key in bop_map_teamcar_ballasts.keys()}
-        self.__bop_map_teamcar_restrictors = {key: int(bop_map_teamcar_restrictors[key]) for key in bop_map_teamcar_restrictors.keys()}
+        self.__bop_map_teamcar_ballasts = {int(key): int(bop_map_teamcar_ballasts[key]) for key in bop_map_teamcar_ballasts.keys()}
+        self.__bop_map_teamcar_restrictors = {int(key): int(bop_map_teamcar_restrictors[key]) for key in bop_map_teamcar_restrictors.keys()}
 
         # identifiy if within an active session
         self.__active_session = False
