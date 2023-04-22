@@ -413,9 +413,9 @@ class ServerSlot {
         $cmd .= " >" . \Core\Config::AbsPathData . "/logs_srvrun/slot$id.srvrun.{$datetime_str}.log 2>&1 &";
         $cmd_retstr = array();
         exec($cmd, $cmd_retstr, $cmd_ret);
-        foreach ($cmd_retstr as $line) echo "$line<br>";
-//         echo "Server started: $cmd_ret<br>";
-//         echo htmlentities($cmd) ."<br>";
+        // foreach ($cmd_retstr as $line) echo "$line<br>";
+        // echo "Server started: $cmd_ret<br>";
+        // echo htmlentities($cmd) ."<br>";
 
         usleep(100e3);
 
@@ -905,7 +905,12 @@ class ServerSlot {
 
         // section No_Penalty
         fwrite($f, "\n[No_Penalty]\n");
-        $guids = trim($ppc->child("RpAcsNpGuids")->value()) . ";" . \Core\ACswui::getParam('TVCarGuids');
+        $guids = trim($ppc->child("RpAcsNpGuids")->value());
+        $tv_cars = trim(\Core\ACswui::getParam('TVCarGuids'));
+        if (strlen($tv_cars)) {
+            if (strlen($guids)) $guids .= ";";
+            $guids .= $tv_cars;
+        }
         fwrite($f, "GUIDs = $guids\n");
         fwrite($f, "Cars = " . $ppc->child("RpAcsNpCars")->value() . "\n");
 
