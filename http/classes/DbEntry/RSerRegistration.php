@@ -210,6 +210,27 @@ class RSerRegistration extends DbEntry {
 
 
     /**
+     * @param $event The requested event
+     * @return The RSerQualification for a certain event (or NULL if not qualified)
+     */
+    public function getQualification(RSerEvent $event) : ?RSerQualification {
+
+        $query = "SELECT Id FROM RSerQualifications WHERE Registration={$this->id()} AND Event={$event->id()};";
+        $res = \Core\Database::fetchRaw($query);
+
+        if (count($res) > 0) {
+            if (count($res) > 1) {
+                \Core\Log::warning("Multiple qualifications for Registration={$this->id()} and Event={$event->id()}.");
+            }
+
+            return RSerQualification::fromId((int) $res[0]['Id']);
+        }
+
+        return NULL;
+    }
+
+
+    /**
      * List all registrations for a season of a certain class
      * @param $season The RSerSeason
      * @param $class The RSerClass

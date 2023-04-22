@@ -28,10 +28,14 @@ class CronRSerQualifications extends \Core\Cronjob {
             }
         }
 
+        // update qualifications for each event
         foreach ($events as $event) {
             $this->verboseOutput("Scanning Series='{$event->season()->series()->name()}', Season='{$event->season()->name()}', Event={$event->order()}<br>");
 
             foreach ($registrations as $reg) {
+
+                $bop_bal = $reg->bopBallast();
+                $bop_res = $reg->bopRestrictor();
 
                 foreach ($event->listSplits() as $split) {
 
@@ -41,12 +45,19 @@ class CronRSerQualifications extends \Core\Cronjob {
                     $query .= " INNER JOIN Sessions ON Laps.Session=Sessions.Id";
                     $query .= " WHERE Laps.RSerRegistration={$reg->id()}";
                     $query .= " AND Laps.Cuts=0";
+                    $query .= " AND Laps.Ballast>=$bop_bal";
+                    $query .= " AND Laps.Restrictor>=$bop_res";
                     $query .= " AND Sessions.RSerSplit={$split->id()}";
                     $query .= " ORDER BY Laps.Laptime ASC LIMIT 1;";
                     $res = \Core\Database::fetchRaw($query);
-                    if (count($res)) {
+
+                    if (count($res)) {  // uopdate qualification
                         $lap = \DbEntry\Lap::fromId((int) $res[0]['Id']);
                         \DbEntry\RSerQualification::qualify($event, $reg, $lap);
+
+                    } else {  // remove existing qualifications if not matching laps found
+                        $qual = $reg->getQualification($event);
+                        if ($qual) $qual->delete();
                     }
                 }
             }

@@ -15,6 +15,12 @@ class RSerQualification extends DbEntry {
     }
 
 
+    //! Deletes this qualification
+    public function delete() {
+        $this->deleteFromDb();
+    }
+
+
     //! @return The RSerEvent of this qualification
     public function event() : RSerEvent {
         return RSerEvent::fromId((int) $this->loadColumn('Event'));
@@ -66,7 +72,7 @@ class RSerQualification extends DbEntry {
      * Add a qualification lap
      *
      * If for the Event and Registration already a qualification lap exists,
-     * it the new lap is only taken if it is faster than the old qualification lap.
+     * the new lap is only taken if it is faster than the old qualification lap.
      *
      * @param $event The RSerEvent
      * @param $registration The RSerRegistration
@@ -76,9 +82,19 @@ class RSerQualification extends DbEntry {
                                    RSerRegistration $registration,
                                    Lap $lap) {
 
-        //! @todo TBD verify correct BOP (ballast/restrictor)
-
-        if ($lap->cuts() > 0) return;
+        // verify correct BOP (ballast/restrictor)
+        if ($lap->ballast() < $registration->bopBallast()) {
+            \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of BOP ballast mismatch");
+            return;
+        }
+        if ($lap->restrictor() < $registration->bopRestrictor()) {
+            \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of BOP restrictor mismatch");
+            return;
+        }
+        if ($lap->cuts() > 0) {
+            \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of cuts in lap");
+            return;
+        }
 
         // check if already existing
         $query = "SELECT Id FROM RSerQualifications WHERE Event={$event->id()} AND Registration={$registration->id()}";
