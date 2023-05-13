@@ -55,9 +55,6 @@ class CronRSerQualifications extends \Core\Cronjob {
 
                     if (count($res)) {  // update qualification
                         $lap = \DbEntry\Lap::fromId((int) $res[0]['Id']);
-                        if ($reg->id() == 52 && $event->id() == 23)  {
-                            echo $query ." --&gt; LAP={$lap->id()}<br>";
-                        }
                         \DbEntry\RSerQualification::qualify($event, $reg, $lap);
 
                     } else {  // remove existing qualifications if not matching laps found
