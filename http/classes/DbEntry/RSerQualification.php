@@ -71,9 +71,6 @@ class RSerQualification extends DbEntry {
     /**
      * Add a qualification lap
      *
-     * If for the Event and Registration already a qualification lap exists,
-     * the new lap is only taken if it is faster than the old qualification lap.
-     *
      * @param $event The RSerEvent
      * @param $registration The RSerRegistration
      * @param $lap The Lap which shall be checked for qualification
@@ -95,6 +92,14 @@ class RSerQualification extends DbEntry {
             \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of cuts in lap");
             return;
         }
+        if ($lap->session()->track() != $event->track()) {
+            \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of wrong track");
+            return;
+        }
+        if ($lap->session()->serverPreset() != $event->season()->series()->parameterCollection()->child('SessionPresetQual')->serverPreset()) {
+            \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of wrong server preset");
+            return;
+        }
 
         // check if already existing
         $query = "SELECT Id FROM RSerQualifications WHERE Event={$event->id()} AND Registration={$registration->id()}";
@@ -102,10 +107,7 @@ class RSerQualification extends DbEntry {
 
         // update existing qualification
         if (count($res)) {
-            $qual = RSerQualification::fromId((int) $res[0]['Id']);
-            if ($lap->laptime() < $qual->lap()->laptime()) {
-                \Core\Database::update("RSerQualifications", $qual->id(), ['BestLap'=>$lap->id()]);
-            }
+            \Core\Database::update("RSerQualifications", (int) $res[0]['Id'], ['BestLap'=>$lap->id()]);
 
         // add new qualification
         } else {

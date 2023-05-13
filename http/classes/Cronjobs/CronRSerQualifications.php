@@ -40,10 +40,12 @@ class CronRSerQualifications extends \Core\Cronjob {
                 foreach ($event->listSplits() as $split) {
 
                     // find best lap
-                    $bestlap = NULL;
+                    // $bestlap = NULL;
                     $query = "SELECT Laps.Id FROM Laps";
                     $query .= " INNER JOIN Sessions ON Laps.Session=Sessions.Id";
                     $query .= " WHERE Laps.RSerRegistration={$reg->id()}";
+                    $query .= " AND Sessions.Track={$event->track()->id()}";
+                    $query .= " AND Sessions.ServerPreset={$event->season()->series()->parameterCollection()->child('SessionPresetQual')->serverPreset()->id()}";
                     $query .= " AND Laps.Cuts=0";
                     $query .= " AND Laps.Ballast>=$bop_bal";
                     $query .= " AND Laps.Restrictor>=$bop_res";
@@ -51,8 +53,11 @@ class CronRSerQualifications extends \Core\Cronjob {
                     $query .= " ORDER BY Laps.Laptime ASC LIMIT 1;";
                     $res = \Core\Database::fetchRaw($query);
 
-                    if (count($res)) {  // uopdate qualification
+                    if (count($res)) {  // update qualification
                         $lap = \DbEntry\Lap::fromId((int) $res[0]['Id']);
+                        if ($reg->id() == 52 && $event->id() == 23)  {
+                            echo $query ." --&gt; LAP={$lap->id()}<br>";
+                        }
                         \DbEntry\RSerQualification::qualify($event, $reg, $lap);
 
                     } else {  // remove existing qualifications if not matching laps found

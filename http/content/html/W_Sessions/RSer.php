@@ -990,12 +990,13 @@ class RSer extends \core\HtmlContent {
             // current registrations
             $html .= "<table>";
             $html .= "<caption>{$rser_c->name()} <small>({$rser_c->carClass()->name()})</small></caption>";
-            $html .= "<tr><th>" . _("Team") . "</th><th>" . _("Car") . "</th><th>" . _("Drivers") . "</th><td></td></tr>";
+            $html .= "<tr><th>" . _("ID") . "</th><th>" . _("Team") . "</th><th>" . _("Car") . "</th><th>" . _("Drivers") . "</th><td></td></tr>";
             foreach ($this->CurrentSeason->listRegistrations($rser_c) as $rser_reg) {
                 if (!$rser_reg->active()) continue;
                 $html .= "<tr>";
 
                 if ($rser_reg->teamCar()) {
+                    $html .= "<td>{$rser_reg->id()}</td>";
                     $html .= "<td class=\"ZeroPadding\">{$rser_reg->teamCar()->team()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
                     $html .= "<td class=\"ZeroPadding\">{$rser_reg->teamCar()->carSkin()->html(TRUE, FALSE, TRUE)}</td>";
                     $html .= "<td>";
@@ -1020,6 +1021,7 @@ class RSer extends \core\HtmlContent {
 
 
                 } else {
+                    $html .= "<td>{$rser_reg->id()}</td>";
                     $html .= "<td></td>";
                     $html .= "<td class=\"ZeroPadding\">{$rser_reg->carSkin()->html(TRUE, FALSE, TRUE)}</td>";
                     $html .= "<td>{$rser_reg->user()->nationalFlag()} {$rser_reg->user()->html()}</td>";
