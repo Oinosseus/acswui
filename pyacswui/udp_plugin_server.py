@@ -703,4 +703,4 @@ class UdpPluginServer(object):
                    'User': entry.DriverId if entry.TeamCarId == 0 else 0,
                    'PenTime': pen_seconds,
                    'PenDsq': 1 if pen_dsq else 0}
-        self.__db.insertRow("SessionPenalties", columns)
+        self.__database.insertRow("SessionPenalties", columns)
