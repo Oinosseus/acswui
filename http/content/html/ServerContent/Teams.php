@@ -334,7 +334,7 @@ class Teams extends \core\HtmlContent {
             // list all available team cars of a class
             foreach ($tcc->listCars() as $tc) {
                 $html .= "<table class=\"TeamCar\">";
-                $html .= "<caption>" . _("Team Car") . " {$tc->carSkin()->name()}</caption>";
+                $html .= "<caption>" . _("Team Car") . " {$tc->carSkin()->name()} [ID {$tc->id()}]</caption>";
                 $html .= "<tr>";
                 $rowspan = 1 + count($tc->drivers());
                 $colspan = 1;

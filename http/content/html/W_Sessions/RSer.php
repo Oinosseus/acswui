@@ -1263,7 +1263,7 @@ class RSer extends \core\HtmlContent {
         $html .= "</tr>";
         foreach ($this->CurrentSeries->listClasses() as $rser_c) {
             $html .= "<tr>";
-            $html .= "<td>{$rser_c->name()}</td>";
+            $html .= "<td>{$rser_c->name()} [ID {$rser_c->id()}]</td>";
             $html .= "<td>{$rser_c->carClass()->html(TRUE, FALSE, TRUE)}</td>";
             $html .= "<td>";
             $html .= "<div id=\"RaceResultPointsList\">";
