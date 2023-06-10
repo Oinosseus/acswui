@@ -96,9 +96,9 @@ class RSerSeries extends DbEntry {
         // link container
         if ($include_link) {
             $url = "index.php?HtmlContent=RSer&RSerSeries={$this->id()}";
-            if ($current_season) {
-                $url .= "&RSerSeason={$current_season->id()}&View=SeasonOverview";
-            }
+            // if ($current_season) {  // this adds a link to the current season
+            //     $url .= "&RSerSeason={$current_season->id()}&View=SeasonOverview";
+            // }
             $html = "<a href=\"$url\">$html</a>";
         } else {
             $html = "<div>$html</div>";
