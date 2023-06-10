@@ -831,3 +831,9 @@ main.RSer table#ServerSettings {
 main.RSer table#CarClasses {
     margin-top: 2em;
 }
+
+main.RSer table td.Unscored,
+main.RSer table th.Unscored a {
+    color: #456;
+    font-style: italic;
+}

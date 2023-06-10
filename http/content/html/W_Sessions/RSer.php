@@ -237,9 +237,16 @@ class RSer extends \core\HtmlContent {
 
                 // events
                 foreach ($this->CurrentSeason->listEvents() as $rser_e) {
+
+                    // save track
                     $html_id = "RSerEvent{$rser_e->id()}Track";
                     $track = \DbEntry\Track::fromId((int) $_POST[$html_id]);
                     $rser_e->setTrack($track);
+
+                    // save scored
+                    $html_id = "RSerEvent{$rser_e->id()}Scored";
+                    if (array_key_exists($html_id, $_POST)) $rser_e->setScored(TRUE);
+                    else $rser_e->setScored(FALSE);
 
                     // splits
                     foreach ($rser_e->listSplits() as $rser_sp) {
@@ -794,6 +801,12 @@ class RSer extends \core\HtmlContent {
             }
             $html .= "</select></td></tr>";
 
+            // scored
+            $html .= "<tr><th>" . _("Scored") . "</th><td colspan=\"2\">";
+            $checked = ($events[$event_idx]->scored()) ? "checked" : "";
+            $html .= "<input type=\"checkbox\"/ name=\"RSerEvent{$events[$event_idx]->id()}Scored\" $checked>";
+            $html .= "</td></tr>";
+
             // list splits
             $html .= "<tr><th>" . _("Split") . "</th><th>" . _("Start") . "</th><th>" . _("Server Slot") . "</th></tr>";
             $splits = \DbEntry\RSerSplit::listSplits($events[$event_idx]);
@@ -896,9 +909,10 @@ class RSer extends \core\HtmlContent {
             $html .= "<th>" . _("Pos") . "</th>";
             $html .= "<th colspan=\"2\">" . _("Entry") . "</th>";
             foreach ($this->CurrentSeason->listEvents() as $rs_event) {
+                $css_class = ($rs_event->scored()) ? "":" class=\"Unscored\"";
                 $url = $this->url(["RSerEvent"=>$rs_event->id(),
                                     "View"=>"EventOverview"]);
-                $html .= "<th><a href=\"$url\">E{$rs_event->order()}</a></th>";
+                $html .= "<th$css_class><a href=\"$url\">E{$rs_event->order()}</a></th>";
             }
             $html .= "<th>" . _("Points") . "</th>";
             $html .= "<th>" . _("BOP") . "</th>";
@@ -928,7 +942,8 @@ class RSer extends \core\HtmlContent {
                 }
 
                 foreach ($this->CurrentSeason->listEvents() as $rs_event) {
-                    $html .= "<td>";
+                    $css_class = ($rs_event->scored()) ? "":" class=\"Unscored\"";
+                    $html .= "<td$css_class>";
                     $rslt = $rs_event->getResult($reg);
                     if ($rslt) $html .= $rslt->points();
                     $html .= "</td>";

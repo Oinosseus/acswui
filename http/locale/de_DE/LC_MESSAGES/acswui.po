@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-08 11:44+0200\n"
-"PO-Revision-Date: 2023-04-08 11:48+0200\n"
+"POT-Creation-Date: 2023-06-10 21:11+0200\n"
+"PO-Revision-Date: 2023-06-10 21:12+0200\n"
 "Last-Translator: Thomas Weinhold <Thomas.Weinhold@stratoinos.de>\n"
 "Language-Team: German <admin@virtueller-Asphalt.de>\n"
 "Language: de_DE\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 23.04.1\n"
 
 #: http/classes/Core/ACswui.php:33
 msgid "ACswui Settings"
@@ -482,7 +482,7 @@ msgstr "Einstellungen für die Fahrerwertung"
 #: http/content/html/B_User/Polls.php:490
 #: http/content/html/T_Settings/ServerSlots.php:111
 #: http/content/html/W_Sessions/SessionLoops.php:156
-#: http/content/html/W_Sessions/RSer.php:1096 http/content/html/B_User.php:95
+#: http/content/html/W_Sessions/RSer.php:1119 http/content/html/B_User.php:95
 msgid "Name"
 msgstr "Name"
 
@@ -530,7 +530,7 @@ msgstr "Ein beliebiger name für das Zeitplanelement"
 #: http/content/html/ServerContent/Teams.php:300
 #: http/content/html/B_User/Polls.php:424
 #: http/content/html/W_Sessions/SessionLoops.php:159
-#: http/content/html/W_Sessions/RSer.php:1253
+#: http/content/html/W_Sessions/RSer.php:1276
 msgid "Car Class"
 msgstr "Fahrzeugklasse"
 
@@ -544,8 +544,8 @@ msgstr "Die Fahrzeugklasse mit der gefahren wird"
 #: http/content/html/ServerContent/AvailableTrackLocations/TrackLocation/Track.php:8
 #: http/content/html/B_User/Polls.php:379
 #: http/content/html/W_Sessions/SessionLoops.php:160
-#: http/content/html/W_Sessions/RSer.php:784
-#: http/content/html/W_Sessions/RSer.php:945
+#: http/content/html/W_Sessions/RSer.php:797
+#: http/content/html/W_Sessions/RSer.php:966
 msgid "Track"
 msgstr "Strecke"
 
@@ -561,8 +561,8 @@ msgstr "Team Anmeldungen"
 msgid "Allow to register teams"
 msgstr "Teamanmeldung Erlauben"
 
-#: http/classes/Core/ACswui.php:196 http/content/html/W_Sessions/RSer.php:372
-#: http/content/html/W_Sessions/RSer.php:778
+#: http/classes/Core/ACswui.php:196 http/content/html/W_Sessions/RSer.php:379
+#: http/content/html/W_Sessions/RSer.php:791
 #: http/content/html/W_Sessions/SessionOverview.php:510
 msgid "Event"
 msgstr "Veranstaltung"
@@ -607,7 +607,7 @@ msgstr "Wähle das Server-Preset für die Veranstaltung"
 #: http/classes/Core/ServerSlot.php:158
 #: http/classes/Compound/ScheduledItem.php:76
 #: http/content/html/T_Settings/ServerSlots.php:110
-#: http/content/html/W_Sessions/RSer.php:792
+#: http/content/html/W_Sessions/RSer.php:811
 #: http/content/html/W_Sessions/SessionOverview.php:504
 msgid "Server Slot"
 msgstr "Server Slot"
@@ -1223,7 +1223,7 @@ msgstr "Zeile nicht Löschen"
 
 #: http/classes/Core/VEvent.php:41 http/classes/Core/VEvent.php:87
 #: http/content/html/B_User/DriverList.php:8
-#: http/content/html/W_Sessions/RSer.php:987
+#: http/content/html/W_Sessions/RSer.php:1008
 msgid "Drivers"
 msgstr "Fahrer "
 
@@ -1266,12 +1266,12 @@ msgid "Real Weather"
 msgstr "Tatsächliches Wetter"
 
 #: http/classes/Compound/ScheduledItem.php:67
-#: http/content/html/W_Sessions/RSer.php:371
-#: http/content/html/W_Sessions/RSer.php:504
-#: http/content/html/W_Sessions/RSer.php:565
-#: http/content/html/W_Sessions/RSer.php:739
-#: http/content/html/W_Sessions/RSer.php:757
-#: http/content/html/W_Sessions/RSer.php:849
+#: http/content/html/W_Sessions/RSer.php:378
+#: http/content/html/W_Sessions/RSer.php:517
+#: http/content/html/W_Sessions/RSer.php:578
+#: http/content/html/W_Sessions/RSer.php:752
+#: http/content/html/W_Sessions/RSer.php:770
+#: http/content/html/W_Sessions/RSer.php:868
 msgid "Season"
 msgstr "Saison"
 
@@ -1642,8 +1642,8 @@ msgid "Server preset for qualification"
 msgstr "Server-Preset for Qualifikationen"
 
 #: http/classes/ParameterCollections/RSerSeries.php:46
-#: http/content/html/W_Sessions/RSer.php:1116
-#: http/content/html/W_Sessions/RSer.php:1233
+#: http/content/html/W_Sessions/RSer.php:1139
+#: http/content/html/W_Sessions/RSer.php:1256
 msgid "Race Result Points"
 msgstr "Rennergebnis Punkte"
 
@@ -1867,8 +1867,8 @@ msgstr "Das Zusatzgewicht pro Position"
 #: http/classes/ParameterCollections/RSerClass.php:119
 #: http/content/html/T_Settings/ServerPresets.php:117
 #: http/content/html/T_Settings/ServerPresets.php:154
-#: http/content/html/W_Sessions/RSer.php:792
-#: http/content/html/W_Sessions/RSer.php:1397
+#: http/content/html/W_Sessions/RSer.php:811
+#: http/content/html/W_Sessions/RSer.php:1420
 #: http/content/html/W_Sessions.php:74 http/content/html/W_Sessions.php:119
 msgid "Start"
 msgstr "Start"
@@ -2173,7 +2173,7 @@ msgstr "Neue Rennserie"
 #: http/classes/DbEntry/RSerSeries.php:90
 #: http/content/html/ServerContent/Teams.php:393
 #: http/content/html/W_Sessions/SessionSchedules.php:278
-#: http/content/html/W_Sessions/RSer.php:978 http/content/html/A_Home.php:227
+#: http/content/html/W_Sessions/RSer.php:999 http/content/html/A_Home.php:227
 msgid "Registrations"
 msgstr "Anmeldungen"
 
@@ -2216,7 +2216,7 @@ msgstr ""
 "Fahrer:innen reserviert ist."
 
 #: http/classes/DbEntry/ServerPreset.php:279
-#: http/content/html/W_Sessions/RSer.php:1332
+#: http/content/html/W_Sessions/RSer.php:1355
 msgid "DNF Mininum Laps"
 msgstr "DNF Minimum Runden"
 
@@ -2517,8 +2517,8 @@ msgstr "Einstellungen für die Renn-Session"
 #: http/classes/DbEntry/ServerPreset.php:382
 #: http/content/json/ListPopularCarClasses.php:22
 #: http/content/json/ListPopularTracks.php:28
-#: http/content/html/W_Sessions/RSer.php:1308
-#: http/content/html/W_Sessions/RSer.php:1347
+#: http/content/html/W_Sessions/RSer.php:1331
+#: http/content/html/W_Sessions/RSer.php:1370
 #: http/content/html/W_Sessions/SessionOverview.php:405
 #: http/content/html/W_Sessions/SessionOverview.php:429
 msgid "Laps"
@@ -2574,7 +2574,7 @@ msgid "Pit window closes at lap/minute (depends on the race mode)"
 msgstr "Wann das Boxenfenster schließt (Runde/Minute)"
 
 #: http/classes/DbEntry/ServerPreset.php:405
-#: http/content/html/W_Sessions/RSer.php:1320
+#: http/content/html/W_Sessions/RSer.php:1343
 msgid "Reversed Grid"
 msgstr "Invertierter Start"
 
@@ -2603,7 +2603,7 @@ msgid "Positions"
 msgstr "Positionen"
 
 #: http/classes/DbEntry/ServerPreset.php:410
-#: http/content/html/W_Sessions/RSer.php:1314
+#: http/content/html/W_Sessions/RSer.php:1337
 msgid "Extra Lap"
 msgstr "Extra Runde"
 
@@ -2674,7 +2674,7 @@ msgid "Drivethru"
 msgstr "Drive-Thru"
 
 #: http/classes/DbEntry/ServerPreset.php:429
-#: http/content/html/W_Sessions/RSer.php:1338
+#: http/content/html/W_Sessions/RSer.php:1361
 msgid "Allowed Tyres Out"
 msgstr "Streckenbegrenzung"
 
@@ -2684,7 +2684,7 @@ msgstr ""
 "Anzahl der Reifen, die sich außerhalb der Streckenbegrenzung befinden dürfen"
 
 #: http/classes/DbEntry/ServerPreset.php:429
-#: http/content/html/W_Sessions/RSer.php:1339
+#: http/content/html/W_Sessions/RSer.php:1362
 msgid "Tyres"
 msgstr "Reifen"
 
@@ -2800,7 +2800,7 @@ msgstr ""
 "Spritverbrauch in Prozent (100% entspricht dem realistischen Verbrauch)"
 
 #: http/classes/DbEntry/ServerPreset.php:467
-#: http/content/html/W_Sessions/RSer.php:1287
+#: http/content/html/W_Sessions/RSer.php:1310
 msgid "Damage Multiplier"
 msgstr "Schaden"
 
@@ -3157,12 +3157,12 @@ msgid "Race Enabled"
 msgstr "Rennen Aktiviert"
 
 #: http/classes/DbEntry/ServerPreset.php:595
-#: http/content/html/W_Sessions/RSer.php:1328
+#: http/content/html/W_Sessions/RSer.php:1351
 msgid "Penalty Settings"
 msgstr "Straf-Einstellungen"
 
 #: http/classes/DbEntry/ServerPreset.php:599
-#: http/content/html/W_Sessions/RSer.php:1346
+#: http/content/html/W_Sessions/RSer.php:1369
 msgid "Laps To Take Penalty"
 msgstr "Runden zur Büße"
 
@@ -3224,7 +3224,7 @@ msgid "During Safety Car"
 msgstr "Während Safety Car"
 
 #: http/classes/DbEntry/ServerPreset.php:616
-#: http/content/html/W_Sessions/RSer.php:1352
+#: http/content/html/W_Sessions/RSer.php:1375
 msgid "Total Cut Warnings"
 msgstr "Anzahl Warnungen"
 
@@ -3709,13 +3709,13 @@ msgstr "Kollision ID"
 
 #: http/content/json/SessionData.php:125 http/content/json/TrackRecords.php:48
 #: http/content/json/CarClassRecords.php:48
-#: http/content/html/W_Sessions/RSer.php:457
 #: http/content/html/W_Sessions/SessionOverview.php:252
 msgid "Lap"
 msgstr "Runde"
 
 #: http/content/json/SessionData.php:126 http/content/json/TrackRecords.php:40
 #: http/content/json/CarClassRecords.php:40
+#: http/content/html/W_Sessions/RSer.php:464
 #: http/content/html/W_Sessions/SessionOverview.php:246
 msgid "Laptime"
 msgstr "Rundenzeit"
@@ -3735,7 +3735,7 @@ msgstr "Differenz"
 #: http/content/html/ServerContent/Teams.php:353
 #: http/content/html/B_User/DriverRanking.php:36
 #: http/content/html/W_Sessions/SessionSchedules.php:519
-#: http/content/html/W_Sessions/RSer.php:508
+#: http/content/html/W_Sessions/RSer.php:521
 #: http/content/html/W_Sessions/SessionOverview.php:137
 #: http/content/html/W_Sessions/SessionOverview.php:245
 #: http/content/html/W_Sessions/SessionOverview.php:329
@@ -3748,7 +3748,7 @@ msgstr "Fahrer"
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel/CarSkin.php:127
 #: http/content/html/ServerContent/AvailableCarClasses/CarClass.php:152
 #: http/content/html/W_Sessions/SessionSchedules.php:520
-#: http/content/html/W_Sessions/RSer.php:987
+#: http/content/html/W_Sessions/RSer.php:1008
 #: http/content/html/W_Sessions/SessionOverview.php:249
 #: http/content/html/W_Sessions/SessionOverview.php:418
 msgid "Car"
@@ -3756,10 +3756,10 @@ msgstr "Auto"
 
 #: http/content/json/SessionData.php:131 http/content/json/TrackRecords.php:44
 #: http/content/json/CarClassRecords.php:44
-#: http/content/html/W_Sessions/RSer.php:458
-#: http/content/html/W_Sessions/RSer.php:898
-#: http/content/html/W_Sessions/RSer.php:1153
-#: http/content/html/W_Sessions/RSer.php:1254
+#: http/content/html/W_Sessions/RSer.php:465
+#: http/content/html/W_Sessions/RSer.php:918
+#: http/content/html/W_Sessions/RSer.php:1176
+#: http/content/html/W_Sessions/RSer.php:1277
 #: http/content/html/W_Sessions/SessionOverview.php:250
 msgid "BOP"
 msgstr "Ausgleich"
@@ -4067,14 +4067,14 @@ msgstr ""
 
 #: http/content/html/T_Settings.php:8
 #: http/content/html/B_User/UserSettings.php:8
-#: http/content/html/W_Sessions/RSer.php:1280
+#: http/content/html/W_Sessions/RSer.php:1303
 msgid "Settings"
 msgstr "Einstellungen"
 
 #: http/content/html/ServerContent/AvailableCarClasses.php:10
 #: http/content/html/ServerContent/AvailableBrands/CarBrand/CarModel.php:131
 #: http/content/html/B_User/Polls.php:551
-#: http/content/html/W_Sessions/RSer.php:1251
+#: http/content/html/W_Sessions/RSer.php:1274
 msgid "Car Classes"
 msgstr "Fahrzeugklassen"
 
@@ -4288,7 +4288,7 @@ msgid "Load CarClass Records"
 msgstr "Lade Klassenrekorde"
 
 #: http/content/html/ServerContent/Teams.php:15
-#: http/content/html/W_Sessions/RSer.php:713
+#: http/content/html/W_Sessions/RSer.php:726
 msgid "Teams"
 msgstr "Teams"
 
@@ -4322,7 +4322,7 @@ msgid "Abbreviation"
 msgstr "Abkürzung"
 
 #: http/content/html/ServerContent/Teams.php:239
-#: http/content/html/W_Sessions/RSer.php:1101
+#: http/content/html/W_Sessions/RSer.php:1124
 msgid "Logo"
 msgstr "Logo"
 
@@ -4373,7 +4373,7 @@ msgid "Team Car Classes"
 msgstr "Team Fahrzeugklassen"
 
 #: http/content/html/ServerContent/Teams.php:314
-#: http/content/html/W_Sessions/RSer.php:1133
+#: http/content/html/W_Sessions/RSer.php:1156
 msgid "Add Car Class"
 msgstr "Fahrzeugklasse Hinzufügen"
 
@@ -4574,10 +4574,10 @@ msgstr "Ergebnis Strecken"
 
 #: http/content/html/B_User/Polls.php:377
 #: http/content/html/B_User/Polls.php:422
-#: http/content/html/W_Sessions/RSer.php:413
-#: http/content/html/W_Sessions/RSer.php:455
-#: http/content/html/W_Sessions/RSer.php:506
-#: http/content/html/W_Sessions/RSer.php:890
+#: http/content/html/W_Sessions/RSer.php:420
+#: http/content/html/W_Sessions/RSer.php:462
+#: http/content/html/W_Sessions/RSer.php:519
+#: http/content/html/W_Sessions/RSer.php:909
 msgid "Pos"
 msgstr "Pos"
 
@@ -4764,7 +4764,7 @@ msgstr "Preset Speichern"
 
 #: http/content/html/T_Settings/ServerPresets.php:112
 #: http/content/html/W_Sessions/SessionSchedules.php:12
-#: http/content/html/W_Sessions/RSer.php:1376
+#: http/content/html/W_Sessions/RSer.php:1399
 msgid "Schedule"
 msgstr "Zeitplan"
 
@@ -4778,16 +4778,16 @@ msgstr "Preset speichern um den Zeitplan zu aktualisieren."
 
 #: http/content/html/T_Settings/ServerPresets.php:118
 #: http/content/html/T_Settings/ServerPresets.php:155
-#: http/content/html/W_Sessions/RSer.php:414
-#: http/content/html/W_Sessions/RSer.php:456
-#: http/content/html/W_Sessions/RSer.php:891
-#: http/content/html/W_Sessions/RSer.php:1398
+#: http/content/html/W_Sessions/RSer.php:421
+#: http/content/html/W_Sessions/RSer.php:463
+#: http/content/html/W_Sessions/RSer.php:910
+#: http/content/html/W_Sessions/RSer.php:1421
 msgid "Entry"
 msgstr "Eintrag"
 
 #: http/content/html/T_Settings/ServerPresets.php:119
 #: http/content/html/T_Settings/ServerPresets.php:156
-#: http/content/html/W_Sessions/RSer.php:1399
+#: http/content/html/W_Sessions/RSer.php:1422
 msgid "Duration"
 msgstr "Dauer"
 
@@ -4904,15 +4904,15 @@ msgstr "Neues Zeitplanelement Erstellen"
 #: http/content/html/W_Sessions/SessionSchedules.php:343
 #: http/content/html/W_Sessions/SessionSchedules.php:367
 #: http/content/html/W_Sessions/SessionSchedules.php:399
-#: http/content/html/W_Sessions/RSer.php:599
-#: http/content/html/W_Sessions/RSer.php:636
-#: http/content/html/W_Sessions/RSer.php:670
-#: http/content/html/W_Sessions/RSer.php:719
+#: http/content/html/W_Sessions/RSer.php:612
+#: http/content/html/W_Sessions/RSer.php:649
+#: http/content/html/W_Sessions/RSer.php:683
+#: http/content/html/W_Sessions/RSer.php:732
 msgid "Save Registration"
 msgstr "Anmeldung Speichern"
 
 #: http/content/html/W_Sessions/SessionSchedules.php:392
-#: http/content/html/W_Sessions/RSer.php:710
+#: http/content/html/W_Sessions/RSer.php:723
 msgid ""
 "You either have no permission to manage a team or none of your teams has a "
 "car in the correct class"
@@ -4945,7 +4945,7 @@ msgid "Register Driver"
 msgstr "Fahrer Anmelden"
 
 #: http/content/html/W_Sessions/SessionSchedules.php:508
-#: http/content/html/W_Sessions/RSer.php:1044
+#: http/content/html/W_Sessions/RSer.php:1067
 msgid "Register Team"
 msgstr "Team Anmelden"
 
@@ -4989,183 +4989,189 @@ msgstr "Preset"
 msgid "Last Start"
 msgstr "Letzter Start"
 
-#: http/content/html/W_Sessions/RSer.php:316
+#: http/content/html/W_Sessions/RSer.php:323
 msgid "Create new Race Series"
 msgstr "Neue Rennserie Erstellen"
 
-#: http/content/html/W_Sessions/RSer.php:365
-#: http/content/html/W_Sessions/RSer.php:733
-#: http/content/html/W_Sessions/RSer.php:846
-#: http/content/html/W_Sessions/RSer.php:1067
-#: http/content/html/W_Sessions/RSer.php:1186
+#: http/content/html/W_Sessions/RSer.php:372
+#: http/content/html/W_Sessions/RSer.php:746
+#: http/content/html/W_Sessions/RSer.php:865
+#: http/content/html/W_Sessions/RSer.php:1090
+#: http/content/html/W_Sessions/RSer.php:1209
 msgid "Race Series List"
 msgstr "Rennserien Liste"
 
-#: http/content/html/W_Sessions/RSer.php:388
+#: http/content/html/W_Sessions/RSer.php:395
 msgid "Update Results"
 msgstr "Ergebnisse Aktualisieren"
 
-#: http/content/html/W_Sessions/RSer.php:393
+#: http/content/html/W_Sessions/RSer.php:400
 msgid "Race Results"
 msgstr "Rennergebnisse"
 
-#: http/content/html/W_Sessions/RSer.php:398
+#: http/content/html/W_Sessions/RSer.php:405
 msgid "Races"
 msgstr "Rennen"
 
-#: http/content/html/W_Sessions/RSer.php:415
-#: http/content/html/W_Sessions/RSer.php:509
-#: http/content/html/W_Sessions/RSer.php:897
+#: http/content/html/W_Sessions/RSer.php:422
+#: http/content/html/W_Sessions/RSer.php:522
+#: http/content/html/W_Sessions/RSer.php:917
 msgid "Points"
 msgstr "Punkte"
 
-#: http/content/html/W_Sessions/RSer.php:450
+#: http/content/html/W_Sessions/RSer.php:457
 msgid "Qualifications"
 msgstr "Qualifikationen"
 
-#: http/content/html/W_Sessions/RSer.php:504
-#: http/content/html/W_Sessions/RSer.php:866
+#: http/content/html/W_Sessions/RSer.php:517
+#: http/content/html/W_Sessions/RSer.php:885
 msgid "Standings"
 msgstr "Klassement"
 
-#: http/content/html/W_Sessions/RSer.php:507
-#: http/content/html/W_Sessions/RSer.php:987
+#: http/content/html/W_Sessions/RSer.php:520
+#: http/content/html/W_Sessions/RSer.php:1008
 msgid "Team"
 msgstr "Team"
 
-#: http/content/html/W_Sessions/RSer.php:581
-#: http/content/html/W_Sessions/RSer.php:651
+#: http/content/html/W_Sessions/RSer.php:594
+#: http/content/html/W_Sessions/RSer.php:664
 msgid "Season Overview"
 msgstr "Saisonübersicht"
 
-#: http/content/html/W_Sessions/RSer.php:712
+#: http/content/html/W_Sessions/RSer.php:725
 msgid "Checkout the tems here"
 msgstr "Teams befinden sich hier"
 
-#: http/content/html/W_Sessions/RSer.php:740
+#: http/content/html/W_Sessions/RSer.php:753
 msgid "Season Edit"
 msgstr "Saison Bearbeiten"
 
-#: http/content/html/W_Sessions/RSer.php:768
+#: http/content/html/W_Sessions/RSer.php:781
 msgid "Add Event"
 msgstr "Veranstaltung Hinzufügen"
 
-#: http/content/html/W_Sessions/RSer.php:772
-#: http/content/html/W_Sessions/RSer.php:941
+#: http/content/html/W_Sessions/RSer.php:785
+#: http/content/html/W_Sessions/RSer.php:962
 msgid "Events"
 msgstr "Veranstaltungen"
 
-#: http/content/html/W_Sessions/RSer.php:792
-#: http/content/html/W_Sessions/RSer.php:796
-#: http/content/html/W_Sessions/RSer.php:961
-#: http/content/html/W_Sessions/RSer.php:969
+#: http/content/html/W_Sessions/RSer.php:805
+msgid "Scored"
+msgstr "Gewerted"
+
+#: http/content/html/W_Sessions/RSer.php:811
+#: http/content/html/W_Sessions/RSer.php:815
+#: http/content/html/W_Sessions/RSer.php:982
+#: http/content/html/W_Sessions/RSer.php:990
 msgid "Split"
 msgstr "Split"
 
-#: http/content/html/W_Sessions/RSer.php:831
+#: http/content/html/W_Sessions/RSer.php:850
 msgid "Save Season"
 msgstr "Saison Speichern"
 
-#: http/content/html/W_Sessions/RSer.php:861
+#: http/content/html/W_Sessions/RSer.php:880
 msgid "Edit Season"
 msgstr "Saison Bearbeiten"
 
-#: http/content/html/W_Sessions/RSer.php:944 http/content/html/B_User.php:94
+#: http/content/html/W_Sessions/RSer.php:965
+#: http/content/html/W_Sessions/RSer.php:1008 http/content/html/B_User.php:94
 msgid "ID"
 msgstr "ID"
 
-#: http/content/html/W_Sessions/RSer.php:946
+#: http/content/html/W_Sessions/RSer.php:967
 msgid "Splits"
 msgstr "Splits"
 
-#: http/content/html/W_Sessions/RSer.php:1012
-#: http/content/html/W_Sessions/RSer.php:1027
+#: http/content/html/W_Sessions/RSer.php:1034
+#: http/content/html/W_Sessions/RSer.php:1050
 msgid "Unregister"
 msgstr "Abmelden"
 
-#: http/content/html/W_Sessions/RSer.php:1051
+#: http/content/html/W_Sessions/RSer.php:1074
 msgid "Register Single Driver"
 msgstr "Einzelfahrer Anmelden"
 
-#: http/content/html/W_Sessions/RSer.php:1070
+#: http/content/html/W_Sessions/RSer.php:1093
 msgid "Race Series Edit"
 msgstr "Rennserie Bearbeiten"
 
-#: http/content/html/W_Sessions/RSer.php:1089
-#: http/content/html/W_Sessions/RSer.php:1091
+#: http/content/html/W_Sessions/RSer.php:1112
+#: http/content/html/W_Sessions/RSer.php:1114
 msgid "General Setup"
 msgstr "Allgemeine Einstellungen"
 
-#: http/content/html/W_Sessions/RSer.php:1113
+#: http/content/html/W_Sessions/RSer.php:1136
 msgid "Parameters"
 msgstr "Parameter"
 
-#: http/content/html/W_Sessions/RSer.php:1130
+#: http/content/html/W_Sessions/RSer.php:1153
 msgid "Classes"
 msgstr "Klassen"
 
-#: http/content/html/W_Sessions/RSer.php:1148
+#: http/content/html/W_Sessions/RSer.php:1171
 msgid "Remove Class"
 msgstr "Klasse Entfernen"
 
-#: http/content/html/W_Sessions/RSer.php:1171
+#: http/content/html/W_Sessions/RSer.php:1194
 msgid "Save Race Series"
 msgstr "Rennserie Speichern"
 
-#: http/content/html/W_Sessions/RSer.php:1214
+#: http/content/html/W_Sessions/RSer.php:1237
 msgid "Edit Race Series"
 msgstr "Rennserie Bearbeiten"
 
-#: http/content/html/W_Sessions/RSer.php:1220
+#: http/content/html/W_Sessions/RSer.php:1243
 msgid "Create New Season"
 msgstr "Neue Saison Erstellen"
 
-#: http/content/html/W_Sessions/RSer.php:1228
+#: http/content/html/W_Sessions/RSer.php:1251
 msgid "Submission"
 msgstr "Ausschreibung"
 
-#: http/content/html/W_Sessions/RSer.php:1231
+#: http/content/html/W_Sessions/RSer.php:1254
 msgid "Result Assessment"
 msgstr "Wertung"
 
-#: http/content/html/W_Sessions/RSer.php:1245
+#: http/content/html/W_Sessions/RSer.php:1268
 msgid "In-Class team assessment"
 msgstr "Klasseninterne Teamwertung"
 
-#: http/content/html/W_Sessions/RSer.php:1283
+#: http/content/html/W_Sessions/RSer.php:1306
 msgid "Server Settings"
 msgstr "Server Einstellungen"
 
-#: http/content/html/W_Sessions/RSer.php:1305
+#: http/content/html/W_Sessions/RSer.php:1328
 msgid "Pit Window"
 msgstr "Boxenfenster"
 
-#: http/content/html/W_Sessions/RSer.php:1308
+#: http/content/html/W_Sessions/RSer.php:1331
 #: http/content/html/W_Sessions/SessionOverview.php:405
 msgid "Minutes"
 msgstr "Minuten"
 
-#: http/content/html/W_Sessions/RSer.php:1358
+#: http/content/html/W_Sessions/RSer.php:1381
 msgid "Pit Speed Limit"
 msgstr "Boxengeschwindigkeit"
 
-#: http/content/html/W_Sessions/RSer.php:1364
+#: http/content/html/W_Sessions/RSer.php:1387
 msgid "Minimum Pit Speed Penalty"
 msgstr "Minimale Strafe für Boxengeschwindigkeit"
 
-#: http/content/html/W_Sessions/RSer.php:1379
+#: http/content/html/W_Sessions/RSer.php:1402
 msgid "Virtual session start time"
 msgstr "Virtuelle Session Startzeit"
 
-#: http/content/html/W_Sessions/RSer.php:1381
+#: http/content/html/W_Sessions/RSer.php:1404
 msgid "Time Factor"
 msgstr "Zeitfaktor"
 
-#: http/content/html/W_Sessions/RSer.php:1387
+#: http/content/html/W_Sessions/RSer.php:1410
 msgid "The following table(s) show the schedule for the next event."
 msgstr ""
+"Die folgenden Tabellen zeigen den Zeitplan für die nächste Veranstaltung."
 
-#: http/content/html/W_Sessions/RSer.php:1427
+#: http/content/html/W_Sessions/RSer.php:1450
 msgid "Seasons"
 msgstr "Saisons"
 
@@ -5580,9 +5586,6 @@ msgstr ""
 
 #~ msgid "Weeks"
 #~ msgstr "Wochen"
-
-#~ msgid "Score"
-#~ msgstr "Punkte"
 
 #~ msgid "Show"
 #~ msgstr "Anzeigen"

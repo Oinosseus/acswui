@@ -35,6 +35,7 @@ class RSerStanding extends DbEntry {
             // list points of each event
             $event_list = $season->listEvents();
             foreach ($event_list as $event) {
+                if (!$event->scored()) continue; // skip non-scored events
                 foreach ($event->listResults($rs_class) as $rslt) {
                     $registrations[$rslt->registration()->id()]['Pts'][] = $rslt->points();
                 }

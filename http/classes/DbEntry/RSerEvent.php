@@ -162,9 +162,35 @@ class RSerEvent extends DbEntry {
     }
 
 
+    //! @return TRUE if the event shall be scored
+    public function scored() : bool {
+        return (bool) $this->loadColumn("Scored");
+    }
+
+
     //! @return The associated season of this event
     public function season() : RSerSeason {
         return RSerSeason::fromId((int) $this->loadColumn('Season'));
+    }
+
+
+    /**
+     * Define if the race shall be scored
+     * On a change, this will cause a re-calculation of the results
+     *
+     * @param $scored TRUE if the event shall be scored, else FALSE
+     */
+    public function setScored(bool $scored) {
+
+        // skip if no change
+        if ($scored == $this->scored()) return;
+
+        // update DB
+        $val = ($scored) ? 1 : 0;
+        $this->storeColumns(["Scored"=>$val]);
+
+        // re-calculate results
+        RSerResult::calculateFromEvent($this);
     }
 
 
