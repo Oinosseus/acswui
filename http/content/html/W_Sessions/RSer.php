@@ -1214,13 +1214,17 @@ class RSer extends \core\HtmlContent {
         $html .= $this->getHtmlPageHeader();
 
         // get some informations
-        $next_event = $this->CurrentSeries->nextSplit()->event();
         $server_preset = $this->CurrentSeries->parameterCollection()->child("SessionPresetRace")->serverPreset();
+        $next_split = $this->CurrentSeries->nextSplit();
         $any_slot_uses_real_penalty = FALSE;
-        foreach ($next_event->listSplits() as $split) {
-            if ($split->serverSlot()->parameterCollection()->child("RPGeneralEnable")->value()) {
-                $any_slot_uses_real_penalty = TRUE;
-                break;
+        $next_event = NULL;
+        if ($next_split) {
+            $next_event = $next_split->event();
+            foreach ($next_event->listSplits() as $split) {
+                if ($split->serverSlot()->parameterCollection()->child("RPGeneralEnable")->value()) {
+                    $any_slot_uses_real_penalty = TRUE;
+                    break;
+                }
             }
         }
         $race_is_lap_based = ($server_preset->parameterCollection()->child("AcServerRaceLaps")->value() > 0) ? TRUE : FALSE;
@@ -1398,48 +1402,53 @@ class RSer extends \core\HtmlContent {
 
         $html .= "<h1>" . _("Schedule") . "</h1>";
 
-        $html .= "<p>";
-        $html .= _("Virtual session start time") . ": ";
-        $html .= $server_preset->parameterCollection()->child("SessionStartTime")->valueLabel();
-        $html .= " (" . _("Time Factor") . " x";
-        $html .= $server_preset->parameterCollection()->child("AcServerTimeMultiplier")->valueLabel();
-        $html .= ")";
-        $html .= "</p>";
-
-        $html .= "<p>";
-        $html .= _("The following table(s) show the schedule for the next event.");
-        $html .= "</p>";
-
         // list schedule for all splits of next event
-        foreach ($next_event->listSplits() as $split) {
+        if ($next_event) {
 
-            $schedule = $server_preset->schedule();
-            $html .= "<table id=\"EstimatedSchedule\">";
-            $html .= "<caption>{$next_event->season()->name()} E{$next_event->order()}S{$split->order()}</caption>";
-            $html .= "<tr>";
-            $html .= "<th>" . _("Start") . "</th>";
-            $html .= "<th>" . _("Entry") . "</th>";
-            $html .= "<th>" . _("Duration") . "</th>";
-            $html .= "</tr>";
+            $html .= "<p>";
+            $html .= _("Virtual session start time") . ": ";
+            $html .= $server_preset->parameterCollection()->child("SessionStartTime")->valueLabel();
+            $html .= " (" . _("Time Factor") . " x";
+            $html .= $server_preset->parameterCollection()->child("AcServerTimeMultiplier")->valueLabel();
+            $html .= ")";
+            $html .= "</p>";
 
-            // iterate over schedule items
-            $time = $split->start();
-            foreach ($schedule as [$interval, $uncertainty, $type, $name]) {
+            $html .= "<p>";
+            $html .= _("The following table(s) show the schedule for the next event.");
+            $html .= "</p>";
 
-                // only show short schedule
-                if ($type != \Enums\SessionType::Invalid) {
-                    $html .= "<tr>";
-                    $html .= "<td>" . \Core\UserManager::currentUser()->formatDateTimeNoSeconds($time) . "</td>";
-                    $html .= "<td>$name</td>";
-                    $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeInterval($interval) . "</td>";
-                    $html .= "</tr>";
+            foreach ($next_event->listSplits() as $split) {
+
+                $schedule = $server_preset->schedule();
+                $html .= "<table id=\"EstimatedSchedule\">";
+                $html .= "<caption>{$next_event->season()->name()} E{$next_event->order()}S{$split->order()}</caption>";
+                $html .= "<tr>";
+                $html .= "<th>" . _("Start") . "</th>";
+                $html .= "<th>" . _("Entry") . "</th>";
+                $html .= "<th>" . _("Duration") . "</th>";
+                $html .= "</tr>";
+
+                // iterate over schedule items
+                $time = $split->start();
+                foreach ($schedule as [$interval, $uncertainty, $type, $name]) {
+
+                    // only show short schedule
+                    if ($type != \Enums\SessionType::Invalid) {
+                        $html .= "<tr>";
+                        $html .= "<td>" . \Core\UserManager::currentUser()->formatDateTimeNoSeconds($time) . "</td>";
+                        $html .= "<td>$name</td>";
+                        $html .= "<td>" . \Core\UserManager::currentUser()->formatTimeInterval($interval) . "</td>";
+                        $html .= "</tr>";
+                    }
+
+                    // add duration to next start time
+                    $time->add($interval->toDateInterval());
                 }
 
-                // add duration to next start time
-                $time->add($interval->toDateInterval());
+                $html .= "</table>";
             }
-
-            $html .= "</table>";
+        } else {
+            $html .= _("No upcomming event scheduled");
         }
 
 
