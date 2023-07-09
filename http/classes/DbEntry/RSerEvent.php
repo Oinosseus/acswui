@@ -109,12 +109,12 @@ class RSerEvent extends DbEntry {
     public static function listEvents(RSerSeason $rser_season) : array {
 
         // prepare query
-        $query = "SELECT Id FROM RSerEvents WHERE Season={$rser_season->id()} ORDER BY Id ASC";
+        $query = "SELECT RSerSplits.Event FROM `RSerSplits` INNER JOIN RSerEvents ON RSerEvents.Id = RSerSplits.Event INNER JOIN RSerSeasons ON RSerSeasons.Id = RSerEvents.Season WHERE RSerSeasons.Id = {$rser_season->id()} ORDER BY RSerSplits.Start ASC; "; // this only works with single split per event
 
         // list results
         $list = array();
         foreach (\Core\Database::fetchRaw($query) as $row) {
-            $id = (int) $row['Id'];
+            $id = (int) $row['Event'];
             $list[] = RSerEvent::fromId($id);
         }
 
@@ -150,10 +150,10 @@ class RSerEvent extends DbEntry {
     //! @return The order/number of this event
     public function order() : int {
         if ($this->Order === NULL) {
-            $query = "SELECT Id FROM RSerEvents WHERE Season={$this->season()->id()} ORDER BY Id ASC";
+            $query = "SELECT RSerSplits.Event FROM `RSerSplits` INNER JOIN RSerEvents ON RSerEvents.Id = RSerSplits.Event INNER JOIN RSerSeasons ON RSerSeasons.Id = RSerEvents.Season WHERE RSerSeasons.Id = {$this->season()->id()} ORDER BY RSerSplits.Start ASC; "; // this only works with single split per event
             $this->Order = 1;
             foreach (\Core\Database::fetchRaw($query) as $row) {
-                if ($row['Id'] == $this->id()) break;
+                if ($row['Event'] == $this->id()) break;
                 $this->Order += 1;
             }
         }

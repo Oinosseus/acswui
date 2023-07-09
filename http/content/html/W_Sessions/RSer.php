@@ -971,7 +971,8 @@ class RSer extends \core\HtmlContent {
             $rowspan = count($splits);
             if ($rowspan == 0) $rowspan = 1;
 
-            $html .= "<tr>";
+            $css_score_class = ($rs_event->scored()) ? "":"Unscored";
+            $html .= "<tr class=\"$css_score_class\">";
 
             $url = $this->url(["RSerEvent"=>$rs_event->id(),
                                 "View"=>"EventOverview"]);
@@ -986,7 +987,7 @@ class RSer extends \core\HtmlContent {
             $html .= "</tr>";
 
             for ($split_idx=1; $split_idx < count($splits); ++$split_idx) {
-                $html .= "<tr>";
+                $html .= "<tr class=\"$css_score_class\">";
                 $html .= "<td>" . _("Split") . " " . ($split_idx+1) . "</td>";
                 $html .= "<td>{$cu->formatDateTimeNoSeconds($splits[$split_idx]->start())}</td>";
                 $html .= "<td>{$splits[$split_idx]->serverSlot()->name()}</td>";

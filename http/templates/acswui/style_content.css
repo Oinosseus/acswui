@@ -833,7 +833,9 @@ main.RSer table#CarClasses {
 }
 
 main.RSer table td.Unscored,
-main.RSer table th.Unscored a {
+main.RSer table th.Unscored a,
+main.RSer table tr.Unscored td,
+main.RSer table tr.Unscored td a {
     color: #456;
     font-style: italic;
 }
