@@ -76,6 +76,7 @@ class CarModel extends \core\HtmlContent {
             $html .= "<tr><th>AC-Directory</th><td>content/cars/" . $car->model() . "</td></tr>";
             $html .= "<tr><th>" . _("Kunos Original") . "</th><td>". (($car->kunosOriginal()) ? _("yes") : ("no")) . "</td></tr>";
             $html .= "<tr><th>" . _("Deprecated") . "</th><td>". (($car->deprecated()) ? _("yes") : ("no")) . "</td></tr>";
+            $html .= "<tr><th>" . _("data.acd file") . "</th><td>". (($car->hasDataAcd()) ? _("yes") : ("no")) . "</td></tr>";
             $html .= "<tr><th>" . _("Download") . "</th><td>";
             if ($this->CanEdit && !$car->kunosOriginal()) {
                 $html .= "<input type=\"text\" name=\"DownloadUrl\" value=\"{$car->downloadUrl()}\" />";

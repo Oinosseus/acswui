@@ -41,6 +41,7 @@ class A_Home extends \core\HtmlContent {
         $tracklocationss_with_no_download = array();
         $tracklocationss_with_no_geolocation = array();
         $cars_with_no_download = array();
+        $cars_with_no_data_acd = array();
         $schedule_items_with_invalid_server_slot = array();
         $tracks_without_real_penalty_trackfile = array();
 
@@ -73,6 +74,8 @@ class A_Home extends \core\HtmlContent {
                             $cars_with_no_download[] = $car;
                         }
                     }
+
+                    if (!$car->hasDataAcd()) $cars_with_no_data_acd[] = $car;
                 }
             }
         }
@@ -109,6 +112,8 @@ class A_Home extends \core\HtmlContent {
                             $cars_with_no_download[] = $car;
                         }
                     }
+
+                    if (!$car->hasDataAcd()) $cars_with_no_data_acd[] = $car;
                 }
             }
         }
@@ -144,6 +149,14 @@ class A_Home extends \core\HtmlContent {
             $any_maladmin_found = TRUE;
             $html .= "<h2>" . _("Cars with no download url") . "</h2>";
             foreach ($cars_with_no_download as $c) {
+                $html .= $c->html();
+            }
+        }
+
+        if (count($cars_with_no_data_acd) > 0) {
+            $any_maladmin_found = TRUE;
+            $html .= "<h2>" . _("Cars with no data.acd file") . "</h2>";
+            foreach ($cars_with_no_data_acd as $c) {
                 $html .= $c->html();
             }
         }

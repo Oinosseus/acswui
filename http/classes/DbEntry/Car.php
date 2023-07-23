@@ -20,6 +20,7 @@ class Car extends DbEntry {
     private $Weight = NULL;
     private $MaxRpm = NULL;
     private $CarClasses = NULL;
+    private $HasDataAcd = NULL;
 
 
     /**
@@ -175,6 +176,18 @@ class Car extends DbEntry {
         }
 
         return $this->PowerHarmonized[$restrictor];
+    }
+
+
+    //! @return TRUE if the car has a data.acd file (missing file could introduce cheating)
+    public function hasDataAcd() : bool {
+
+        if ($this->HasDataAcd === NULL) {
+            $path = \Core\Config::AbsPathData . "/acserver/slot1/content/cars/{$this->model()}/data.acd";
+            $this->HasDataAcd = is_file($path);
+        }
+
+        return $this->HasDataAcd;
     }
 
 
