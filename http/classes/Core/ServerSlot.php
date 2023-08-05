@@ -870,7 +870,7 @@ class ServerSlot {
 
         // section Sol
         fwrite($f, "\n[Sol]\n");
-        fwrite($f, "MANDATORY = " . (($ppc->child("RpAcsSolMandatory")->value()) ? 1:0) . "\n");
+        fwrite($f, "MANDATORY = " . (($ppc->child("RpAcsSolMandatory")->value()) ? "true":"false") . "\n");
         fwrite($f, "CHECK_FREQUENCY = " . $pc->child("RPGeneralCF")->value() . "\n");
 
         // section Custom_Shaders_Patch
