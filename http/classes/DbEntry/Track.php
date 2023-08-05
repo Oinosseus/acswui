@@ -18,6 +18,7 @@ class Track extends DbEntry {
     private $Length = NULL;
     private $Pitboxes = NULL;
     private $Deprecated = NULL;
+    private $HasDrsZones = NULL;
 //     private $Drivers = NULL;
     private $DrivenLaps = NULL;
 //     private $DrivenMeters = NULL;
@@ -220,6 +221,28 @@ class Track extends DbEntry {
      */
     public static function fromId(int $id) {
         return parent::getCachedObject("Tracks", "Track", $id);
+    }
+
+
+    //! @return TRUE if the track has a drs_zones.ini file
+    public function hasDrsZones() : bool {
+
+        if ($this->HasDrsZones === NULL) {
+            $track_location_track = $this->location()->track();
+            $track_config = $this->config();
+
+            // get path
+            $path = "";
+            if ($track_config !="") {
+                $path = \Core\Config::AbsPathData . "/acserver/slot1/content/tracks/$track_location_track/$track_config/data/drs_zones.ini";
+            } else {
+                $path = \Core\Config::AbsPathData . "/acserver/slot1/content/tracks/$track_location_track/data/drs_zones.ini";
+            }
+
+            $this->HasDrsZones = is_file($path);
+        }
+
+        return $this->HasDrsZones;
     }
 
 

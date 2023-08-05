@@ -172,6 +172,7 @@ class CommandPackage(Command):
             # copy files
             self._copy2http(path_track, "map.png")
             self._copy2acs(path_track, "data", "surfaces.ini")
+            self._copy2acs(path_track, "data", "drs_zones.ini")
             self._copy2http(path_track, "ui", "outline.png")
             self._copy2http(path_track, "ui", "preview.png")
             self._copy2http(path_track, "ui", "ui_track.json")
@@ -179,6 +180,7 @@ class CommandPackage(Command):
             # scan subdirectories for track configurations
             for configtrack in os.listdir(os.path.join(path_ac_tracks, track)):
                 self._copy2acs(path_track, configtrack, "data", "surfaces.ini")
+                self._copy2acs(path_track, configtrack, "data", "drs_zones.ini")
                 self._copy2http(path_track, configtrack, "map.png")
                 self._copy2http(path_track, "ui", configtrack, "ui_track.json")
                 self._copy2http(path_track, "ui", configtrack, "outline.png")
