@@ -8,7 +8,7 @@ namespace Core;
 class Discord {
 
     /**
-     * @param §schedules An array, retrieved from ServerPreset->->schedule()
+     * @param §schedules An array, retrieved from ServerPreset->schedule()
      * @return The session schedule as string
      */
     private static function createContentSchedule(array $schedules) {
@@ -75,6 +75,10 @@ class Discord {
         $schedules = $sp->schedule($t, $cc);
         $content .= Discord::createContentSchedule($schedules);
 
+        // add CM join link
+        $port = $ss->parameterCollection()->child("AcServerPortsInetHttp")->value();
+        $content .= "https://acstuff.ru/s/q:race/online/join?ip={$_SERVER['REMOTE_ADDR']}&httpPort=$port\n";
+
         // send message
         Discord::sendWebhook($webhook_url, $content);
     }
@@ -99,6 +103,10 @@ class Discord {
 
         // settings message
         $content .= $schd->discordMessage();
+
+        // add CM join link
+        $port = $ss->parameterCollection()->child("AcServerPortsInetHttp")->value();
+        $content .= "https://acstuff.ru/s/q:race/online/join?ip={$_SERVER['REMOTE_ADDR']}&httpPort=$port\n";
 
         // send message
         Discord::sendWebhook($webhook_url, $content);
