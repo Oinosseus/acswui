@@ -11,6 +11,7 @@ class EntryListItem {
     private $RSerRegistration = NULL;
     private $Users = NULL;
     private $TeamCar = NULL;
+    private $FixedSetup = NULL;
     private $ForceDriver = NULL;
     private $ForceRSerClass = NULL;
     // private $Spectator = FALSE;
@@ -23,6 +24,12 @@ class EntryListItem {
                                 \DbEntry\RSerRegistration $rser_registration=NULL) {
         $this->CarSkin = $skin;
         $this->RSerRegistration = $rser_registration;
+    }
+
+
+    // @param $fixed_setup A string with the fixed setup for this entry list item
+    public function addFixedSetup(string $fixed_setup) {
+        $this->FixedSetup = $fixed_setup;
     }
 
 
@@ -111,7 +118,7 @@ class EntryListItem {
 
     /**
      * Write the item to a file
-     * @param $f Is an writeable-opneded finle handler
+     * @param $f Is an writeable-opened finle handler
      * @param $id An incremental identifier for each car entry
      */
     public function writeToFile($f, int $id) {
@@ -171,5 +178,19 @@ class EntryListItem {
         // } else {
         //     fwrite($f, "SPECTATOR_MODE=0\n");
         // }
+
+        if ($this->FixedSetup) {
+            // write fixed setup file info
+            $fs_file = "fixed_setup_{$id}.ini";
+            fwrite($f, "FIXED_SETUP={$fs_file}\n");
+
+            // create fixed setup file
+            $fd_dir = dirname(stream_get_meta_data($f)['uri']);
+            $fs_f = fopen("$fd_dir/../setups/$fs_file", "w");
+            fwrite($fs_f, $this->FixedSetup);
+            fwrite($fs_f, "\n");
+            fclose($fs_f);
+
+        }
     }
 }

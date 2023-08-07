@@ -62,6 +62,9 @@ class RSerSplit extends DbEntry {
                     $eli = new \Core\EntryListItem($skin, $reg);
                     $eli->addDriver($reg->user());
                     $eli->addDriver($reg->teamCar());
+                    if ($rs_class->fixedSetup() != "") {
+                        $eli->addFixedSetup($rs_class->fixedSetup());
+                    }
                     $el->add($eli);
                 }
             }
@@ -71,10 +74,14 @@ class RSerSplit extends DbEntry {
         foreach ($this->event()->season()->listRegistrations(NULL, TRUE) as $reg) {
             if (in_array($reg, $entered_registrations)) continue;
             $skin = $reg->carSkin();
+            $rs_class = $reg->class();
             if ($skin) {
                 $eli = new \Core\EntryListItem($skin, $reg);
                 $eli->addDriver($reg->user());
                 $eli->addDriver($reg->teamCar());
+                if ($rs_class->fixedSetup() != "") {
+                    $eli->addFixedSetup($rs_class->fixedSetup());
+                }
                 $el->add($eli);
             }
         }

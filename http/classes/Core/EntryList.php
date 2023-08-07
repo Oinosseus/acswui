@@ -141,6 +141,9 @@ class EntryList {
         foreach ($serial_skin_list as $cskin) {
             if ($this->count() >= $max_count) break;
             $eli = new \Core\EntryListItem($cskin);
+            if (is_a($cc, "\\DbEntry\\RSerClass") && $cc->fixedSetup() != "") {
+                $eli->addFixedSetup($cc->fixedSetup());
+            }
             if (is_a($cc, "\\DbEntry\\RSerClass")) $eli->forceClass($cc);
             $this->add($eli);
         }

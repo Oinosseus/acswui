@@ -239,6 +239,11 @@ class CommandInstall(Command):
             if not os.path.isdir(path_data_acserver_slot_cfg):
                 self.mkdirs(path_data_acserver_slot_cfg)
 
+            # setups
+            path_data_acserver_slot_setups = os.path.join(path_data_acserver_slot, "setups")
+            if not os.path.isdir(path_data_acserver_slot_setups):
+                self.mkdirs(path_data_acserver_slot_setups)
+
             # cm_content
             path_data_acserver_slot_cfg_cm_content = os.path.join(path_data_acserver_slot, "cfg", "cm_content")
             if not os.path.isdir(path_data_acserver_slot_cfg_cm_content):
@@ -605,6 +610,7 @@ class CommandInstall(Command):
             slot_nr += 1
             paths.append(os.path.join(abspath_data, "acserver", "slot%i" % slot_nr, "cfg"))
             paths.append(os.path.join(abspath_data, "acserver", "slot%i" % slot_nr, "results"))
+            paths.append(os.path.join(abspath_data, "acserver", "slot%i" % slot_nr, "setups"))
         paths.append(os.path.join(abspath_data, "acswui_config"))
         paths.append(os.path.join(abspath_data, "real_penalty"))
         paths.append(os.path.join(abspath_data, "acswui_udp_plugin"))

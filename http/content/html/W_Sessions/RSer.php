@@ -210,6 +210,12 @@ class RSer extends \core\HtmlContent {
                 foreach ($this->CurrentSeries->listClasses() as $rser_c) {
                     $rser_c->parameterCollection()->storeHttpRequest("Class{$rser_c->id()}_");
                     $rser_c->save();
+
+                    // fixed setup
+                    if (array_key_exists("FixedSetup_{$rser_c->id()}", $_POST)) {
+                        $fixed_setup = $_POST["FixedSetup_{$rser_c->id()}"];
+                        $rser_c->setFixedSetup($fixed_setup);
+                    }
                 }
 
                 // add car classes
@@ -1183,6 +1189,9 @@ class RSer extends \core\HtmlContent {
                 $html .= "<div>$position: <strong>{$ballast}kg {$restrictor}&percnt;</strong></div>";
             }
             $html .= "</div>";
+
+            $html .= "<br>" . _("Fixed Setup") . ":<br>";
+            $html .= "<textarea name=\"FixedSetup_{$rser_c->id()}\">{$rser_c->fixedSetup()}</textarea>";
         }
 
 

@@ -271,6 +271,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt(table_name, "Series")
         self.__db.appendColumnText(table_name, "ParamColl")
         self.__db.appendColumnBool(table_name, "Active")
+        self.__db.appendColumnText(table_name, "FixedSetup")
 
         table_name = "RSerSeasons"
         self.__db.appendTable(table_name)

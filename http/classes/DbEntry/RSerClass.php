@@ -114,6 +114,12 @@ class RSerClass extends DbEntry {
     }
 
 
+    //! Get the fixed setup as string
+    public function fixedSetup() : string {
+        return $this->loadColumn("FixedSetup");
+    }
+
+
     /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.
@@ -177,6 +183,12 @@ class RSerClass extends DbEntry {
         }
 
         return $this->ParameterCollection;
+    }
+
+
+    //! Define a new fixed setup
+    public function setFixedSetup(string $setup) {
+        return $this->storeColumns(["FixedSetup"=>$setup]);
     }
 
 
