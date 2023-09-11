@@ -147,6 +147,10 @@ class UdpPluginServer(object):
         data[1] = entry.Id
         self.__sock.sendto(data, ("127.0.0.1", self.__port_server))
 
+        # assume driver will be kicked
+        # to prevent flodding server with kick messages for drivers that are already disconnected
+        entry.release()
+
 
 
     def process(self):
