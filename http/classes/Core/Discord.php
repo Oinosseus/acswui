@@ -77,7 +77,7 @@ class Discord {
 
         // add CM join link
         $port = $ss->parameterCollection()->child("AcServerPortsInetHttp")->value();
-        $content .= "https://acstuff.ru/s/q:race/online/join?ip={$_SERVER['REMOTE_ADDR']}&httpPort=$port\n";
+        $content .= "https://acstuff.ru/s/q:race/online/join?ip={$_SERVER['SERVER_ADDR']}&httpPort=$port\n";
 
         // send message
         Discord::sendWebhook($webhook_url, $content);
@@ -106,7 +106,7 @@ class Discord {
 
         // add CM join link
         $port = $ss->parameterCollection()->child("AcServerPortsInetHttp")->value();
-        $content .= "https://acstuff.ru/s/q:race/online/join?ip={$_SERVER['REMOTE_ADDR']}&httpPort=$port\n";
+        $content .= "https://acstuff.ru/s/q:race/online/join?ip={$_SERVER['SERVER_ADDR']}&httpPort=$port\n";
 
         // send message
         Discord::sendWebhook($webhook_url, $content);
