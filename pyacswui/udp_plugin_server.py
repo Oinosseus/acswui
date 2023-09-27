@@ -63,9 +63,6 @@ class UdpPluginServer(object):
 
         self.__auto_dnf_level = float(auto_dnf_level)
 
-        # force ballast and restrictor
-        self.__last_checked_balancing = None
-
         self.__port_plugin = int(port_plugin)
         self.__port_server = int(port_server)
 
@@ -137,6 +134,85 @@ class UdpPluginServer(object):
         return self.__active_session
 
 
+    def check_bop(self, entry):
+
+        # ignored not occupied cars
+        if entry.DriverGuid is None:
+            return
+
+
+        # -------------------------------------------------------------
+        #  Ballast
+        # -------------------------------------------------------------
+
+        # for car model
+        if entry.Model in self.__bop_map_car_ballasts:
+            ballast_car_model = self.__bop_map_car_ballasts[entry.Model]
+        else:
+            ballast_car_model = 0
+
+        # for dirver
+        if entry.DriverGuid in self.__bop_map_user_ballasts:
+            ballast_user = self.__bop_map_user_ballasts[entry.DriverGuid]
+        elif 'OTHER' in self.__bop_map_user_ballasts:
+            ballast_user = self.__bop_map_user_ballasts['OTHER']
+        else:
+            ballast_user = 0
+
+        # for team
+        if entry.TeamCarId in self.__bop_map_teamcar_ballasts:
+            ballast_team = self.__bop_map_teamcar_ballasts[entry.TeamCarId]
+        else:
+            ballast_team = 0
+
+        # for RSerClass
+        if entry.RSerClass in self.__bop_map_rser_ballasts:
+            ballast_rserclass = self.__bop_map_rser_ballasts[entry.RSerClass]
+        else:
+            ballast_rserclass = 0
+
+        # apply ballast
+        ballast = ballast_car_model + max(ballast_user, ballast_team) + ballast_rserclass
+        self.send_admin_command("/ballast %i %i" % (entry.Id, ballast))
+        entry.BallastCurrent = ballast
+
+
+        # -------------------------------------------------------------
+        #  Restrictor
+        # -------------------------------------------------------------
+
+        # for car model
+        if entry.Model in self.__bop_map_car_restrictors:
+            restrictor_car_model = self.__bop_map_car_restrictors[entry.Model]
+        else:
+            restrictor_car_model = 0
+
+        # for dirver
+        if entry.DriverGuid in self.__bop_map_user_restrictors:
+            restrictor_user = self.__bop_map_user_restrictors[entry.DriverGuid]
+        elif 'OTHER' in self.__bop_map_user_restrictors:
+            restrictor_user = self.__bop_map_user_restrictors['OTHER']
+        else:
+            restrictor_user = 0
+
+        # for team
+        if entry.TeamCarId in self.__bop_map_teamcar_restrictors:
+            restrictor_team = self.__bop_map_teamcar_restrictors[entry.TeamCarId]
+        else:
+            restrictor_team = 0
+
+        # for RSerClass
+        if entry.RSerClass in self.__bop_map_rser_restrictors:
+            restrictor_rserclass = self.__bop_map_rser_restrictors[entry.RSerClass]
+        else:
+            restrictor_rserclass = 0
+
+        # apply ballast
+        restrictor = restrictor_car_model + max(restrictor_user, restrictor_team) + restrictor_rserclass
+        self.send_admin_command("/restrictor %i %i" % (entry.Id, restrictor))
+        entry.RestrictorCurrent = restrictor
+
+
 
     def kick(self, entry):
         """ Kick a user from a car entry
@@ -177,7 +253,6 @@ class UdpPluginServer(object):
             # if self.__session is not None and self.__session.IsActive:
             #     self.dump_realtime_json()
 
-
         # readfrom RP
         if self.__sock_rp_events is not None:
             try:
@@ -192,7 +267,6 @@ class UdpPluginServer(object):
                 self.parse_rp_data(data)
                 anything_processed |= True
 
-
         # send start request to RP
         if not self.__rp_event_start_confirmed and (time.time() - self.__rp_event_start_send) > 5:
             self.__rp_event_start_send = time.time()
@@ -200,102 +274,6 @@ class UdpPluginServer(object):
                 self.__verbosity.print("Send new RP Event start request")
                 data = bytes("{\"request\": \"start\", \"password\": \"" + self.__rp_admin_password + "\"}", "utf-8")
                 self.__sock_rp_events.sendto(data, ("127.0.0.1", self.__port_rp_events_tx))
-
-
-        # check for illegal occupations
-        if self.__kick_illegal_occupations:
-            if self.__last_kick_illegal_occupations is None or (time.time() - self.__last_kick_illegal_occupations) > 5:
-                self.__last_kick_illegal_occupations = time.time()
-
-                for entry in self.__entries:
-                    if entry.illegalOccupation():
-                        self.__verbosity.print("Illegal Occupation of driver " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id) + "!")
-                        self.send_chat_broadcast("ACswui: kick " + entry.DriverName + " because using preserved car!")
-                        self.kick(entry)
-
-
-        # check for balalst and restrictor
-        if self.__last_checked_balancing is None or (time.time() - self.__last_checked_balancing) > 15:
-            self.__last_checked_balancing = time.time()
-
-            for entry in self.__entries:
-
-                # ignored not occupied cars
-                if entry.DriverGuid is None:
-                    continue
-
-
-                # -------------------------------------------------------------
-                #  Ballast
-                # -------------------------------------------------------------
-
-                # for car model
-                if entry.Model in self.__bop_map_car_ballasts:
-                    ballast_car_model = self.__bop_map_car_ballasts[entry.Model]
-                else:
-                    ballast_car_model = 0
-
-                # for dirver
-                if entry.DriverGuid in self.__bop_map_user_ballasts:
-                    ballast_user = self.__bop_map_user_ballasts[entry.DriverGuid]
-                elif 'OTHER' in self.__bop_map_user_ballasts:
-                    ballast_user = self.__bop_map_user_ballasts['OTHER']
-                else:
-                    ballast_user = 0
-
-                # for team
-                if entry.TeamCarId in self.__bop_map_teamcar_ballasts:
-                    ballast_team = self.__bop_map_teamcar_ballasts[entry.TeamCarId]
-                else:
-                    ballast_team = 0
-
-                # for RSerClass
-                if entry.RSerClass in self.__bop_map_rser_ballasts:
-                    ballast_rserclass = self.__bop_map_rser_ballasts[entry.RSerClass]
-                else:
-                    ballast_rserclass = 0
-
-                # apply ballast
-                ballast = ballast_car_model + max(ballast_user, ballast_team) + ballast_rserclass
-                self.send_admin_command("/ballast %i %i" % (entry.Id, ballast))
-                entry.BallastCurrent = ballast
-
-
-                # -------------------------------------------------------------
-                #  Restrictor
-                # -------------------------------------------------------------
-
-                # for car model
-                if entry.Model in self.__bop_map_car_restrictors:
-                    restrictor_car_model = self.__bop_map_car_restrictors[entry.Model]
-                else:
-                    restrictor_car_model = 0
-
-                # for dirver
-                if entry.DriverGuid in self.__bop_map_user_restrictors:
-                    restrictor_user = self.__bop_map_user_restrictors[entry.DriverGuid]
-                elif 'OTHER' in self.__bop_map_user_restrictors:
-                    restrictor_user = self.__bop_map_user_restrictors['OTHER']
-                else:
-                    restrictor_user = 0
-
-                # for team
-                if entry.TeamCarId in self.__bop_map_teamcar_restrictors:
-                    restrictor_team = self.__bop_map_teamcar_restrictors[entry.TeamCarId]
-                else:
-                    restrictor_team = 0
-
-                # for RSerClass
-                if entry.RSerClass in self.__bop_map_rser_restrictors:
-                    restrictor_rserclass = self.__bop_map_rser_restrictors[entry.RSerClass]
-                else:
-                    restrictor_rserclass = 0
-
-                # apply ballast
-                restrictor = restrictor_car_model + max(restrictor_user, restrictor_team) + restrictor_rserclass
-                self.send_admin_command("/restrictor %i %i" % (entry.Id, restrictor))
-                entry.RestrictorCurrent = restrictor
-
 
         return anything_processed
 
@@ -438,6 +416,15 @@ class UdpPluginServer(object):
 
             entry = self.get_car_entry(car_id)
             entry.complete_lap(self.__session, laptime, cuts, grip)
+
+            # check for illegal occupations
+            if self.__kick_illegal_occupations and entry.illegalOccupation():
+                self.__verbosity.print("Kick illegal Occupation of driver " + entry.DriverName + " [" + str(entry.DriverGuid) + "] for car " + str(entry.Id) + "!")
+                self.send_chat_broadcast("ACswui: kick " + entry.DriverName + " because using preserved car!")
+                self.kick(entry)
+
+            # check BOP
+            self.check_bop(entrty)
 
 
         # ACSP_VERSION
