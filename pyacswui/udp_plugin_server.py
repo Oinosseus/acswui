@@ -424,7 +424,7 @@ class UdpPluginServer(object):
                 self.kick(entry)
 
             # check BOP
-            self.check_bop(entrty)
+            self.check_bop(entry)
 
 
         # ACSP_VERSION
