@@ -209,7 +209,7 @@ class A_Home extends \core\HtmlContent {
 
             $html .= "<div class=\"$class_obsolete\">";
             $html .= $si->nameLink() . "<br>";
-            $html .= $cuser->formatDateTimeNoSeconds($si->start()) . "<br>";
+            // time
             if ($luser) {
                 if ($si->registered($cuser)) {
                     $html .= "<span class=\"Registered\">" . _("Registered") . "</span>";
@@ -221,13 +221,18 @@ class A_Home extends \core\HtmlContent {
             if ($si->serverSlot()) {
                 $cm_port = $si->serverSlot()->parameterCollection()->child("AcServerPortsInetHttp")->value();
                 $cm_link = "https://acstuff.ru/s/q:race/online/join?ip={$_SERVER['SERVER_ADDR']}&httpPort=$cm_port\n";
-                $html .= "<br><span class=\"CmDirectJoinLink\"><a href=\"$cm_link\" target=\"_blank\">" . _("CM Direct Join") . "</a></span>";
+                $html .= "<br><span class=\"CmDirectJoinLink\"><a href=\"$cm_link\" target=\"_blank\">" . _("CM-Link") . ": {$si->serverSlot()->name()}</a></span>";
             }
             $html .= "</div>";
 
             // track
             $html .= "<div class=\"$class_obsolete\">";
-            $html .= $si->track()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
+            $html .= $si->track()->html(include_link:TRUE, show_label:FALSE, show_img:TRUE);
+            $html .= "</div>";
+
+            // schedule
+            $html .= "<div class=\"$class_obsolete\">";
+            $html .= $si->htmlCompactSchedule() . "<br>";
             $html .= "</div>";
 
             // crar class / race series
@@ -241,7 +246,6 @@ class A_Home extends \core\HtmlContent {
 
             // registration / weather
             $html .= "<div class=\"$class_obsolete\">";
-            $html .= "{$si->serverSlot()->name()}<br>";
             $html .= _("Registrations") . ": <span class=\"$registration_css_class\">$count_registrations / $count_pits</span><br>";
             $rwc = $si->serverPreset()->forecastWeather($si->start(), $si->track()->location());
             if ($rwc !== NULL) {

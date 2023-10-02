@@ -164,6 +164,47 @@ class ScheduledItem {
     }
 
 
+    //! @return The schedule in very comapct format, HTML ready formatted
+    public function htmlCompactSchedule() : string {
+        $cuser = \Core\UserManager::currentUser();
+        $html = "";
+
+        // print date
+        $time = $this->start();
+        $html .= "<div class=\"CompoundScheduledItemCompactSchedule\">";
+        $html .= "<div class=\"CompoundScheduledItemCompactScheduleDate\">" . $cuser->formatDate($time) . "</div>";
+
+        // print time
+        $schedules = $this->serverPreset()->schedule();
+        for ($i = 0; $i < count($schedules); ++$i) {
+            [$interval, $uncertainty, $type, $name] = $schedules[$i];
+
+            switch ($type) {
+                case \Enums\SessionType::Practice:
+                    $html .= "<div class=\"CompoundScheduledItemCompactScheduleTime\">P: ". $cuser->formatTime($time) . "</div>";
+                    break;
+
+                case \Enums\SessionType::Qualifying:
+                    $html .= "<div class=\"CompoundScheduledItemCompactScheduleTime\">Q: ". $cuser->formatTime($time) . "</div>";
+                    break;
+
+                case \Enums\SessionType::Race:
+                    $html .= "<div class=\"CompoundScheduledItemCompactScheduleTime\">R: ". $cuser->formatTime($time) . "</div>";
+                    break;
+
+                default:
+                    break;
+            }
+
+            $time->add($interval->toDateInterval());
+        }
+
+        // done
+        $html .= "</div>";
+        return $html;
+    }
+
+
     //! @return The Id of the referenced SessionSchedule element (can be 0)
     public function idSessionSchedule() : int {
         return ($this->SessionSchedule) ? $this->SessionSchedule->id() : 0;

@@ -70,7 +70,7 @@ class W_Sessions extends \core\HtmlContent {
                 // CM Join Link
                 $cm_port = $slot->parameterCollection()->child("AcServerPortsInetHttp")->value();
                 $cm_link = "https://acstuff.ru/s/q:race/online/join?ip={$_SERVER['SERVER_ADDR']}&httpPort=$cm_port\n";
-                $html .= "<a href=\"$cm_link\" target=\"_blank\">" . _("CM Direct Join") . "</a><br>";
+                $html .= "<a href=\"$cm_link\" target=\"_blank\">" . _("CM-Link") . ": {$slot->name()}</a><br>";
 
                 $session = $slot->currentSession();
                 if ($session) {

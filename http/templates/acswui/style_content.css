@@ -5,11 +5,11 @@
 
 main.A_Home div#UpcommingRacesOverview {
     display: inline-grid;
-    grid-template-columns: repeat(5, auto);
+    grid-template-columns: repeat(6, auto);
     margin-top: 2em;
 }
 
-main.A_Home div#UpcommingRacesOverview div {
+main.A_Home div#UpcommingRacesOverview > div {
     border-radius: 1em;
     background-color: var(--color-bg-elements);
     padding: 0.5em 1em;

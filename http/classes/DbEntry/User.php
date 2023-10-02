@@ -103,6 +103,25 @@ class User extends DbEntry { #implements JsonSerializable {
     }
 
 
+    //! @return A date value formatted for the user
+    public function formatDate(\DateTime $dt) {
+        $tz = new \DateTimezone($this->getParam("UserTimezone"));
+        $dt->setTimezone($tz);
+        $format = $this->getParam("UserFormatDate");
+
+        // remove time
+        $format = str_replace(":s", "", $format);
+        $format = str_replace("s", "", $format);
+        $format = str_replace(":i", "", $format);
+        $format = str_replace("i:", "", $format);
+        $format = str_replace("i", "", $format);
+        $format = str_replace("H:", "", $format);
+        $format = str_replace("H", "", $format);
+
+        return $dt->format($format);
+    }
+
+
     //! @return A date time value formatted for the user
     public function formatDateTime(\DateTime $dt) {
         $tz = new \DateTimezone($this->getParam("UserTimezone"));

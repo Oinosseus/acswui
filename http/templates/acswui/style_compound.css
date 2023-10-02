@@ -29,3 +29,26 @@ div.CompoundDriver div {
     margin: 0;
     overflow: hidden;
 }
+
+
+
+/* ----------------------------------------------------------------------------
+ *              CompoundScheduledItemCompactSchedule
+ * ----------------------------------------------------------------------------
+ */
+
+div.CompoundScheduledItemCompactSchedule {
+    background-color: transparent;
+
+}
+
+div.CompoundScheduledItemCompactScheduleDate {
+    text-decoration: underline;
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+div.CompoundScheduledItemCompactScheduleTime {
+    display: block;
+    margin-left: 0.2em;
+}
