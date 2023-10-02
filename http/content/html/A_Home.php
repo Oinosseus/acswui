@@ -259,23 +259,28 @@ class A_Home extends \core\HtmlContent {
                 $html .= _("Track Location") . ": <a href=\"$url\">" . $si->track()->location()->name() . "</a><br>";
             }
             // cars
-            $cars = array();
             foreach ($si->listCarClasses() as $cc) {
+                $list_urls = array();
+                $list_cars = array();
                 foreach ($cc->cars() as $c) {
-                    if (!in_array($c, $cars) && $c->downloadUrl() != "") $cars[] = $c;
+                    if ($c->downloadUrl() != "" && !in_array($c->downloadUrl(), $list_urls)) {
+                        $list_urls[] = $c->downloadUrl();
+                        $list_cars[] = $c;
+                    }
                 }
-            }
-            if (count($cars)) {
-                $html .= _("Cars") . ": ";
-                $urls = array();
-                foreach ($cars as $c) {
-                    $url = $c->downloadUrl();
-                    if (in_array($url, $urls)) continue;
-                    if (count($urls)) $html .= ", ";
-                    $html .= "<a href=\"$url\">{$c->name()}</a>";
-                    $urls[] = $url;
+                if (count($list_urls) == 1) {
+                    $html .= _("Car Class") . ": ";
+                    $html .= "<a href=\"{$list_urls[0]}\">{$cc->name()}</a>";
+                    $html .= "<br>";
+                } else if (count($list_urls) > 1) {
+                    $html .= _("Cars") . ": ";
+                    for ($i=0; $i<count($list_cars); ++$i) {
+                        if ($i >= 1) $html .= ", ";
+                        $ip1 = $i + 1;
+                        $html .= "<a href=\"{$list_urls[$i]}\">{$cc->name()}-{$ip1}</a>";
+                    }
+                    $html .= "<br>";
                 }
-                $html .= "<br>";
             }
             // skins
             $skins_registrations = array();
