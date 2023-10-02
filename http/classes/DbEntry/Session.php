@@ -317,7 +317,7 @@ class Session extends DbEntry {
     /**
      * @param $entry If not NULL, only the laps of this entry will be counted
      * @param $valid_only If TRUE (default FALSE) only laps without cuts are listed
-     * @return An array of Lap objects
+     * @return An array of Lap objects, ordered by the time when passing the finish line (ASC)
      */
     public function laps(\Compound\SessionEntry $entry = NULL, bool $valid_only=FALSE) {
 
@@ -385,6 +385,127 @@ class Session extends DbEntry {
     //! @return The session object which was directly followed by this session
     public function predecessor() {
         return Session::fromId($this->loadColumn("Predecessor"));
+    }
+
+
+
+    /**
+     * When AC Server does not finish correctly, session results in SessionResultsAc table are missing.
+     * In that case this function can reconstruct the session results from the driven laps.
+     *
+     * @warning: Calling this overwrites the results which are generated from AC
+     */
+    public function reconstructResultsAc() {
+
+        // 2D-Array, index==position, value=\Compound\SessionEntry
+        $position_entries = array();
+
+        // meta data for entry
+        // Entry-Id => [Lapcount, Bestlap, TotalTime, Ballast, Restrictor, RSerRegistration, RSerClass]
+        $entry_meta = array();
+
+        // evaluate laps
+        foreach ($this->laps() as $lap) {
+            $entry = $lap->entry();
+
+            // initialize meta data
+            if (!array_key_exists($entry->id(), $entry_meta)) {
+                $entry_meta[$entry->id()] = array();
+                $entry_meta[$entry->id()]['Lapcount'] = 0;
+                $entry_meta[$entry->id()]['Bestlap'] = NULL;
+                $entry_meta[$entry->id()]['TotalTime'] = 0;
+                $entry_meta[$entry->id()]['Ballast'] = $lap->ballast();
+                $entry_meta[$entry->id()]['Restrictor'] = $lap->restrictor();
+                $entry_meta[$entry->id()]['RSerRegistration'] = ($lap->rserRegistration() === NULL) ? 0 : $lap->rserRegistration()->id();
+                $entry_meta[$entry->id()]['RSerClass'] = ($lap->rserRegistration() === NULL) ? 0 : $lap->rserRegistration()->class()->id();
+            }
+
+            // lapcount
+            ++$entry_meta[$entry->id()]['Lapcount'];
+
+            // best lap
+            if ($lap->cuts() == 0) {
+                if ($entry_meta[$entry->id()]['Bestlap'] === NULL || $entry_meta[$entry->id()]['Bestlap'] > $lap->laptime()) {
+                    $entry_meta[$entry->id()]['Bestlap'] = $lap->laptime();
+                }
+            }
+
+            // total time
+            $entry_meta[$entry->id()]['TotalTime'] += $lap->laptime();
+
+            // ballast
+            if ($entry_meta[$entry->id()]['Ballast'] > $lap->ballast()) {
+                $entry_meta[$entry->id()]['Ballast'] = $lap->ballast();
+            }
+
+            // restrictor
+            if ($entry_meta[$entry->id()]['Restrictor'] > $lap->restrictor()) {
+                $entry_meta[$entry->id()]['Restrictor'] = $lap->restrictor();
+            }
+
+            // swap positions, when lapcount is higher
+            if (!in_array($entry, $position_entries)) $position_entries[] = $entry;
+            do {
+                $any_swapped=FALSE;
+
+                for ($i=1; $i<count($position_entries); ++$i) {
+
+                    // get entry-id of current and previous (higher) position table element
+                    $prev_id = $position_entries[$i-1]->id();
+                    $curr_id = $position_entries[$i]->id();
+
+                    // get amount of laps of current and previous
+                    $prev_laps = $entry_meta[$prev_id]['Lapcount'];
+                    $curr_laps = $entry_meta[$curr_id]['Lapcount'];
+
+                    // when current entry has more laps than previous (higher), then swap positions
+                    if ($curr_laps > $prev_laps) {
+                        $temp = $position_entries[$i-1];
+                        $position_entries[$i-1] = $position_entries[$i];
+                        $position_entries[$i] = $temp;
+                        $any_swapped=TRUE;
+                    }
+                }
+            } while ($any_swapped);
+        }
+
+        // Delete existing results
+        \Core\Database::query("DELETE FROM SessionResultsAc WHERE Session = {$this->id()}");
+
+        // enter new results into DB
+        for ($pos = 0; $pos < count($position_entries); ++$pos) {
+            $entry = $position_entries[$pos];
+            $eid = $entry->id();
+
+            // prepare DB data
+            $column_data = array();
+            $column_data['Position'] = $pos + 1;
+            $column_data['Session'] = $this->id();
+            $column_data['User'] = 0;
+            $column_data['CarSkin'] = $entry->carSkin()->id();
+            $column_data['TeamCar'] = 0;
+            $column_data['BestLap'] = $entry_meta[$eid]['Bestlap'];
+            $column_data['TotalTime'] = $entry_meta[$eid]['TotalTime'];
+            $column_data['Ballast'] = $entry_meta[$eid]['Ballast'];
+            $column_data['Restrictor'] = $entry_meta[$eid]['Restrictor'];
+            $column_data['RSerRegistration'] = $entry_meta[$eid]['RSerRegistration'];
+            $column_data['RSerClass'] = $entry_meta[$eid]['RSerClass'];
+
+            // get User/TeamCar
+            if (is_a($entry->entry(), "\\DbEntry\\TeamCar")) {
+                $column_data['TeamCar'] = $entry->entry()->id();
+            } elseif (is_a($entry->entry(), "\\DbEntry\\User")) {
+                $column_data['User'] = $entry->entry()->id();
+            } else {
+                \Core\Log::error("Unexpected entry type: {$entry->id()}");
+            }
+
+            // insert into DB
+            \Core\Database::insert("SessionResultsAc", $column_data);
+        }
+
+        // call re-calculation of final results
+        $this->setNeedsFinalResultsCalculation();
     }
 
 

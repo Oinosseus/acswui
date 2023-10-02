@@ -710,6 +710,7 @@ class CommandInstall(Command):
         permissions.append("Sessions_Penalties_Edit")
         permissions.append("Sessions_Schedule_View")
         permissions.append("Sessions_Schedule_Edit")
+        permissions.append("Sessions_Results_Restore")
         permissions.append("Json")
         permissions.append("Cronjobs_View")
         permissions.append("Cronjobs_Force")

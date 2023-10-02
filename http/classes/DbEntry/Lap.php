@@ -7,6 +7,8 @@ namespace DbEntry;
  */
 class Lap extends DbEntry {
 
+    private $RSerRegistration = NULL;
+
     /**
      * @param $id Database table id
      * @param $session The according Session object (saves DB request if given)
@@ -51,7 +53,7 @@ class Lap extends DbEntry {
 
     //! @return \Compound\SessionEntry
     public function entry() : \Compound\SessionEntry {
-        return new \Compound\SessionEntry($this->session(), $this->teamCar(), $this->user());
+        return new \Compound\SessionEntry($this->session(), $this->teamCar(), $this->user(), $this->carSkin());
     }
 
 
@@ -97,6 +99,19 @@ class Lap extends DbEntry {
     //! @return The amount of restrictor at this lap
     public function restrictor() {
         return (int) $this->loadColumn("Restrictor");
+    }
+
+
+    //! @return The amount of restrictor at this lap
+    public function rserRegistration() : ?RSerRegistration {
+        if ($this->RSerRegistration === NULL) {
+            $regid = (int) $this->loadColumn("RSerRegistration");
+            if ($regid > 0) {
+                $this->RSerRegistration = RSerRegistration::fromId($regid);
+            }
+        }
+
+        return $this->RSerRegistration;
     }
 
 

@@ -7,6 +7,7 @@ class SessionOverview extends \core\HtmlContent {
     private $CurrentSession = NULL;
     private $CurrentPenalty = NULL;
     private $CanEditPenalties = FALSE;
+    private $CanRestoreResults = FALSE;
 
     private $FilterShowPractice = FALSE;
     private $FilterShowQualifying = FALSE;
@@ -42,6 +43,7 @@ class SessionOverview extends \core\HtmlContent {
 
         // check permissions
         $this->CanEditPenalties = \Core\UserManager::currentUser()->permitted("Sessions_Penalties_Edit");
+        $this->CanRestoreResults = \Core\UserManager::currentUser()->permitted("Sessions_Results_Restore");
 
         // retrieve requested session
         if (array_key_exists("SessionId", $_REQUEST)) {
@@ -57,6 +59,13 @@ class SessionOverview extends \core\HtmlContent {
         // process actions
         if (array_key_exists("Action", $_REQUEST)) {
 
+            // Restore Session Results
+            if ($_REQUEST['Action'] == "RestoreSessionResults" && $this->CanRestoreResults) {
+                $this->CurrentSession->reconstructResultsAc();
+                $this->reload(["SessionId"=>$this->CurrentSession->id()]);
+            }
+
+            // Save Penalties
             if ($_REQUEST['Action'] == "SavePenalty") {
                 if (array_key_exists("SessionEntry", $_POST)) {
 
@@ -481,6 +490,16 @@ class SessionOverview extends \core\HtmlContent {
             $html .= "<tr>";
         }
         $html .= "</table>";
+
+        // restore session results
+        if (count($session_results) == 0 && $this->CanRestoreResults) {
+            $html .= $this->newHtmlForm("POST");
+            $html .= "<input type=\"hidden\" name=\"Action\" value=\"RestoreSessionResults\">";
+            $html .= "<button type=\"submit\">";
+            $html .= _("Restore Results From Driven Laps");
+            $html .= "</button>";
+            $html .= "</form>";
+        }
 
         return $html;
     }
