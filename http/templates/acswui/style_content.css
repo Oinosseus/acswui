@@ -39,6 +39,11 @@ main.A_Home div#UpcommingRacesOverview span.RegistrationsAvailable {
     color: var(--color-functional-success);
 }
 
+main.A_Home div#UpcommingRacesOverview span.CmDirectJoinLink a {
+    margin-top: 2em;
+    font-weight: normal;
+}
+
 main.A_Home .NotRegistered {
     color: var(--color-functional-fail);
 }

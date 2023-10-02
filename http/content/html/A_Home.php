@@ -218,6 +218,11 @@ class A_Home extends \core\HtmlContent {
                 }
             }
             // $html .= " (<span class=\"$registration_css_class\">$count_registrations / $count_pits</span>)<br>";
+            if ($si->serverSlot()) {
+                $cm_port = $si->serverSlot()->parameterCollection()->child("AcServerPortsInetHttp")->value();
+                $cm_link = "https://acstuff.ru/s/q:race/online/join?ip={$_SERVER['SERVER_ADDR']}&httpPort=$cm_port\n";
+                $html .= "<br><span class=\"CmDirectJoinLink\"><a href=\"$cm_link\" target=\"_blank\">" . _("CM Direct Join") . "</a></span>";
+            }
             $html .= "</div>";
 
             // track
