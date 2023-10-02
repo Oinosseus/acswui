@@ -227,3 +227,16 @@ div.DbEntryHtmlTeamCar ul.DbEntryHtmlTeamCarDrivers li img,
 div.DbEntryHtmlTeamCar ul.DbEntryHtmlTeamCarDrivers li a {
     display: inline-block;
 }
+
+
+/* -----------------------------------------------------------------------------
+ *                             CoreServerSlot
+ * -----------------------------------------------------------------------------
+ */
+
+a.CoreServerSlot {
+    background-color: var(--color-functional-success);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 0.3em;
+}

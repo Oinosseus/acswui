@@ -208,6 +208,7 @@ class A_Home extends \core\HtmlContent {
             $registration_css_class = ($count_registrations > $count_pits) ? "RegistrationsFull" : "RegistrationsAvailable";
 
             $html .= "<div class=\"$class_obsolete\">";
+            $html .= $cuser->formatDate($si->start()) . "<br><br>";
             $html .= $si->nameLink() . "<br>";
             // time
             if ($luser) {
@@ -219,9 +220,8 @@ class A_Home extends \core\HtmlContent {
             }
             // $html .= " (<span class=\"$registration_css_class\">$count_registrations / $count_pits</span>)<br>";
             if ($si->serverSlot()) {
-                $cm_port = $si->serverSlot()->parameterCollection()->child("AcServerPortsInetHttp")->value();
-                $cm_link = "https://acstuff.ru/s/q:race/online/join?ip={$_SERVER['SERVER_ADDR']}&httpPort=$cm_port\n";
-                $html .= "<br><span class=\"CmDirectJoinLink\"><a href=\"$cm_link\" target=\"_blank\">" . _("CM-Link") . ": {$si->serverSlot()->name()}</a></span>";
+                $html .= "<br>";
+                $html .= $si->serverSlot()->htmlJoin();
             }
             $html .= "</div>";
 

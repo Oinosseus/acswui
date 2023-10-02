@@ -181,15 +181,15 @@ class ScheduledItem {
 
             switch ($type) {
                 case \Enums\SessionType::Practice:
-                    $html .= "<div class=\"CompoundScheduledItemCompactScheduleTime\">P: ". $cuser->formatTime($time) . "</div>";
+                    $html .= "<div class=\"CompoundScheduledItemCompactScheduleTime\">P: ". $cuser->formatTimeNoSeconds($time) . "</div>";
                     break;
 
                 case \Enums\SessionType::Qualifying:
-                    $html .= "<div class=\"CompoundScheduledItemCompactScheduleTime\">Q: ". $cuser->formatTime($time) . "</div>";
+                    $html .= "<div class=\"CompoundScheduledItemCompactScheduleTime\">Q: ". $cuser->formatTimeNoSeconds($time) . "</div>";
                     break;
 
                 case \Enums\SessionType::Race:
-                    $html .= "<div class=\"CompoundScheduledItemCompactScheduleTime\">R: ". $cuser->formatTime($time) . "</div>";
+                    $html .= "<div class=\"CompoundScheduledItemCompactScheduleTime\">R: ". $cuser->formatTimeNoSeconds($time) . "</div>";
                     break;
 
                 default:
