@@ -15,6 +15,7 @@ main.A_Home div#UpcommingRacesOverview > div {
     padding: 0.5em 1em;
     margin-bottom: 1.2em;
     margin-right: 0.5em;
+    white-space: nowrap;
 }
 
 main.A_Home div#UpcommingRacesOverview div.Obsolete {
