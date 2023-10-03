@@ -196,9 +196,17 @@ class RSerResult extends DbEntry {
     }
 
 
-    //! @return The earned points from the result
+    //! @return The earned points from the result (without any event valuation)
     public function points() : int {
         return (int) $this->loadColumn('Points');
+    }
+
+
+    //! @return The earned points from the result, including event valuation
+    public function pointsValuated() : float {
+        $pts = (int) $this->loadColumn('Points');
+        $pts *= $this->event()->valuation();
+        return $pts;
     }
 
 

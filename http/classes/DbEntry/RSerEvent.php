@@ -162,12 +162,6 @@ class RSerEvent extends DbEntry {
     }
 
 
-    //! @return TRUE if the event shall be scored
-    public function scored() : bool {
-        return (bool) $this->loadColumn("Scored");
-    }
-
-
     //! @return The associated season of this event
     public function season() : RSerSeason {
         return RSerSeason::fromId((int) $this->loadColumn('Season'));
@@ -175,19 +169,20 @@ class RSerEvent extends DbEntry {
 
 
     /**
-     * Define if the race shall be scored
+     * Define how much value the points in this event have.
+     * Typically valuation is 1.0 (100%).
+     * If Valuation is set to 0.5, then points for this event will be valuated with 50%
      * On a change, this will cause a re-calculation of the results
      *
-     * @param $scored TRUE if the event shall be scored, else FALSE
+     * @param $valuation Linear scaling value for points earned at this event
      */
-    public function setScored(bool $scored) {
+    public function setValuation(float $valuation) {
 
         // skip if no change
-        if ($scored == $this->scored()) return;
+        if ($valuation == $this->valuation()) return;
 
         // update DB
-        $val = ($scored) ? 1 : 0;
-        $this->storeColumns(["Scored"=>$val]);
+        $this->storeColumns(["Valuation"=>$valuation]);
 
         // re-calculate results
         RSerResult::calculateFromEvent($this);
@@ -230,5 +225,11 @@ class RSerEvent extends DbEntry {
             $t = Track::listTracks()[0];
         }
         return $t;
+    }
+
+
+    //! @return The valuation of the event (0.5 would mean points are only 50% valuated)
+    public function valuation() : float {
+        return (float) $this->loadColumn("Valuation");
     }
 }

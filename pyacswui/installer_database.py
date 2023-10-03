@@ -291,7 +291,7 @@ class InstallerDatabase(object):
         self.__db.appendTable(table_name)
         self.__db.appendColumnUInt(table_name, "Season")
         self.__db.appendColumnUInt(table_name, "Track")
-        self.__db.appendColumnBool(table_name, "Scored")
+        self.__db.appendColumnFloat(table_name, "Valuation", 1.0)
 
         table_name = "RSerQualifications"
         self.__db.appendTable(table_name)

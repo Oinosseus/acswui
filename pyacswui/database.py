@@ -143,6 +143,7 @@ class Database(object):
 
 
     def __appendColumn(self, tblname, colname, coltype, coldefault = None, colextra = None):
+        coldefault = str(coldefault)
 
         # assume column exist already
         column_exist = False
@@ -221,8 +222,11 @@ class Database(object):
     def appendColumnUInt(self, tblname, colname):
         self.__appendColumn(tblname, colname, "int unsigned", "'0'")
 
-    def appendColumnFloat(self, tblname, colname):
-        self.__appendColumn(tblname, colname, "float", "'0'")
+    def appendColumnFloat(self, tblname, colname, default=None):
+        if default:
+            self.__appendColumn(tblname, colname, "float", float(default))
+        else:
+            self.__appendColumn(tblname, colname, "float", "'0'")
 
     def appendColumnString(self, tblname, colname, length = 100):
         self.__appendColumn(tblname, colname, "varchar(" + str(length) + ")", "''")

@@ -25,7 +25,7 @@ class RSerSeason extends DbEntry {
      */
     public function countResultedEvents() : int {
         if ($this->CacheResultedEventCount === NULL) {
-            $query = "SELECT DISTINCT(RSerResults.Event) FROM RSerEvents INNER JOIN RSerResults ON RSerResults.Event = RSerEvents.Id WHERE RSerEvents.Season={$this->id()} AND RSerEvents.Scored=1;";
+            $query = "SELECT DISTINCT(RSerResults.Event) FROM RSerEvents INNER JOIN RSerResults ON RSerResults.Event = RSerEvents.Id WHERE RSerEvents.Season={$this->id()} AND RSerEvents.Valuation!=0.0;";
             $res = \Core\Database::fetchRaw($query);
             $this->CacheResultedEventCount = count($res);
         }

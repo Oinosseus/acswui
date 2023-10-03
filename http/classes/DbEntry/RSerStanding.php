@@ -35,9 +35,9 @@ class RSerStanding extends DbEntry {
             // list points of each event
             $event_list = $season->listEvents();
             foreach ($event_list as $event) {
-                if (!$event->scored()) continue; // skip non-scored events
+                $valuation = $event->valuation();
                 foreach ($event->listResults($rs_class) as $rslt) {
-                    $registrations[$rslt->registration()->id()]['Pts'][] = $rslt->points();
+                    $registrations[$rslt->registration()->id()]['Pts'][] = $rslt->points() * $valuation;
                 }
             }
 
@@ -163,8 +163,8 @@ class RSerStanding extends DbEntry {
 
 
     //! @return The earned points from the result
-    public function points() : int {
-        return (int) $this->loadColumn('Points');
+    public function points() : float {
+        return (float) $this->loadColumn('Points');
     }
 
 

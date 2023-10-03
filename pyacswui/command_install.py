@@ -52,12 +52,14 @@ class CommandInstall(Command):
             print("HTTP root login disabled")
 
         # findout previously installed version
+        version_current = Version()
+        version_previous = Version("0.0.0")
         if "installer" in self.__db.tables():
             query = "SELECT version FROM installer ORDER BY Id DESC LIMIT 1;"
             res = self.__db.rawQuery(query, True)
             for row in res:
-                version = Version(row[0])
-                self.__prework_previous_version(version)
+                version_previous = Version(row[0])
+                self.__prework_previous_version(version_previous, version_current)
 
         # install work
         self._verbosity.print("copy data")
@@ -73,7 +75,7 @@ class CommandInstall(Command):
         installer.process()
 
         # document begin of installation
-        self.__installer_info_id = self.__db.insertRow("installer", {"version": Version().stringCompact(), "info": "database installed"})
+        self.__installer_info_id = self.__db.insertRow("installer", {"version": version_current.stringCompact(), "info": "database installed"})
         self.__work_cconfig()
 
         # cars
@@ -110,7 +112,10 @@ class CommandInstall(Command):
         self._verbosity.print("chgrp for http server user-group")
         self.__set_chmod()
 
-        # document begin of installation
+        # post-install rework
+        self.__postwork_previous_version(version_previous, version_current)
+
+        # document end of installation
         self.__db.updateRow("installer",
                             self.__installer_info_id,
                             {"info": "installation finished of version " + Version().stringDetailed()})
@@ -156,7 +161,7 @@ class CommandInstall(Command):
 
 
 
-    def __prework_previous_version(self, previous_version):
+    def __prework_previous_version(self, previous_version, current_version):
 
         if previous_version >= Version("v0.1.0") and previous_version <= Version("v0.1.1"):
 
@@ -187,6 +192,16 @@ class CommandInstall(Command):
                     self.__db.deleteColumn('DriverRanking', col)
                 self.__db.deleteColumn('DriverRanking', "RankingGroup")
                 self.__db.deleteColumn('DriverRanking', "RankingLast")
+
+
+
+    def __postwork_previous_version(self, previous_version, current_version):
+
+        if previous_version >= Version("v0.7.1"):
+
+            if "Scored" in self.__db.columns("RSerEvents"):
+                self.__db.rawQuery("UPDATE RSerEvents SET Valuation = '0.0' WHERE Scored = 0")
+                self.__db.deleteColumn("RSerEvents", "Scored")
 
 
 

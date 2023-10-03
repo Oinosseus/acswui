@@ -249,10 +249,10 @@ class RSer extends \core\HtmlContent {
                     $track = \DbEntry\Track::fromId((int) $_POST[$html_id]);
                     $rser_e->setTrack($track);
 
-                    // save scored
-                    $html_id = "RSerEvent{$rser_e->id()}Scored";
-                    if (array_key_exists($html_id, $_POST)) $rser_e->setScored(TRUE);
-                    else $rser_e->setScored(FALSE);
+                    // save valuation
+                    $html_id = "RSerEvent{$rser_e->id()}Valuation";
+                    $val = (float) $_POST[$html_id] / 100.0;
+                    if (array_key_exists($html_id, $_POST)) $rser_e->setValuation($val);
 
                     // splits
                     foreach ($rser_e->listSplits() as $rser_sp) {
@@ -450,7 +450,7 @@ class RSer extends \core\HtmlContent {
                         $html .= "<td></td>";
                         $html .= "<td>{$reg->user()->nationalFlag()} {$reg->user()->html()}</td>";
                     }
-                    $html .= "<td>{$rslt->points()}</td>";
+                    $html .= "<td>{$rslt->pointsValuated()}</td>";
 
                     $html .= "</tr>";
                 }
@@ -563,7 +563,7 @@ class RSer extends \core\HtmlContent {
                 $html .= "</td>";
             }
 
-            $html .= "<td><span title=\"" . sprintf("%0.2f", $rs_ts->points()) . "\">" . round($rs_ts->points()) . "</span></td>";
+            $html .= "<td>" . $rs_ts->points() . "</td>";
             $html .= "</tr>";
 
             ++$position;
@@ -807,10 +807,11 @@ class RSer extends \core\HtmlContent {
             }
             $html .= "</select></td></tr>";
 
-            // scored
-            $html .= "<tr><th>" . _("Scored") . "</th><td colspan=\"2\">";
-            $checked = ($events[$event_idx]->scored()) ? "checked" : "";
-            $html .= "<input type=\"checkbox\"/ name=\"RSerEvent{$events[$event_idx]->id()}Scored\" $checked>";
+            // valuation
+            $html .= "<tr><th>" . _("Valuation") . "</th><td colspan=\"2\">";
+            $valuation = $events[$event_idx]->valuation() * 100;
+            $html .= "<input type=\"number\" name=\"RSerEvent{$events[$event_idx]->id()}Valuation\" value=\"$valuation\" min=\"-999\" max=\"999\">";
+            $html .= " [%]";
             $html .= "</td></tr>";
 
             // list splits
@@ -915,10 +916,11 @@ class RSer extends \core\HtmlContent {
             $html .= "<th>" . _("Pos") . "</th>";
             $html .= "<th colspan=\"2\">" . _("Entry") . "</th>";
             foreach ($this->CurrentSeason->listEvents() as $rs_event) {
-                $css_class = ($rs_event->scored()) ? "":" class=\"Unscored\"";
+                $css_class = ($rs_event->valuation() == 0.0) ? " class=\"Unscored\"":"";
                 $url = $this->url(["RSerEvent"=>$rs_event->id(),
                                     "View"=>"EventOverview"]);
-                $html .= "<th$css_class><a href=\"$url\">E{$rs_event->order()}</a></th>";
+                $valuation = $rs_event->valuation() * 100;
+                $html .= "<th$css_class><a href=\"$url\">E{$rs_event->order()}<br><small>{$valuation}&percnt;</small></a></th>";
             }
             $html .= "<th>" . _("Points") . "</th>";
             $html .= "<th>" . _("BOP") . "</th>";
@@ -948,10 +950,10 @@ class RSer extends \core\HtmlContent {
                 }
 
                 foreach ($this->CurrentSeason->listEvents() as $rs_event) {
-                    $css_class = ($rs_event->scored()) ? "":" class=\"Unscored\"";
+                    $css_class = ($rs_event->valuation() == 0.0) ? " class=\"Unscored\"":"";
                     $html .= "<td$css_class>";
                     $rslt = $rs_event->getResult($reg);
-                    if ($rslt) $html .= $rslt->points();
+                    if ($rslt) $html .= $rslt->pointsValuated();
                     $html .= "</td>";
                 }
 
@@ -977,7 +979,7 @@ class RSer extends \core\HtmlContent {
             $rowspan = count($splits);
             if ($rowspan == 0) $rowspan = 1;
 
-            $css_score_class = ($rs_event->scored()) ? "":"Unscored";
+            $css_score_class = ($rs_event->valuation() == 0.0) ? "Unscored":"";
             $html .= "<tr class=\"$css_score_class\">";
 
             $url = $this->url(["RSerEvent"=>$rs_event->id(),
