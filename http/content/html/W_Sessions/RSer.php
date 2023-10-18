@@ -81,6 +81,20 @@ class RSer extends \core\HtmlContent {
 
 
             // ----------------------------------------------------------------
+            //  Delete Event
+
+            if ($this->CanEdit && $_REQUEST['Action'] == "DoDeleteEvent") {
+                $event = \DbEntry\RSerEvent::fromId((int) $_POST["RSerEvent"]);
+                $id_series = $event->season()->series()->id();
+                $id_season = $event->season()->id();
+                $event->delete();
+                $this->reload(["RSerSeries"=>$id_series,
+                               "RSerSeason"=>$id_season,
+                               "View"=>"SeasonEdit"]);
+            }
+
+
+            // ----------------------------------------------------------------
             //  Update Results
 
             if ($this->CanEdit && $_REQUEST['Action'] == "UpdateEventResults") {
@@ -357,6 +371,9 @@ class RSer extends \core\HtmlContent {
                     $html .= $this->getHtmlEventOverview();
                     break;
 
+                case "AskDeleteEvent":
+                    $html .= $this->getHtmlEventDeleteAsk();
+
                 default:
                     \Core\Log::error("Unknown view {$_REQUEST['View']}!");
             }
@@ -510,6 +527,46 @@ class RSer extends \core\HtmlContent {
 
             $html .= "</table>";
         }
+
+        return $html;
+    }
+
+
+
+    private function getHtmlEventDeleteAsk() : string {
+
+        // get event
+        $post_key = "RSerEvent";
+        if (!array_key_exists($post_key, $_POST)) return "";
+        $event = \DbEntry\RSerEvent::fromId((int) $_POST[$post_key]);
+        if ($event == NULL) return "";
+
+        // create HTML
+        $html = "";
+        $html .= "<strong>E{$event->order()}</strong> ";
+        $html .= "{$event->track()->name()}<br>";
+        $html .= _("Really delete Event?");
+        $html .= "<br><br>";
+        $html .= "<div class=\"DeleteEventForm\">";
+
+        // delete button
+        $html .= $this->newHtmlForm("POST");
+        $html .= "<input type=\"hidden\" name=\"RSerEvent\" value=\"{$event->id()}\">";
+        $html .= "<button type=\"submit\" name=\"Action\" value=\"DoDeleteEvent\">" . _("Delete") . "</button>";
+        $html .= "</form>";
+
+        $html .= " ";
+
+        // cancel button
+        $html .= $this->newHtmlForm("GET");
+        $html .= "<input type=\"hidden\" name=\"HtmlContent\" value=\"RSer\">";
+        $html .= "<input type=\"hidden\" name=\"RSerSeries\" value=\"{$event->season()->series()->id()}\">";
+        $html .= "<input type=\"hidden\" name=\"RSerSeason\" value=\"{$event->season()->id()}\">";
+        $html .= "<input type=\"hidden\" name=\"View\" value=\"SeasonEdit\">";
+        $html .= "<button type=\"submit\">" . _("Cancel") . "</button>";
+        $html .= "</form>";
+
+        $html .= "</div>";
 
         return $html;
     }
@@ -845,6 +902,14 @@ class RSer extends \core\HtmlContent {
                                 "RSerEvent"=>$events[$event_idx]->id(),
                                 "Action"=>"AddSplit"]);
             // $html .= "<tr><td><a href=\"$url\">" . _("Add Spit") . "</a></td></tr>";
+
+            // delete event
+            $html .= "<tr><td></td><td colspan=\"2\">";
+            $html .= $this->newHtmlForm("POST");
+            $html .= "<input type=\"hidden\" name=\"RSerEvent\" value=\"{$events[$event_idx]->id()}\">";
+            $html .= "<button type=\"submit\" name=\"View\" value=\"AskDeleteEvent\">" . _("Delete Event") . "</button>";
+            $html .= "</form>";
+            $html .= "</td></tr>";
 
             $html .= "<br>";
             $html .= "</table>";

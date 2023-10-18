@@ -81,6 +81,18 @@ class RSerEvent extends DbEntry {
     }
 
 
+    //! Delete Event and all its existing results
+    public function delete() {
+        $season = $this->season();
+
+        // remove from season
+        \Core\Database::query("UPDATE RSerEvents SET Season=0 WHERE Id={$this->id()}");
+
+        // re-calculate season results
+        \DbEntry\RSerStanding::calculateFromSeason($season);
+    }
+
+
     /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.

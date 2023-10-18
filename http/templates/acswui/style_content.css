@@ -845,3 +845,7 @@ main.RSer table tr.Unscored td a {
     color: #456;
     font-style: italic;
 }
+
+main.RSer div.DeleteEventForm form {
+    display: inline-block;
+}
