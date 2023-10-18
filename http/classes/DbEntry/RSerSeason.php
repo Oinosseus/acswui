@@ -72,6 +72,71 @@ class RSerSeason extends DbEntry {
     }
 
 
+
+    /**
+     * @param $include_link Include a link
+     * @param $show_name Include full name
+     * @param $show_img Include a preview image
+     * @return Html content for this object
+     */
+    public function html(bool $include_link = TRUE,
+                         bool $show_name = TRUE,
+                         bool $show_img = TRUE) {
+
+        $html = "";
+
+        // image
+        $img_alt = $this->series()->name() . " / " . $this->name();
+        if ($show_img) $html .= "<img class=\"RSerSeriesLogoImage\" src=\"{$this->series()->logoPath()}\" alt=\"$img_alt\" title=\"$img_alt\">";
+
+        $class_names = [];
+        foreach ($this->series()->listClasses() as $c) $class_names[] = $c->name();
+        $class_names_string = implode(", ", $class_names);
+
+        // find current season
+        $current_season = NULL;
+        $next_split = $this->series()->nextSplit();
+        if ($next_split) {
+            $current_season = $next_split->event()->season();
+        } else {
+            $seasons = $this->series()->listSeasons();
+            if (count($seasons)) {
+                $current_season = $seasons[0];
+            }
+        }
+
+        // information
+        if ($show_name) {
+            $html .= "<div class=\"RSerInformation\">";
+            $html .= "<label>{$img_alt}</label>";
+            $html .= "<div class=\"RSerInfoClasses\">$class_names_string</div>";
+            if ($current_season) {
+                $html .= "<div class=\"RSerInfoRegistrations\">";
+                $html .= count($current_season->listRegistrations(NULL));
+                $html .= " " . _("Registrations");
+                $html .= "</div>";
+            }
+            $html .= "</div>";
+        }
+
+        // link container
+        if ($include_link) {
+            $url = "index.php?HtmlContent=RSer&RSerSeries={$this->series()->id()}&RSerSeason={$this->id()}&View=SeasonOverview";
+            // if ($current_season) {  // this adds a link to the current season
+            //     $url .= "&RSerSeason={$current_season->id()}&View=SeasonOverview";
+            // }
+            $html = "<a href=\"$url\">$html</a>";
+        } else {
+            $html = "<div>$html</div>";
+        }
+
+        // DbEntry container
+        $html = "<div class=\"DbEntryHtml DbEntryHtmlRSerSeries\" title=\"{$img_alt}\">$html</div>";
+        return $html;
+    }
+
+
+
     /**
      * @return TRUE if this season has still events planned
      */

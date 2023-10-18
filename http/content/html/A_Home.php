@@ -240,7 +240,7 @@ class A_Home extends \core\HtmlContent {
             if ($si->getSessionSchedule()) {
                 $html .= $si->getSessionSchedule()->carClass()->html(include_link:TRUE, show_label:TRUE, show_img:TRUE);
             } else if ($si->getRSerSplit()) {
-                $html .= $si->getRSerSplit()->event()->season()->series()->html(TRUE, FALSE, TRUE);
+                $html .= $si->getRSerSplit()->event()->season()->html(TRUE, FALSE, TRUE);
             }
             $html .= "</div>";
 
