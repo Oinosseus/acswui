@@ -74,6 +74,7 @@ class Helper {
     public static function maxNSum(int $n, array $list) : int|float {
         $sum = 0;
         sort($list,  SORT_NUMERIC);
+        $list = array_reverse($list);
         for ($i=0; $i<count($list) && $i<$n; ++$i)
             $sum += $list[$i];
         return $sum;
@@ -93,7 +94,6 @@ class Helper {
     public static function minNSum(int $n, array $list) : int|float {
         $sum = 0;
         sort($list,  SORT_NUMERIC);
-        $list = array_reverse($list);
         for ($i=0; $i<count($list) && $i<$n; ++$i)
             $sum += $list[$i];
         return $sum;

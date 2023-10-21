@@ -447,7 +447,7 @@ class RSer extends \core\HtmlContent {
 
                 foreach ($result_list as $rslt) {
                     $reg = $rslt->registration();
-                    if (!$reg->active()) continue;
+                    if (!$reg->active() && $rslt->points() == 0) continue;
 
                     $html .= "<tr>";
                     $html .= "<td>{$rslt->position()}</td>";
@@ -993,7 +993,7 @@ class RSer extends \core\HtmlContent {
 
             foreach ($standings as $std) {
                 $reg = $std->registration();
-                if (!$reg->active()) continue;
+                if (!$reg->active() && $std->points()==0) continue;
 
                 $html .= "<tr>";
                 $html .= "<td>{$std->position()}</td>";
