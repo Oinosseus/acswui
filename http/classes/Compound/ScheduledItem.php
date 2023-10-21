@@ -258,10 +258,10 @@ class ScheduledItem {
         }
 
         // find all RSerSplit items
-        $query = "SELECT Id FROM RSerSplits WHERE Id>0";
-        if ($server_slot) $query .= " AND ServerSlot={$server_slot->id()}";
-        if ($start_after) $query .= " AND Start>='$start_after'";
-        if ($only_not_executed) $query .= " AND Executed<Start";
+        $query = "SELECT RSerSplits.Id FROM RSerSplits INNER JOIN RSerEvents ON RSerEvents.Id=RSerSplits.Event WHERE RSerSplits.Id>0 AND RSerEvents.Season>0";
+        if ($server_slot) $query .= " AND RSerSplits.ServerSlot={$server_slot->id()}";
+        if ($start_after) $query .= " AND RSerSplits.Start>='$start_after'";
+        if ($only_not_executed) $query .= " AND RSerSplits.Executed<Start";
         foreach (\Core\Database::fetchRaw($query) as $row) {
             $item = \DbEntry\RSerSplit::fromId((int) $row['Id']);
             $list[] = ScheduledItem::fromRSerSplit($item);
