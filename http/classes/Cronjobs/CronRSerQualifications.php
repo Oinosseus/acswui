@@ -16,7 +16,7 @@ class CronRSerQualifications extends \Core\Cronjob {
         $splits = array();
         $registrations = array();
         $events = array();
-        $query = "SELECT RSerSplits.Id FROM RSerSplits WHERE Start>=Executed";
+        $query = "SELECT RSerSplits.Id FROM RSerSplits INNER JOIN RSerEvents ON RSerEvents.Id=RSerSplits.Event WHERE Start>=Executed AND RSerEvents.Season!=0;";
         foreach (\Core\Database::fetchRaw($query) as $row_split) {
             $s = \DbEntry\RSerSplit::fromId($row_split['Id']);
             $splits[] = $s;
