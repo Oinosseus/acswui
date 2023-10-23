@@ -373,6 +373,7 @@ class RSer extends \core\HtmlContent {
 
                 case "AskDeleteEvent":
                     $html .= $this->getHtmlEventDeleteAsk();
+                    break;
 
                 default:
                     \Core\Log::error("Unknown view {$_REQUEST['View']}!");
