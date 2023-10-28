@@ -87,7 +87,12 @@ def generateHtmlImg(src_img_path, src_img_hover, dst_dir, db_id):
             h = htmlimg_height
         w = math.ceil(w)
         h = math.ceil(h)
-        return img.resize((w, h), resample=PIL.Image.Resampling.HAMMING)
+
+        # support for pillow < v10
+        if int(PIL.__version__.split(".")[0]) < 10:
+            return img.resize((w, h), resample=PIL.Image.ANTIALIAS)
+        else:
+            return img.resize((w, h), resample=PIL.Image.Resampling.HAMMING)
 
 
     def openImg(path):
