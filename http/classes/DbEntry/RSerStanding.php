@@ -41,6 +41,15 @@ class RSerStanding extends DbEntry {
                 }
             }
 
+            // ensure that all registrations have same amount of event results
+            // this is needed for correct calculation of strike results
+            $event_list_count = count($event_list);
+            foreach ($registrations as $reg_id=>$dta) {
+                while (count($registrations[$reg_id]['Pts']) < $event_list_count) {
+                    $registrations[$reg_id]['Pts'][] = 0;
+                }
+            }
+
             // strike results
             $event_count = $season->countResultedEvents();
             $strike_results = (int) $season->series()->getParam('PtsStrikeRslt');
@@ -94,7 +103,7 @@ class RSerStanding extends DbEntry {
                 } else {
                     \Core\Database::update("RSerStandings", (int) $row['Id'], ['Position'=>$next_position]);
                     $last_position = $next_position;
-                    $last_points = (int) $row['Points'];
+                    $last_points = (float) $row['Points'];
                 }
                 ++$next_position;
             }
