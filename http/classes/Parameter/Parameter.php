@@ -4,10 +4,10 @@ namespace Parameter;
 
 abstract class Parameter extends Deriveable {
 
-    private $Value = NULL;
+    protected $Value = NULL;
     private $ValueForce = FALSE;
     private $Unit = "";
-    private $InheritValue = TRUE;
+    protected $InheritValue = TRUE;
 
 
     public function __construct(?Deriveable $base,
