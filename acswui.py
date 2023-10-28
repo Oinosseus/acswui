@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3.11
 
 # acswui - Asetto Corsa Server Web User Interface
 # by Thomas Weinhold
