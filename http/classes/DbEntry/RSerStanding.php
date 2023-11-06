@@ -43,9 +43,13 @@ class RSerStanding extends DbEntry {
 
             // ensure that all registrations have same amount of event results
             // this is needed for correct calculation of strike results
-            $event_list_count = count($event_list);
+            $max_events_driven = 0;
             foreach ($registrations as $reg_id=>$dta) {
-                while (count($registrations[$reg_id]['Pts']) < $event_list_count) {
+                $events_driven = count($registrations[$reg_id]['Pts']);
+                if ($events_driven > $max_events_driven) $max_events_driven = $events_driven;
+            }
+            foreach ($registrations as $reg_id=>$dta) {
+                while (count($registrations[$reg_id]['Pts']) < $max_events_driven) {
                     $registrations[$reg_id]['Pts'][] = 0;
                 }
             }
