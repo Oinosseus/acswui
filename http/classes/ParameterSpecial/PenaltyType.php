@@ -39,6 +39,15 @@ class PenaltyType extends \Parameter\ParamEnum {
         new \Parameter\EnumItem($this, 'sg20', _("Stop&amp;Go 20s"));
         new \Parameter\EnumItem($this, 'sg25', _("Stop&amp;Go 25s"));
         new \Parameter\EnumItem($this, 'sg30', _("Stop&amp;Go 30s"));
+        new \Parameter\EnumItem($this, '1', _("adding 1s"));
+        new \Parameter\EnumItem($this, '2', _("adding 2s"));
+        new \Parameter\EnumItem($this, '3', _("adding 3s"));
+        new \Parameter\EnumItem($this, '5', _("adding 5s"));
+        new \Parameter\EnumItem($this, '7', _("adding 7s"));
+        new \Parameter\EnumItem($this, '10', _("adding 10s"));
+        new \Parameter\EnumItem($this, '15', _("adding 15s"));
+        new \Parameter\EnumItem($this, '20', _("adding 20s"));
+        new \Parameter\EnumItem($this, '30', _("adding 30s"));
 
         if ($this->AllowDisqualify) {
             new \Parameter\EnumItem($this, "dsq", _("Disqualify"));
