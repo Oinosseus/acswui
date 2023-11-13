@@ -5,6 +5,34 @@ namespace Core;
 
 class Helper {
 
+    private static $IP = NULL;
+
+
+    //! @return The server public IP
+    public static function ip() {
+
+        // update cache
+        if (Helper::IP === NULL ) {
+
+            // try to get from apache
+            Helper::IP = (string) $_SERVER['SERVER_ADDR'];
+
+            // if no apache, try to search it
+            if (Helper::IP == "") {
+
+                // from https://stackoverflow.com/questions/7909362/how-do-i-get-the-external-ip-of-my-server-using-php
+                $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+                $res = socket_connect($sock, '8.8.8.8', 53);
+                if ($res) Helper::IP = $addr;
+                socket_getsockname($sock, $addr);
+                socket_shutdown($sock);
+                socket_close($sock);
+            }
+        }
+
+        return Helper::IP;
+    }
+
 
     /**
      * Deletes a directory with all its content (recursively)

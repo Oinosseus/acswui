@@ -120,7 +120,8 @@ class ServerSlot {
     public function htmlJoin() {
         $html = "";
         $cm_port = $this->parameterCollection()->child("AcServerPortsInetHttp")->value();
-        $cm_link = "https://acstuff.ru/s/q:race/online/join?ip={$_SERVER['SERVER_ADDR']}&httpPort=$cm_port\n";
+        $ip = \Core\Helper::ip();
+        $cm_link = "https://acstuff.ru/s/q:race/online/join?ip={$ip}&httpPort=$cm_port\n";
         $html .= "<a class=\"CoreServerSlot\" href=\"$cm_link\" target=\"_blank\">" . _("Join") . " {$this->name()}</a>";
         return $html;
     }
