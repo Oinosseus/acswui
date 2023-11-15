@@ -666,32 +666,37 @@ class UdpPluginServer(object):
 
         # check data
         if self.__session.Id is None:
-            print("ERROR", "Cannot impose penalty because Session-Id is None:", cause_drescription, driver)
+            print("ERROR", "Cannot impose penalty because Session-Id is None:", driver, pen_seconds, pen_dsq, cause_drescription)
             return
 
         # identify driver
-        car_id = int(driver['carId'])
+        user_id = None
         guid = driver['guid']
-        entry = None
-        for e in self.__entries:
-            if e.Id == car_id:
-                entry = e
-                break
-        if entry is None:
-            print("ERROR", "Cannot impose penalty because Entry is None:", cause_drescription, driver)
-            return
-        if entry.DriverGuid != guid:
-            print("WARNING", "At imposing penalty Entry.DriverGuid '%s' is not equal to RP guid '%s'" % (entry.DriverGuid, guid))
+        for data in self.__database.fetch("Users", ["Id"], {"Steam64GUID": guid}):
+            # there should be maximum one driver with that GUID, but to be sure ...
 
-        # enhancing cause by driver
-        cause_drescription += "\nDriver: " + (driver['Driver name'] if 'Driver name' in driver else "???")
-        cause_drescription += "\nCar: " + (driver['car model'] if 'car model' in driver else "???")
-        cause_drescription += "\nSkin: " + (driver['car skin'] if 'car skin' in driver else "???")
+            user_id = int(data["Id"])
 
-        columns = {'Session': self.__session.Id,
-                   'Cause': cause_drescription,
-                   'TeamCar': entry.TeamCarId,
-                   'User': entry.DriverId if entry.TeamCarId == 0 else 0,
-                   'PenTime': pen_seconds,
-                   'PenDsq': 1 if pen_dsq else 0}
-        self.__database.insertRow("SessionPenalties", columns)
+            if user_id is None:
+                print("ERROR", "Cannot impose penalty, because driver not found.", driver, pen_seconds, pen_dsq, cause_drescription)
+                return
+
+            # identify team car
+            teamcar_id = 0
+            car_id = int(driver['carId'])
+            for entry in self.__entries:
+                if entry.Id == car_id and entry.DriverGuid == guid:
+                    teamcar_id = entry.TeamCarId
+
+            # enhancing cause by driver
+            cause_drescription += "\nDriver: " + (driver['Driver name'] if 'Driver name' in driver else "???")
+            cause_drescription += "\nCar: " + (driver['car model'] if 'car model' in driver else "???")
+            cause_drescription += "\nSkin: " + (driver['car skin'] if 'car skin' in driver else "???")
+
+            columns = {'Session': self.__session.Id,
+                    'Cause': cause_drescription,
+                    'TeamCar': teamcar_id,
+                    'User': user_id if teamcar_id == 0 else 0,
+                    'PenTime': pen_seconds,
+                    'PenDsq': 1 if pen_dsq else 0}
+            self.__database.insertRow("SessionPenalties", columns)
