@@ -725,10 +725,20 @@ class ServerSlot {
         }
         $s .= "GRAPHICS=$g_str\n";
 
-        $s .= "BASE_TEMPERATURE_AMBIENT=" . $wpc->child("AmbientBase")->value() . "\n";
-        $s .= "VARIATION_AMBIENT=" . $wpc->child("AmbientVar")->value() . "\n";
-        $s .= "BASE_TEMPERATURE_ROAD=" . $wpc->child("RoadBase")->value() . "\n";
-        $s .= "VARIATION_ROAD=" . $wpc->child("RoadVar")->value() . "\n";
+        $base_temp_amb = $wpc->child("AmbientBase")->value();
+        if ($base_temp_amb < 0) $base_temp_amb = 0;
+        $variation_amebient = $wpc->child("AmbientVar")->value();
+        if (($base_temp_amb - $variation_amebient) < 0) $variation_amebient = $base_temp_amb;
+        $s .= "BASE_TEMPERATURE_AMBIENT={$base_temp_amb}\n";
+        $s .= "VARIATION_AMBIENT=$variation_amebient\n";
+
+        $base_temp_rd = $wpc->child("RoadBase")->value();
+        if ($base_temp_rd < 0) $base_temp_rd = 0;
+        $variation_rd = $wpc->child("RoadVar")->value();
+        if (($base_temp_rd - $variation_rd) < 0) $variation_rd = $base_temp_rd;
+        $s .= "BASE_TEMPERATURE_ROAD={$base_temp_rd}\n";
+        $s .= "VARIATION_ROAD={$variation_rd}\n";
+
         $s .= "WIND_BASE_SPEED_MIN=" . $wpc->child("WindBaseMin")->value() . "\n";
         $s .= "WIND_BASE_SPEED_MAX=" . $wpc->child("WindBaseMax")->value() . "\n";
         $s .= "WIND_BASE_DIRECTION=" . $wpc->child("WindDirection")->value() . "\n";
