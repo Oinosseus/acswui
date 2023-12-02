@@ -4,6 +4,8 @@ namespace Content\Html;
 
 class UserManagement extends \Core\HtmlContent {
 
+    private $CanEdit = FALSE;
+
     public function __construct() {
         parent::__construct(_("User Management"), _("User Management"));
         $this->requirePermission("User_Management_View");

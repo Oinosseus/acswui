@@ -121,11 +121,7 @@ class RSerSeason extends DbEntry {
 
         // link container
         if ($include_link) {
-            $url = "index.php?HtmlContent=RSer&RSerSeries={$this->series()->id()}&RSerSeason={$this->id()}&View=SeasonOverview";
-            // if ($current_season) {  // this adds a link to the current season
-            //     $url .= "&RSerSeason={$current_season->id()}&View=SeasonOverview";
-            // }
-            $html = "<a href=\"$url\">$html</a>";
+            $html = "<a href=\"{$this->url()}\">$html</a>";
         } else {
             $html = "<div>$html</div>";
         }
@@ -235,5 +231,11 @@ class RSerSeason extends DbEntry {
     //! @param $new_name The new name for the season
     public function setName(string $new_name) {
         $this->storeColumns(["Name"=>$new_name]);
+    }
+
+
+    //! @return URL to the season overview
+    public function url() : string {
+        return "index.php?HtmlContent=RSer&RSerSeries={$this->series()->id()}&RSerSeason={$this->id()}&View=SeasonOverview";
     }
 }

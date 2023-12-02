@@ -684,6 +684,7 @@ class CommandInstall(Command):
 
         # list available permissions
         permissions = []
+        permissions.append("View_Enhanced_Details")
         permissions.append("ServerContent_CarClasses_View")
         permissions.append("ServerContent_CarClasses_Edit")
         permissions.append("ServerContent_Cars_View")

@@ -8,6 +8,7 @@ class SessionOverview extends \core\HtmlContent {
     private $CurrentPenalty = NULL;
     private $CanEditPenalties = FALSE;
     private $CanRestoreResults = FALSE;
+    private $CanViewEnhanced = FALSE;
 
     private $FilterShowPractice = FALSE;
     private $FilterShowQualifying = FALSE;
@@ -44,6 +45,7 @@ class SessionOverview extends \core\HtmlContent {
         // check permissions
         $this->CanEditPenalties = \Core\UserManager::currentUser()->permitted("Sessions_Penalties_Edit");
         $this->CanRestoreResults = \Core\UserManager::currentUser()->permitted("Sessions_Results_Restore");
+        $this->CanViewEnhanced = \Core\UserManager::currentUser()->permitted("View_Enhanced_Details");
 
         // retrieve requested session
         if (array_key_exists("SessionId", $_REQUEST)) {
@@ -441,6 +443,7 @@ class SessionOverview extends \core\HtmlContent {
         // $html .= "<th>"  . _("Other Cars") . "</th>";
         $html .= "<th>"  . _("Rank") . "</th>";
         $html .= "<th>"  . _("Pen") . "</th>";
+        if ($this->CanViewEnhanced) $html .= "<th>" . _("Registrations") . "</th>";
         $html .= "<tr>";
 
         // list all results
@@ -486,6 +489,16 @@ class SessionOverview extends \core\HtmlContent {
             // penalties
             $pens = new \Compound\SessionPenaltiesSum($this->CurrentSession, $r->driver());
             $html .= "<td>{$pens->getHtml()}</td>";
+
+            // RSer Registration Information
+            $rser_reg = $r->rserRegistration();
+            if ($this->CanViewEnhanced && $rser_reg !== NULL) {
+                $html .= "<td>";
+                $html .= "<a href=\"{$rser_reg->season()->url()}\">";
+                $html .= "S{$rser_reg->season()->id()}; R{$rser_reg->id()}";
+                $html .= "</a>";
+                $html .= "</td>";
+            }
 
             $html .= "<tr>";
         }
