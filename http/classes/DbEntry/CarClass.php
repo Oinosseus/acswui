@@ -180,15 +180,17 @@ class CarClass extends DbEntry {
     }
 
 
-    //!n @return Amount of meters driven on this track
-    public function drivenLength() {
+    //!n @return Amount of meters driven with this CarClass
+    public function drivenLength() : int {
         if ($this->DrivenLength === NULL) {
-            $this->DrivenLength = 0;
-            $query = "SELECT Sessions.Track FROM Laps JOIN Sessions ON Laps.Session = Sessions.Id WHERE Sessions.CarClass = {$this->id()};";
-            foreach (\Core\Database::fetchRaw($query) as $row) {
-                $track = \DbEntry\Track::fromId($row['Track']);
-                $this->DrivenLength += $track->length();
-            }
+            $query = "SELECT SUM(Tracks.Length) FROM Laps";
+            $query .= " INNER JOIN Sessions ON Sessions.Id=Laps.Session";
+            $query .= " INNER JOIN Tracks ON Tracks.Id=Sessions.Track";
+            $query .= " INNER JOIN CarSkins ON CarSkins.Id=Laps.CarSkin";
+            $query .= " INNER JOIN CarClassesMap ON CarClassesMap.Car=CarSkins.Car";
+            $query .= " WHERE CarClassesMap.CarClass={$this->id()}";
+            $res = \Core\Database::fetchRaw($query);
+            $this->DrivenLength = (int) $res[0]['SUM(Tracks.Length)'];
         }
         return $this->DrivenLength;
     }
@@ -197,9 +199,14 @@ class CarClass extends DbEntry {
     //! @return Amount of laps turned with this CarClass
     public function drivenLaps() {
         if ($this->DrivenLaps === NULL) {
-            $id = $this->id();
-            $res = \Core\Database::fetchRaw("SELECT COUNT(Laps.Id) as DrivenLaps FROM Laps JOIN Sessions ON Laps.Session = Sessions.Id WHERE Sessions.CarClass = $id");
-            $this->DrivenLaps = $res[0]['DrivenLaps'];
+            $query = "SELECT COUNT(Tracks.Length) FROM Laps";
+            $query .= " INNER JOIN Sessions ON Sessions.Id=Laps.Session";
+            $query .= " INNER JOIN Tracks ON Tracks.Id=Sessions.Track";
+            $query .= " INNER JOIN CarSkins ON CarSkins.Id=Laps.CarSkin";
+            $query .= " INNER JOIN CarClassesMap ON CarClassesMap.Car=CarSkins.Car";
+            $query .= " WHERE CarClassesMap.CarClass={$this->id()}";
+            $res = \Core\Database::fetchRaw($query);
+            $this->DrivenLaps = (int) $res[0]['COUNT(Tracks.Length)'];
         }
         return $this->DrivenLaps;
     }
