@@ -37,6 +37,9 @@ class RSerResultDriver extends DbEntry {
 
                     foreach (SessionResultFinal::listResults($race_session) as $session_result) {
 
+                        // skip results that are not from this class
+                        if (!$rs_class->carClass()->validCar($session_result->carSkin()->car())) continue;
+
                         // check all drivers of that result
                         foreach ($session_result->driver()->users() as $user) {
 
