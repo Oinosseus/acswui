@@ -435,6 +435,7 @@ class RSer extends \core\HtmlContent {
         $html .= "<h1>" . _("Race Results") . "</h1>";
         foreach ($this->CurrentSeries->listClasses(active_only:FALSE) as $rs_class) {
             $result_list = $this->CurrentEvent->listResultsDriver($rs_class);
+            if (count($result_list) == 0) continue;
 
             $html .= "<h2>{$rs_class->name()}</h2>";
             $html .= _("Races") . ": ";
