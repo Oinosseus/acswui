@@ -155,7 +155,7 @@ class Lap extends DbEntry {
 
 
     //! @return The User object representing the driver of this lapt
-    public function user() {
+    public function user() : ?User {
         $id = $this->loadColumn("User");
         return User::fromId($id);
     }

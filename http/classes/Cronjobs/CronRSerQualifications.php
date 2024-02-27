@@ -34,9 +34,6 @@ class CronRSerQualifications extends \Core\Cronjob {
 
             foreach ($registrations as $reg) {
 
-                $bop_bal = $reg->bopBallast();
-                $bop_res = $reg->bopRestrictor();
-
                 foreach ($event->listSplits() as $split) {
 
                     // find best lap
@@ -47,15 +44,16 @@ class CronRSerQualifications extends \Core\Cronjob {
                     $query .= " AND Sessions.Track={$event->track()->id()}";
                     $query .= " AND Sessions.ServerPreset={$event->season()->series()->parameterCollection()->child('SessionPresetQual')->serverPreset()->id()}";
                     $query .= " AND Laps.Cuts=0";
-                    $query .= " AND Laps.Ballast>=$bop_bal";
-                    $query .= " AND Laps.Restrictor>=$bop_res";
                     $query .= " AND Sessions.RSerSplit={$split->id()}";
-                    $query .= " ORDER BY Laps.Laptime ASC LIMIT 1;";
+                    $query .= " ORDER BY Laps.Laptime ASC;";
                     $res = \Core\Database::fetchRaw($query);
 
                     if (count($res)) {  // update qualification
-                        $lap = \DbEntry\Lap::fromId((int) $res[0]['Id']);
-                        \DbEntry\RSerQualification::qualify($event, $reg, $lap);
+                        foreach ($res as $row) {
+                            $lap = \DbEntry\Lap::fromId((int) $row['Id']);
+                            $success = \DbEntry\RSerQualification::qualify($event, $reg, $lap);
+                            if ($success) break;  // break if qualification was accepted (can be rejected because of wrong BOP)
+                        }
 
                     } else {  // remove existing qualifications if not matching laps found
                         $qual = $reg->getQualification($event);

@@ -70,35 +70,48 @@ class RSerQualification extends DbEntry {
 
     /**
      * Add a qualification lap
+     * When BOP is incorrect, this qualifying lap is ignored
      *
      * @param $event The RSerEvent
      * @param $registration The RSerRegistration
      * @param $lap The Lap which shall be checked for qualification
+     *
+     * @return TRUE, when the qualifcation lap was accepted
      */
     public static function qualify(RSerEvent $event,
                                    RSerRegistration $registration,
-                                   Lap $lap) {
+                                   Lap $lap) : bool {
+
+        // find required BOP
+        $bop_ballast = 0;
+        $bop_restrictor = 0;
+        $user = $lap->user();
+        $standing = RSerStandingDriver::findStanding($user, $event->season(), $registration->class());
+        if ($standing !== NULL) {
+            $bop_ballast = $standing->bopBallast();
+            $bop_restrictor = $standing->bopRestrictor();
+        }
 
         // verify correct BOP (ballast/restrictor)
-        if ($lap->ballast() < $registration->bopBallast()) {
-            \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of BOP ballast mismatch");
-            return;
+        if ($lap->ballast() < $bop_ballast) {
+            // \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of BOP ballast mismatch");
+            return FALSE;
         }
-        if ($lap->restrictor() < $registration->bopRestrictor()) {
-            \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of BOP restrictor mismatch");
-            return;
+        if ($lap->restrictor() < $bop_restrictor) {
+            // \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of BOP restrictor mismatch");
+            return FALSE;
         }
         if ($lap->cuts() > 0) {
             \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of cuts in lap");
-            return;
+            return FALSE;
         }
         if ($lap->session()->track() != $event->track()) {
             \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of wrong track");
-            return;
+            return FALSE;
         }
         if ($lap->session()->serverPreset() != $event->season()->series()->parameterCollection()->child('SessionPresetQual')->serverPreset()) {
             \Core\Log::warning("Ignore qualification of $registration for $event with lap $lap, because of wrong server preset");
-            return;
+            return FALSE;
         }
 
         // check if already existing
@@ -115,6 +128,8 @@ class RSerQualification extends DbEntry {
                                                           'Registration'=>$registration->id(),
                                                           'BestLap'=>$lap->id()]);
         }
+
+        return TRUE;
     }
 
 

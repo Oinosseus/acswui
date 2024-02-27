@@ -43,16 +43,31 @@ class RSerEvent extends DbEntry {
 
         // from standings
         foreach ($this->season()->series()->listClasses() as $rser_class) {
-            foreach ($this->season()->listRegistrations($rser_class) as $reg) {
-                if ($reg->user()) {
-                    $bm->update($reg->bopBallast(FALSE),
-                                $reg->bopRestrictor(FALSE),
-                                $reg->user());
-                } else if ($reg->teamCar()) {
-                    $bm->update($reg->bopBallast(FALSE),
-                                $reg->bopRestrictor(FALSE),
-                                $reg->teamCar());
+
+            // get maximum BOP of each user
+            $bop_user = array();
+            foreach ($this->season()->listStandingsDriver($rser_class) as $stdg) {
+                if (!array_key_exists($stdg->user()->id(), $bop_user)) {
+                    $tmp = array();
+                    $tmp['Ballast'] = 0;
+                    $tmp['Restrictor'] = 0;
+                    $bop_user[$stdg->user()->id()] = $tmp;
                 }
+
+                if ($bop_user[$stdg->user()->id()]['Ballast'] < $stdg->bopBallast(FALSE)) {
+                    $bop_user[$stdg->user()->id()]['Ballast'] = $stdg->bopBallast(FALSE);
+                }
+
+                if ($bop_user[$stdg->user()->id()]['Restrictor'] < $stdg->bopBallast(FALSE)) {
+                    $bop_user[$stdg->user()->id()]['Restrictor'] = $stdg->bopRestrictor(FALSE);
+                }
+            }
+
+            // set BOP BopMap
+            //! @warning: This completely eliminates TeamCar BOP -> only driver BOP
+            foreach ($bop_user as $user_id=>$data) {
+                $user = User::fromId($user_id);
+                $bm->update($data['Ballast'], $data['Restrictor'], $user);
             }
         }
 

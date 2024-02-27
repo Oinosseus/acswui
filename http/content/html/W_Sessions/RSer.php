@@ -600,6 +600,7 @@ class RSer extends \core\HtmlContent {
                 }
             }
             $html .= "<td>{$stdg->points()}</td>";
+            $html .= "<td>{$stdg->bopBallast()}kg / {$stdg->bopRestrictor()}&percnt;</td>";
             $html .= "</tr>";
         }
 

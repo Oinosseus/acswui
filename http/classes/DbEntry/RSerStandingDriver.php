@@ -17,6 +17,53 @@ class RSerStandingDriver extends DbEntry {
 
 
     /**
+     * @param $include_class_offset If TRUE (default) then the full BOP is returned, else the class offset is ignored.
+     * @return The ballast for the next race
+     */
+    public function bopBallast(bool $include_class_offset=TRUE) {
+
+        $bop = 0;
+        $position = $this->position();
+
+        // slow incremental BOP
+        if ($this->season()->series()->getParam("BopIncremental")) {
+            $event_count = $this->season()->countResultedEvents();
+            $bop_start_pos = $this->class()->getParam("BopBallastPosition");
+            if ($bop_start_pos > $event_count) {
+                $position = $position - $event_count + $bop_start_pos;
+            }
+        }
+
+        $bop = $this->class()->bopBallast($position, $include_class_offset);
+
+        return $bop;
+    }
+
+
+    /**
+     * @param $include_class_offset If TRUE (default) then the full BOP is returned, else the class offset is ignored.
+     * @return The restrictor for the next race
+     */
+    public function bopRestrictor(bool $include_class_offset=TRUE) {
+        $bop = 0;
+        $position = $this->position();
+
+        // slow incremental BOP
+        if ($this->season()->series()->getParam("BopIncremental")) {
+            $event_count = $this->season()->countResultedEvents();
+            $bop_start_pos = $this->class()->getParam("BopRestrictorPosition");
+            if ($bop_start_pos > $event_count) {
+                $position = $position - $event_count + $bop_start_pos;
+            }
+        }
+
+        $bop = $this->class()->bopRestrictor($position, $include_class_offset);
+
+        return $bop;
+    }
+
+
+    /**
      * Calculating the results of an event
      * @param $rser_season The RSerSeason
      */
@@ -80,14 +127,12 @@ class RSerStandingDriver extends DbEntry {
                             $min_points = $rslt['EventPoints'][$event_idx];
                         }
                     }
-                    echo "Strike Result {$user} min_pts={$min_points}<br>";
 
                     // assign event with lowest points as strike result
                     if ($min_points !== NULL) {
                         for ($event_idx=0; $event_idx<count($rslt['EventPoints']); ++$event_idx) {
                             if ($rslt['StrikeResult'][$event_idx] !== False) continue;  // ignore already striked results
                             if ($min_points == $rslt['EventPoints'][$event_idx]) {
-                                echo "Strike Result {$user} event_idx=$event_idx<br>";
                                 $rslt['StrikeResult'][$event_idx] = TRUE;
                                 $rslt['EventPoints'][$event_idx] = 0;
                                 if ($rslt['EventResults'][$event_idx]!==NULL) $rslt['EventResults'][$event_idx]->setStrikeResult(True);
@@ -147,6 +192,21 @@ class RSerStandingDriver extends DbEntry {
     //! @return The according RSerClass
     public function class() : RSerClass {
         return RSerClass::fromId((int) $this->loadColumn('Class'));
+    }
+
+
+    //! @return Finding the result of a certain user for a certain event
+    public static function findStanding(User $user, RSerSeason $season, RSerClass $class) : ?RSerStandingDriver {
+        $query = "SELECT Id FROM RSerStandingsDriver WHERE User={$user->id()} AND Season={$season->id()} AND Class={$class->id()}";
+        $res = \Core\Database::fetchRaw($query);
+        if (count($res) > 1) {
+            \Core\Log::error("Multiple RSerStandingsDriver, where User={$user->id()} and Season={$season->id()} and Class={$class->id()}");
+            return NULL;
+        } else if (count($res) == 0) {
+            return NULL;
+        }
+
+        return Self::fromId((int) $res[0]['Id']);
     }
 
 
