@@ -567,7 +567,11 @@ class RSer extends \core\HtmlContent {
 
 
     private function getHtmlDriverRanking(\DbEntry\RSerSeason $season, \DbEntry\RSerClass $rs_class) : string {
-        $html = "";
+        $html = "<h2>" . _("Driver Ranking") . " - {$rs_class->name()}</h2>";
+
+        // check if standings are available
+        $rser_standings = $season->listStandingsDriver($rs_class);
+        if (count($rser_standings) == 0) return "";
 
         // prepare table
         $html .= "<table>";
@@ -586,7 +590,7 @@ class RSer extends \core\HtmlContent {
         $html .= "</tr>";
 
         // list drivers
-        foreach ($season->listStandingsDriver($rs_class) as $stdg) {
+        foreach ($rser_standings as $stdg) {
             $html .= "<tr>";
             $html .= "<th>{$stdg->position()}</th>";
             $html .= "<td>{$stdg->user()->nationalFlag()} {$stdg->user()->html()}</td>";
@@ -1008,11 +1012,7 @@ class RSer extends \core\HtmlContent {
 
         // driver ranking per class
         foreach ($this->CurrentSeries->listClasses(active_only:FALSE) as $rs_class) {
-
-            // only  if class has active registrations
-            $html .= "<h2>" . _("Driver Ranking") . " - {$rs_class->name()}</h2>";
             $html .= $this->getHtmlDriverRanking($this->CurrentSeason, $rs_class);
-
         }
 
         // events
