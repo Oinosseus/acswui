@@ -20,7 +20,7 @@ class RSerResult extends DbEntry {
      * Calculating the results of an event
      * @param $event The RSerEvent
      */
-    public static function calculateFromEvent(RSerEvent $event) {
+    public static function calculateFromEvent(RSerEvent $event, $update_season_standings=TRUE) {
 
         // iterate over all car classes
         foreach ($event->season()->series()->listClasses(active_only:FALSE) as $rs_class) {
@@ -131,7 +131,7 @@ class RSerResult extends DbEntry {
 
 
         // update standings
-        RSerStanding::calculateFromSeason($event->season());
+        if ($update_season_standings) RSerStanding::calculateFromSeason($event->season());
     }
 
 

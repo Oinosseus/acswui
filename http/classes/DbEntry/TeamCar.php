@@ -89,7 +89,7 @@ class TeamCar extends DbEntry {
     }
 
 
-    //! @return A list of TeamMember objects that are drivers oif this car
+    //! @return A list of TeamMember objects that are drivers of this car
     public function drivers() : array {
         if ($this->Drivers === NULL) {
             $this->Drivers = array();

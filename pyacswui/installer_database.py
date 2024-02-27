@@ -1,4 +1,3 @@
-
 from .verbosity import Verbosity
 
 
@@ -316,6 +315,23 @@ class InstallerDatabase(object):
         table_name = "RSerStandings"
         self.__db.appendTable(table_name)
         self.__db.appendColumnUInt(table_name, "Registration")
+        self.__db.appendColumnUInt(table_name, "Season")
+        self.__db.appendColumnUInt(table_name, "Position")
+        self.__db.appendColumnFloat(table_name, "Points")
+
+        table_name = "RSerResultsDriver"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Class")
+        self.__db.appendColumnUInt(table_name, "User")
+        self.__db.appendColumnUInt(table_name, "Event")
+        self.__db.appendColumnUInt(table_name, "Position")
+        self.__db.appendColumnFloat(table_name, "Points")
+        self.__db.appendColumnBool(table_name, "StrikeResult")
+
+        table_name = "RSerStandingsDriver"
+        self.__db.appendTable(table_name)
+        self.__db.appendColumnUInt(table_name, "Class")
+        self.__db.appendColumnUInt(table_name, "User")
         self.__db.appendColumnUInt(table_name, "Season")
         self.__db.appendColumnUInt(table_name, "Position")
         self.__db.appendColumnFloat(table_name, "Points")

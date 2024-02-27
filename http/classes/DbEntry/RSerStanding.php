@@ -23,7 +23,7 @@ class RSerStanding extends DbEntry {
     public static function calculateFromSeason(RSerSeason $season) {
         foreach ($season->series()->listClasses(active_only:FALSE) as $rs_class) {
 
-            // scan all registrations for the class
+            // scan all active registrations for the class
             $registrations = array();
             foreach ($season->listRegistrations($rs_class) as $rs_reg) {
                 // if (!$rs_reg->active()) continue;

@@ -25,7 +25,7 @@ class RSerSeason extends DbEntry {
      */
     public function countResultedEvents() : int {
         if ($this->CacheResultedEventCount === NULL) {
-            $query = "SELECT DISTINCT(RSerResults.Event) FROM RSerEvents INNER JOIN RSerResults ON RSerResults.Event = RSerEvents.Id WHERE RSerEvents.Season={$this->id()} AND RSerEvents.Valuation!=0.0;";
+            $query = "SELECT DISTINCT(RSerResultsDriver.Event) FROM RSerEvents INNER JOIN RSerResultsDriver ON RSerResultsDriver.Event = RSerEvents.Id WHERE RSerEvents.Season={$this->id()} AND RSerEvents.Valuation!=0.0;";
             $res = \Core\Database::fetchRaw($query);
             $this->CacheResultedEventCount = count($res);
         }
@@ -213,6 +213,16 @@ class RSerSeason extends DbEntry {
      */
     public function listStandings(RSerClass $class) : array {
         return RSerStanding::listStandings($this, $class);
+    }
+
+
+    /**
+     * List all results
+     * @param $class The RSerClass
+     * @return A list of RSerStandingDriver objects, ordered by position
+     */
+    public function listStandingsDriver(RSerClass $class) : array {
+        return \DbEntry\RSerStandingDriver::listResults($this, $class);
     }
 
 

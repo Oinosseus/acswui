@@ -97,8 +97,19 @@ class RSer extends \core\HtmlContent {
             // ----------------------------------------------------------------
             //  Update Results
 
+            if ($this->CanEdit && $_REQUEST['Action'] == "UpdateSeasonResults") {
+                foreach ($this->CurrentSeason->listEvents() as $rs_event) {
+                    \DbEntry\RSerResult::calculateFromEvent($rs_event);
+                    \DbEntry\RSerResultDriver::calculateFromEvent($rs_event, FALSE);
+                }
+
+                \DbEntry\RSerStanding::calculateFromSeason($this->CurrentSeason);
+                \DbEntry\RSerStandingDriver::calculateFromSeason($this->CurrentSeason);
+            }
+
             if ($this->CanEdit && $_REQUEST['Action'] == "UpdateEventResults") {
                 \DbEntry\RSerResult::calculateFromEvent($this->CurrentEvent);
+                \DbEntry\RSerResultDriver::calculateFromEvent($this->CurrentEvent);
             }
 
 
@@ -423,7 +434,7 @@ class RSer extends \core\HtmlContent {
         // race results
         $html .= "<h1>" . _("Race Results") . "</h1>";
         foreach ($this->CurrentSeries->listClasses(active_only:FALSE) as $rs_class) {
-            $result_list = $this->CurrentEvent->listResults($rs_class);
+            $result_list = $this->CurrentEvent->listResultsDriver($rs_class);
 
             $html .= "<h2>{$rs_class->name()}</h2>";
             $html .= _("Races") . ": ";
@@ -442,34 +453,15 @@ class RSer extends \core\HtmlContent {
                 $html .= "<table>";
                 $html .= "<tr>";
                 $html .= "<th>" . _("Pos") . "</th>";
-                $html .= "<th colspan=\"2\">" . _("Entry") . "</th>";
+                $html .= "<th>" . _("Driver") . "</th>";
                 $html .= "<th>" . _("Points") . "</th>";
                 $html .= "</tr>";
 
                 foreach ($result_list as $rslt) {
-                    $reg = $rslt->registration();
-                    if (!$reg->active() && $rslt->points() == 0) continue;
-
                     $html .= "<tr>";
                     $html .= "<td>{$rslt->position()}</td>";
-
-                    if ($reg->teamCar()) {
-                        $html .= "<td class=\"ZeroPadding\">{$reg->teamCar()->team()->html(TRUE, FALSE, TRUE, FALSE)}</td>";
-                        $html .= "<td>";
-                        $drivers = $reg->teamCar()->drivers();
-                        for ($i=0; $i < count($drivers); ++$i) {
-                            $tmm = $drivers[$i];
-                            if ($i > 0) $html .= ",<br>";
-                            $html .= $tmm->user()->nationalFlag() . " ";
-                            $html .= $tmm->user()->html();
-                        }
-                        $html .= "</td>";
-                    } else {
-                        $html .= "<td></td>";
-                        $html .= "<td>{$reg->user()->nationalFlag()} {$reg->user()->html()}</td>";
-                    }
+                    $html .= "<td>{$rslt->user()->nationalFlag()} {$rslt->user()->html()}</td>";
                     $html .= "<td>{$rslt->pointsValuated()}</td>";
-
                     $html .= "</tr>";
                 }
 
@@ -572,6 +564,49 @@ class RSer extends \core\HtmlContent {
         return $html;
     }
 
+
+
+    private function getHtmlDriverRanking(\DbEntry\RSerSeason $season, \DbEntry\RSerClass $rs_class) : string {
+        $html = "";
+
+        // prepare table
+        $html .= "<table>";
+        $html .= "<tr>";
+        $html .= "<th>" . _("Pos") . "</th>";
+        $html .= "<th>" . _("Driver") . "</th>";
+        foreach ($this->CurrentSeason->listEvents() as $rs_event) {
+            $css_class = ($rs_event->valuation() == 0.0) ? " class=\"Unscored\"":"";
+            $url = $this->url(["RSerEvent"=>$rs_event->id(),
+                                "View"=>"EventOverview"]);
+            $valuation = $rs_event->valuation() * 100;
+            $html .= "<th$css_class><a href=\"$url\">E{$rs_event->order()}<br><small>{$valuation}&percnt;</small></a></th>";
+        }
+        $html .= "<th>" . _("Points") . "</th>";
+        $html .= "<th>" . _("BOP") . "</th>";
+        $html .= "</tr>";
+
+        // list drivers
+        foreach ($season->listStandingsDriver($rs_class) as $stdg) {
+            $html .= "<tr>";
+            $html .= "<th>{$stdg->position()}</th>";
+            $html .= "<td>{$stdg->user()->nationalFlag()} {$stdg->user()->html()}</td>";
+            foreach ($this->CurrentSeason->listEvents() as $rs_event) {
+                $rslt = \DbEntry\RSerResultDriver::findResult($stdg->user(), $rs_event, $rs_class);
+                if ($rslt === NULL) {
+                    $html .= "<td></td>";
+                } else {
+                    $css_class = ($rslt->strikeResult()) ? " class=\"Unscored\"":"";
+                    $html .= "<td$css_class>{$rslt->points()}</td>";
+                }
+            }
+            $html .= "<td>{$stdg->points()}</td>";
+            $html .= "</tr>";
+        }
+
+
+        $html .= "</table>";
+        return $html;
+    }
 
 
     private function getHtmlOverallStandings(\DbEntry\RSerSeason $season) : string {
@@ -945,12 +980,22 @@ class RSer extends \core\HtmlContent {
         // Header
         $html .= $this->getHtmlPageHeader();
 
-        // edit seasn
+        // edit season
         if ($this->CanEdit) {
             $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
                                 "RSerSeason"=>$this->CurrentSeason->id(),
                                 "View"=>"SeasonEdit"]);
             $html .= "<a href=\"$url\">" . _("Edit Season") . "</a> ";
+            $html .= "<br><br>";
+        }
+
+        // update results
+        if ($this->CanEdit) {
+            $url = $this->url(['RSerSeries'=>$this->CurrentSeries->id(),
+                                "RSerSeason"=>$this->CurrentSeason->id(),
+                                "Action"=>"UpdateSeasonResults",
+                                "View"=>"SeasonOverview"]);
+            $html .= "<a href=\"$url\">" . _("Update Season Results") . "</a> ";
             $html .= "<br><br>";
         }
 
@@ -960,77 +1005,86 @@ class RSer extends \core\HtmlContent {
         // overall standings
         $html .= $this->getHtmlOverallStandings($this->CurrentSeason);
 
-        // per class
+        // driver ranking per class
         foreach ($this->CurrentSeries->listClasses(active_only:FALSE) as $rs_class) {
 
-            $standings = $this->CurrentSeason->listStandings($rs_class);
+            // only  if class has active registrations
+            $html .= "<h2>" . _("Driver Ranking") . " - {$rs_class->name()}</h2>";
+            $html .= $this->getHtmlDriverRanking($this->CurrentSeason, $rs_class);
 
-            // skip classes without active registrations
-            $has_active_registrations = FALSE;
-            foreach ($standings as $std) {
-                if ($std->registration()->active()) {
-                    $has_active_registrations = TRUE;
-                    break;
-                }
-            }
-            if (!$has_active_registrations) continue;
-
-            $html .= "<h2>{$rs_class->name()}</h2>";
-            $html .= "<table>";
-            // $html .= "<caption>{$rser_c->name()} <small>({$rser_c->carClass()->name()})</small></caption>";
-            $html .= "<tr>";
-            $html .= "<th>" . _("Pos") . "</th>";
-            $html .= "<th colspan=\"2\">" . _("Entry") . "</th>";
-            foreach ($this->CurrentSeason->listEvents() as $rs_event) {
-                $css_class = ($rs_event->valuation() == 0.0) ? " class=\"Unscored\"":"";
-                $url = $this->url(["RSerEvent"=>$rs_event->id(),
-                                    "View"=>"EventOverview"]);
-                $valuation = $rs_event->valuation() * 100;
-                $html .= "<th$css_class><a href=\"$url\">E{$rs_event->order()}<br><small>{$valuation}&percnt;</small></a></th>";
-            }
-            $html .= "<th>" . _("Points") . "</th>";
-            $html .= "<th>" . _("BOP") . "</th>";
-            $html .= "</tr>";
-
-            foreach ($standings as $std) {
-                $reg = $std->registration();
-                if (!$reg->active() && $std->points()==0) continue;
-
-                $html .= "<tr>";
-                $html .= "<td>{$std->position()}</td>";
-
-                if ($reg->teamCar()) {
-                    $html .= "<td class=\"ZeroPadding\">{$reg->teamCar()->team()->html(TRUE, FALSE, FALSE, TRUE)}</td>";
-                    $html .= "<td>";
-                    $drivers = $reg->teamCar()->drivers();
-                    for ($i=0; $i < count($drivers); ++$i) {
-                        $tmm = $drivers[$i];
-                        if ($i > 0) $html .= ",<br>";
-                        $html .= $tmm->user()->nationalFlag() . " ";
-                        $html .= $tmm->user()->html();
-                    }
-                    $html .= "</td>";
-                } else {
-                    $html .= "<td></td>";
-                    $html .= "<td>{$reg->user()->nationalFlag()} {$reg->user()->html()}</td>";
-                }
-
-                foreach ($this->CurrentSeason->listEvents() as $rs_event) {
-                    $css_class = ($rs_event->valuation() == 0.0) ? " class=\"Unscored\"":"";
-                    $html .= "<td$css_class>";
-                    $rslt = $rs_event->getResult($reg);
-                    if ($rslt) $html .= $rslt->pointsValuated();
-                    $html .= "</td>";
-                }
-
-                $html .= "<td>{$std->points()}</td>";
-                $html .= "<td>{$reg->bopBallast()}kg / {$reg->bopRestrictor()}&percnt;</td>";
-
-                $html .= "</tr>";
-            }
-
-            $html .= "</table>";
         }
+
+        // // per class
+        // foreach ($this->CurrentSeries->listClasses(active_only:FALSE) as $rs_class) {
+        //
+        //     $standings = $this->CurrentSeason->listStandings($rs_class);
+        //
+        //     // skip classes without active registrations
+        //     $has_active_registrations = FALSE;
+        //     foreach ($standings as $std) {
+        //         if ($std->registration()->active()) {
+        //             $has_active_registrations = TRUE;
+        //             break;
+        //         }
+        //     }
+        //     if (!$has_active_registrations) continue;
+        //
+        //     $html .= "<h2>{$rs_class->name()}</h2>";
+        //     $html .= "<table>";
+        //     // $html .= "<caption>{$rser_c->name()} <small>({$rser_c->carClass()->name()})</small></caption>";
+        //     $html .= "<tr>";
+        //     $html .= "<th>" . _("Pos") . "</th>";
+        //     $html .= "<th colspan=\"2\">" . _("Entry") . "</th>";
+        //     foreach ($this->CurrentSeason->listEvents() as $rs_event) {
+        //         $css_class = ($rs_event->valuation() == 0.0) ? " class=\"Unscored\"":"";
+        //         $url = $this->url(["RSerEvent"=>$rs_event->id(),
+        //                             "View"=>"EventOverview"]);
+        //         $valuation = $rs_event->valuation() * 100;
+        //         $html .= "<th$css_class><a href=\"$url\">E{$rs_event->order()}<br><small>{$valuation}&percnt;</small></a></th>";
+        //     }
+        //     $html .= "<th>" . _("Points") . "</th>";
+        //     $html .= "<th>" . _("BOP") . "</th>";
+        //     $html .= "</tr>";
+        //
+        //     foreach ($standings as $std) {
+        //         $reg = $std->registration();
+        //         if (!$reg->active() && $std->points()==0) continue;
+        //
+        //         $html .= "<tr>";
+        //         $html .= "<td>{$std->position()}</td>";
+        //
+        //         if ($reg->teamCar()) {
+        //             $html .= "<td class=\"ZeroPadding\">{$reg->teamCar()->team()->html(TRUE, FALSE, FALSE, TRUE)}</td>";
+        //             $html .= "<td>";
+        //             $drivers = $reg->teamCar()->drivers();
+        //             for ($i=0; $i < count($drivers); ++$i) {
+        //                 $tmm = $drivers[$i];
+        //                 if ($i > 0) $html .= ",<br>";
+        //                 $html .= $tmm->user()->nationalFlag() . " ";
+        //                 $html .= $tmm->user()->html();
+        //             }
+        //             $html .= "</td>";
+        //         } else {
+        //             $html .= "<td></td>";
+        //             $html .= "<td>{$reg->user()->nationalFlag()} {$reg->user()->html()}</td>";
+        //         }
+        //
+        //         foreach ($this->CurrentSeason->listEvents() as $rs_event) {
+        //             $css_class = ($rs_event->valuation() == 0.0) ? " class=\"Unscored\"":"";
+        //             $html .= "<td$css_class>";
+        //             $rslt = $rs_event->getResult($reg);
+        //             if ($rslt) $html .= $rslt->pointsValuated();
+        //             $html .= "</td>";
+        //         }
+        //
+        //         $html .= "<td>{$std->points()}</td>";
+        //         $html .= "<td>{$reg->bopBallast()}kg / {$reg->bopRestrictor()}&percnt;</td>";
+        //
+        //         $html .= "</tr>";
+        //     }
+        //
+        //     $html .= "</table>";
+        // }
 
         // events
         $html .= "<h1>" . _("Events") . "</h1>";
