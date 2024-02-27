@@ -838,12 +838,15 @@ main.RSer table#CarClasses {
     margin-top: 2em;
 }
 
-main.RSer table td.Unscored,
-main.RSer table th.Unscored a,
-main.RSer table tr.Unscored td,
-main.RSer table tr.Unscored td a {
+main.RSer table .Unscored {
     color: #456;
     font-style: italic;
+}
+
+main.RSer .StrikeResult {
+    color: #456;
+    text-decoration: line-through;
+
 }
 
 main.RSer div.DeleteEventForm form {

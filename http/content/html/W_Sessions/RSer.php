@@ -595,7 +595,7 @@ class RSer extends \core\HtmlContent {
                 if ($rslt === NULL) {
                     $html .= "<td></td>";
                 } else {
-                    $css_class = ($rslt->strikeResult()) ? " class=\"Unscored\"":"";
+                    $css_class = ($rslt->strikeResult()) ? " class=\"StrikeResult\"":"";
                     $html .= "<td$css_class>{$rslt->points()}</td>";
                 }
             }
@@ -1014,78 +1014,6 @@ class RSer extends \core\HtmlContent {
             $html .= $this->getHtmlDriverRanking($this->CurrentSeason, $rs_class);
 
         }
-
-        // // per class
-        // foreach ($this->CurrentSeries->listClasses(active_only:FALSE) as $rs_class) {
-        //
-        //     $standings = $this->CurrentSeason->listStandings($rs_class);
-        //
-        //     // skip classes without active registrations
-        //     $has_active_registrations = FALSE;
-        //     foreach ($standings as $std) {
-        //         if ($std->registration()->active()) {
-        //             $has_active_registrations = TRUE;
-        //             break;
-        //         }
-        //     }
-        //     if (!$has_active_registrations) continue;
-        //
-        //     $html .= "<h2>{$rs_class->name()}</h2>";
-        //     $html .= "<table>";
-        //     // $html .= "<caption>{$rser_c->name()} <small>({$rser_c->carClass()->name()})</small></caption>";
-        //     $html .= "<tr>";
-        //     $html .= "<th>" . _("Pos") . "</th>";
-        //     $html .= "<th colspan=\"2\">" . _("Entry") . "</th>";
-        //     foreach ($this->CurrentSeason->listEvents() as $rs_event) {
-        //         $css_class = ($rs_event->valuation() == 0.0) ? " class=\"Unscored\"":"";
-        //         $url = $this->url(["RSerEvent"=>$rs_event->id(),
-        //                             "View"=>"EventOverview"]);
-        //         $valuation = $rs_event->valuation() * 100;
-        //         $html .= "<th$css_class><a href=\"$url\">E{$rs_event->order()}<br><small>{$valuation}&percnt;</small></a></th>";
-        //     }
-        //     $html .= "<th>" . _("Points") . "</th>";
-        //     $html .= "<th>" . _("BOP") . "</th>";
-        //     $html .= "</tr>";
-        //
-        //     foreach ($standings as $std) {
-        //         $reg = $std->registration();
-        //         if (!$reg->active() && $std->points()==0) continue;
-        //
-        //         $html .= "<tr>";
-        //         $html .= "<td>{$std->position()}</td>";
-        //
-        //         if ($reg->teamCar()) {
-        //             $html .= "<td class=\"ZeroPadding\">{$reg->teamCar()->team()->html(TRUE, FALSE, FALSE, TRUE)}</td>";
-        //             $html .= "<td>";
-        //             $drivers = $reg->teamCar()->drivers();
-        //             for ($i=0; $i < count($drivers); ++$i) {
-        //                 $tmm = $drivers[$i];
-        //                 if ($i > 0) $html .= ",<br>";
-        //                 $html .= $tmm->user()->nationalFlag() . " ";
-        //                 $html .= $tmm->user()->html();
-        //             }
-        //             $html .= "</td>";
-        //         } else {
-        //             $html .= "<td></td>";
-        //             $html .= "<td>{$reg->user()->nationalFlag()} {$reg->user()->html()}</td>";
-        //         }
-        //
-        //         foreach ($this->CurrentSeason->listEvents() as $rs_event) {
-        //             $css_class = ($rs_event->valuation() == 0.0) ? " class=\"Unscored\"":"";
-        //             $html .= "<td$css_class>";
-        //             $rslt = $rs_event->getResult($reg);
-        //             if ($rslt) $html .= $rslt->pointsValuated();
-        //             $html .= "</td>";
-        //         }
-        //
-        //         $html .= "<td>{$std->points()}</td>";
-        //         $html .= "<td>{$reg->bopBallast()}kg / {$reg->bopRestrictor()}&percnt;</td>";
-        //
-        //         $html .= "</tr>";
-        //     }
-        //
-        //     $html .= "</table>";
-        // }
 
         // events
         $html .= "<h1>" . _("Events") . "</h1>";
