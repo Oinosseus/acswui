@@ -59,22 +59,22 @@ class SessionResultFinal extends DbEntry {
                                                                        \DbEntry\TeamCar::fromId($new_result_columns['TeamCar']),
                                                                        \DbEntry\User::fromId($new_result_columns['User']));
 
-            // automatic registering for race series
-            if ($session->rserSplit() &&
-                $new_result_columns['RSerClass'] != 0 &&
-                $new_result_columns['RSerRegistration'] == 0) {
-                    $reg = RSerRegistration::createNew($session->scheduleItem()->getRSerSplit()->event()->season(),
-                                                       RSerClass::fromId($new_result_columns['RSerClass']),
-                                                       ($new_result_columns['TeamCar'] == 0) ? NULL : TeamCar::fromId($new_result_columns['TeamCar']),
-                                                       ($new_result_columns['TeamCar'] == 0) ? User::fromId($new_result_columns['User']) : NULL,
-                                                       ($new_result_columns['TeamCar'] == 0) ? CarSkin::fromId($new_result_columns['CarSkin']) : NULL);
-
-                    // This avoids duplicated driver registrations (eg. when the driver is already registered with another car)
-                    // But since the registration does exist, the driver can re-register lateron and keeps his history
-                    $reg->deactivate();
-
-                    $new_result_columns['RSerRegistration'] = $reg->id();
-            }
+            // // automatic registering for race series
+            // if ($session->rserSplit() &&
+            //     $new_result_columns['RSerClass'] != 0 &&
+            //     $new_result_columns['RSerRegistration'] == 0) {
+            //         $reg = RSerRegistration::createNew($session->scheduleItem()->getRSerSplit()->event()->season(),
+            //                                            RSerClass::fromId($new_result_columns['RSerClass']),
+            //                                            ($new_result_columns['TeamCar'] == 0) ? NULL : TeamCar::fromId($new_result_columns['TeamCar']),
+            //                                            ($new_result_columns['TeamCar'] == 0) ? User::fromId($new_result_columns['User']) : NULL,
+            //                                            ($new_result_columns['TeamCar'] == 0) ? CarSkin::fromId($new_result_columns['CarSkin']) : NULL);
+            //
+            //         // This avoids duplicated driver registrations (eg. when the driver is already registered with another car)
+            //         // But since the registration does exist, the driver can re-register lateron and keeps his history
+            //         $reg->deactivate();
+            //
+            //         $new_result_columns['RSerRegistration'] = $reg->id();
+            // }
 
             // count laps
             $new_result_columns['FinalLaps'] = count($session->laps($new_result_columns['Driver']));
