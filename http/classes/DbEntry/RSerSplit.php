@@ -47,12 +47,21 @@ class RSerSplit extends DbEntry {
 
     //! @return A generated EntryList object
     public function entryList() : \Core\EntryList {
+
+        // get amount of pits
+        $free_pits = $this->event()->track()->pitboxes();
+        if (\Core\ACswui::getParam('TVCarSkinId') != 0) --$free_pits;
+
         // create EntryList
         $el = new \Core\EntryList();
 
         // add from qualifications
         $entered_registrations = array();
         foreach ($this->event()->season()->series()->listClasses() as $rs_class) {
+
+            // break when all pits occupied
+            if ($el->count() >= $free_pits) break;
+
             foreach ($this->event()->listQualifications($rs_class) as $qual) {
                 $reg = $qual->registration();
                 if (!$reg->active()) continue;
@@ -72,6 +81,10 @@ class RSerSplit extends DbEntry {
 
         // add remaining registrations
         foreach ($this->event()->season()->listRegistrations(NULL, TRUE) as $reg) {
+
+            // break when all pits occupied
+            if ($el->count() >= $free_pits) break;
+
             if (in_array($reg, $entered_registrations)) continue;
             $skin = $reg->carSkin();
             $rs_class = $reg->class();
