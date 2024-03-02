@@ -35,14 +35,9 @@ class TeamMember extends DbEntry {
     //! @return A html string with the user name and containing a link to the user profile page
     public function html() {
         $html = "";
-
-        if ($this->user()->privacyFulfilled()) {
-            $html .= $this->user()->nationalFlag();
-            $html .= "&nbsp;";
-            $html .= "<a href=\"index.php?HtmlContent=B_User&UserId={$this->user()->id()}\">{$this->user()->name()}</a>";
-        } else {
-            $html .= "<div class=\"UserHiddenName\">{$this->user()->name()}</div>";
-        }
+        $html .= $this->user()->nationalFlag();
+        $html .= "&nbsp;";
+        $html .= "<a href=\"index.php?HtmlContent=B_User&UserId={$this->user()->id()}\">{$this->user()->name()}</a>";
         return $html;
     }
 

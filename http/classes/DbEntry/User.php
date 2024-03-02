@@ -411,13 +411,9 @@ class User extends DbEntry { #implements JsonSerializable {
     //! @return A html string with the user name and containing a link to the user profile page
     public function html() {
         $html = "";
-        if ($this->privacyFulfilled()) {
-            $html .= "<a href=\"index.php?HtmlContent=B_User&UserId=" . $this->id() . "\">";
-            $html .= $this->name();
-            $html .= "</a>";
-        } else {
-            $html .= "<div class=\"UserHiddenName\">User-" . $this->id() . "</div>";
-        }
+        $html .= "<a href=\"index.php?HtmlContent=B_User&UserId=" . $this->id() . "\">";
+        $html .= $this->name();
+        $html .= "</a>";
         return $html;
     }
 
