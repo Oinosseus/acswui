@@ -6,31 +6,23 @@ namespace Core;
 class Helper {
 
     private static $SERVER_IP = NULL;
-    private static $FILE_CACHE_IP = NULL;
 
 
     //! @return The server public IP (does not work with forwaring)
     public static function ip() : string {
 
-        $ip_cache_file = \Core\Config::AbsPathData . "/acswui_config/server_ip.txt";
 
         // update cache
         if (Self::$SERVER_IP === NULL ) {
 
             // try to get from apache
-            Self::$SERVER_IP = (string) $_SERVER['SERVER_ADDR'];
+            if (array_key_exists('SERVER_ADDR', $_SERVER)) {
+                Self::$SERVER_IP = (string) $_SERVER['SERVER_ADDR'];
 
-            // update file cache
-            if (Self::$SERVER_IP != "" && Self::$FILE_CACHE_IP != Self::$SERVER_IP) {
-                file_put_contents($ip_cache_file, Self::$SERVER_IP, LOCK_EX);
-                Self::$FILE_CACHE_IP = Self::$SERVER_IP;
-            }
-
-            // read from file cache
-            if (Self::$SERVER_IP == "") {
-                Self::$FILE_CACHE_IP = file_get_contents($ip_cache_file);
-                if (Self::$FILE_CACHE_IP === FALSE) Self::$FILE_CACHE_IP = "";
-                Self::$SERVER_IP = Self::$FILE_CACHE_IP;
+            // get from cache file (e.g. when executing as CLI, without apache)
+            } else {
+                $ip_cache_file = \Core\Config::AbsPathData . "/acswui_config/server_ip.txt";
+                Self::$SERVER_IP = file_get_contents($ip_cache_file);
             }
         }
 
