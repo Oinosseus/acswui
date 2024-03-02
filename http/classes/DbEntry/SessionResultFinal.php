@@ -245,6 +245,7 @@ class SessionResultFinal extends DbEntry {
         $rser_split = $session->rserSplit();
         if ($rser_split !== NULL) {
             RSerResult::calculateFromEvent($rser_split->event());
+            RSerResultDriver::calculateFromEvent($rser_split->event());
         }
     }
 

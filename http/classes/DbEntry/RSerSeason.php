@@ -19,6 +19,74 @@ class RSerSeason extends DbEntry {
     }
 
 
+    //! Set driver registrations to inactive when they missed too much races
+    public function autoUnregister() {
+
+        // determine point of last requested activitiy
+        $unregister_races = $this->series()->getParam("AutoUnregisterRaces");
+
+        // list events
+        $events = array();
+        foreach ($this->listEvents() as $rser_event) {
+            $e = array();
+            $e['Event'] = $rser_event;
+            $e['AnyResults'] = FALSE;
+            foreach ($this->series()->listClasses(FALSE) as $rser_class) {
+                if (count($rser_event->listResultsDriver($rser_class)) > 0) {
+                    $e['AnyResults'] = TRUE;
+                    break;
+                }
+            }
+            $events[] = $e;
+        }
+
+        // list events where any activity is necessary to not unregister
+        $any_activity_events = array();
+        $active_event_counter = NULL;
+        foreach (array_reverse($events) as $e) {
+            if ($active_event_counter === NULL) {
+                if ($e['AnyResults']) $active_event_counter = 0;
+                else continue;
+            } else {
+                ++$active_event_counter;
+            }
+
+            if ($active_event_counter >= $unregister_races) break;
+            else $any_activity_events[] = $e;
+        }
+
+        // check all current registrations for activity
+        foreach ($this->series()->listClasses(FALSE) as $rser_class) {
+            foreach ($this->listRegistrations($rser_class) as $rser_reg) {
+
+                // list all users of this registration
+                $registration_user_ids = array();
+                if ($rser_reg->user()) $registration_user_ids[] = $rser_reg->user()->id();
+                if ($rser_reg->teamCar()) {
+                    foreach ($rser_reg->teamCar()->drivers() as $team_member) {
+                        $registration_user_ids[] = $team_member->user()->id();
+                    }
+                }
+
+                // check for activity
+                $activity = FALSE;
+                foreach ($any_activity_events as $e) {
+                    foreach ($e['Event']->listResultsDriver($rser_class) as $rser_rslt) {
+                        if (in_array($rser_rslt->user()->id(), $registration_user_ids)) {
+                            $activity = TRUE;
+                            break;
+                        }
+                    }
+                    if ($activity) break;
+                }
+
+                // deactivate registration
+                if ($activity == FALSE) $rser_reg->deactivate();
+            }
+        }
+    }
+
+
     /**
      * @warning This function is cached and will work wrong if events change during lifetime of this object
      * @return The number of events where results are available

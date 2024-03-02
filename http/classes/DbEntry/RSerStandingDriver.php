@@ -187,6 +187,9 @@ class RSerStandingDriver extends DbEntry {
                 \Core\Database::insert("RSerStandingsDriver", $columns);
             }
         }
+
+        // check for inactive registraions
+        $rser_season->autoUnregister();
     }
 
     //! @return The according RSerClass

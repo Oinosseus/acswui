@@ -118,6 +118,22 @@ class RSerSeries extends \Parameter\Collection {
                                  "", TRUE);
 
 
+        // --------------------------------------------------------------------
+        //  Miscelleneous
+        // --------------------------------------------------------------------
+
+        $pc = new \Parameter\Collection(NULL, $this,
+                                        "Misc",
+                                        _("Miscellaneous"),
+                                        _("Other Settings"));
+
+        new \Parameter\ParamInt(NULL, $pc,
+                                 "AutoUnregisterRaces",
+                                 _("Auto Unregister"),
+                                 _("Amount of missed races until a driver registration will be set to inatice state automatically. Zero means drivers need to re-register after each race."),
+                                 "Races", 2);
+
+
         // set all deriveable and visible
         // $this->setAllAccessible();
    }

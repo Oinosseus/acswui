@@ -105,6 +105,10 @@ class RSer extends \core\HtmlContent {
 
                 \DbEntry\RSerStanding::calculateFromSeason($this->CurrentSeason);
                 \DbEntry\RSerStandingDriver::calculateFromSeason($this->CurrentSeason);
+
+                $this->reload(["RSerSeries"=>$this->CurrentSeries->id(),
+                               "RSerSeason"=>$this->CurrentSeason->id(),
+                               "View"=>"SeasonOverview"]);
             }
 
             if ($this->CanEdit && $_REQUEST['Action'] == "UpdateEventResults") {
