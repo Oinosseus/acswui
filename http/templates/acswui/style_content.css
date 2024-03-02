@@ -302,6 +302,11 @@ main.W_Sessions div.Infolet div {
 }
 
 
+main.W_Sessions div.KillSlotForm form {
+    display: inline-block;
+}
+
+
 
 /*****************************************************************************
                           SessionOverview

@@ -721,6 +721,7 @@ class CommandInstall(Command):
         permissions.append("Sessions_View")
         for i in range(1, int(self.getGeneralArg('server-slot-amount')) + 1):
             permissions.append("Sessions_Control_Slot%i" % i)
+            permissions.append("Sessions_Kill_Slot%i" % i)
         permissions.append("Sessions_Loops_View")
         permissions.append("Sessions_Loops_Edit")
         permissions.append("Sessions_Penalties_Edit")
