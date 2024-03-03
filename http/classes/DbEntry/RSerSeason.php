@@ -27,6 +27,7 @@ class RSerSeason extends DbEntry {
 
         // list events
         $events = array();
+        $time_of_last_race = NULL;
         foreach ($this->listEvents() as $rser_event) {
             $e = array();
             $e['Event'] = $rser_event;
@@ -38,6 +39,12 @@ class RSerSeason extends DbEntry {
                 }
             }
             $events[] = $e;
+
+            // remember last executed race
+            foreach ($rser_event->listSplits() as $rser_split) {
+                $split_time = $rser_split->executed();
+                if ($time_of_last_race===NULL || $split_time > $time_of_last_race) $time_of_last_race = $split_time;
+            }
         }
 
         // list events where any activity is necessary to not unregister
@@ -45,8 +52,11 @@ class RSerSeason extends DbEntry {
         $active_event_counter = NULL;
         foreach (array_reverse($events) as $e) {
             if ($active_event_counter === NULL) {
-                if ($e['AnyResults']) $active_event_counter = 0;
-                else continue;
+                if ($e['AnyResults']) {
+                    $active_event_counter = 0;
+                } else {
+                    continue;
+                }
             } else {
                 ++$active_event_counter;
             }
@@ -70,14 +80,18 @@ class RSerSeason extends DbEntry {
 
                 // check for activity
                 $activity = FALSE;
-                foreach ($any_activity_events as $e) {
-                    foreach ($e['Event']->listResultsDriver($rser_class) as $rser_rslt) {
-                        if (in_array($rser_rslt->user()->id(), $registration_user_ids)) {
-                            $activity = TRUE;
-                            break;
+                if ($rser_reg->lastActivation() > $time_of_last_race) {  // new re-registration
+                    $activity = TRUE;
+                } else {
+                    foreach ($any_activity_events as $e) {
+                        foreach ($e['Event']->listResultsDriver($rser_class) as $rser_rslt) {
+                            if (in_array($rser_rslt->user()->id(), $registration_user_ids)) {
+                                $activity = TRUE;
+                                break;
+                            }
                         }
+                        if ($activity) break;
                     }
-                    if ($activity) break;
                 }
 
                 // deactivate registration

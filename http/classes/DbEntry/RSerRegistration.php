@@ -89,6 +89,7 @@ class RSerRegistration extends DbEntry {
             $cols['Class'] = $class->id();
             $cols['Season'] = $season->id();
             $cols['Active'] = 1;
+            $cols['LastActivation'] = \Core\Database::timestamp(new \DateTime("now"));;
             if ($id == NULL) {
                 $id = \Core\Database::insert("RSerRegistrations", $cols);
             } else {
@@ -130,6 +131,7 @@ class RSerRegistration extends DbEntry {
             $cols['Class'] = $class->id();
             $cols['Season'] = $season->id();
             $cols['Active'] = 1;
+            $cols['LastActivation'] = \Core\Database::timestamp(new \DateTime("now"));;
             if ($id == NULL) {
                 $id = \Core\Database::insert("RSerRegistrations", $cols);
             } else {
@@ -175,6 +177,13 @@ class RSerRegistration extends DbEntry {
         }
 
         return NULL;
+    }
+
+
+    //! @return The time when the registration was activated
+    public function lastActivation() : \DateTime {
+        $dt = $this->loadColumn("LastActivation");
+        return new \DateTime($dt);
     }
 
 

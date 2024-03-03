@@ -285,6 +285,7 @@ class InstallerDatabase(object):
         self.__db.appendColumnUInt(table_name, "Class")
         self.__db.appendColumnUInt(table_name, "Season")
         self.__db.appendColumnBool(table_name, "Active")
+        self.__db.appendColumnTimestamp(table_name, "LastActivation")
 
         table_name = "RSerEvents"
         self.__db.appendTable(table_name)

@@ -131,6 +131,13 @@ class RSerSplit extends DbEntry {
     }
 
 
+    //! @return When the race session was executed
+    public function executed() {
+        $dt = $this->loadColumn("Executed");
+        return new \DateTime($dt);
+    }
+
+
     /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.
