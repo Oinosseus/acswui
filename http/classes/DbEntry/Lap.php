@@ -75,6 +75,8 @@ class Lap extends DbEntry {
     public static function findBestLap(Track $track,
                                        Car $car,
                                        array $drivers,
+                                       float $grip_min=0,
+                                       float $grip_max=0,
                                        int $temperature_ambient_min=0,
                                        int $temperature_ambient_max=99,
                                        int $temperature_road_min=0,
@@ -94,6 +96,8 @@ class Lap extends DbEntry {
             }
             $query .= " AND Laps.User IN ({$user_id_string})";
         }
+        $query .= " AND Laps.Grip>='$grip_min'";
+        $query .= " AND Laps.Grip<='$grip_max'";
         $query .= " AND Sessions.Track={$track->id()}";
         $query .= " AND Sessions.TempAmb>={$temperature_ambient_min}";
         $query .= " AND Sessions.TempAmb<={$temperature_ambient_max}";
@@ -126,7 +130,7 @@ class Lap extends DbEntry {
      */
     public function html(bool $label_time=TRUE) : string {
         $url = "index.php?HtmlContent=SessionOverview&SessionId={$this->session()->id()}";
-        $title = "Session ID {$this->session()->id()}\nLap ID {$this->id()}";
+        $title = "Session Id: {$this->session()->id()}\nLap Id: {$this->id()}\nDriver: {$this->user()->name()}";
 
         if ($label_time)
             $label = \Core\UserManager::currentUser()->formatLaptime($this->laptime());

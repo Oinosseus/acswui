@@ -627,6 +627,33 @@ main.CarClass div#CarClassLaptimeFilter table {
     margin-right: 1em;
 }
 
+main.CarClass td.LapptimeRelativeMatch999 {
+    font-size: 0.9em;
+    color: #0f0;
+}
+
+main.CarClass td.LapptimeRelativeMatch997 {
+    font-size: 0.9em;
+    color: #af0;
+}
+
+main.CarClass td.LapptimeRelativeMatch994 {
+    font-size: 0.9em;
+    color: #ff0;
+}
+
+main.CarClass td.LapptimeRelativeMatch990 {
+    font-size: 0.9em;
+    color: #f80;
+}
+
+main.CarClass td.LapptimeRelativeMatch0 {
+    font-size: 0.9em;
+    color: #f00;
+    font-weight: bold;
+}
+
+
 
 
 /*****************************************************************************
