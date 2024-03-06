@@ -275,11 +275,20 @@ class ServerPreset extends DbEntry {
 
                 $coll_general = new \Parameter\Collection(NULL, $this->ParameterCollection, "ACswui1", _("ACswui"), _("General settings for the preset"));
                 $p = new \Parameter\ParamString(NULL, $coll_general, "ACswuiPresetName", _("Name"), _("Name of the preset"), "", "");
-                $p = new \Parameter\ParamBool(NULL, $coll_general, "ACswuiPreservedKick", _("Preseved Kick"), _("Kick drivers if they join with a car from the entry list that is preserved for other drivers."), "", TRUE);
-                $p = new \Parameter\ParamInt(NULL, $coll_general, "AccswuiAutoDnfLevel", _("DNF Mininum Laps"), _("Amount of Laps (percentual from driven laps of the leader), where DNF is applied automativally when a driver is below that (only for race sesssions)"), "&percnt;", 50);
+                $p = new \ParameterSpecial\Groups(NULL, $coll_general, "ACswuiPresetUsers", _("Users"), _("Which user groups are allowed to use this preset"), "", "");
+
+                $coll_group = new \Parameter\Collection(NULL, $coll_general, "ACswuiPluginSettings", _("Plugin Settings"), _("Settings for the Acswui server plugin"));
+                $coll_subgroup = new \Parameter\Collection(NULL, $coll_group, "ACswuiPluginGeneral", _("General Settings"), _("General Settings"));
+                $p = new \Parameter\ParamBool(NULL, $coll_subgroup, "ACswuiPreservedKick", _("Preseved Kick"), _("Kick drivers if they join with a car from the entry list that is preserved for other drivers."), "", TRUE);
+                $p = new \Parameter\ParamInt(NULL, $coll_subgroup, "AccswuiAutoDnfLevel", _("DNF Mininum Laps"), _("Amount of Laps (percentual from driven laps of the leader), where DNF is applied automativally when a driver is below that (only for race sesssions)"), "&percnt;", 50);
                 $p->setMin(0);
                 $p->setMax(100);
-                $p = new \ParameterSpecial\Groups(NULL, $coll_general, "ACswuiPresetUsers", _("Users"), _("Which user groups are allowed to use this preset"), "", "");
+
+                $coll_subgroup = new \Parameter\Collection(NULL, $coll_group, "ACswuiActivateBop", _("Enable BOP"), _("Active special BOP aspects"));
+                $p = new \Parameter\ParamBool(NULL, $coll_subgroup, "ACswuiActivateBopDriver", _("Drivers"), _("Enable driver dedicated BOP"), "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll_subgroup, "ACswuiActivateBopCar", _("Cars"), _("Enable car BOP within car classes"), "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll_subgroup, "ACswuiActivateBopRSerClass", _("Race Series Classes"), _("Enable additional BOP for race series car classes"), "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll_subgroup, "ACswuiActivateBopTeam", _("Teams"), _("Enable additional BOP for teams"), "", TRUE);
 
 
                 // ------------------------------------------------------------

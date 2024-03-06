@@ -78,17 +78,41 @@ class BopMap {
      * The file must be opened and writeable
      * @param $file_handle The handle to an opened, writeable file
      */
-    public function writeACswuiUdpPluginIni($file_handle) {
+    public function writeACswuiUdpPluginIni($file_handle, \DbEntry\ServerPreset $preset) {
 
         $exports = array();
-        $exports['BopRSerClassBallast'] = $this->BopCarBallast;
-        $exports['BopRSerClassRestrictor'] = $this->BopCarRestrictor;
-        $exports['BopCarBallast'] = $this->BopCarBallast;
-        $exports['BopCarRestrictor'] = $this->BopCarRestrictor;
-        $exports['BopUserBallast'] = $this->BopUserBallast;
-        $exports['BopUserRestrictor'] = $this->BopUserRestrictor;
-        $exports['BopTeamcarBallast'] = $this->BopTeamcarBallast;
-        $exports['BopTeamcarRestrictor'] = $this->BopTeamcarRestrictor;
+
+        if ($preset->getParam("ACswuiActivateBopRSerClass"))  {
+            $exports['BopRSerClassBallast'] = $this->BopCarBallast;
+            $exports['BopRSerClassRestrictor'] = $this->BopCarRestrictor;
+        } else {
+            $exports['BopRSerClassBallast'] = [];
+            $exports['BopRSerClassRestrictor'] = [];
+        }
+
+        if ($preset->getParam("ACswuiActivateBopCar"))  {
+            $exports['BopCarBallast'] = $this->BopCarBallast;
+            $exports['BopCarRestrictor'] = $this->BopCarRestrictor;
+        } else {
+            $exports['BopCarBallast'] = [];
+            $exports['BopCarRestrictor'] = [];
+        }
+
+        if ($preset->getParam("ACswuiActivateBopDriver"))  {
+            $exports['BopUserBallast'] = $this->BopUserBallast;
+            $exports['BopUserRestrictor'] = $this->BopUserRestrictor;
+        } else {
+            $exports['BopUserBallast'] = [];
+            $exports['BopUserRestrictor'] = [];
+        }
+
+        if ($preset->getParam("ACswuiActivateBopTeam"))  {
+            $exports['BopTeamcarBallast'] = $this->BopTeamcarBallast;
+            $exports['BopTeamcarRestrictor'] = $this->BopTeamcarRestrictor;
+        } else {
+            $exports['BopTeamcarBallast'] = [];
+            $exports['BopTeamcarRestrictor'] = [];
+        }
 
         foreach ($exports as $key=>$data) {
             fwrite($file_handle, "\n[{$key}]\n");

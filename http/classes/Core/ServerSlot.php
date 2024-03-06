@@ -522,7 +522,7 @@ class ServerSlot {
         fwrite($f, "referenced_rser_split_id = $referenced_rser_split_id\n");
         fwrite($f, "auto-dnf-level = " . $preset->getParam("AccswuiAutoDnfLevel") . "\n");
 
-        $bm->writeACswuiUdpPluginIni($f);
+        $bm->writeACswuiUdpPluginIni($f, $preset);
 
         fclose($f);
         @chmod($file_path, 0660);
