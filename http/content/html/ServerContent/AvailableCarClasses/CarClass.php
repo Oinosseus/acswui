@@ -89,6 +89,8 @@ class CarClass extends \core\HtmlContent {
         } else {
             $html = "";
             $html .= $this->showCarClassOverview();
+            $html .= $this->getHtmlFilterLaptimes();
+            $html .= $this->gtHtmlCarsOverview();
             $html .= $this->showRecords();
             return $html;
         }
@@ -195,19 +197,11 @@ class CarClass extends \core\HtmlContent {
             $html .= "</form>";
         }
 
-
-        $html .= "<h2>" . _("Cars Overview") . "</h2>";
-        foreach ($this->CarClass->cars() as $car) {
-            $html .= $car->html($this->CarClass);
-        }
-
-
         // add cars
         if ($this->CanEdit) {
             $html .= "<br>";
             $html .= "<a href=\"" . $this->url(['Id'=>$this->CarClass->id(), 'Action'=>'AddCars']) . "\">" . _("Add Cars") . "</a>";
         }
-
 
         // delete car class
         if ($this->CanEdit) {
@@ -230,6 +224,168 @@ class CarClass extends \core\HtmlContent {
         $html .= "<h1>" . _("CarClass Records") . "</h1>";
         $html .= "<button type=\"button\" carClassId=\"" . $this->CarClass->id() . "\" onclick=\"CarClassLoadRecords(this)\">" . _("Load CarClass Records") . "</button>";
         $html .= "<div id=\"CarClassRecordsList\"></div>";
+
+        return $html;
+    }
+
+
+    private function gtHtmlCarsOverview() : string {
+        $html = "";
+
+        $html .= "<h1>" . _("Cars Overview") . "</h1>";
+        foreach ($this->CarClass->cars() as $car) {
+            $html .= $car->html($this->CarClass);
+        }
+
+        return $html;
+    }
+
+
+    private function getHtmlFilterLaptimes() : string {
+        $html = "";
+        $html .= "<h1>" . _("Filter Laptimes") . "</h1>";
+        $current_user = \Core\UserManager::currentUser();
+
+        // retrive filter vars
+        $filtered_track = (array_key_exists("LaptimeFilterTrack", $_POST)) ? \DbEntry\Track::fromId((int) $_POST['LaptimeFilterTrack']) : \DbEntry\Track::getImola();
+        $filtered_drivers = array();
+        foreach (\DbEntry\User::listDrivers() as $user) {
+            if (!array_key_exists("LaptimeFilterDrivers", $_POST) || in_array($user->id(), $_POST['LaptimeFilterDrivers'])) {
+                $filtered_drivers[] = $user;
+            }
+        }
+        $filtered_temp_amb_min  = (array_key_exists("LaptimeFilterTempAmbMin",  $_POST)) ? (int) $_POST['LaptimeFilterTempAmbMin']  : 0;
+        $filtered_temp_amb_max  = (array_key_exists("LaptimeFilterTempAmbMax",  $_POST)) ? (int) $_POST['LaptimeFilterTempAmbMax']  : 50;
+        $filtered_temp_road_min = (array_key_exists("LaptimeFilterTempRoadMin", $_POST)) ? (int) $_POST['LaptimeFilterTempRoadMin'] : 0;
+        $filtered_temp_road_max = (array_key_exists("LaptimeFilterTempRoadMax", $_POST)) ? (int) $_POST['LaptimeFilterTempRoadMax'] : 80;
+        $filtered_bop_ballast = (array_key_exists("LaptimeFilterBopBallast", $_POST)) ? (int) $_POST['LaptimeFilterBopBallast'] : 20;
+        $filtered_bop_restrictor = (array_key_exists("LaptimeFilterBopRestrictor", $_POST)) ? (int) $_POST['LaptimeFilterBopRestrictor'] : 10;
+
+        // filter
+        $html .= $this->newHtmlForm("POST");
+        $html .= "<div id=\"CarClassLaptimeFilter\">";
+
+        // track
+        $html .= "<table>";
+        $html .= "<caption>" . _("Track") . "</caption>";
+        $html .= "<tr><td><select name=\"LaptimeFilterTrack\">";
+        foreach (\DbEntry\Track::listTracks() as $t) {
+            $selected = ($filtered_track->id() == $t->id()) ? "selected" : "";
+            $html .= "<option value=\"" . $t->id() . "\" $selected>" . $t->name() . "</option>";
+        }
+        $html .= "</select></td></tr>";
+        $html .= "</table>";
+
+        // driver
+        $html .= "<table>";
+        $html .= "<caption>" . _("Driver") . "</caption>";
+        $html .= "<tr><td><select name=\"LaptimeFilterDrivers[]\" size=\"5\" multiple>";
+        foreach (\DbEntry\User::listDrivers() as $user) {
+            $selected = (in_array($user, $filtered_drivers)) ? "selected" : "";
+            $html .= "<option value=\"{$user->id()}\" $selected>" . $user->name() . "</option>";
+        }
+        $html .= "</select></td></tr>";
+        $html .= "</table>";
+
+        // temperature
+        $html .= "<table>";
+        $html .= "<caption>" . _("Temperature") . "</caption>";
+        $html .= "<tr>";
+        $html .= "<td><input type=\"number\" name=\"LaptimeFilterTempAmbMin\" min=\"0\" max=\"99\" step=\"1\" value=\"$filtered_temp_amb_min\">°C ≤</td>";
+        $html .= "<td>" . _("Ambient") . "</td>";
+        $html .= "<td>≤ <input type=\"number\" name=\"LaptimeFilterTempAmbMax\" min=\"0\" max=\"99\" step=\"1\" value=\"$filtered_temp_amb_max\">°C</td>";
+        $html .= "</tr>";
+        $html .= "<tr>";
+        $html .= "<td><input type=\"number\" name=\"LaptimeFilterTempRoadMin\" min=\"0\" max=\"99\" step=\"1\" value=\"$filtered_temp_road_min\">°C ≤</td>";
+        $html .= "<td>" . _("Road") . "</td>";
+        $html .= "<td>≤ <input type=\"number\" name=\"LaptimeFilterTempRoadMax\" min=\"0\" max=\"99\" step=\"1\" value=\"$filtered_temp_road_max\">°C</td>";
+        $html .= "</tr>";
+        $html .= "</table>";
+
+        // filtered BOP
+        $html .= "<table>";
+        $html .= "<caption>" . _("Filtered BOP") . "</caption>";
+        $html .= "<tr>";
+        $html .= "<td>" . _("Ballast") . "</td>";
+        $html .= "<td>≥ <input type=\"number\" name=\"LaptimeFilterBopBallast\" min=\"0\" max=\"99\" step=\"1\" value=\"$filtered_bop_ballast\">kg</td>";
+        $html .= "</tr>";
+        $html .= "<tr>";
+        $html .= "<td>" . _("Restrictor") . "</td>";
+        $html .= "<td>≥ <input type=\"number\" min=\"0\" name=\"LaptimeFilterBopRestrictor\" max=\"99\" step=\"1\" value=\"$filtered_bop_restrictor\">&percnt;</td>";
+        $html .= "</tr>";
+        $html .= "</table>";
+
+        $html .= "</div>";
+
+
+        // results table
+        $html .= "<table>";
+        $html .= "<tr>";
+        $html .= "<th rowspan=\"2\" colspan=\"2\">" . _("Car") . "</th>";
+        $html .= "<th colspan=\"6\">" . _("No BOP") . "</th>";
+        $html .= "<th colspan=\"6\">" . _("Filtered BOP") . "</th>";
+        $html .= "<th colspan=\"6\">" . _("Class BOP") . "</th>";
+        $html .= "</tr>";
+        $html .= "<tr>";
+        for ($i=0; $i<3; ++$i) {
+            $html .= "<th>" . _("Amb") . "</th>";
+            $html .= "<th>" . _("Road") . "</th>";
+            $html .= "<th>" . _("Bal") . "</th>";
+            $html .= "<th>" . _("Rstr") . "</th>";
+            $html .= "<th>" . _("Driver") . "</th>";
+            $html .= "<th>" . _("Laptime") . "</th>";
+        }
+        $html .= "</tr>";
+
+        // results
+        if (array_key_exists("LaptimeFilter", $_POST)) {
+            foreach ($this->CarClass->cars() as $car) {
+                $html .= "<tr>";
+
+                // car filter
+                $key = "LaptimeFilterCar{$car->id()}";
+                $car_is_requested = array_key_exists($key, $_POST) && $_POST[$key]=="TRUE";
+                $checked = ($car_is_requested) ?  "checked" : "";
+                $html .= "<td><input type=\"checkbox\" name=\"{$key}\" value=\"TRUE\" $checked></td>";
+                $html .= "<td>{$car->name()}</td>";
+
+                // find laps
+                if ($car_is_requested) {
+                    $lap_bop_none = \DbEntry\Lap::findBestLap($filtered_track, $car, $filtered_drivers,
+                                                            $filtered_temp_amb_min, $filtered_temp_amb_max,
+                                                            $filtered_temp_road_min, $filtered_temp_road_max,
+                                                            0, 0);
+                    $lap_bop_filtered = \DbEntry\Lap::findBestLap($filtered_track, $car, $filtered_drivers,
+                                                                $filtered_temp_amb_min, $filtered_temp_amb_max,
+                                                                $filtered_temp_road_min, $filtered_temp_road_max,
+                                                                $filtered_bop_ballast, $filtered_bop_restrictor);
+                    $lap_bop_class = \DbEntry\Lap::findBestLap($filtered_track, $car, $filtered_drivers,
+                                                            $filtered_temp_amb_min, $filtered_temp_amb_max,
+                                                            $filtered_temp_road_min, $filtered_temp_road_max,
+                                                            $this->CarClass->restrictor($car), $this->CarClass->ballast($car));
+
+                    // show laps
+                    foreach ([$lap_bop_none, $lap_bop_filtered, $lap_bop_class] as $lap) {
+                        if ($lap === NULL) {
+                            $html .= "<td colspan=\"6\"></td>";
+                        } else {
+                            $html .= "<td>{$lap->session()->tempAmb()} °C</td>";
+                            $html .= "<td>{$lap->session()->tempRoad()} °C</td>";
+                            $html .= "<td>{$lap->ballast()} kg</td>";
+                            $html .= "<td>{$lap->restrictor()} &percnt;</td>";
+                            $html .= "<td>{$lap->user()->name()}</td>";
+                            $html .= "<td>{$lap->html()}</td>";
+                        }
+                    }
+                }
+
+                $html .= "</tr>";
+            }
+        }
+        $html .= "</table>";
+        $html .= "<br><button type=\"submit\" name=\"LaptimeFilter\" value=\"TRUE\">" . _("Update Filter") . "</button>";
+        $html .= "</form>";
+
 
         return $html;
     }

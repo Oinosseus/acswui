@@ -67,6 +67,53 @@ class Lap extends DbEntry {
     }
 
 
+    /**
+     * Try to find the best lap with optional filters
+     * @param $drivers A list of User objects
+     * @return The Lap object with best, valid laptime (or NULL)
+     */
+    public static function findBestLap(Track $track,
+                                       Car $car,
+                                       array $drivers,
+                                       int $temperature_ambient_min=0,
+                                       int $temperature_ambient_max=99,
+                                       int $temperature_road_min=0,
+                                       int $temperature_road_max=99,
+                                       int $min_ballast=0,
+                                       int $min_restrictor=0) : ?Self {
+
+        $query  = " SELECT Laps.Id FROM Laps";
+        $query .= " INNER JOIN Sessions ON Sessions.Id=Laps.Session";
+        $query .= " INNER JOIN CarSkins ON CarSkins.Id=Laps.CarSkin";
+        $query .= " WHERE Laps.Cuts=0";
+        if (count($drivers) > 0) {
+            $user_id_string = NULL;
+            foreach ($drivers as $u) {
+                if ($user_id_string === NULL) $user_id_string = "{$u->id()}";
+                else $user_id_string .= ",{$u->id()}";
+            }
+            $query .= " AND Laps.User IN ({$user_id_string})";
+        }
+        $query .= " AND Sessions.Track={$track->id()}";
+        $query .= " AND Sessions.TempAmb>={$temperature_ambient_min}";
+        $query .= " AND Sessions.TempAmb<={$temperature_ambient_max}";
+        $query .= " AND Sessions.TempRoad>={$temperature_road_min}";
+        $query .= " AND Sessions.TempRoad<={$temperature_road_max}";
+        $query .= " AND CarSkins.Car={$car->id()}";
+        $query .= " AND Laps.Ballast>={$min_ballast}";
+        $query .= " AND Laps.Restrictor>={$min_restrictor}";
+        $query .= " ORDER BY Laps.Laptime ASC LIMIT 1;";
+
+        // request from DB
+        $res = \Core\Database::fetchRaw($query);
+        if (count($res) > 0) {
+            return Self::fromId((int) $res[0]['Id']);
+        } else {
+            return NULL;
+        }
+    }
+
+
     //! @return The amount of grip at this lap
     public function grip() {
         return (float) $this->loadColumn("Grip");

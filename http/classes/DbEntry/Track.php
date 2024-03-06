@@ -214,6 +214,14 @@ class Track extends DbEntry {
     }
 
 
+    //! @return the track object for Imola (often used as reference track)
+    public static function getImola() : Track {
+        $query = "SELECT Id FROM Tracks WHERE Name like 'Imola' LIMIT 1;";
+        $res = \Core\Database::fetchRaw($query);
+        return Self::fromId((int) $res[0]['Id']);
+    }
+
+
     /**
      * Retrieve an existing object from database.
      * This function is cached and returns for same IDs the same object.
