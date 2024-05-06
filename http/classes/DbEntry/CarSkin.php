@@ -54,6 +54,7 @@ class CarSkin extends DbEntry {
         $valid_filetype |= (bool) ($target_name == "preview.jpg") ? true : false;
         $valid_filetype |= (bool) ($target_name == "cm_skin.json") ? true : false;
         $valid_filetype |= (bool) ($target_name == "skin.ini") ? true : false;
+        $valid_filetype |= (bool) ($target_name == "ext_config.ini") ? true : false;
         if (!$valid_filetype) {
             \Core\Log::warning("Ignore illegal filetype '" . $target_name . "'!");
             return False;

@@ -212,7 +212,7 @@ class CarSkin extends \core\HtmlContent {
 
             // upload new file
             $html .= "<p>";
-            $html .= _("For upload only '*.dds' files, 'livery.png' and 'preview.jpg' are allowed. The 'ui_skin.json' is automatically generated.");
+            $html .= _("For upload only '*.dds' files, 'livery.png', 'ext_config.ini' and 'preview.jpg' are allowed. The 'ui_skin.json' is automatically generated.");
             $html .= "</p>";
             $html .= "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"52428800\" />";
             $html .= "<input type=\"file\" name=\"CarSkinFile\"><br>";
