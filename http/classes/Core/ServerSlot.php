@@ -178,6 +178,7 @@ class ServerSlot {
                 $coll = new \Parameter\Collection(NULL, $pc, "AcServerGeneral", _("General Settings"), _("General settings for Real Penalty"));
                 $p = new \Parameter\ParamString(NULL, $coll, "AcServerGeneralName", _("Name"), _("An arbitrary name for the server (shown in lobby)"), "", "");
                 $p = new \Parameter\ParamString(NULL, $coll, "AcServerGeneralAdminPwd", _("Admin Passwort"), _("acServer admin passwort"), "", "");
+                $p = new \Parameter\ParamBool(NULL, $coll, "AcServerRegisterToLobby", _("Register To Lobby"), _("Makes the server listable by AC clients"), "", TRUE);
 
                 // ports
                 $coll = new \Parameter\Collection(NULL, $pc, "AcServerPortsInet", _("Internet Ports"), _("Internet protocol port numbers for the AC server"));
@@ -559,7 +560,8 @@ class ServerSlot {
         fwrite($f, "CLIENT_SEND_INTERVAL_HZ=" . $pc->child("AcServerPerformanceClntIntvl")->value() . "\n");
         fwrite($f, "NUM_THREADS=" . $pc->child("AcServerPerformanceThreads")->value() . "\n");
         fwrite($f, "SLEEP_TIME=1\n");
-        fwrite($f, "REGISTER_TO_LOBBY=1\n");
+        if ($this->parameterCollection()->child("AcServerRegisterToLobby")->value()) fwrite($f, "REGISTER_TO_LOBBY=1\n");
+        else  fwrite($f, "REGISTER_TO_LOBBY=0\n");
         fwrite($f, "MAX_CLIENTS=" . count($el->entries()) . "\n");
         fwrite($f, "PICKUP_MODE_ENABLED=" . (($ppc->child("AcServerPickupMode")->value()) ? 1:0) . "\n");
         fwrite($f, "LOOP_MODE=0\n");  // ACswui system does require LOOP_MODE=0
