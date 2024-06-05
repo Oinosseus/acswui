@@ -206,9 +206,6 @@ class ServerSlot {
                 $p = new \Parameter\ParamInt(NULL, $coll, "AcServerPerformanceThreads", _("Number of Threads"), _("Number of threads to run on"), "", 2);
                 $p->setMin(1);
                 $p->setMax(64);
-                $p = new \Parameter\ParamInt(NULL, $coll, "AcServerPerformanceMaxClients", _("Max Clients"), _("Max number of clients"), "", 25);
-                $p->setMin(1);
-                $p->setMax(999);
 
                 /////////////////////
                 // ac-server-wrapper
@@ -563,7 +560,7 @@ class ServerSlot {
         fwrite($f, "NUM_THREADS=" . $pc->child("AcServerPerformanceThreads")->value() . "\n");
         fwrite($f, "SLEEP_TIME=1\n");
         fwrite($f, "REGISTER_TO_LOBBY=1\n");
-        fwrite($f, "MAX_CLIENTS=" . $pc->child("AcServerPerformanceMaxClients")->value() . "\n");
+        fwrite($f, "MAX_CLIENTS=" . count($el->entries()) . "\n");
         fwrite($f, "PICKUP_MODE_ENABLED=" . (($ppc->child("AcServerPickupMode")->value()) ? 1:0) . "\n");
         fwrite($f, "LOOP_MODE=0\n");  // ACswui system does require LOOP_MODE=0
 
