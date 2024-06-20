@@ -740,6 +740,66 @@ class ServerPreset extends DbEntry {
                 $p->setMax(99);
 
 
+                // ------------------------------------------------------------
+                //                    CSP Extra Settings
+                // ------------------------------------------------------------
+
+
+                $coll_csp = new \Parameter\Collection(NULL, $this->ParameterCollection, "Csp", _("CSP"), _("Extra settings, provided by custom shader patch"));
+                $p = new \Parameter\ParamBool(NULL, $coll_csp, "CspActivate", _("Activate"), "Active support for CSP extra settings", "", FALSE);
+
+
+                ///////////////
+                // Extra Rules
+
+                $coll_group = new \Parameter\Collection(NULL, $coll_csp, "CspExtraRules", _("Extra Rules"), "");
+                $p = new \Parameter\ParamBool(NULL, $coll_group, "CspExtraRulesAllowWrongWay", _("Allow Wrong Way"), _("Allow cars to drive either way"), "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll_group, "CspExtraRulesEnforceBackToPitsPenalty", _("Enforce Back To Pits Penalty"), _("Adds penalty during race when using back-to-pits AC command, same as when using “back to pits” in pause menu"), "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll_group, "CspExtraRulesEnforceBackToPitsStop", _("Enforce Back To Pits Stop"), "Stops back-to-pits AC command from working if car is moving", "", TRUE);
+                $p = new \Parameter\ParamInt(NULL, $coll_group, "CspExtraRulesLimitLockControlTime", _("Limit Lock Control Time"), _("Upper cap for each locking controls penalty in seconds"), "s", 60);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamInt(NULL, $coll_group, "CspExtraRulesLimitLockControlTotalTime", _("Limit Lock Control Total Time"), _("Upper cap for total of locking controls penalty in seconds (on some large laps without it penalty might get so large rejoining server would be the only valid course of action)"), "s", 90);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamBool(NULL, $coll_group, "CspExtraRulesNoBackToPits", _("No Back To Pits"), _("Disallow back-to-pits AC command and “back to pits” in pause menu (admin would still be able to teleport cars back if needed)"), "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll_group, "CspExtraRulesNoBackToPitsOutside", _("No Back To Pits Outside"), _("Same, but only if car is not in its pits position"), "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll_group, "CspExtraRulesInvalidateLaptimeInPits", _("Invalidate Laptime In Pits"), _("Invalidate lap time if car ever goes through pits (for tracks with pitlane surfaces not marked as invalid)"), "", TRUE);
+                $p = new \Parameter\ParamEnumMulti(NULL, $coll_group, "CspExtraRulesRequiredModules", _("Required Modules"), _("Optional list of required modules (just use the names of their configs), if set, live setting changes are disabled"));
+                new \Parameter\EnumItem($p, "lighting_fx", "Lightning FX");
+                new \Parameter\EnumItem($p, "weather_fx", "Weather FX");
+                $p = new \Parameter\ParamBool(NULL, $coll_group, "CspExtraRulesNewLapForDTPen", _("New Lap For DT Penalty"), _("If set, drivers getting drivethrough penalty wouldn’t be able to just reverse back and do it here and now"), "", TRUE);
+                $p = new \Parameter\ParamInt(NULL, $coll_group, "CspExtraRulesSlipStreamMult", _("Slip Stream Multiplier"), _("Can be used to increase or decrease the intensity of slipstream effect"), "", 1);
+                $p->setMin(0);
+                $p->setMax(99);
+                $p = new \Parameter\ParamBool(NULL, $coll_group, "CspExtraRulesDisableRainPhysics", _("Disable Rain Physics"), _("Set to 1 to disable rain physics "), "", TRUE);
+
+
+                /////////////////////
+                // Pit Speed Limiter
+
+                $coll_group = new \Parameter\Collection(NULL, $coll_csp, "CspPitSpeedLimiter", _("Pit Speed Limiter"), "");
+                $p = new \Parameter\ParamBool(NULL, $coll_group, "CspPitSpeedLimiterDisableForced", _("Disable Forced"), "Disable forced pits speed limiter", "", TRUE);
+                $p = new \Parameter\ParamBool(NULL, $coll_group, "CspPitSpeedLimiterKeepCollisions", _("Keep Collisions"), "Activate collisions between cars in pits", "", TRUE);
+                $p = new \Parameter\ParamInt(NULL, $coll_group, "CspPitSpeedLimiterSpeedKmH", _("Pit Speed"), _("Alter pits speed limiter value; default is 80"), "km/h", 80);
+                $p->setMin(10);
+                $p->setMax(999);
+                $p = new \Parameter\ParamEnum(NULL, $coll_group, "CspPitSpeedLimiterSpeedingPenalty", _("Speeding Penalty"), _("Penalty for violation (for now, either DRIVE_THROUGH or TELEPORT_TO_PITS with locking controls)"));
+                new \Parameter\EnumItem($p, "DRIVE_THROUGH", _("Drive Through"));
+                new \Parameter\EnumItem($p, "TELEPORT_TO_PITS", _("Teleport To Pits"));
+                $p->setValue("DRIVE_THROUGH");
+                $p = new \Parameter\ParamInt(NULL, $coll_group, "CspPitSpeedLimiterSpeedingPenaltyLaps", _("Penalty Laps"), "", "Laps", 3);
+                $p->setMin(0);
+                $p->setMax(999);
+                $p = new \Parameter\ParamEnum(NULL, $coll_group, "CspPitSpeedLimiterSpeedingSubsequentPenalty", _("Subsequent Penalty"), _("Optional, stricter penalty for a second violation"));
+                new \Parameter\EnumItem($p, "", _("None"));
+                new \Parameter\EnumItem($p, "TELEPORT_TO_PITS", _("Teleport To Pits"));
+                $p->setValue("");
+                $p = new \Parameter\ParamInt(NULL, $coll_group, "CspPitSpeedLimiterSpeedingSubsequentPenaltyTime", _("Subsequent Time"), _("How long controls will be locked, in seconds"), "s", 30);
+                $p->setMin(0);
+                $p->setMax(999);
+
+
                 // set all deriveable and visible
                 $this->ParameterCollection->setAllAccessible();
             }
