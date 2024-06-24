@@ -800,6 +800,32 @@ class ServerPreset extends DbEntry {
                 $p->setMax(999);
 
 
+                ////////////////
+                // Extra Tweeks
+
+                $coll_group = new \Parameter\Collection(NULL, $coll_csp, "CspExtraTweeks", _("Extra Tweeks"), "");
+                $p = new \Parameter\ParamBool(NULL, $coll_group, "CspExtraTweeksCustomMotion", _("Custom Motion"), "smooths out motion for cars moving slow to prevent shaking on large tracks.", "", TRUE);
+                $p = new \Parameter\ParamFloat(NULL, $coll, "CspExtraTweeksJumpLimit", _("Jump Limit"), _("Jump threshold in meters, fix is applied if remote car would suddenly move further than that"), "", 0.3);
+                $p->setMinFloat(0.1);
+                $p->setMax(10);
+                $p = new \Parameter\ParamInt(NULL, $coll_group, "CspExtraTweeksJumpPauseCollisions", _("Jump Pause Collisions"), _("For how long to disable collisions in seconds"), "s", 5);
+                $p->setMin(0);
+                $p->setMax(99);
+
+
+                ///////////////////
+                // Emergency Reset
+
+                $coll_group = new \Parameter\Collection(NULL, $coll_csp, "CspEmergencyReset", _("Emergency Reset"), "");
+                $p = new \Parameter\ParamInt(NULL, $coll_group, "CspEmergencyResetFall", _("Fall"), _("Distance in meters, if car is below the ground more than that, it gets reset"), "m", 5);
+                $p->setMin(1);
+                $p->setMax(99);
+                $p = new \Parameter\ParamInt(NULL, $coll_group, "CspEmergencyResetCollision", _("Collision"), _("Time in seconds, if car is stuck in a wall for more than that, it gets reset"), "s", 3);
+                $p->setMin(1);
+                $p->setMax(99);
+                $p = new \Parameter\ParamBool(NULL, $coll_group, "CspEmergencyResetPenalty", _("Penalty"), "If this optional parameter is set to 1, resetting would apply the same penalty  as manually teleporting to pits", "", TRUE);
+
+
                 // set all deriveable and visible
                 $this->ParameterCollection->setAllAccessible();
             }

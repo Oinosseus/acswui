@@ -26,4 +26,14 @@ final class ParamFloat extends ParamInt {
     public function value() {
         return (float) parent::value();
     }
+
+    public function setMinFloat(float $min) {
+        $this->MinVal = $min;
+    }
+
+
+    public function setMaxFloat(float $max) {
+        $this->MaxVal = $max;
+    }
+
 }

@@ -116,6 +116,75 @@ class ServerSlot {
     }
 
 
+    private function getCspExtraOptions(\DbEntry\ServerPreset $preset) : String {
+        $ppc = $preset->parameterCollection();
+        if (!$ppc->child("CspActivate")->value()) return "";
+        $ret = "";
+
+        # EXTRA_RULES
+        $ret .= "[EXTRA_RULES]\n";
+        $ret .= "ALLOW_WRONG_WAY = " . (($ppc->child("CspExtraRulesAllowWrongWay")->value()) ? 1:0) . "\n";
+        $ret .= "ENFORCE_BACK_TO_PITS_PENALTY = " . (($ppc->child("CspExtraRulesEnforceBackToPitsPenalty")->value()) ? 1:0) . "\n";
+        $ret .= "ENFORCE_BACK_TO_PITS_STOP = " . (($ppc->child("CspExtraRulesEnforceBackToPitsStop")->value()) ? 1:0) . "\n";
+        $ret .= "LIMIT_LOCK_CONTROLS_TIME = " . $ppc->child("CspExtraRulesLimitLockControlTime")->value() . "\n";
+        $ret .= "LIMIT_LOCK_CONTROLS_TOTAL_TIME = " . $ppc->child("CspExtraRulesLimitLockControlTotalTime")->value() . "\n";
+        $ret .= "NO_BACK_TO_PITS = " . (($ppc->child("CspExtraRulesNoBackToPits")->value()) ? 1:0) . "\n";
+        $ret .= "NO_BACK_TO_PITS_OUTSIDE_OF_PITS = " . (($ppc->child("CspExtraRulesNoBackToPitsOutside")->value()) ? 1:0) . "\n";
+        $ret .= "INVALIDATE_LAP_TIME_IN_PITS = " . (($ppc->child("CspExtraRulesInvalidateLaptimeInPits")->value()) ? 1:0) . "\n";
+        $required_modules_list = $ppc->child("CspExtraRulesRequiredModules")->valueList();
+        if (count($required_modules_list) > 0) $ret .= "REQUIRED_MODULES = " . implode(", ", $required_modules_list) . "\n";
+        $ret .= "REQUIRE_NEW_LAP_FOR_DRIVETHROUGH_PENALTY = " . (($ppc->child("CspExtraRulesNewLapForDTPen")->value()) ? 1:0) . "\n";
+        $ret .= "SLIPSTREAM_MULT = " . $ppc->child("CspExtraRulesSlipStreamMult")->value() . "\n";
+        $ret .= "DISABLE_RAIN_PHYSICS = " . (($ppc->child("CspExtraRulesDisableRainPhysics")->value()) ? 1:0) . "\n";
+        $ret .= "\n";
+
+        # PITS_SPEED_LIMITER
+        $ret .= "[PITS_SPEED_LIMITER]\n";
+        $ret .= "DISABLE_FORCED = " . (($ppc->child("CspPitSpeedLimiterDisableForced")->value()) ? 1:0) . "\n";
+        $ret .= "KEEP_COLLISIONS = " . (($ppc->child("CspPitSpeedLimiterKeepCollisions")->value()) ? 1:0) . "\n";
+        $ret .= "SPEED_KMH = " . $ppc->child("CspPitSpeedLimiterSpeedKmH")->value() . "\n";
+        $ret .= "SPEEDING_PENALTY = " . $ppc->child("CspPitSpeedLimiterSpeedingPenalty")->value() . "\n";
+        $ret .= "SPEEDING_PENALTY_LAPS = " . $ppc->child("CspPitSpeedLimiterSpeedingPenaltyLaps")->value() . "\n";
+        $ret .= "SPEEDING_SUBSEQUENT_PENALTY = " . $ppc->child("CspPitSpeedLimiterSpeedingSubsequentPenalty")->value() . "\n";
+        $ret .= "SPEEDING_SUBSEQUENT_PENALTY_TIME = " . $ppc->child("CspPitSpeedLimiterSpeedingSubsequentPenaltyTime")->value() . "\n";
+        $ret .= "\n";
+
+        # EXTRA_TWEAKS
+        $ret .= "[EXTRA_TWEAKS]\n";
+        $ret .= "CUSTOM_MOTION = " . (($ppc->child("CspExtraTweeksCustomMotion")->value()) ? "1, SMOOTH":0) . "\n";
+        $ret .= "JUMP_LIMIT = " . $ppc->child("CspExtraTweeksJumpLimit")->value() . "\n";
+        $ret .= "JUMP_PAUSE_COLLISIONS_FOR = " . $ppc->child("CspExtraTweeksJumpPauseCollisions")->value() . "\n";
+        $ret .= "\n";
+
+        # EMERGENCY_RESET
+        $ret .= "[EMERGENCY_RESET]\n";
+        $ret .= "FALL = " . $ppc->child("CspEmergencyResetFall")->value() . "\n";
+        $ret .= "COLLISION = " . $ppc->child("CspEmergencyResetCollision")->value() . "\n";
+        $ret .= "PENALTY = " . (($ppc->child("CspEmergencyResetPenalty")->value()) ? 1:0) . "\n";
+        $ret .= "\n";
+
+        # CHAT
+        $ret .= "[CHAT]\n";
+        $ret .= "MESSAGES_FILTER = '^(/rp<|/rp>|RP<|RP>|/RPADMIN)'\n";
+        $ret .= "SERVER_MESSAGES_FILTER = '^(/rp<|/rp>|RP<|RP>|/RPADMIN)'\n";
+        $ret .= "COMMANDS_NONADMIN_FILTER = '^(/rp<|/rp>|RP<|RP>|/RPADMIN)'\n";
+        $ret .= "\n";
+
+        # encode
+        $ret = gzcompress($ret);
+        if ($ret === FALSE) {
+            \Core\Log::warning("Failed to call gzcompress");
+            return "";
+        }
+        $ret_base64 = base64_encode($ret);
+        $ret = "";
+        for ($i=0; $i<32; $i++) $ret .= "\t";
+        $ret .= "\$CSP0:" . $ret_base64;
+
+        return $ret;
+    }
+
+
     //! @return A html string with a link to join via CM
     public function htmlJoin() {
         $html = "";
@@ -622,6 +691,7 @@ class ServerSlot {
 
         // create welcome message
         $welcome_message = trim($ppc->child("AcServerWelcomeMessage")->value());
+        $welcome_message .= $this->getCspExtraOptions($preset);
         if (strlen($welcome_message) > 0) {
             $file_path_wm = \Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/welcome.txt";
             $f_wm = fopen($file_path_wm, 'w');
