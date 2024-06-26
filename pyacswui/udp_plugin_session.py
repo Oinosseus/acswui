@@ -3,6 +3,7 @@ from .database import Database
 from .udp_packet import UdpPacket
 import json
 import math
+import re
 
 class UdpPluginSession(object):
 
@@ -126,6 +127,14 @@ class UdpPluginSession(object):
         temp_road = packet.readByte()
         weather_graphics = packet.readString()
         elapsed_ms = packet.readInt32()
+
+        # replace track when CSP extra features are used
+        match = re.match("csp/[0-9]*/(.*)", track_name)
+        if match:
+            track_name = match.group(1)
+
+        # user info
+        self.__verbosity.print("UdpPluginSession.update(): session_name=", session_name, "; track_name=", track_name, "; track_config=", track_config, sep="")
 
         # identify track
         query = "SELECT Tracks.Id FROM `Tracks` INNER JOIN TrackLocations ON Tracks.Location = TrackLocations.Id WHERE Tracks.Config = '%s' AND TrackLocations.Track = '%s'" % (track_config, track_name)

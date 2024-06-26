@@ -747,6 +747,13 @@ class ServerPreset extends DbEntry {
 
                 $coll_csp = new \Parameter\Collection(NULL, $this->ParameterCollection, "Csp", _("CSP"), _("Extra settings, provided by custom shader patch"));
                 $p = new \Parameter\ParamBool(NULL, $coll_csp, "CspActivate", _("Activate"), "Active support for CSP extra settings", "", FALSE);
+                $p = new \Parameter\ParamEnum(NULL, $coll_csp, "CspVersion", _("Minimum Version"), _("The required minimum client version of CSP"));
+                new \Parameter\EnumItem($p, "2144", _("v0.1.79"));
+                new \Parameter\EnumItem($p, "2651", _("v0.2.0"));
+                new \Parameter\EnumItem($p, "2735", _("v0.2.1"));
+                new \Parameter\EnumItem($p, "2744", _("v0.2.2"));
+                new \Parameter\EnumItem($p, "3044", _("v0.2.3"));
+                $p->setValue("2744");
 
 
                 ///////////////

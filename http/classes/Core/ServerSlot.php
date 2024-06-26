@@ -464,6 +464,7 @@ class ServerSlot {
         // configure ac server
         $el->writeToFile(\Core\Config::AbsPathData . "/acserver/slot{$this->id()}/cfg/entry_list.ini");
         $this->writeAcServerCfg($track, $preset, $el, $bm);
+        $this->writeSurfaces($track, $preset);
 
         // configure ac-server-wrapper
         $this->writeAcServerWrapperParams();
@@ -686,7 +687,14 @@ class ServerSlot {
         }
         fwrite($f, "CARS=" . implode(";", $cars) . "\n");
         fwrite($f, "MAX_BALLAST_KG={$bm->maxBallast()}\n");
-        fwrite($f, "TRACK=" . $track->location()->track() . "\n");
+
+        # track
+        $server_cfg_track = "";
+        if ($ppc->child("CspActivate")->value()) {
+            $server_cfg_track = "csp/" . $ppc->child("CspVersion")->value() . "/";
+        }
+        $server_cfg_track .= $track->location()->track();
+        fwrite($f, "TRACK=$server_cfg_track\n");
         fwrite($f, "CONFIG_TRACK=" . $track->config() . "\n");
 
         // create welcome message
@@ -1167,5 +1175,39 @@ class ServerSlot {
 
         fclose($f);
         @chmod($file_path, 0660);
+    }
+
+
+    //! modifies surfaces.ini of a track, depending if CSP is active or not
+    private function writeSurfaces(\DbEntry\Track $track,
+                                   \DbEntry\ServerPreset $preset) {
+        $ppc = $preset->parameterCollection();
+
+        # determine path of surces.ini
+        $file_path = \Core\Config::AbsPathData;
+        $file_path .= "/acserver/slot" . $this->id();
+        $file_path .= "/content/tracks/" . $track->location()->track();
+        if (strlen($track->config())) $file_path .= "/" . $track->config();
+        $file_path .= "/data/surfaces.ini";
+
+        # check if files exists
+        if (!file_exists($file_path)) {
+            \Core\Log::debug("Cannot find '$file_path'");
+            return;
+        }
+
+        # replace SURFACE_0 / CSPFACE_0
+        $file_content = file_get_contents($file_path);
+        if (!$file_content) {
+            \Core\Log::warning("Failure when reading '$file_path'");
+        }
+        if ($ppc->child("CspActivate")->value()) {
+            $file_content = str_replace("[SURFACE_0]", "[CSPFACE_0]", $file_content);
+        } else {
+            $file_content = str_replace("[CSPFACE_0]", "[SURFACE_0]", $file_content);
+        }
+        if (!file_put_contents($file_path, $file_content)) {
+            \Core\Log::error("Failure when writing '$file_path'");
+        }
     }
 }
