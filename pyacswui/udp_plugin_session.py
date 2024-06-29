@@ -129,7 +129,7 @@ class UdpPluginSession(object):
         elapsed_ms = packet.readInt32()
 
         # replace track when CSP extra features are used
-        match = re.match("csp/[0-9]*/(.*)", track_name)
+        match = re.match("csp/[0-9]*/\.\./(.*)", track_name)
         if match:
             track_name = match.group(1)
 

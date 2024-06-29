@@ -285,6 +285,16 @@ class CommandInstall(Command):
             path_data_acserver_slot_content = os.path.join(path_data_acserver_slot, "content")
             self.copytree(path_srvpkg_acserver_content, path_data_acserver_slot_content)
 
+            # copy tracks/ to content/csp/ (for CSP extra)
+            path_srvpkg_acserver_content_tracks = os.path.join(path_srvpkg_acserver_content, "tracks")
+            path_data_acserver_slot_content_tracks_csp = os.path.join(path_data_acserver_slot_content, "tracks", "csp")
+            self.copytree(path_srvpkg_acserver_content_tracks, path_data_acserver_slot_content_tracks_csp)
+
+            # create dummy directory for all supported CSP versions
+            for csp_version in [2144, 2651, 2735, 2744, 3044]:
+                path_data_acserver_slot_content_csp_version = os.path.join(path_data_acserver_slot_content_tracks_csp, str(csp_version))
+                self.mkdirs(path_data_acserver_slot_content_csp_version)
+
             # acserver binaries
             path_srvpkg_acserver = os.path.join(self.getGeneralArg("path-srvpkg"), "acserver")
             path_srvpkg_acserver_bin = os.path.join(path_srvpkg_acserver, "acServer")

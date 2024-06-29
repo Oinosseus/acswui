@@ -691,7 +691,7 @@ class ServerSlot {
         # track
         $server_cfg_track = "";
         if ($ppc->child("CspActivate")->value()) {
-            $server_cfg_track = "csp/" . $ppc->child("CspVersion")->value() . "/";
+            $server_cfg_track = "csp/" . $ppc->child("CspVersion")->value() . "/../";
         }
         $server_cfg_track .= $track->location()->track();
         fwrite($f, "TRACK=$server_cfg_track\n");
