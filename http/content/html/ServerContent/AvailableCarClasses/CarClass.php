@@ -374,7 +374,7 @@ class CarClass extends \core\HtmlContent {
                                                                 $filtered_grip_min/100, $filtered_grip_max/100,
                                                                 $filtered_temp_amb_min, $filtered_temp_amb_max,
                                                                 $filtered_temp_road_min, $filtered_temp_road_max,
-                                                                $this->CarClass->restrictor($car), $this->CarClass->ballast($car));
+                                                                $this->CarClass->ballast($car), $this->CarClass->restrictor($car));
                 }
 
                 // store
