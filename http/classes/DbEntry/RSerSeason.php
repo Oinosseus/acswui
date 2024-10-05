@@ -21,6 +21,7 @@ class RSerSeason extends DbEntry {
 
     //! Set driver registrations to inactive when they missed too much races
     public function autoUnregister() {
+        return; // deactivate broken feature
 
         // determine point of last requested activitiy
         $unregister_races = $this->series()->getParam("AutoUnregisterRaces");
