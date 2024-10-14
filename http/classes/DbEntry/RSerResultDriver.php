@@ -215,7 +215,7 @@ class RSerResultDriver extends DbEntry {
 
 
     //! @param $value When TRUE, this result is not evaluated for standings
-    public function SetStrikeResult(bool $value) {
+    public function setStrikeResult(bool $value) {
         $this->storeColumns(["StrikeResult" => (($value) ? 1 : 0)]);
     }
 

@@ -44,20 +44,18 @@ class RSerTeamStanding {
 
             $points_per_team = array();  // key=Team.Id, value= points
             $points_per_user = array();  // key=User.Id, value= points
-            $points_per_class_per_team = array();  // key=Team.Id, value= list of points
+            $points_per_team_per_event = array();  // key=Team.Id, value=array(key=event; value=list-of-points)
 
             foreach ($season->listStandings($rs_class) as $rs_sdg) {
 
                 // the following line would only list standings from active registrations
                 //if (!$rs_sdg->registration()->active()) continue;
 
-                // add team result
+                // scan all teams for $points_per_team_per_event
                 if ($rs_sdg->registration()->teamCar()) {
                     $team = $rs_sdg->registration()->teamCar()->team();
-                    $points = $rs_sdg->points();
-                    if (!array_key_exists($team->id(), $points_per_class_per_team))
-                        $points_per_class_per_team[$team->id()] = array();
-                    $points_per_class_per_team[$team->id()][] = $points;
+                    if (!array_key_exists($team->id(), $points_per_team_per_event))
+                        $points_per_team_per_event[$team->id()] = array();
 
                 // add user result
                 } else if ($rs_sdg->registration()->user()) {
@@ -76,52 +74,81 @@ class RSerTeamStanding {
 
             }
 
-            // summarize team points
+            // check event results for team points
             $method = $season->series()->getParam("PtsClassSum");
-            foreach ($points_per_class_per_team as $team_id=>$poin_list) {
+            foreach ($season->listEvents() as $event) {
+                foreach ($points_per_team_per_event as $team_id=>$_) {
 
-                if (!array_key_exists($team_id, $points_per_team))
-                    $points_per_team[$team_id] = 0;
+                    // count all points of team drivers
+                    $team_points_list = array();
+                    foreach ($event->listResults($rs_class) as $rslt) {
+                        $team_car = $rslt->registration()->teamCar();
+                        if ($team_car && $team_car->team()->id() == $team_id) {
 
-                switch ($method) {
-                    case "B4":
-                        $points_per_team[$team_id] += \Core\Helper::maxNSum(4, $poin_list);
-                        break;
+                            // skip if driver result is a strike result
+                            // find driver result by same position as registration result
+                            $rslt_drv = NULL;
+                            foreach ($event->listResultsDriver($rs_class) as $rslt_drv_iter) {
+                                if ($rslt->position() == $rslt_drv_iter->position()) {
+                                    $rslt_drv = $rslt_drv_iter;
+                                    break;
+                                }
+                            }
+                            if (!$rslt_drv) {
+                                \Core\Log::error("Cannot find RSerResultDriver with position=" . $rslt->position());
+                                $is_strike_result = FALSE;
+                            } else {
+                                $is_strike_result = $rslt_drv->strikeResult();
+                            }
 
-                    case "B3":
-                        $points_per_team[$team_id] += \Core\Helper::maxNSum(3, $poin_list);
-                        break;
+                            // add results
+                            if (!$is_strike_result) $team_points_list[] = $rslt->points();
+                        }
+                    }
 
-                    case "B2":
-                        $points_per_team[$team_id] += \Core\Helper::maxNSum(2, $poin_list);
-                        break;
+                    // summarize resulting team points
+                    if (!array_key_exists($team_id, $points_per_team))
+                        $points_per_team[$team_id] = 0;
+                    switch ($method) {
+                        case "B4":
+                            $points_per_team[$team_id] += \Core\Helper::maxNSum(4, $team_points_list);
+                            break;
 
-                    case "B1":
-                        $points_per_team[$team_id] += \Core\Helper::maxNSum(1, $poin_list);
-                        break;
+                        case "B3":
+                            $points_per_team[$team_id] += \Core\Helper::maxNSum(3, $team_points_list);
+                            break;
 
-                    case "L1":
-                        $points_per_team[$team_id] += \Core\Helper::minNSum(1, $poin_list);
-                        break;
+                        case "B2":
+                            $points_per_team[$team_id] += \Core\Helper::maxNSum(2, $team_points_list);
+                            break;
 
-                    case "L2":
-                        $points_per_team[$team_id] += \Core\Helper::minNSum(2, $poin_list);
-                        break;
+                        case "B1":
+                            $points_per_team[$team_id] += \Core\Helper::maxNSum(1, $team_points_list);
+                            break;
 
-                    case "L3":
-                        $points_per_team[$team_id] += \Core\Helper::minNSum(3, $poin_list);
-                        break;
+                        case "L1":
+                            $points_per_team[$team_id] += \Core\Helper::minNSum(1, $team_points_list);
+                            break;
 
-                    case "L4":
-                        $points_per_team[$team_id] += \Core\Helper::minNSum(4, $poin_list);
-                        break;
+                        case "L2":
+                            $points_per_team[$team_id] += \Core\Helper::minNSum(2, $team_points_list);
+                            break;
 
-                    case "AVRG":
-                        $points_per_team[$team_id] += array_sum($poin_list) / count($poin_list);
-                        break;
+                        case "L3":
+                            $points_per_team[$team_id] += \Core\Helper::minNSum(3, $team_points_list);
+                            break;
 
-                    default:
-                        \Core\Log::error("Unexpected method $method!");
+                        case "L4":
+                            $points_per_team[$team_id] += \Core\Helper::minNSum(4, $team_points_list);
+                            break;
+
+                        case "AVRG":
+                            $points_per_team[$team_id] += array_sum($team_points_list) / count($team_points_list);
+                            break;
+
+                        default:
+                            \Core\Log::error("Unexpected method $method!");
+                    }
                 }
             }
 
