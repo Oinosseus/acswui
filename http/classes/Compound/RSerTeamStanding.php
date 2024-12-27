@@ -143,7 +143,9 @@ class RSerTeamStanding {
                             break;
 
                         case "AVRG":
-                            $points_per_team[$team_id] += array_sum($team_points_list) / count($team_points_list);
+                            if (count($team_points_list) > 0) {
+                                $points_per_team[$team_id] += array_sum($team_points_list) / count($team_points_list);
+                            }
                             break;
 
                         default:
