@@ -89,13 +89,41 @@ class RSerTeamStanding {
                             // find driver result by same position as registration result
                             $rslt_drv = NULL;
                             foreach ($event->listResultsDriver($rs_class) as $rslt_drv_iter) {
-                                if ($rslt->position() == $rslt_drv_iter->position()) {
+
+                                // identify by same user
+                                if ($rslt->registration()->user() !== NULL && $rslt->registration()->user() == $rslt_drv_iter->user()) {
                                     $rslt_drv = $rslt_drv_iter;
                                     break;
+
+                                // identify by team-car user
+                                } else if ($rslt->registration()->teamCar() !== NULL) {
+                                    foreach ($rslt->registration()->teamCar()->drivers() as $team_member) {
+                                        if ($team_member->user() == $rslt_drv_iter->user()) {
+                                            $rslt_drv = $rslt_drv_iter;
+                                            break 2;
+                                        }
+                                    }
                                 }
                             }
+                            if ($rslt_drv === NULL) {
+                                \Core\Log::warning("Cannot find RSerResultDriver = " . $rslt->position());
+                                $is_strike_result = FALSE;
+                            }
+
+                            // find driver result by same position as registration result (las resort when team registration is deleted)
+                            if ($rslt_drv === NULL) {
+                                foreach ($event->listResultsDriver($rs_class) as $rslt_drv_iter) {
+
+                                    // check for same position (driver and event result)
+                                    if ($rslt->position() == $rslt_drv_iter->position()) {
+                                        $rslt_drv = $rslt_drv_iter;
+                                        break;
+                                    }
+                                }
+                            }
+
                             if (!$rslt_drv) {
-                                \Core\Log::error("Cannot find RSerResultDriver with position=" . $rslt->position());
+                                \Core\Log::error("Cannot find RSerResultDriver = " . $rslt->position());
                                 $is_strike_result = FALSE;
                             } else {
                                 $is_strike_result = $rslt_drv->strikeResult();
