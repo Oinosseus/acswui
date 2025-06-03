@@ -40,7 +40,7 @@ class BopMap {
      * @param $driver A Car, User or TeamCar where the BOP shall be assigned to. If NULL, the BOP is assigned to foregin drivers
      */
     public function update(int $ballast, int $restrictor,
-                           ?\DbEntry\RSerClass|\DbEntry\Car|\DbEntry\User|\DbEntry\TeamCar $driver = NULL) {
+                           null|\DbEntry\RSerClass|\DbEntry\Car|\DbEntry\User|\DbEntry\TeamCar $driver = NULL) {
 
         // BOP Car
         if (is_a($driver, "\DbEntry\Car")) {
