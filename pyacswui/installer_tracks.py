@@ -292,7 +292,7 @@ class InstallerTracks(object):
         length = str(length)
         ret = ""
 
-        REGEX_COMP_TRACKLENGTH = re.compile("([0-9]*[,\.]?[0-9]*)\s*(m|km)?(.*)")
+        REGEX_COMP_TRACKLENGTH = re.compile("([0-9]*[,\\.]?[0-9]*)\\s*(m|km)?(.*)")
         match = REGEX_COMP_TRACKLENGTH.match(length)
         if not match:
             raise ValueError("Could not extract length information from string '%s'!\nCheck ui_track.json" % length)

@@ -177,19 +177,19 @@ class InstallerCars(object) :
 
         # option 1
         if weight is None:
-            match = re.match("([0-9]*)\s*[kK][gG]", weight_string)
+            match = re.match("([0-9]*)\\s*[kK][gG]", weight_string)
             if match:
                 weight = int(match.group(1))
 
         # option 2 (found at ks_ruf_rt12r)
         if weight is None:
-            match = re.match("([0-9]),([0-9]*)\s*[Kk][gG]", weight_string)
+            match = re.match("([0-9]),([0-9]*)\\s*[Kk][gG]", weight_string)
             if match:
                 weight = int(match.group(1)) * 1e3 + int(match.group(2))
 
         # option 3 (found at legion_mclaren_f1gtr_longtail)
         if weight is None:
-            match = re.match("([0-9]*)\*\s*[kK][gG]", weight_string)
+            match = re.match("([0-9]*)\\*\\s*[kK][gG]", weight_string)
             if match:
                 weight = int(match.group(1))
 

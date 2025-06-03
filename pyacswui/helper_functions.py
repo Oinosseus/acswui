@@ -47,7 +47,7 @@ def parse_json(file_path, expected_keys=[]):
             for line in f.readlines():
                 for key in expected_keys:
 
-                    match = re.match("\s*\"" + key + "\":\s*[\"]?(.*)", line)
+                    match = re.match("\\s*\"" + key + "\":\\s*[\"]?(.*)", line)
                     if match:
                         value = match.group(1) # line.split(key, 1)[1]
                         value = value.strip()
@@ -181,7 +181,7 @@ def parse_geocoordinate(string_value):
     string_value = string_value.replace(",", ".").upper().strip()
 
     # 12.345? N
-    m = re.match("(\d+\.\d+).?\s+([N,S,E,W])", string_value.upper())
+    m = re.match("(\\d+\\.\\d+).?\\s+([N,S,E,W])", string_value.upper())
     if m:
         value = float(m.group(1))
         direction = m.group(2)
@@ -190,7 +190,7 @@ def parse_geocoordinate(string_value):
             return coordinate
 
     # 13?16?14.34?E
-    m = re.match("(\d+).?\s*(\d+).?\s*(\d+\.\d+).?\s*([N,S,E,W])", string_value.upper())
+    m = re.match("(\\d+).?\\s*(\\d+).?\\s*(\\d+\\.\\d+).?\\s*([N,S,E,W])", string_value.upper())
     if m:
         value = float(m.group(1)) + float(m.group(2))/60 + float(m.group(3))/3600
         direction = m.group(4)
@@ -199,7 +199,7 @@ def parse_geocoordinate(string_value):
             return coordinate
 
     # 13?16?14?E
-    m = re.match("(\d+).?\s*(\d+).?\s*(\d+).?\s*([N,S,E,W])", string_value.upper())
+    m = re.match("(\\d+).?\\s*(\\d+).?\\s*(\\d+).?\\s*([N,S,E,W])", string_value.upper())
     if m:
         value = float(m.group(1)) + float(m.group(2))/60 + float(m.group(3))/3600
         direction = m.group(4)
@@ -208,7 +208,7 @@ def parse_geocoordinate(string_value):
             return coordinate
 
     # 13? 16.3456? E
-    m = re.match("(\d+).?\s+(\d+\.\d+).?\s+([N,S,E,W])", string_value.upper())
+    m = re.match("(\\d+).?\\s+(\\d+\\.\\d+).?\\s+([N,S,E,W])", string_value.upper())
     if m:
         value = float(m.group(1)) + float(m.group(2))/60
         direction = m.group(3)
@@ -217,25 +217,25 @@ def parse_geocoordinate(string_value):
             return coordinate
 
     # LAT-25.5955
-    m = re.match("LAT\s*([-]*\d+\.\d+)", string_value.upper())
+    m = re.match("LAT\\s*([-]*\\d+\\.\\d+)", string_value.upper())
     if m:
         value = float(m.group(1))
         return Latitude(value)
 
     # LON 28.0408
-    m = re.match("LON\s*([-]*\d+\.\d+)", string_value.upper())
+    m = re.match("LON\\s*([-]*\\d+\\.\\d+)", string_value.upper())
     if m:
         value = float(m.group(1))
         return Longitude(value)
 
     # 13? 16.3456?
-    m = re.match("(\d+).?\s+(\d+\.\d+).?", string_value.upper())
+    m = re.match("(\\d+).?\\s+(\\d+\\.\\d+).?", string_value.upper())
     if m:
         value = float(m.group(1)) + float(m.group(2))/60
         return value
 
     # 12.345
-    m = re.match("(\d+\.\d+)", string_value.upper())
+    m = re.match("(\\d+\\.\\d+)", string_value.upper())
     if m:
         value = float(m.group(1))
         return value
