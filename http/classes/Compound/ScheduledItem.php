@@ -240,8 +240,8 @@ class ScheduledItem {
      * @param $only_not_executed If TRUE (default FALSE), then only items which are not already executed are returned
      * @return A list of all schedule events
      */
-    public static function listItems(\Core\ServerSlot $server_slot=NULL,
-                                     \DateTime $start_after=NULL,
+    public static function listItems(?\Core\ServerSlot $server_slot=NULL,
+                                     ?\DateTime $start_after=NULL,
                                      bool $only_not_executed=FALSE) : array {
 
         if ($start_after) $start_after = \Core\Database::timestamp($start_after);

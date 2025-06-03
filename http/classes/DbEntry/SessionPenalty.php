@@ -85,7 +85,7 @@ class SessionPenalty extends DbEntry {
      * @return A list of SessionPenalty objects
      */
     public static function listPenalties(Session $session,
-                                         \Compound\SessionEntry $entry=NULL) : array {
+                                         ?\Compound\SessionEntry $entry=NULL) : array {
         $ret = array();
 
         if ($entry === NULL) {
@@ -183,7 +183,7 @@ class SessionPenalty extends DbEntry {
 
 
     //! @param $officer The user that is responsible for imposing the penalty
-    public function setOfficer(User $officer=NULL) {
+    public function setOfficer(?User $officer=NULL) {
         $this->session()->setNeedsFinalResultsCalculation();
         $cols = array();
         $cols['Officer'] = ($officer === NULL) ? 0 : $officer->id();

@@ -43,9 +43,9 @@ class SessionScheduleRegistration extends DbEntry {
      * @return The created/updated SessionScheduleRegistration object
      */
     public static function register(SessionSchedule $schedule,
-                                    User $user=NULL,
-                                    CarSkin $car_skin=NULL,
-                                    TeamCar $team_car=NULL) : ?SessionScheduleRegistration {
+                                    ?User $user=NULL,
+                                    ?CarSkin $car_skin=NULL,
+                                    ?TeamCar $team_car=NULL) : ?SessionScheduleRegistration {
         $ret = NULL;
 
         // use CarSKin object from TeamCar (if given)

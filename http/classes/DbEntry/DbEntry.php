@@ -43,7 +43,7 @@ abstract class DbEntry {
      * @param $tablename The name of the parenting table (must be set correctly)
      * @parem $id The Id of the table row (NULL for entries to be created new)
      */
-    protected function __construct(string $tablename, int $id = NULL) {
+    protected function __construct(string $tablename, ?int $id = NULL) {
         $this->TableName = $tablename;
         $this->Id = $id;
     }

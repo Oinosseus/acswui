@@ -98,7 +98,7 @@ class Database {
      * @param $table must be a string
      * @param $where is an accociative array (key = table column, value = column value)
      */
-    public static function fetch(string $table, array $columns = NULL, array $where = [], string $sort_by = NULL, bool $order_asc = true) {
+    public static function fetch(string $table, ?array $columns = NULL, array $where = [], ?string $sort_by = NULL, bool $order_asc = true) {
         $ret = array();
 
         // all columns

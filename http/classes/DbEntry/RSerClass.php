@@ -145,7 +145,7 @@ class RSerClass extends DbEntry {
      * @param $active_only If TRUE (default) only active classes are returned
      * @return A list of RSerClass objects
      */
-    public static function listClasses(RSerSeries $rser_series=NULL,
+    public static function listClasses(?RSerSeries $rser_series=NULL,
                                 bool $active_only=TRUE) : array {
 
         // prepare query

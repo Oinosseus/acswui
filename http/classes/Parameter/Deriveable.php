@@ -218,7 +218,7 @@ abstract class Deriveable {
      * @param $access Set new accessability (ignore or set to NULL to read back only)
      * @return The current accessability level
      */
-    public function derivedAccessability(int $access = NULL) {
+    public function derivedAccessability(?int $access = NULL) {
 
         // set new accessability
         if ($access !== NULL) {

@@ -58,7 +58,7 @@ class ImageMerger {
      * @param $ratio This is an additional scaling factor which will be applied after the shrink-scaling.
      * @param $force_format If set (e.g. If set, eg to "png", then the src_path is interpretet in this format)
      */
-    public function merge(string $src_path, bool $overlap=TRUE, $ratio=1.0, string $force_format=NULL) {
+    public function merge(string $src_path, bool $overlap=TRUE, $ratio=1.0, ?string $force_format=NULL) {
         // load source image
         $img_src = NULL;
         if (($force_format === NULL && substr($src_path, -4, 4) == ".jpg") || ($force_format === "jpg"))     {

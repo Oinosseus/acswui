@@ -28,7 +28,7 @@ class SessionPenaltiesSum {
      * @param $entry If set, only penalties for a certain driver are listed
      */
     public function __construct(\DbEntry\Session $session,
-                                \Compound\SessionEntry $entry=NULL) {
+                                ?\Compound\SessionEntry $entry=NULL) {
         $this->Penalties = \DbEntry\SessionPenalty::listPenalties($session, $entry);
         $this->Session = $session;
 

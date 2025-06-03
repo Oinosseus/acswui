@@ -345,7 +345,7 @@ class CarClass extends DbEntry {
 //      * @param $car The requested Car object (All valid cars when NULL is given)
 //      * @return A list of CarClassOccupation objects
 //      */
-//     public function occupations(Car $car = NULL) {
+//     public function occupations(?Car $car = NULL) {
 //         global $acswuiDatabase;
 //
 //         if ($this->OccupationMap !== NULL) return $this->OccupationMap[$car->id()];
@@ -379,7 +379,7 @@ class CarClass extends DbEntry {
 //      * @param $user The user object that wants to occupy
 //      * @param $skin The skin that shall be used for occupation (when ==NULL, the occupation is released)
 //      */
-//     public function occupy(User $user, CarSKin $skin = NULL) {
+//     public function occupy(User $user, ?CarSKin $skin = NULL) {
 //         global $acswuiDatabase;
 //         global $acswuiLog;
 //

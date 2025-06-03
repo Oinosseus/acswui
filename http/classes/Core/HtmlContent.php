@@ -444,7 +444,7 @@ abstract class HtmlContent {
 
 
     //! @return URL to this Content item
-    public function url(array $get_vars = array(), string $content = NULL) {
+    public function url(?array $get_vars = array(), ?string $content = NULL) {
         $url = HtmlContent::BASESCRIPT;
 
         if ($content === NULL) {

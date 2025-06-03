@@ -60,8 +60,8 @@ class RSerRegistration extends DbEntry {
     public static function createNew(RSerSeason $season,
                                      RSerClass $class,
                                      ?TeamCar $teamcar,
-                                     User $user=NULL,
-                                     CarSkin $carskin=NULL) : ?RSerRegistration {
+                                     ?User $user=NULL,
+                                     ?CarSkin $carskin=NULL) : ?RSerRegistration {
 
         // register TeamCar
         if ($teamcar !== NULL) {

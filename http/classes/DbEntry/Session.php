@@ -33,7 +33,7 @@ class Session extends DbEntry {
      * @param $entry If not NULL, only the collisions of this entry will be returned
      * @return A list of Collision objects from this session, ordered by timestamp
      */
-    public function collisions(\Compound\SessionEntry $entry = NULL) {
+    public function collisions(?\Compound\SessionEntry $entry = NULL) {
         if ($entry !== NULL) {
 
             $ret = array();
@@ -126,7 +126,7 @@ class Session extends DbEntry {
      * @param $max_id When not NULL, the Session with the Id lower or equal than this is returned
      * @return The requested Session (can be NULL)
      */
-    public static function find(int $max_id = NULL) {
+    public static function find(?int $max_id = NULL) {
         $session = NULL;
 
         // find by max ID
@@ -319,7 +319,7 @@ class Session extends DbEntry {
      * @param $valid_only If TRUE (default FALSE) only laps without cuts are listed
      * @return An array of Lap objects, ordered by the time when passing the finish line (ASC)
      */
-    public function laps(\Compound\SessionEntry $entry = NULL, bool $valid_only=FALSE) {
+    public function laps(?\Compound\SessionEntry $entry = NULL, bool $valid_only=FALSE) {
 
         if ($entry !== NULL) {
             $search_key = "";

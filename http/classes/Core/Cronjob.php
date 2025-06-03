@@ -55,7 +55,7 @@ abstract class Cronjob {
      * @param $read_only_access If this is TRUE (default), then the Cronjob cannot be executed (reading status only).
      */
     public function __construct(int $execution_interval,
-                                \Parameter\ParamEnumMonthly $monthly_cycle = NULL,
+                                ?\Parameter\ParamEnumMonthly $monthly_cycle = NULL,
                                 bool $read_only_access = TRUE) {
         $this->ExecutionInterval = $execution_interval;
         $this->LastExecutionTimestamp = new \DateTime("0000-00-00 00:00");

@@ -192,7 +192,7 @@ class Track extends DbEntry {
      * @param $cc If given laptimes are estimated for this CarClass
      * @return The estimated laptime as tuple of [min, typ, max]
      */
-    public function estimeLaptime(CarClass $cc=NULL) {
+    public function estimeLaptime(?CarClass $cc=NULL) {
         $l = $this->length();
 
         if ($cc !== NULL) {

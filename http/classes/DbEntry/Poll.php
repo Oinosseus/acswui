@@ -261,7 +261,7 @@ class Poll extends DbEntry {
      * @return The amount of voted points for the car class
      * @todo swap arguments (since $carclass is mandatory it should be first argument)
      */
-    public function pointsOfCarClass(\DbEntry\User $user = NULL, \DbEntry\CarClass $carclass) {
+    public function pointsOfCarClass(?\DbEntry\User $user = NULL, \DbEntry\CarClass $carclass) {
 
         // create query
         $query = "SELECT SUM(PollVotes.Points) FROM PollVotes";
@@ -295,7 +295,7 @@ class Poll extends DbEntry {
      * @return The amount of voted points for the track
      * @todo swap arguments (since $track is mandatory it should be first argument)
      */
-    public function pointsOfTrack(User $user = NULL, Track $track) {
+    public function pointsOfTrack(?User $user = NULL, Track $track) {
 
         // create query
         $query = "SELECT SUM(PollVotes.Points) FROM PollVotes";

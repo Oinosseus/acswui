@@ -198,7 +198,7 @@ class Car extends DbEntry {
      * @param $show_img Include a preview image
      * @return Html content for this object
      */
-    public function html(\DbEntry\CarClass $carclass = NULL, bool $include_link = TRUE, bool $show_label = TRUE, bool $show_img = TRUE) {
+    public function html(?\DbEntry\CarClass $carclass = NULL, bool $include_link = TRUE, bool $show_label = TRUE, bool $show_img = TRUE) {
 
         $car_id = $this->id();
         $car_name = $this->name();
@@ -241,7 +241,7 @@ class Car extends DbEntry {
      * @param $carclass A carclass for which this car is linked (optional)
      * @return The URL to the HTML view page for this car
      */
-    public function htmlUrl(\DbEntry\CarClass $carclass = NULL) {
+    public function htmlUrl(?\DbEntry\CarClass $carclass = NULL) {
 
         $url = "index.php?HtmlContent=CarModel&Id=" . $this->id();
         if ($carclass !== NULL) {
@@ -411,7 +411,7 @@ class Car extends DbEntry {
      * @param $owner If set, only cars which are owned by this user will be listed
      * @return A List of according CarSkin objects
      */
-    public function skins($inculde_deprecated=FALSE, User $owner = NULL) {
+    public function skins($inculde_deprecated=FALSE, ?User $owner = NULL) {
 
         $query = "SELECT Id FROM CarSkins WHERE Car = " . $this->id();
         if ($inculde_deprecated !== TRUE) $query .= " AND Deprecated = 0";

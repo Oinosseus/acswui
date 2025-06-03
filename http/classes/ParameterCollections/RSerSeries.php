@@ -5,7 +5,7 @@ namespace ParameterCollections;
 
 class RSerSeries extends \Parameter\Collection {
 
-    public function __construct(\Parameter\Collection $base = NULL) {
+    public function __construct(?\Parameter\Collection $base = NULL) {
         parent::__construct($base, NULL, $key = "RSerSeries",
                             $label = _("Race Series"),
                             $description = _("Parameters for Race Resies"));

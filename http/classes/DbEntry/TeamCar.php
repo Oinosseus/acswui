@@ -146,9 +146,9 @@ class TeamCar extends DbEntry {
      * @param $tcc The requested TeamCarClass objects
      * @return A list of TeamCar objects
      */
-    public static function listTeamCars(Team $team=NULL,
-                                        TeamCarClass $teamcarclass=NULL,
-                                        CarClass $carclass=NULL) : array {
+    public static function listTeamCars(?Team $team=NULL,
+                                        ?TeamCarClass $teamcarclass=NULL,
+                                        ?CarClass $carclass=NULL) : array {
 
         // find IDs by Team
         $ids_from_team = array();

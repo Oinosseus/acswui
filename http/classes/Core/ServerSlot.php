@@ -446,8 +446,8 @@ class ServerSlot {
                           \DbEntry\ServerPreset $preset,
                           \Core\EntryList $el,
                           \Core\BopMap $bm,
-                          int $referenced_session_schedule_id = NULL,
-                          int $referenced_rser_split_id = NULL) {
+                          ?int $referenced_session_schedule_id = NULL,
+                          ?int $referenced_rser_split_id = NULL) {
 
         $id = $this->id();
 
@@ -551,8 +551,8 @@ class ServerSlot {
      */
     private function writeACswuiUdpPluginIni(\DbEntry\ServerPreset $preset,
                                              \Core\BopMap $bm,
-                                             int $referenced_session_schedule_id = NULL,
-                                             int $referenced_rser_split_id = NULL) {
+                                             ?int $referenced_session_schedule_id = NULL,
+                                             ?int $referenced_rser_split_id = NULL) {
         $pc = $this->parameterCollection();
         $file_path = \Core\Config::AbsPathData . "/acswui_udp_plugin/acswui_udp_plugin_" . $this->id() . ".ini";
         $f = fopen($file_path, 'w');

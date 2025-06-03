@@ -890,7 +890,7 @@ class ServerPreset extends DbEntry {
      *
      * @return A list of [\Core\TimeInterval, \Core\TimeInterval, Name]-tuples
      */
-    public function schedule(Track $t=NULL, CarClass $cc=NULL) {
+    public function schedule(?Track $t=NULL, ?CarClass $cc=NULL) {
 
         // estimate laptimes
         $laptime_typ = 0;  // [s]

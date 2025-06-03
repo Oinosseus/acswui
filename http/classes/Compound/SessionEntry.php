@@ -29,7 +29,7 @@ class SessionEntry {
     public function __construct(\DbEntry\Session $session,
                                 \DbEntry\TeamCar|NULL $teamcar,
                                 \DbEntry\User|NULL $user,
-                                \DbEntry\CarSkin|NULL $carskin=NULL) {
+                                ?\DbEntry\CarSkin|NULL $carskin=NULL) {
 
         $this->Session = $session;
 

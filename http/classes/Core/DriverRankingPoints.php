@@ -15,7 +15,7 @@ class DriverRankingPoints {
      * Create a new object
      * @param $json_string If set, the object will be initialized from this json string
      */
-    public function __construct(string $json_string=NULL) {
+    public function __construct(?string $json_string=NULL) {
         $this->RankingPoints = DriverRankingPoints::dataTemplate();
 
         // initialize from json

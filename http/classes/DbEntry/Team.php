@@ -145,9 +145,9 @@ class Team extends DbEntry {
      * @param $carclass Only list teams which drives in this CarClass
      * @return A list of Team objects
      */
-    public static function listTeams(User $member=NULL,
-                                     User $manager=NULL,
-                                     CarClass $carclass=NULL) : array {
+    public static function listTeams(?User $member=NULL,
+                                     ?User $manager=NULL,
+                                     ?CarClass $carclass=NULL) : array {
 
         // find teams with a certain member
         $team_ids_membered = array();

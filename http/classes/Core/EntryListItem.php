@@ -21,7 +21,7 @@ class EntryListItem {
      * @param $rser_registration If given, this information will be added to the entry list
      */
     public function __construct(\DbEntry\CarSkin $skin,
-                                \DbEntry\RSerRegistration $rser_registration=NULL) {
+                                ?\DbEntry\RSerRegistration $rser_registration=NULL) {
         $this->CarSkin = $skin;
         $this->RSerRegistration = $rser_registration;
     }

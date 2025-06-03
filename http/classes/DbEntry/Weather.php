@@ -12,7 +12,7 @@ class Weather extends DbEntry {
      * Construct a new object
      * @param $id Database table id
      */
-    public function __construct(int $id = NULL) {
+    public function __construct(?int $id = NULL) {
         parent::__construct("Weathers", $id);
     }
 

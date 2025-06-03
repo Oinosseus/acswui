@@ -216,7 +216,7 @@ class SessionSchedule extends DbEntry {
      * @param $start_after If NULL, only items with start in future are listed, else all items from with a start date later than this are listed
      * @return An array of SessionSchedule objects, ordered by event start
      */
-    public static function listSchedules(\DateTime $start_after=NULL) {
+    public static function listSchedules(?\DateTime $start_after=NULL) {
         if ($start_after === NULL) $start_after = new \DateTime("now");
         $start_str = \Core\Database::timestamp($start_after);
 
