@@ -246,6 +246,7 @@ class ServerSlot {
                 // genral
                 $coll = new \Parameter\Collection(NULL, $pc, "AcServerGeneral", _("General Settings"), _("General settings for Real Penalty"));
                 $p = new \Parameter\ParamString(NULL, $coll, "AcServerGeneralName", _("Name"), _("An arbitrary name for the server (shown in lobby)"), "", "");
+                $p = new \Parameter\ParamString(NULL, $coll, "AcServerGeneralServerPwd", _("Server Passwort"), _("acServer server passwort"), "", "");
                 $p = new \Parameter\ParamString(NULL, $coll, "AcServerGeneralAdminPwd", _("Admin Passwort"), _("acServer admin passwort"), "", "");
                 $p = new \Parameter\ParamBool(NULL, $coll, "AcServerRegisterToLobby", _("Register To Lobby"), _("Makes the server listable by AC clients"), "", TRUE);
 
@@ -620,7 +621,7 @@ class ServerSlot {
 
         fwrite($f, "[SERVER]\n");
         fwrite($f, "NAME=" . $pc->child("AcServerGeneralName")->value() . "\n");
-        fwrite($f, "PASSWORD=\n");
+        fwrite($f, "PASSWORD=" . $pc->child("AcServerGeneralServerPwd")->value() . "\n");
         fwrite($f, "ADMIN_PASSWORD=" . $pc->child("AcServerGeneralAdminPwd")->value() . "\n");
         fwrite($f, "UDP_PORT=" . $pc->child("AcServerPortsInetUdp")->value() . "\n");
         fwrite($f, "TCP_PORT=" . $pc->child("AcServerPortsInetTcp")->value() . "\n");
