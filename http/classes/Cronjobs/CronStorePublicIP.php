@@ -9,10 +9,9 @@ class CronStorePublicIP extends \Core\Cronjob {
     }
 
     private function getIp() {
-        // solution from here: https://stackoverflow.com/questions/1814611/how-do-i-find-my-servers-ip-address-in-phpcli
-        $ip = file_get_contents('http://icanhazip.com/');
-        $ip = trim($ip);
-        return $ip;
+        $ip = exec('curl -4 http://icanhazip.com/');  // AC needs IPv4
+        if ($ip === False) return NULL;
+        else return trim($ip);
     }
 
     protected function process() {
