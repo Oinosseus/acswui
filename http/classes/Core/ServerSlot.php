@@ -191,6 +191,14 @@ class ServerSlot {
         $cm_port = $this->parameterCollection()->child("AcServerPortsInetHttp")->value();
         $ip = \Core\Helper::ip();
         $cm_link = "https://acstuff.ru/s/q:race/online/join?ip={$ip}&httpPort=$cm_port\n";
+
+        // add password
+        $pwd = $this->parameterCollection()->child("AcServerGeneralServerPwd")->value();
+        if (strlen($pwd) > 0) {
+            $cm_link .= "&password=" . $pwd;
+        }
+
+
         $html .= "<a class=\"CoreServerSlot\" href=\"$cm_link\" target=\"_blank\">" . _("Join") . " {$this->name()}</a>";
         return $html;
     }
