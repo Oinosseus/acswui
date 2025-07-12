@@ -185,7 +185,6 @@ class CommandPackage(Command):
                 self._copy2http(path_track, "ui", configtrack, "ui_track.json")
                 self._copy2http(path_track, "ui", configtrack, "outline.png")
                 self._copy2http(path_track, "ui", configtrack, "preview.png")
-                self._copy2http(path_track, "ui", configtrack, "ui_track.json")
 
 
 
