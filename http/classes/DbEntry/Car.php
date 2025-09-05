@@ -489,7 +489,8 @@ class Car extends DbEntry {
 
         $restrictor *= 0.3;
 
-        if ($this->maxRpm() !== NULL) {
+        $max_rpm = $this->maxRpm();
+        if ($max_rpm !== NULL && $max_rpm > 0.0) {
             $restrictor *= exp($rpm / $this->maxRpm() - 1.0);
         }
 
